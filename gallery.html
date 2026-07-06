@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>OnDemand HQ — Render Gallery</title>
+<style>
+  body { margin:0; background:#0b0f0e; color:#fff; font-family:'Segoe UI',Helvetica,Arial,sans-serif; }
+  header { background:#0B3D2E; border-bottom:1px solid #1d5c48; padding:16px 22px; }
+  header b { font-size:17px; } header small { display:block; color:#bcd9cf; margin-top:4px; font-size:12px; }
+  a.back { color:#bcd9cf; text-decoration:none; font-size:12.5px; }
+  .wrap { padding:20px; max-width:1200px; margin:0 auto; }
+  h2 { font-size:14px; letter-spacing:.5px; color:#9fc6b8; border-bottom:1px solid #1d5c48; padding-bottom:6px; margin:26px 0 14px; }
+  .stat { display:inline-block; background:#111917; border:1px solid #1d5c48; border-radius:8px; padding:8px 13px; margin:0 8px 8px 0; font-size:12.5px; }
+  .stat b { color:#3ad07f; font-size:15px; }
+  .grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(320px,1fr)); gap:14px; }
+  figure { margin:0; background:#111917; border:1px solid #1d5c48; border-radius:10px; overflow:hidden; }
+  figure img, video { width:100%; display:block; background:#07231a; }
+  figcaption { padding:9px 12px; font-size:12px; color:#cfe5dc; }
+  video { max-height:70vh; }
+</style></head>
+<body>
+<header><b>OnDemand HQ — OptiX Render Gallery</b>
+  <small>Path-traced on 8× NVIDIA H100 (Cycles OptiX, AI-denoised) · <a class="back" href="/">← back to live walkthrough</a></small>
+</header>
+<div class="wrap">
+  <h2>THE MAX BUILD — 18,067 objects, rendered on the H100s</h2>
+  <div>
+    <span class="stat"><b>18,067</b> objects</span>
+    <span class="stat"><b>17,432</b> props added procedurally</span>
+    <span class="stat"><b>6</b>× H100 render blast</span>
+    <span class="stat">building + every zone + every object</span>
+  </div>
+  <div class="grid" style="margin-top:12px">
+    <figure style="grid-column:1/-1">
+      <video controls autoplay muted loop playsinline><source src="/gallery/blast_montage.mp4" type="video/mp4"></video>
+      <figcaption>Blast highlight reel — building angles → every zone → a sample of the per-object catalog.</figcaption>
+    </figure>
+    <figure><img src="/gallery/sheet_zones.png" alt="zones"><figcaption>All 16 zones, furnished — desks + people, server racks, boxing ring, basketball court, cafe, storage, drone hall…</figcaption></figure>
+    <figure><img src="/gallery/sheet_building.png" alt="building"><figcaption>Exterior — orbit angles at 2560×1440.</figcaption></figure>
+  </div>
+
+  <h2>CINEMATIC FLYTHROUGH</h2>
+  <div class="grid">
+    <figure style="grid-column:1/-1">
+      <video controls muted loop playsinline><source src="/gallery/flythrough.mp4" type="video/mp4"></video>
+      <figcaption>Camera path: exterior → reception → cafe → boxing → compute → command centre.</figcaption>
+    </figure>
+  </div>
+
+  <h2>HERO STILL — 512-sample OptiX</h2>
+  <div class="grid">
+    <figure><img src="/gallery/render_exterior_hero.png" alt="exterior"><figcaption>Exterior hero — facade, docks, fenced CCTV yard.</figcaption></figure>
+  </div>
+</div>
+</body></html>
