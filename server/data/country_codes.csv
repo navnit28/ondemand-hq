@@ -1,0 +1,330 @@
+iso3,iso2,m49,name,wb_code,wb_name,region,sub_region,wb_region,income_group,lending_type,capital,gec,factbook_region,is_aggregate,un_ldc,un_lldc,un_sids
+ABW,AW,533,Aruba,ABW,Aruba,Americas,Latin America and the Caribbean,Latin America & Caribbean,HIC,LNX,Oranjestad,aa,central-america-n-caribbean,0,0,0,1
+AFG,AF,4,Afghanistan,AFG,Afghanistan,Asia,Southern Asia,"Middle East, North Africa, Afghanistan & Pakistan",LIC,IDX,Kabul,af,south-asia,0,1,1,0
+AGO,AO,24,Angola,AGO,Angola,Africa,Sub-Saharan Africa,Sub-Saharan Africa,LMC,IBD,Luanda,ao,africa,0,1,0,0
+AIA,AI,660,Anguilla,,,Americas,Latin America and the Caribbean,,,,The Valley,av,central-america-n-caribbean,0,0,0,1
+ALA,AX,248,Åland Islands,,,Europe,Northern Europe,,,,Mariehamn,,,0,0,0,0
+ALB,AL,8,Albania,ALB,Albania,Europe,Southern Europe,Europe & Central Asia,UMC,IBD,Tirane,al,europe,0,0,0,0
+AND,AD,20,Andorra,AND,Andorra,Europe,Southern Europe,Europe & Central Asia,HIC,LNX,Andorra la Vella,an,europe,0,0,0,0
+ARE,AE,784,United Arab Emirates,ARE,United Arab Emirates,Asia,Western Asia,"Middle East, North Africa, Afghanistan & Pakistan",HIC,LNX,Abu Dhabi,ae,middle-east,0,0,0,0
+ARG,AR,32,Argentina,ARG,Argentina,Americas,Latin America and the Caribbean,Latin America & Caribbean,UMC,IBD,Buenos Aires,ar,south-america,0,0,0,0
+ARM,AM,51,Armenia,ARM,Armenia,Asia,Western Asia,Europe & Central Asia,UMC,IBD,Yerevan,am,central-asia,0,0,1,0
+ASM,AS,16,American Samoa,ASM,American Samoa,Oceania,Polynesia,East Asia & Pacific,HIC,LNX,Pago Pago,aq,australia-oceania,0,0,0,1
+ATA,AQ,10,Antarctica,,,,,,,,,ay,antarctica,0,0,0,0
+ATF,TF,260,French Southern Territories,,,Africa,Sub-Saharan Africa,,,,Port-aux-Francais,fs,antarctica,0,0,0,0
+ATG,AG,28,Antigua and Barbuda,ATG,Antigua and Barbuda,Americas,Latin America and the Caribbean,Latin America & Caribbean,HIC,IBD,Saint John's,ac,central-america-n-caribbean,0,0,0,1
+AUS,AU,36,Australia,AUS,Australia,Oceania,Australia and New Zealand,East Asia & Pacific,HIC,LNX,Canberra,as,australia-oceania,0,0,0,0
+AUT,AT,40,Austria,AUT,Austria,Europe,Western Europe,Europe & Central Asia,HIC,LNX,Vienna,au,europe,0,0,0,0
+AZE,AZ,31,Azerbaijan,AZE,Azerbaijan,Asia,Western Asia,Europe & Central Asia,UMC,IBD,Baku,aj,central-asia,0,0,1,0
+BDI,BI,108,Burundi,BDI,Burundi,Africa,Sub-Saharan Africa,Sub-Saharan Africa,LIC,IDX,Bujumbura,by,africa,0,1,1,0
+BEL,BE,56,Belgium,BEL,Belgium,Europe,Western Europe,Europe & Central Asia,HIC,LNX,Brussels,be,europe,0,0,0,0
+BEN,BJ,204,Benin,BEN,Benin,Africa,Sub-Saharan Africa,Sub-Saharan Africa,LMC,IDX,Porto-Novo,bn,africa,0,1,0,0
+BES,BQ,535,"Bonaire, Sint Eustatius and Saba",,,Americas,Latin America and the Caribbean,,,,,nl,europe,0,0,0,1
+BFA,BF,854,Burkina Faso,BFA,Burkina Faso,Africa,Sub-Saharan Africa,Sub-Saharan Africa,LIC,IDX,Ouagadougou,uv,africa,0,1,1,0
+BGD,BD,50,Bangladesh,BGD,Bangladesh,Asia,Southern Asia,South Asia,LMC,IDX,Dhaka,bg,south-asia,0,1,0,0
+BGR,BG,100,Bulgaria,BGR,Bulgaria,Europe,Eastern Europe,Europe & Central Asia,HIC,IBD,Sofia,bu,europe,0,0,0,0
+BHR,BH,48,Bahrain,BHR,Bahrain,Asia,Western Asia,"Middle East, North Africa, Afghanistan & Pakistan",HIC,LNX,Manama,ba,middle-east,0,0,0,0
+BHS,BS,44,Bahamas,BHS,"Bahamas, The",Americas,Latin America and the Caribbean,Latin America & Caribbean,HIC,LNX,Nassau,bf,central-america-n-caribbean,0,0,0,1
+BIH,BA,70,Bosnia and Herzegovina,BIH,Bosnia and Herzegovina,Europe,Southern Europe,Europe & Central Asia,UMC,IBD,Sarajevo,bk,europe,0,0,0,0
+BLM,BL,652,Saint Barthélemy,,,Americas,Latin America and the Caribbean,,,,Gustavia,tb,central-america-n-caribbean,0,0,0,0
+BLR,BY,112,Belarus,BLR,Belarus,Europe,Eastern Europe,Europe & Central Asia,UMC,IBD,Minsk,bo,europe,0,0,0,0
+BLZ,BZ,84,Belize,BLZ,Belize,Americas,Latin America and the Caribbean,Latin America & Caribbean,UMC,IDB,Belmopan,bh,central-america-n-caribbean,0,0,0,1
+BMU,BM,60,Bermuda,BMU,Bermuda,Americas,Northern America,North America,HIC,LNX,Hamilton,bd,north-america,0,0,0,0
+BOL,BO,68,Bolivia (Plurinational State of),BOL,Bolivia,Americas,Latin America and the Caribbean,Latin America & Caribbean,LMC,IBD,La Paz,bl,south-america,0,0,1,0
+BRA,BR,76,Brazil,BRA,Brazil,Americas,Latin America and the Caribbean,Latin America & Caribbean,UMC,IBD,Brasilia,br,south-america,0,0,0,0
+BRB,BB,52,Barbados,BRB,Barbados,Americas,Latin America and the Caribbean,Latin America & Caribbean,HIC,IBD,Bridgetown,bb,central-america-n-caribbean,0,0,0,1
+BRN,BN,96,Brunei Darussalam,BRN,Brunei Darussalam,Asia,South-eastern Asia,East Asia & Pacific,HIC,LNX,Bandar Seri Begawan,bx,east-n-southeast-asia,0,0,0,0
+BTN,BT,64,Bhutan,BTN,Bhutan,Asia,Southern Asia,South Asia,LMC,IDX,Thimphu,bt,south-asia,0,0,1,0
+BVT,BV,74,Bouvet Island,,,Americas,Latin America and the Caribbean,,,,,bv,antarctica,0,0,0,0
+BWA,BW,72,Botswana,BWA,Botswana,Africa,Sub-Saharan Africa,Sub-Saharan Africa,UMC,IBD,Gaborone,bc,africa,0,0,1,0
+CAF,CF,140,Central African Republic,CAF,Central African Republic,Africa,Sub-Saharan Africa,Sub-Saharan Africa,LIC,IDX,Bangui,ct,africa,0,1,1,0
+CAN,CA,124,Canada,CAN,Canada,Americas,Northern America,North America,HIC,LNX,Ottawa,ca,north-america,0,0,0,0
+CCK,CC,166,Cocos (Keeling) Islands,,,Oceania,Australia and New Zealand,,,,West Island,ck,australia-oceania,0,0,0,0
+CHE,CH,756,Switzerland,CHE,Switzerland,Europe,Western Europe,Europe & Central Asia,HIC,LNX,Bern,sz,europe,0,0,0,0
+CHI,JG,,Channel Islands,CHI,Channel Islands,Europe,Northern Europe,Europe & Central Asia,HIC,LNX,,,,0,0,0,0
+CHL,CL,152,Chile,CHL,Chile,Americas,Latin America and the Caribbean,Latin America & Caribbean,HIC,IBD,Santiago,ci,south-america,0,0,0,0
+CHN,CN,156,China,CHN,China,Asia,Eastern Asia,East Asia & Pacific,UMC,IBD,Beijing,ch,east-n-southeast-asia,0,0,0,0
+CIV,CI,384,Ivory Coast,CIV,Cote d'Ivoire,Africa,Sub-Saharan Africa,Sub-Saharan Africa,LMC,IDB,Yamoussoukro,iv,africa,0,0,0,0
+CMR,CM,120,Cameroon,CMR,Cameroon,Africa,Sub-Saharan Africa,Sub-Saharan Africa,LMC,IDB,Yaounde,cm,africa,0,0,0,0
+COD,CD,180,Democratic Republic of the Congo,COD,"Congo, Dem. Rep.",Africa,Sub-Saharan Africa,Sub-Saharan Africa,LIC,IDX,Kinshasa,cg,africa,0,1,0,0
+COG,CG,178,Congo,COG,"Congo, Rep.",Africa,Sub-Saharan Africa,Sub-Saharan Africa,LMC,IDB,Brazzaville,cf,africa,0,0,0,0
+COK,CK,184,Cook Islands,,,Oceania,Polynesia,,,,Avarua,cw,australia-oceania,0,0,0,1
+COL,CO,170,Colombia,COL,Colombia,Americas,Latin America and the Caribbean,Latin America & Caribbean,UMC,IBD,Bogota,co,south-america,0,0,0,0
+COM,KM,174,Comoros,COM,Comoros,Africa,Sub-Saharan Africa,Sub-Saharan Africa,LMC,IDX,Moroni,cn,africa,0,1,0,1
+CPV,CV,132,Cabo Verde,CPV,Cabo Verde,Africa,Sub-Saharan Africa,Sub-Saharan Africa,UMC,IDB,Praia,cv,africa,0,0,0,1
+CRI,CR,188,Costa Rica,CRI,Costa Rica,Americas,Latin America and the Caribbean,Latin America & Caribbean,HIC,IBD,San Jose,cs,central-america-n-caribbean,0,0,0,0
+CUB,CU,192,Cuba,CUB,Cuba,Americas,Latin America and the Caribbean,Latin America & Caribbean,UMC,LNX,Havana,cu,central-america-n-caribbean,0,0,0,1
+CUW,CW,531,Curaçao,CUW,Curacao,Americas,Latin America and the Caribbean,Latin America & Caribbean,HIC,LNX,Willemstad,uc,central-america-n-caribbean,0,0,0,1
+CXR,CX,162,Christmas Island,,,Oceania,Australia and New Zealand,,,,Flying Fish Cove,kt,australia-oceania,0,0,0,0
+CYM,KY,136,Cayman Islands,CYM,Cayman Islands,Americas,Latin America and the Caribbean,Latin America & Caribbean,HIC,LNX,George Town,cj,central-america-n-caribbean,0,0,0,0
+CYP,CY,196,Cyprus,CYP,Cyprus,Asia,Western Asia,Europe & Central Asia,HIC,LNX,Nicosia,cy,europe,0,0,0,0
+CZE,CZ,203,Czechia,CZE,Czechia,Europe,Eastern Europe,Europe & Central Asia,HIC,LNX,Prague,ez,europe,0,0,0,0
+DEU,DE,276,Germany,DEU,Germany,Europe,Western Europe,Europe & Central Asia,HIC,LNX,Berlin,gm,europe,0,0,0,0
+DJI,DJ,262,Djibouti,DJI,Djibouti,Africa,Sub-Saharan Africa,"Middle East, North Africa, Afghanistan & Pakistan",LMC,IDX,Djibouti,dj,africa,0,1,0,0
+DMA,DM,212,Dominica,DMA,Dominica,Americas,Latin America and the Caribbean,Latin America & Caribbean,UMC,IDB,Roseau,do,central-america-n-caribbean,0,0,0,1
+DNK,DK,208,Denmark,DNK,Denmark,Europe,Northern Europe,Europe & Central Asia,HIC,LNX,Copenhagen,da,europe,0,0,0,0
+DOM,DO,214,Dominican Republic,DOM,Dominican Republic,Americas,Latin America and the Caribbean,Latin America & Caribbean,UMC,IBD,Santo Domingo,dr,central-america-n-caribbean,0,0,0,1
+DZA,DZ,12,Algeria,DZA,Algeria,Africa,Northern Africa,"Middle East, North Africa, Afghanistan & Pakistan",UMC,IBD,Algiers,ag,africa,0,0,0,0
+ECU,EC,218,Ecuador,ECU,Ecuador,Americas,Latin America and the Caribbean,Latin America & Caribbean,UMC,IBD,Quito,ec,south-america,0,0,0,0
+EGY,EG,818,Egypt,EGY,"Egypt, Arab Rep.",Africa,Northern Africa,"Middle East, North Africa, Afghanistan & Pakistan",LMC,IBD,Cairo,eg,africa,0,0,0,0
+ERI,ER,232,Eritrea,ERI,Eritrea,Africa,Sub-Saharan Africa,Sub-Saharan Africa,LIC,IDX,Asmara,er,africa,0,1,0,0
+ESH,EH,732,Western Sahara,,,Africa,Northern Africa,,,,El-Aaiun,wi,africa,0,0,0,0
+ESP,ES,724,Spain,ESP,Spain,Europe,Southern Europe,Europe & Central Asia,HIC,LNX,Madrid,sp,europe,0,0,0,0
+EST,EE,233,Estonia,EST,Estonia,Europe,Northern Europe,Europe & Central Asia,HIC,LNX,Tallinn,en,europe,0,0,0,0
+ETH,ET,231,Ethiopia,ETH,Ethiopia,Africa,Sub-Saharan Africa,Sub-Saharan Africa,LIC,IDX,Addis Ababa,et,africa,0,1,1,0
+FIN,FI,246,Finland,FIN,Finland,Europe,Northern Europe,Europe & Central Asia,HIC,LNX,Helsinki,fi,europe,0,0,0,0
+FJI,FJ,242,Fiji,FJI,Fiji,Oceania,Melanesia,East Asia & Pacific,UMC,IDB,Suva,fj,australia-oceania,0,0,0,1
+FLK,FK,238,Falkland Islands,,,Americas,Latin America and the Caribbean,,,,Stanley,fk,south-america,0,0,0,0
+FRA,FR,250,France,FRA,France,Europe,Western Europe,Europe & Central Asia,HIC,LNX,Paris,fr,europe,0,0,0,0
+FRO,FO,234,Faroe Islands,FRO,Faroe Islands,Europe,Northern Europe,Europe & Central Asia,HIC,LNX,Torshavn,fo,europe,0,0,0,0
+FSM,FM,583,Micronesia (Federated States of),FSM,"Micronesia, Fed. Sts.",Oceania,Micronesia,East Asia & Pacific,UMC,IDX,Palikir,fm,australia-oceania,0,0,0,1
+GAB,GA,266,Gabon,GAB,Gabon,Africa,Sub-Saharan Africa,Sub-Saharan Africa,UMC,IBD,Libreville,gb,africa,0,0,0,0
+GBR,GB,826,United Kingdom of Great Britain and Northern Ireland,GBR,United Kingdom,Europe,Northern Europe,Europe & Central Asia,HIC,LNX,London,uk,europe,0,0,0,0
+GEO,GE,268,Georgia,GEO,Georgia,Asia,Western Asia,Europe & Central Asia,UMC,IBD,Tbilisi,gg,central-asia,0,0,0,0
+GGY,GG,831,Guernsey,,,Europe,Northern Europe,,,,St Peter Port,gk,europe,0,0,0,0
+GHA,GH,288,Ghana,GHA,Ghana,Africa,Sub-Saharan Africa,Sub-Saharan Africa,LMC,IDX,Accra,gh,africa,0,0,0,0
+GIB,GI,292,Gibraltar,GIB,Gibraltar,Europe,Southern Europe,Europe & Central Asia,HIC,LNX,Gibraltar,gi,europe,0,0,0,0
+GIN,GN,324,Guinea,GIN,Guinea,Africa,Sub-Saharan Africa,Sub-Saharan Africa,LMC,IDX,Conakry,gv,africa,0,1,0,0
+GLP,GP,312,Guadeloupe,,,Americas,Latin America and the Caribbean,,,,Basse-Terre,gp,,0,0,0,0
+GMB,GM,270,Gambia,GMB,"Gambia, The",Africa,Sub-Saharan Africa,Sub-Saharan Africa,LIC,IDX,Banjul,ga,africa,0,1,0,0
+GNB,GW,624,Guinea-Bissau,GNB,Guinea-Bissau,Africa,Sub-Saharan Africa,Sub-Saharan Africa,LIC,IDX,Bissau,pu,africa,0,1,0,1
+GNQ,GQ,226,Equatorial Guinea,GNQ,Equatorial Guinea,Africa,Sub-Saharan Africa,Sub-Saharan Africa,UMC,IBD,Malabo,ek,africa,0,0,0,0
+GRC,GR,300,Greece,GRC,Greece,Europe,Southern Europe,Europe & Central Asia,HIC,LNX,Athens,gr,europe,0,0,0,0
+GRD,GD,308,Grenada,GRD,Grenada,Americas,Latin America and the Caribbean,Latin America & Caribbean,UMC,IDB,Saint George's,gj,central-america-n-caribbean,0,0,0,1
+GRL,GL,304,Greenland,GRL,Greenland,Americas,Northern America,Europe & Central Asia,HIC,LNX,Nuuk,gl,north-america,0,0,0,0
+GTM,GT,320,Guatemala,GTM,Guatemala,Americas,Latin America and the Caribbean,Latin America & Caribbean,UMC,IBD,Guatemala City,gt,central-america-n-caribbean,0,0,0,0
+GUF,GF,254,French Guiana,,,Americas,Latin America and the Caribbean,,,,Cayenne,fg,,0,0,0,0
+GUM,GU,316,Guam,GUM,Guam,Oceania,Micronesia,East Asia & Pacific,HIC,LNX,Agana,gq,australia-oceania,0,0,0,1
+GUY,GY,328,Guyana,GUY,Guyana,Americas,Latin America and the Caribbean,Latin America & Caribbean,HIC,IDX,Georgetown,gy,south-america,0,0,0,1
+HKG,HK,344,"China, Hong Kong Special Administrative Region",HKG,"Hong Kong SAR, China",Asia,Eastern Asia,East Asia & Pacific,HIC,LNX,Hong Kong,hk,east-n-southeast-asia,0,0,0,0
+HMD,HM,334,Heard Island and McDonald Islands,,,Oceania,Australia and New Zealand,,,,,hm,antarctica,0,0,0,0
+HND,HN,340,Honduras,HND,Honduras,Americas,Latin America and the Caribbean,Latin America & Caribbean,LMC,IDX,Tegucigalpa,ho,central-america-n-caribbean,0,0,0,0
+HRV,HR,191,Croatia,HRV,Croatia,Europe,Southern Europe,Europe & Central Asia,HIC,IBD,Zagreb,hr,europe,0,0,0,0
+HTI,HT,332,Haiti,HTI,Haiti,Americas,Latin America and the Caribbean,Latin America & Caribbean,LMC,IDX,Port-au-Prince,ha,central-america-n-caribbean,0,1,0,1
+HUN,HU,348,Hungary,HUN,Hungary,Europe,Eastern Europe,Europe & Central Asia,HIC,LNX,Budapest,hu,europe,0,0,0,0
+IDN,ID,360,Indonesia,IDN,Indonesia,Asia,South-eastern Asia,East Asia & Pacific,UMC,IBD,Jakarta,id,east-n-southeast-asia,0,0,0,0
+IMN,IM,833,Isle of Man,IMN,Isle of Man,Europe,Northern Europe,Europe & Central Asia,HIC,LNX,Douglas,im,europe,0,0,0,0
+IND,IN,356,India,IND,India,Asia,Southern Asia,South Asia,LMC,IBD,New Delhi,in,south-asia,0,0,0,0
+IOT,IO,86,British Indian Ocean Territory,,,Africa,Sub-Saharan Africa,,,,Diego Garcia,io,south-asia,0,0,0,0
+IRL,IE,372,Ireland,IRL,Ireland,Europe,Northern Europe,Europe & Central Asia,HIC,LNX,Dublin,ei,europe,0,0,0,0
+IRN,IR,364,Iran (Islamic Republic of),IRN,"Iran, Islamic Rep.",Asia,Southern Asia,"Middle East, North Africa, Afghanistan & Pakistan",UMC,IBD,Tehran,ir,middle-east,0,0,0,0
+IRQ,IQ,368,Iraq,IRQ,Iraq,Asia,Western Asia,"Middle East, North Africa, Afghanistan & Pakistan",UMC,IBD,Baghdad,iz,middle-east,0,0,0,0
+ISL,IS,352,Iceland,ISL,Iceland,Europe,Northern Europe,Europe & Central Asia,HIC,LNX,Reykjavik,ic,europe,0,0,0,0
+ISR,IL,376,Israel,ISR,Israel,Asia,Western Asia,"Middle East, North Africa, Afghanistan & Pakistan",HIC,LNX,Jerusalem,is,middle-east,0,0,0,0
+ITA,IT,380,Italy,ITA,Italy,Europe,Southern Europe,Europe & Central Asia,HIC,LNX,Rome,it,europe,0,0,0,0
+JAM,JM,388,Jamaica,JAM,Jamaica,Americas,Latin America and the Caribbean,Latin America & Caribbean,UMC,IBD,Kingston,jm,central-america-n-caribbean,0,0,0,1
+JEY,JE,832,Jersey,,,Europe,Northern Europe,,,,Saint Helier,je,europe,0,0,0,0
+JOR,JO,400,Jordan,JOR,Jordan,Asia,Western Asia,"Middle East, North Africa, Afghanistan & Pakistan",UMC,IBD,Amman,jo,middle-east,0,0,0,0
+JPN,JP,392,Japan,JPN,Japan,Asia,Eastern Asia,East Asia & Pacific,HIC,LNX,Tokyo,ja,east-n-southeast-asia,0,0,0,0
+KAZ,KZ,398,Kazakhstan,KAZ,Kazakhstan,Asia,Central Asia,Europe & Central Asia,UMC,IBD,Astana,kz,central-asia,0,0,1,0
+KEN,KE,404,Kenya,KEN,Kenya,Africa,Sub-Saharan Africa,Sub-Saharan Africa,LMC,IDB,Nairobi,ke,africa,0,0,0,0
+KGZ,KG,417,Kyrgyzstan,KGZ,Kyrgyz Republic,Asia,Central Asia,Europe & Central Asia,LMC,IDX,Bishkek,kg,central-asia,0,0,1,0
+KHM,KH,116,Cambodia,KHM,Cambodia,Asia,South-eastern Asia,East Asia & Pacific,LMC,IDX,Phnom Penh,cb,east-n-southeast-asia,0,1,0,0
+KIR,KI,296,Kiribati,KIR,Kiribati,Oceania,Micronesia,East Asia & Pacific,LMC,IDX,Tarawa,kr,australia-oceania,0,1,0,1
+KNA,KN,659,Saint Kitts and Nevis,KNA,St. Kitts and Nevis,Americas,Latin America and the Caribbean,Latin America & Caribbean,HIC,IBD,Basseterre,sc,central-america-n-caribbean,0,0,0,1
+KOR,KR,410,Republic of Korea,KOR,"Korea, Rep.",Asia,Eastern Asia,East Asia & Pacific,HIC,LNX,Seoul,ks,east-n-southeast-asia,0,0,0,0
+KWT,KW,414,Kuwait,KWT,Kuwait,Asia,Western Asia,"Middle East, North Africa, Afghanistan & Pakistan",HIC,LNX,Kuwait City,ku,middle-east,0,0,0,0
+LAO,LA,418,Lao People's Democratic Republic,LAO,Lao PDR,Asia,South-eastern Asia,East Asia & Pacific,LMC,IDX,Vientiane,la,east-n-southeast-asia,0,1,1,0
+LBN,LB,422,Lebanon,LBN,Lebanon,Asia,Western Asia,"Middle East, North Africa, Afghanistan & Pakistan",LMC,IBD,Beirut,le,middle-east,0,0,0,0
+LBR,LR,430,Liberia,LBR,Liberia,Africa,Sub-Saharan Africa,Sub-Saharan Africa,LIC,IDX,Monrovia,li,africa,0,1,0,0
+LBY,LY,434,Libya,LBY,Libya,Africa,Northern Africa,"Middle East, North Africa, Afghanistan & Pakistan",UMC,IBD,Tripoli,ly,africa,0,0,0,0
+LCA,LC,662,Saint Lucia,LCA,St. Lucia,Americas,Latin America and the Caribbean,Latin America & Caribbean,UMC,IDB,Castries,st,central-america-n-caribbean,0,0,0,1
+LIE,LI,438,Liechtenstein,LIE,Liechtenstein,Europe,Western Europe,Europe & Central Asia,HIC,LNX,Vaduz,ls,europe,0,0,0,0
+LKA,LK,144,Sri Lanka,LKA,Sri Lanka,Asia,Southern Asia,South Asia,UMC,IDX,Colombo,ce,south-asia,0,0,0,0
+LSO,LS,426,Lesotho,LSO,Lesotho,Africa,Sub-Saharan Africa,Sub-Saharan Africa,LMC,IDX,Maseru,lt,africa,0,1,1,0
+LTU,LT,440,Lithuania,LTU,Lithuania,Europe,Northern Europe,Europe & Central Asia,HIC,LNX,Vilnius,lh,europe,0,0,0,0
+LUX,LU,442,Luxembourg,LUX,Luxembourg,Europe,Western Europe,Europe & Central Asia,HIC,LNX,Luxembourg,lu,europe,0,0,0,0
+LVA,LV,428,Latvia,LVA,Latvia,Europe,Northern Europe,Europe & Central Asia,HIC,LNX,Riga,lg,europe,0,0,0,0
+MAC,MO,446,"China, Macao Special Administrative Region",MAC,"Macao SAR, China",Asia,Eastern Asia,East Asia & Pacific,HIC,LNX,Macao,mc,east-n-southeast-asia,0,0,0,0
+MAF,MF,663,Saint Martin (French Part),MAF,St. Martin (French part),Americas,Latin America and the Caribbean,Latin America & Caribbean,HIC,LNX,Marigot,rn,central-america-n-caribbean,0,0,0,0
+MAR,MA,504,Morocco,MAR,Morocco,Africa,Northern Africa,"Middle East, North Africa, Afghanistan & Pakistan",LMC,IBD,Rabat,mo,africa,0,0,0,0
+MCO,MC,492,Monaco,MCO,Monaco,Europe,Western Europe,Europe & Central Asia,HIC,LNX,Monaco,mn,europe,0,0,0,0
+MDA,MD,498,Republic of Moldova,MDA,Moldova,Europe,Eastern Europe,Europe & Central Asia,UMC,IBD,Chisinau,md,europe,0,0,1,0
+MDG,MG,450,Madagascar,MDG,Madagascar,Africa,Sub-Saharan Africa,Sub-Saharan Africa,LIC,IDX,Antananarivo,ma,africa,0,1,0,0
+MDV,MV,462,Maldives,MDV,Maldives,Asia,Southern Asia,South Asia,UMC,IDX,Male,mv,south-asia,0,0,0,1
+MEX,MX,484,Mexico,MEX,Mexico,Americas,Latin America and the Caribbean,Latin America & Caribbean,UMC,IBD,Mexico City,mx,north-america,0,0,0,0
+MHL,MH,584,Marshall Islands,MHL,Marshall Islands,Oceania,Micronesia,East Asia & Pacific,UMC,IDX,Majuro,rm,australia-oceania,0,0,0,1
+MKD,MK,807,North Macedonia,MKD,North Macedonia,Europe,Southern Europe,Europe & Central Asia,UMC,IBD,Skopje,mk,europe,0,0,1,0
+MLI,ML,466,Mali,MLI,Mali,Africa,Sub-Saharan Africa,Sub-Saharan Africa,LIC,IDX,Bamako,ml,africa,0,1,1,0
+MLT,MT,470,Malta,MLT,Malta,Europe,Southern Europe,"Middle East, North Africa, Afghanistan & Pakistan",HIC,LNX,Valletta,mt,europe,0,0,0,0
+MMR,MM,104,Myanmar,MMR,Myanmar,Asia,South-eastern Asia,East Asia & Pacific,LMC,IDX,Naypyidaw,bm,east-n-southeast-asia,0,1,0,0
+MNE,ME,499,Montenegro,MNE,Montenegro,Europe,Southern Europe,Europe & Central Asia,UMC,IBD,Podgorica,mj,europe,0,0,0,0
+MNG,MN,496,Mongolia,MNG,Mongolia,Asia,Eastern Asia,East Asia & Pacific,UMC,IBD,Ulaanbaatar,mg,east-n-southeast-asia,0,0,1,0
+MNP,MP,580,Northern Mariana Islands,MNP,Northern Mariana Islands,Oceania,Micronesia,East Asia & Pacific,HIC,LNX,Saipan,cq,australia-oceania,0,0,0,1
+MOZ,MZ,508,Mozambique,MOZ,Mozambique,Africa,Sub-Saharan Africa,Sub-Saharan Africa,LIC,IDX,Maputo,mz,africa,0,1,0,0
+MRT,MR,478,Mauritania,MRT,Mauritania,Africa,Sub-Saharan Africa,Sub-Saharan Africa,LMC,IDX,Nouakchott,mr,africa,0,1,0,0
+MSR,MS,500,Montserrat,,,Americas,Latin America and the Caribbean,,,,Plymouth,mh,central-america-n-caribbean,0,0,0,1
+MTQ,MQ,474,Martinique,,,Americas,Latin America and the Caribbean,,,,Fort-de-France,mb,,0,0,0,0
+MUS,MU,480,Mauritius,MUS,Mauritius,Africa,Sub-Saharan Africa,Sub-Saharan Africa,UMC,IBD,Port Louis,mp,africa,0,0,0,1
+MWI,MW,454,Malawi,MWI,Malawi,Africa,Sub-Saharan Africa,Sub-Saharan Africa,LIC,IDX,Lilongwe,mi,africa,0,1,1,0
+MYS,MY,458,Malaysia,MYS,Malaysia,Asia,South-eastern Asia,East Asia & Pacific,UMC,IBD,Kuala Lumpur,my,east-n-southeast-asia,0,0,0,0
+MYT,YT,175,Mayotte,,,Africa,Sub-Saharan Africa,,,,Mamoudzou,mf,,0,0,0,0
+NAM,NA,516,Namibia,NAM,Namibia,Africa,Sub-Saharan Africa,Sub-Saharan Africa,LMC,IBD,Windhoek,wa,africa,0,0,0,0
+NCL,NC,540,New Caledonia,NCL,New Caledonia,Oceania,Melanesia,East Asia & Pacific,HIC,LNX,Noum'ea,nc,australia-oceania,0,0,0,1
+NER,NE,562,Niger,NER,Niger,Africa,Sub-Saharan Africa,Sub-Saharan Africa,LIC,IDX,Niamey,ng,africa,0,1,1,0
+NFK,NF,574,Norfolk Island,,,Oceania,Australia and New Zealand,,,,Kingston,nf,australia-oceania,0,0,0,0
+NGA,NG,566,Nigeria,NGA,Nigeria,Africa,Sub-Saharan Africa,Sub-Saharan Africa,LMC,IDB,Abuja,ni,africa,0,0,0,0
+NIC,NI,558,Nicaragua,NIC,Nicaragua,Americas,Latin America and the Caribbean,Latin America & Caribbean,LMC,IDX,Managua,nu,central-america-n-caribbean,0,0,0,0
+NIU,NU,570,Niue,,,Oceania,Polynesia,,,,Alofi,ne,australia-oceania,0,0,0,1
+NLD,NL,528,Netherlands,NLD,Netherlands,Europe,Western Europe,Europe & Central Asia,HIC,LNX,Amsterdam,nl,europe,0,0,0,0
+NOR,NO,578,Norway,NOR,Norway,Europe,Northern Europe,Europe & Central Asia,HIC,LNX,Oslo,no,europe,0,0,0,0
+NPL,NP,524,Nepal,NPL,Nepal,Asia,Southern Asia,South Asia,LMC,IDX,Kathmandu,np,south-asia,0,1,1,0
+NRU,NR,520,Nauru,NRU,Nauru,Oceania,Micronesia,East Asia & Pacific,HIC,IBD,Yaren District,nr,australia-oceania,0,0,0,1
+NZL,NZ,554,New Zealand,NZL,New Zealand,Oceania,Australia and New Zealand,East Asia & Pacific,HIC,LNX,Wellington,nz,australia-oceania,0,0,0,0
+OMN,OM,512,Oman,OMN,Oman,Asia,Western Asia,"Middle East, North Africa, Afghanistan & Pakistan",HIC,LNX,Muscat,mu,middle-east,0,0,0,0
+PAK,PK,586,Pakistan,PAK,Pakistan,Asia,Southern Asia,"Middle East, North Africa, Afghanistan & Pakistan",LMC,IDB,Islamabad,pk,south-asia,0,0,0,0
+PAN,PA,591,Panama,PAN,Panama,Americas,Latin America and the Caribbean,Latin America & Caribbean,HIC,IBD,Panama City,pm,central-america-n-caribbean,0,0,0,0
+PCN,PN,612,Pitcairn,,,Oceania,Polynesia,,,,Adamstown,pc,australia-oceania,0,0,0,0
+PER,PE,604,Peru,PER,Peru,Americas,Latin America and the Caribbean,Latin America & Caribbean,UMC,IBD,Lima,pe,south-america,0,0,0,0
+PHL,PH,608,Philippines,PHL,Philippines,Asia,South-eastern Asia,East Asia & Pacific,UMC,IBD,Manila,rp,east-n-southeast-asia,0,0,0,0
+PLW,PW,585,Palau,PLW,Palau,Oceania,Micronesia,East Asia & Pacific,HIC,IBD,Koror,ps,australia-oceania,0,0,0,1
+PNG,PG,598,Papua New Guinea,PNG,Papua New Guinea,Oceania,Melanesia,East Asia & Pacific,LMC,IDB,Port Moresby,pp,east-n-southeast-asia,0,0,0,1
+POL,PL,616,Poland,POL,Poland,Europe,Eastern Europe,Europe & Central Asia,HIC,IBD,Warsaw,pl,europe,0,0,0,0
+PRI,PR,630,Puerto Rico,PRI,Puerto Rico (US),Americas,Latin America and the Caribbean,Latin America & Caribbean,HIC,LNX,San Juan,rq,central-america-n-caribbean,0,0,0,1
+PRK,KP,408,Democratic People's Republic of Korea,PRK,"Korea, Dem. People's Rep.",Asia,Eastern Asia,East Asia & Pacific,LIC,LNX,Pyongyang,kn,east-n-southeast-asia,0,0,0,0
+PRT,PT,620,Portugal,PRT,Portugal,Europe,Southern Europe,Europe & Central Asia,HIC,LNX,Lisbon,po,europe,0,0,0,0
+PRY,PY,600,Paraguay,PRY,Paraguay,Americas,Latin America and the Caribbean,Latin America & Caribbean,UMC,IBD,Asuncion,pa,south-america,0,0,1,0
+PSE,PS,275,State of Palestine,PSE,West Bank and Gaza,Asia,Western Asia,"Middle East, North Africa, Afghanistan & Pakistan",LMC,LNX,East Jerusalem,we,middle-east,0,0,0,0
+PYF,PF,258,French Polynesia,PYF,French Polynesia,Oceania,Polynesia,East Asia & Pacific,HIC,LNX,Papeete,fp,australia-oceania,0,0,0,1
+QAT,QA,634,Qatar,QAT,Qatar,Asia,Western Asia,"Middle East, North Africa, Afghanistan & Pakistan",HIC,LNX,Doha,qa,middle-east,0,0,0,0
+REU,RE,638,Réunion,,,Africa,Sub-Saharan Africa,,,,Saint-Denis,re,,0,0,0,0
+ROU,RO,642,Romania,ROU,Romania,Europe,Eastern Europe,Europe & Central Asia,HIC,IBD,Bucharest,ro,europe,0,0,0,0
+RUS,RU,643,Russian Federation,RUS,Russian Federation,Europe,Eastern Europe,Europe & Central Asia,HIC,IBD,Moscow,rs,central-asia,0,0,0,0
+RWA,RW,646,Rwanda,RWA,Rwanda,Africa,Sub-Saharan Africa,Sub-Saharan Africa,LIC,IDX,Kigali,rw,africa,0,1,1,0
+SAU,SA,682,Saudi Arabia,SAU,Saudi Arabia,Asia,Western Asia,"Middle East, North Africa, Afghanistan & Pakistan",HIC,LNX,Riyadh,sa,middle-east,0,0,0,0
+SDN,SD,729,Sudan,SDN,Sudan,Africa,Northern Africa,Sub-Saharan Africa,LIC,IDX,Khartoum,su,africa,0,1,0,0
+SEN,SN,686,Senegal,SEN,Senegal,Africa,Sub-Saharan Africa,Sub-Saharan Africa,LMC,IDX,Dakar,sg,africa,0,1,0,0
+SGP,SG,702,Singapore,SGP,Singapore,Asia,South-eastern Asia,East Asia & Pacific,HIC,LNX,Singapore,sn,east-n-southeast-asia,0,0,0,1
+SGS,GS,239,South Georgia and the South Sandwich Islands,,,Americas,Latin America and the Caribbean,,,,Grytviken,sx,south-america,0,0,0,0
+SHN,SH,654,Saint Helena,,,Africa,Sub-Saharan Africa,,,,Jamestown,sh,africa,0,0,0,0
+SJM,SJ,744,Svalbard and Jan Mayen Islands,,,Europe,Northern Europe,,,,Longyearbyen,,,0,0,0,0
+SLB,SB,90,Solomon Islands,SLB,Solomon Islands,Oceania,Melanesia,East Asia & Pacific,LMC,IDX,Honiara,bp,australia-oceania,0,1,0,1
+SLE,SL,694,Sierra Leone,SLE,Sierra Leone,Africa,Sub-Saharan Africa,Sub-Saharan Africa,LIC,IDX,Freetown,sl,africa,0,1,0,0
+SLV,SV,222,El Salvador,SLV,El Salvador,Americas,Latin America and the Caribbean,Latin America & Caribbean,UMC,IBD,San Salvador,es,central-america-n-caribbean,0,0,0,0
+SMR,SM,674,San Marino,SMR,San Marino,Europe,Southern Europe,Europe & Central Asia,HIC,LNX,San Marino,sm,europe,0,0,0,0
+SOM,SO,706,Somalia,SOM,"Somalia, Fed. Rep.",Africa,Sub-Saharan Africa,Sub-Saharan Africa,LIC,IDX,Mogadishu,so,africa,0,1,0,0
+SPM,PM,666,Saint Pierre and Miquelon,,,Americas,Northern America,,,,Saint-Pierre,sb,north-america,0,0,0,0
+SRB,RS,688,Serbia,SRB,Serbia,Europe,Southern Europe,Europe & Central Asia,UMC,IBD,Belgrade,,,0,0,0,0
+SSD,SS,728,South Sudan,SSD,South Sudan,Africa,Sub-Saharan Africa,Sub-Saharan Africa,LIC,IDX,Juba,od,africa,0,1,1,0
+STP,ST,678,Sao Tome and Principe,STP,Sao Tome and Principe,Africa,Sub-Saharan Africa,Sub-Saharan Africa,LMC,IDX,Sao Tome,tp,africa,0,1,0,1
+SUR,SR,740,Suriname,SUR,Suriname,Americas,Latin America and the Caribbean,Latin America & Caribbean,UMC,IDB,Paramaribo,ns,south-america,0,0,0,1
+SVK,SK,703,Slovakia,SVK,Slovak Republic,Europe,Eastern Europe,Europe & Central Asia,HIC,LNX,Bratislava,lo,europe,0,0,0,0
+SVN,SI,705,Slovenia,SVN,Slovenia,Europe,Southern Europe,Europe & Central Asia,HIC,LNX,Ljubljana,si,europe,0,0,0,0
+SWE,SE,752,Sweden,SWE,Sweden,Europe,Northern Europe,Europe & Central Asia,HIC,LNX,Stockholm,sw,europe,0,0,0,0
+SWZ,SZ,748,Eswatini,SWZ,Eswatini,Africa,Sub-Saharan Africa,Sub-Saharan Africa,LMC,IDB,Mbabane,wz,africa,0,0,1,0
+SXM,SX,534,Sint Maarten (Dutch part),SXM,Sint Maarten (Dutch part),Americas,Latin America and the Caribbean,Latin America & Caribbean,HIC,LNX,Philipsburg,nn,central-america-n-caribbean,0,0,0,1
+SYC,SC,690,Seychelles,SYC,Seychelles,Africa,Sub-Saharan Africa,Sub-Saharan Africa,HIC,IBD,Victoria,se,africa,0,0,0,1
+SYR,SY,760,Syrian Arab Republic,SYR,Syrian Arab Republic,Asia,Western Asia,"Middle East, North Africa, Afghanistan & Pakistan",LIC,IDX,Damascus,sy,middle-east,0,0,0,0
+TCA,TC,796,Turks and Caicos Islands,TCA,Turks and Caicos Islands,Americas,Latin America and the Caribbean,Latin America & Caribbean,HIC,LNX,Grand Turk,tk,central-america-n-caribbean,0,0,0,0
+TCD,TD,148,Chad,TCD,Chad,Africa,Sub-Saharan Africa,Sub-Saharan Africa,LIC,IDX,N'Djamena,cd,africa,0,1,1,0
+TGO,TG,768,Togo,TGO,Togo,Africa,Sub-Saharan Africa,Sub-Saharan Africa,LMC,IDX,Lome,to,africa,0,1,0,0
+THA,TH,764,Thailand,THA,Thailand,Asia,South-eastern Asia,East Asia & Pacific,UMC,IBD,Bangkok,th,east-n-southeast-asia,0,0,0,0
+TJK,TJ,762,Tajikistan,TJK,Tajikistan,Asia,Central Asia,Europe & Central Asia,LMC,IDX,Dushanbe,ti,central-asia,0,0,1,0
+TKL,TK,772,Tokelau,,,Oceania,Polynesia,,,,,tl,australia-oceania,0,0,0,0
+TKM,TM,795,Turkmenistan,TKM,Turkmenistan,Asia,Central Asia,Europe & Central Asia,UMC,IBD,Ashgabat,tx,central-asia,0,0,1,0
+TLS,TL,626,Timor-Leste,TLS,Timor-Leste,Asia,South-eastern Asia,East Asia & Pacific,LMC,IDB,Dili,tt,east-n-southeast-asia,0,1,0,1
+TON,TO,776,Tonga,TON,Tonga,Oceania,Polynesia,East Asia & Pacific,UMC,IDX,Nuku'alofa,tn,australia-oceania,0,0,0,1
+TTO,TT,780,Trinidad and Tobago,TTO,Trinidad and Tobago,Americas,Latin America and the Caribbean,Latin America & Caribbean,HIC,IBD,Port-of-Spain,td,central-america-n-caribbean,0,0,0,1
+TUN,TN,788,Tunisia,TUN,Tunisia,Africa,Northern Africa,"Middle East, North Africa, Afghanistan & Pakistan",LMC,IBD,Tunis,ts,africa,0,0,0,0
+TUR,TR,792,Türkiye,TUR,Turkiye,Asia,Western Asia,Europe & Central Asia,UMC,IBD,Ankara,tu,middle-east,0,0,0,0
+TUV,TV,798,Tuvalu,TUV,Tuvalu,Oceania,Polynesia,East Asia & Pacific,UMC,IDX,Funafuti,tv,australia-oceania,0,1,0,1
+TWN,TW,158,Taiwan,,,Asia,Eastern Asia,,,,Taipei,tw,east-n-southeast-asia,0,0,0,0
+TZA,TZ,834,United Republic of Tanzania,TZA,Tanzania,Africa,Sub-Saharan Africa,Sub-Saharan Africa,LMC,IDX,Dodoma,tz,africa,0,1,0,0
+UGA,UG,800,Uganda,UGA,Uganda,Africa,Sub-Saharan Africa,Sub-Saharan Africa,LIC,IDX,Kampala,ug,africa,0,1,1,0
+UKR,UA,804,Ukraine,UKR,Ukraine,Europe,Eastern Europe,Europe & Central Asia,UMC,IBD,Kiev,up,europe,0,0,0,0
+UMI,UM,581,United States Minor Outlying Islands,,,Oceania,Micronesia,,,,,,,0,0,0,0
+URY,UY,858,Uruguay,URY,Uruguay,Americas,Latin America and the Caribbean,Latin America & Caribbean,HIC,IBD,Montevideo,uy,south-america,0,0,0,0
+USA,US,840,United States of America,USA,United States,Americas,Northern America,North America,HIC,LNX,Washington D.C.,us,north-america,0,0,0,0
+UZB,UZ,860,Uzbekistan,UZB,Uzbekistan,Asia,Central Asia,Europe & Central Asia,LMC,IDB,Tashkent,uz,central-asia,0,0,1,0
+VAT,VA,336,Holy See,,,Europe,Southern Europe,,,,Vatican City,vt,europe,0,0,0,0
+VCT,VC,670,Saint Vincent and the Grenadines,VCT,St. Vincent and the Grenadines,Americas,Latin America and the Caribbean,Latin America & Caribbean,UMC,IDB,Kingstown,vc,central-america-n-caribbean,0,0,0,1
+VEN,VE,862,Venezuela (Bolivarian Republic of),VEN,"Venezuela, RB",Americas,Latin America and the Caribbean,Latin America & Caribbean,LMC,IBD,Caracas,ve,south-america,0,0,0,0
+VGB,VG,92,British Virgin Islands,VGB,British Virgin Islands,Americas,Latin America and the Caribbean,Latin America & Caribbean,HIC,LNX,Road Town,vi,central-america-n-caribbean,0,0,0,1
+VIR,VI,850,United States Virgin Islands,VIR,Virgin Islands (U.S.),Americas,Latin America and the Caribbean,Latin America & Caribbean,HIC,LNX,Charlotte Amalie,vq,central-america-n-caribbean,0,0,0,1
+VNM,VN,704,Viet Nam,VNM,Viet Nam,Asia,South-eastern Asia,East Asia & Pacific,UMC,IBD,Hanoi,vm,east-n-southeast-asia,0,0,0,0
+VUT,VU,548,Vanuatu,VUT,Vanuatu,Oceania,Melanesia,East Asia & Pacific,LMC,IDX,Port-Vila,nh,australia-oceania,0,0,0,1
+WLF,WF,876,Wallis and Futuna Islands,,,Oceania,Polynesia,,,,Mata Utu,wf,australia-oceania,0,0,0,0
+WSM,WS,882,Samoa,WSM,Samoa,Oceania,Polynesia,East Asia & Pacific,UMC,IDX,Apia,ws,australia-oceania,0,0,0,1
+XKX,XK,,Kosovo,XKX,Kosovo,Europe,Southern Europe,Europe & Central Asia,UMC,IDX,Pristina,kv,europe,0,0,0,0
+YEM,YE,887,Yemen,YEM,"Yemen, Rep.",Asia,Western Asia,"Middle East, North Africa, Afghanistan & Pakistan",LIC,IDX,Sana'a,ym,middle-east,0,1,0,0
+ZAF,ZA,710,South Africa,ZAF,South Africa,Africa,Sub-Saharan Africa,Sub-Saharan Africa,UMC,IBD,Pretoria,sf,africa,0,0,0,0
+ZMB,ZM,894,Zambia,ZMB,Zambia,Africa,Sub-Saharan Africa,Sub-Saharan Africa,LMC,IDX,Lusaka,za,africa,0,1,1,0
+ZWE,ZW,716,Zimbabwe,ZWE,Zimbabwe,Africa,Sub-Saharan Africa,Sub-Saharan Africa,LMC,IDB,Harare,zi,africa,0,0,1,0
+AFE,ZH,,Africa Eastern and Southern,AFE,Africa Eastern and Southern,,,Aggregates,NA,,,,,1,0,0,0
+AFR,A9,,Africa,AFR,Africa,,,Aggregates,NA,,,,,1,0,0,0
+AFW,ZI,,Africa Western and Central,AFW,Africa Western and Central,,,Aggregates,NA,,,,,1,0,0,0
+ARB,1A,,Arab World,ARB,Arab World,,,Aggregates,NA,,,,,1,0,0,0
+BEA,B4,,East Asia & Pacific (IBRD-only countries),BEA,East Asia & Pacific (IBRD-only countries),,,Aggregates,NA,,,,,1,0,0,0
+BEC,B7,,Europe & Central Asia (IBRD-only countries),BEC,Europe & Central Asia (IBRD-only countries),,,Aggregates,NA,,,,,1,0,0,0
+BHI,B1,,IBRD countries classified as high income,BHI,IBRD countries classified as high income,,,Aggregates,NA,,,,,1,0,0,0
+BLA,B2,,Latin America & the Caribbean (IBRD-only countries),BLA,Latin America & the Caribbean (IBRD-only countries),,,Aggregates,NA,,,,,1,0,0,0
+BMN,B3,,"Middle East, North Africa, Afghanistan & Pakistan (IBRD only)",BMN,"Middle East, North Africa, Afghanistan & Pakistan (IBRD only)",,,Aggregates,NA,,,,,1,0,0,0
+BSS,B6,,Sub-Saharan Africa (IBRD-only countries),BSS,Sub-Saharan Africa (IBRD-only countries),,,Aggregates,NA,,,,,1,0,0,0
+CAA,C9,,Sub-Saharan Africa (IFC classification),CAA,Sub-Saharan Africa (IFC classification),,,Aggregates,NA,,,,,1,0,0,0
+CEA,C4,,East Asia and the Pacific (IFC classification),CEA,East Asia and the Pacific (IFC classification),,,Aggregates,NA,,,,,1,0,0,0
+CEB,B8,,Central Europe and the Baltics,CEB,Central Europe and the Baltics,,,Aggregates,NA,,,,,1,0,0,0
+CEU,C5,,Europe and Central Asia (IFC classification),CEU,Europe and Central Asia (IFC classification),,,Aggregates,NA,,,,,1,0,0,0
+CLA,C6,,Latin America and the Caribbean (IFC classification),CLA,Latin America and the Caribbean (IFC classification),,,Aggregates,NA,,,,,1,0,0,0
+CME,C7,,Middle East and North Africa (IFC classification),CME,Middle East and North Africa (IFC classification),,,Aggregates,NA,,,,,1,0,0,0
+CSA,C8,,South Asia (IFC classification),CSA,South Asia (IFC classification),,,Aggregates,NA,,,,,1,0,0,0
+CSS,S3,,Caribbean small states,CSS,Caribbean small states,,,Aggregates,NA,,,,,1,0,0,0
+DEA,D4,,East Asia & Pacific (IDA-eligible countries),DEA,East Asia & Pacific (IDA-eligible countries),,,Aggregates,NA,,,,,1,0,0,0
+DEC,D7,,Europe & Central Asia (IDA-eligible countries),DEC,Europe & Central Asia (IDA-eligible countries),,,Aggregates,NA,,,,,1,0,0,0
+DLA,D2,,Latin America & the Caribbean (IDA-eligible countries),DLA,Latin America & the Caribbean (IDA-eligible countries),,,Aggregates,NA,,,,,1,0,0,0
+DMN,D3,,"Middle East, North Africa, Afghanistan & Pakistan (IDA total)",DMN,"Middle East, North Africa, Afghanistan & Pakistan (IDA total)",,,Aggregates,NA,,,,,1,0,0,0
+DNS,N6,,IDA countries in Sub-Saharan Africa not classified as fragile situations ,DNS,IDA countries in Sub-Saharan Africa not classified as fragile situations ,,,Aggregates,NA,,,,,1,0,0,0
+DSA,D5,,South Asia (IDA-eligible countries),DSA,South Asia (IDA-eligible countries),,,Aggregates,NA,,,,,1,0,0,0
+DSF,F6,,IDA countries in Sub-Saharan Africa classified as fragile situations ,DSF,IDA countries in Sub-Saharan Africa classified as fragile situations ,,,Aggregates,NA,,,,,1,0,0,0
+DSS,D6,,Sub-Saharan Africa (IDA-eligible countries),DSS,Sub-Saharan Africa (IDA-eligible countries),,,Aggregates,NA,,,,,1,0,0,0
+EAP,4E,,East Asia & Pacific (excluding high income),EAP,East Asia & Pacific (excluding high income),,,Aggregates,NA,,,,,1,0,0,0
+EAR,V2,,Early-demographic dividend,EAR,Early-demographic dividend,,,Aggregates,NA,,,,,1,0,0,0
+EAS,Z4,,East Asia & Pacific,EAS,East Asia & Pacific,,,Aggregates,NA,,,,,1,0,0,0
+ECA,7E,,Europe & Central Asia (excluding high income),ECA,Europe & Central Asia (excluding high income),,,Aggregates,NA,,,,,1,0,0,0
+ECS,Z7,,Europe & Central Asia,ECS,Europe & Central Asia,,,Aggregates,NA,,,,,1,0,0,0
+EMU,XC,,Euro area,EMU,Euro area,,,Aggregates,NA,,,,,1,0,0,0
+EUU,EU,,European Union,EUU,European Union,,,Aggregates,NA,,,,,1,0,0,0
+FXS,6F,,"IDA countries classified as fragile situations, excluding Sub-Saharan Africa",FXS,"IDA countries classified as fragile situations, excluding Sub-Saharan Africa",,,Aggregates,NA,,,,,1,0,0,0
+HIC,XD,,High income,HIC,High income,,,Aggregates,NA,,,,,1,0,0,0
+HPC,XE,,Heavily indebted poor countries (HIPC),HPC,Heavily indebted poor countries (HIPC),,,Aggregates,NA,,,,,1,0,0,0
+IBB,ZB,,"IBRD, including blend",IBB,"IBRD, including blend",,,Aggregates,NA,,,,,1,0,0,0
+IBD,XF,,IBRD only,IBD,IBRD only,,,Aggregates,NA,,,,,1,0,0,0
+IBT,ZT,,IDA & IBRD total,IBT,IDA & IBRD total,,,Aggregates,NA,,,,,1,0,0,0
+IDA,XG,,IDA total,IDA,IDA total,,,Aggregates,NA,,,,,1,0,0,0
+IDB,XH,,IDA blend,IDB,IDA blend,,,Aggregates,NA,,,,,1,0,0,0
+IDX,XI,,IDA only,IDX,IDA only,,,Aggregates,NA,,,,,1,0,0,0
+INX,XY,,Not classified,INX,Not classified,,,Aggregates,NA,,,,,1,0,0,0
+LAC,XJ,,Latin America & Caribbean (excluding high income),LAC,Latin America & Caribbean (excluding high income),,,Aggregates,NA,,,,,1,0,0,0
+LCN,ZJ,,Latin America & Caribbean ,LCN,Latin America & Caribbean ,,,Aggregates,NA,,,,,1,0,0,0
+LDC,XL,,Least developed countries: UN classification,LDC,Least developed countries: UN classification,,,Aggregates,NA,,,,,1,0,0,0
+LIC,XM,,Low income,LIC,Low income,,,Aggregates,NA,,,,,1,0,0,0
+LMC,XN,,Lower middle income,LMC,Lower middle income,,,Aggregates,NA,,,,,1,0,0,0
+LMY,XO,,Low & middle income,LMY,Low & middle income,,,Aggregates,NA,,,,,1,0,0,0
+LTE,V3,,Late-demographic dividend,LTE,Late-demographic dividend,,,Aggregates,NA,,,,,1,0,0,0
+MDE,M1,,Middle East (developing only),MDE,Middle East (developing only),,,Aggregates,NA,,,,,1,0,0,0
+MEA,ZQ,,"Middle East, North Africa, Afghanistan & Pakistan",MEA,"Middle East, North Africa, Afghanistan & Pakistan",,,Aggregates,NA,,,,,1,0,0,0
+MIC,XP,,Middle income,MIC,Middle income,,,Aggregates,NA,,,,,1,0,0,0
+MNA,XQ,,"Middle East, North Africa, Afghanistan & Pakistan (excluding high income)",MNA,"Middle East, North Africa, Afghanistan & Pakistan (excluding high income)",,,Aggregates,NA,,,,,1,0,0,0
+NAC,XU,,North America,NAC,North America,,,Aggregates,NA,,,,,1,0,0,0
+NAF,M2,,North Africa,NAF,North Africa,,,Aggregates,NA,,,,,1,0,0,0
+NRS,6X,,Non-resource rich Sub-Saharan Africa countries,NRS,Non-resource rich Sub-Saharan Africa countries,,,Aggregates,NA,,,,,1,0,0,0
+NXS,6N,,"IDA countries not classified as fragile situations, excluding Sub-Saharan Africa",NXS,"IDA countries not classified as fragile situations, excluding Sub-Saharan Africa",,,Aggregates,NA,,,,,1,0,0,0
+OED,OE,,OECD members,OED,OECD members,,,Aggregates,NA,,,,,1,0,0,0
+OSS,S4,,Other small states,OSS,Other small states,,,Aggregates,NA,,,,,1,0,0,0
+PRE,V1,,Pre-demographic dividend,PRE,Pre-demographic dividend,,,Aggregates,NA,,,,,1,0,0,0
+PSS,S2,,Pacific island small states,PSS,Pacific island small states,,,Aggregates,NA,,,,,1,0,0,0
+PST,V4,,Post-demographic dividend,PST,Post-demographic dividend,,,Aggregates,NA,,,,,1,0,0,0
+RRS,R6,,Resource rich Sub-Saharan Africa countries,RRS,Resource rich Sub-Saharan Africa countries,,,Aggregates,NA,,,,,1,0,0,0
+SAS,8S,,South Asia,SAS,South Asia,,,Aggregates,NA,,,,,1,0,0,0
+SSA,ZF,,Sub-Saharan Africa (excluding high income),SSA,Sub-Saharan Africa (excluding high income),,,Aggregates,NA,,,,,1,0,0,0
+SSF,ZG,,Sub-Saharan Africa ,SSF,Sub-Saharan Africa ,,,Aggregates,NA,,,,,1,0,0,0
+SST,S1,,Small states,SST,Small states,,,Aggregates,NA,,,,,1,0,0,0
+SXZ,A4,,Sub-Saharan Africa excluding South Africa,SXZ,Sub-Saharan Africa excluding South Africa,,,Aggregates,NA,,,,,1,0,0,0
+TEA,T4,,East Asia & Pacific (IDA & IBRD countries),TEA,East Asia & Pacific (IDA & IBRD countries),,,Aggregates,NA,,,,,1,0,0,0
+TEC,T7,,Europe & Central Asia (IDA & IBRD countries),TEC,Europe & Central Asia (IDA & IBRD countries),,,Aggregates,NA,,,,,1,0,0,0
+TLA,T2,,Latin America & the Caribbean (IDA & IBRD countries),TLA,Latin America & the Caribbean (IDA & IBRD countries),,,Aggregates,NA,,,,,1,0,0,0
+TMN,T3,,"Middle East, North Africa, Afghanistan & Pakistan (IDA & IBRD)",TMN,"Middle East, North Africa, Afghanistan & Pakistan (IDA & IBRD)",,,Aggregates,NA,,,,,1,0,0,0
+TSA,T5,,South Asia (IDA & IBRD),TSA,South Asia (IDA & IBRD),,,Aggregates,NA,,,,,1,0,0,0
+TSS,T6,,Sub-Saharan Africa (IDA & IBRD countries),TSS,Sub-Saharan Africa (IDA & IBRD countries),,,Aggregates,NA,,,,,1,0,0,0
+UMC,XT,,Upper middle income,UMC,Upper middle income,,,Aggregates,NA,,,,,1,0,0,0
+WLD,1W,,World,WLD,World,,,Aggregates,NA,,,,,1,0,0,0
+XZN,A5,,Sub-Saharan Africa excluding South Africa and Nigeria,XZN,Sub-Saharan Africa excluding South Africa and Nigeria,,,Aggregates,NA,,,,,1,0,0,0
