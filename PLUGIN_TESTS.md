@@ -137,3 +137,32 @@ playable audio. STT no longer returns the subscription error but fails with a di
   the text→chat→speech portion completes end-to-end with all HTTP 200s.
 - No transcripts are claimed; no STT results were fabricated. The app's mic path surfaces this
   failure gracefully (tooltip), per the existing graceful-failure design.
+
+---
+
+## 2026-07-17 17:56–17:57 UTC — VOICE PASS RE-PROBE (independent confirmation run)
+
+Docs re-read live first (slugs `convertaudiototext` / `converttexttoaudio` — schemas
+unchanged). All calls live against `https://api.on-demand.io/services/v1/public/service/execute/...`
+with the workspace apikey (server-side only).
+
+| # | Probe | HTTP | Latency | UTC timestamp | Output evidence |
+|---|---|---|---|---|---|
+| 1 | TTS English — `{"model":"tts-1","input":"Welcome to the Office of Development Affairs productivity suite.","voice":"alloy"}` | **200** | 2,209 ms | 2026-07-17T17:56:36.633Z | `data.audioUrl` → downloaded: **68,640-byte MP3** (MPEG frame header `fff3e4` verified) |
+| 2 | TTS Arabic — `{"model":"tts-1","input":"مرحباً بكم في جناح الإنتاجية لمكتب شؤون التنمية في أبوظبي.","voice":"onyx"}` | **200** | 1,833 ms | 2026-07-17T17:56:38.842Z | `data.audioUrl` → downloaded: **103,680-byte MP3** (MPEG frame header verified) |
+| 3 | STT English — `{"audioUrl":"<the genuine English MP3 produced by probe #1>"}` | **400** | 291 ms | 2026-07-17T17:56:56.779Z | `{"message":"Unknown error","errorCode":"400"}` (verbatim) |
+| 4 | STT English — `{"audioUrl":"https://res.cloudinary.com/dbbqfdikp/video/upload/v1718746751/vhjhqqtqzqtqwlfafm9v.mp3"}` (docs' own sample) | **400** | 245 ms | 2026-07-17T17:57:14.005Z | `{"message":"Unknown error","errorCode":"400"}` (verbatim) |
+
+**Current state (honest):**
+- **TTS (`text_to_speech`) is SUBSCRIBED and WORKING** — both English and Arabic
+  return HTTP 200 with real, playable MP3 audio (byte sizes and MPEG headers verified
+  by download). This confirms the earlier same-day result at commit e3f1a2a.
+- **STT (`speech_to_text`) still FAILS with HTTP 400 `"Unknown error"`** — no longer
+  the "Please subscribe" gate (entitlement now passes), but the service errors on
+  every input tried, including its own docs' sample MP3 and a genuine English MP3
+  generated seconds earlier by this platform's own TTS. The failure is service-side,
+  not a request-format or audio-format problem. No transcript can be produced; nothing
+  is mocked or faked.
+- UI consequence unchanged: speaker/TTS buttons ACTIVE; mic/STT remains gracefully
+  degraded (structured error surfaces the quiet unavailable note) and will light up
+  automatically when the endpoint starts returning 200.

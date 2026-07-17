@@ -562,3 +562,16 @@ ALL legitimate (breakdown below). No simulated/mocked runtime content remains.
   / 401), so it is an undocumented upstream failure, not an input or subscription error. The
   speech→text half of the voice loop remains genuinely unavailable on this key; the UI's mic
   path degrades gracefully per design. Full evidence in PLUGIN_TESTS.md.
+
+## 2026-07-17 17:56–17:57 UTC — Voice pass re-probe (confirmation)
+
+- Docs re-confirmed live: STT `POST /services/v1/public/service/execute/speech_to_text`
+  `{audioUrl}` → 200 `{data.text}`; TTS `POST .../execute/text_to_speech`
+  `{model: tts-1|tts-1-hd, input, voice: alloy|echo|fable|onyx|nova|shimmer}` → 200
+  `{data.audioUrl}` (JSON URL response — NO streaming playback documented; client uses
+  fetch-then-play with shimmer). Auth: `apikey` header, server-side only. Voices are
+  multilingual; Arabic playback verified with voice `onyx` (real 103,680-byte MP3).
+- Subscription status NOW: **TTS subscribed + working (200 EN + AR)**; **STT fails with
+  400 "Unknown error"** on every input (own-platform MP3 + docs sample) — service-side
+  fault, truthfully recorded in PLUGIN_TESTS.md. Mic stays gracefully degraded; speaker
+  buttons live.
