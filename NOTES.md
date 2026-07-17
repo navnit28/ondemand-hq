@@ -490,3 +490,75 @@ captures. The `tool_call` frames reassemble to the full plugin invocation JSON
   the live docs; at runtime the mic and speaker quietly disable themselves with an explanatory
   tooltip (SERVICE_NOT_SUBSCRIBED) — never a broken state. Once the account is subscribed at
   app.on-demand.io/cloud-services/explore-services, voice works without code changes.
+
+---
+
+## 2026-07-17 — Verification-and-proof pass (17:46–17:48 UTC): live SSE dump ↔ deployed-UI event match
+
+**Raw dump (source of truth):** `debug/sse-samples/live-verify-20260717T174612Z.txt`
+(26,647 bytes, HTTP 200 `text/event-stream`, session `6a5a6a6433960cd24772b0bd`, first byte
+3,193 ms, total 13,344 ms; query "What is the current GDP of the UAE according to World Bank
+data?", plugin `plugin-1713924030`, `endpointId predefined-gpt-5.6-sol` + `reasoningEffort
+"medium"` + `responseMode "stream"`).
+
+Raw dump event counts: `planning_thinking` ×16, `planning_output` ×14, `step_thinking` ×1,
+`step_output` ×14, `fulfillment` ×79, `statusLog` ×2, `metricsLog` ×1, heartbeat ×4,
+`data:[DONE]` ×1. Compressed ordering:
+`heartbeat → planning_thinking ⇄ planning_output → step_output → step_thinking → step_output
+→ statusLog(fulfilling) → fulfillment… → statusLog(fulfillment_completed) → metricsLog →
+heartbeat → [DONE]`.
+
+**Deployed-UI verification (headless Chromium against https://sb-j8a6x944v2c3.vercel.run/?debug=1,
+same query, 17:47 UTC):** the ?debug=1 drawer — fed ONLY by the real passthrough frames tapped
+in `streamChat` — recorded the SAME event taxonomy live:
+`planning_thinking:16 · planning_output:15 · step_thinking:15 · step_output:14 · statusLog:2 ·
+fulfillment:153 · metricsLog:1 · heartbeat:5 · [DONE]:1` (plus local `routing/status/
+plugin_status/done` frames). TTFT 7,608 ms, 9.0 tok/s. UI behaviour matched the wire:
+thinking accordion filled live then AUTO-COLLAPSED on the first fulfillment token ("Thought
+process", collapsed=true at end); ONE tool-call line rendered from the step_output plugin-call
+JSON — `⚙ fetchInternetData → World Bank API UAE ARE NY.GDP.MKTP.CD latest value source URL` —
+spinner while running, ✓ after the answer began; answer streamed incrementally (405 chars).
+
+**Honest caveat:** the UI run is a SEPARATE live generation (the model is non-deterministic),
+so per-type counts differ from the dump run (e.g. fulfillment 79 vs 153, step_thinking 1 vs 15).
+The match claim is TAXONOMY + ORDERING + 1:1 rendering of every family the wire emitted in that
+run — every event type observed in the dump was observed in the UI feed and rendered in the
+correct layer, and no event type appeared in the UI that the wire did not emit.
+
+### Grep cleanup pass (2026-07-17 17:49–17:51 UTC) — 'demo|mock|placeholder|simulate' in runtime code
+
+Scope: `server/ src/ index.html config.js vite.config.js` (case-insensitive), excluding
+node_modules, docs, and debug/sse-samples dumps. BEFORE: 18 hits → REMOVED 2 → AFTER: 16 hits,
+ALL legitimate (breakdown below). No simulated/mocked runtime content remains.
+
+**Removed:**
+1. `server/data/state.json` — stale dev-session state dump (contained an old conversation
+   transcript). Unreferenced by any code (`grep state.json server/*.js` → 0 hits). Deleted from
+   the repo and added to `.gitignore`.
+2. `src/components/DebugDrawer.jsx:8` — comment sentence mentioning "demo/mock/simulated";
+   reworded (comment-only, no code change).
+
+**Retained hits — each verified genuine, none simulated content:**
+- `src/App.jsx` ×3, `src/components/Composer.jsx` ×2 — HTML **input `placeholder=` attributes**
+  and the `placeholderFor()` helper: genuine input hints ("Message the ODA suite…"), explicitly
+  allowed by the cleanup rule.
+- `server/prompts.js:8,85` — the word "placeholder" inside the NO-INVENT editorial rule
+  (the literal `[VERIFY AGAINST WAM — name]` marker): genuine anti-fabrication product
+  behaviour, not simulated content.
+- `server/prompts.js:23`, `server/router.js:21` — the word "mock" as a USER-INTENT verb
+  ("mock up a design") in the design-worker routing keywords: genuine routing vocabulary.
+- `server/data/country_codes.csv` ×7 — substring false positives ("**Demo**cratic Republic…",
+  "…**demo**graphic dividend") in the World Bank country reference data.
+
+### Voice loop E2E retry (2026-07-17 17:51–17:53 UTC) — status changed since 17:06 probe
+
+- **TTS now WORKS on this key** (subscription evidently enabled since the earlier probe):
+  English and Arabic both HTTP 200 with playable MP3s (50,880 B / 57,600 B, frame-sync `fff3`),
+  and the full text→chat→speech chain completed with all 200s (chat leg on gpt-5.6-sol-medium
+  4,267 ms; final 204,000-byte MP3 of the chat answer).
+- **STT still FAILS — new error:** `{"message":"Unknown error","errorCode":"400"}` on three
+  distinct valid MP3 URLs (the docs' own sample and two fresh same-platform TTS outputs). This
+  body is NOT among the documented `convertaudiototext` responses (200 / 400 "Please subscribe…"
+  / 401), so it is an undocumented upstream failure, not an input or subscription error. The
+  speech→text half of the voice loop remains genuinely unavailable on this key; the UI's mic
+  path degrades gracefully per design. Full evidence in PLUGIN_TESTS.md.

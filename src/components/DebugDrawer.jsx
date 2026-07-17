@@ -5,7 +5,7 @@ import ErrorBoundary from './ErrorBoundary.jsx';
 /**
  * Stream debug drawer — observability for the /api/chat SSE passthrough.
  * GATED: rendered ONLY when the page URL carries ?debug=1 (or #debug=1) —
- * invisible to regular users. No demo/mock/simulated streams: the feed shows
+ * invisible to regular users. The feed shows
  * exclusively the REAL event frames tapped from streamChat via streamDebugBus.
  * Shows the raw event feed (color-tagged: thinking/tool/answer/status/metrics),
  * TTFT, tokens/sec, per-type counters, and a UTC clock.

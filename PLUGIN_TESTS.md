@@ -108,3 +108,32 @@ Graceful failure implemented per spec:
 Re-test procedure once the workspace subscribes to the services: re-run the three requests
 above; expected 200 `{message, data}` with audio/transcript payloads — the app needs no code
 change to light up.
+
+## 2026-07-17 (17:51–17:53 UTC) — Voice loop E2E retry (verification pass)
+
+Endpoints under `https://api.on-demand.io/services/v1/public/service/execute` (apikey header).
+**Status change since the 17:06 UTC probe:** TTS is NOW SUBSCRIBED and returns HTTP 200 with
+playable audio. STT no longer returns the subscription error but fails with a different 400.
+
+| Leg | Request | Status | Latency | Result |
+|---|---|---|---|---|
+| TTS English | `{"model":"tts-1","input":"Welcome to the Office of Development Affairs.","voice":"alloy"}` | **HTTP 200** ✅ | 1,309 ms | `data.audioUrl` → downloaded **50,880 bytes**, MP3 frame-sync magic `fff3e4` — playable |
+| TTS Arabic | `{"model":"tts-1","input":"مرحباً بكم في مكتب شؤون التنمية.","voice":"onyx"}` | **HTTP 200** ✅ | 2,916 ms | `data.audioUrl` → downloaded **57,600 bytes**, MP3 magic `fff3e4` — playable |
+| Chat leg | transcript text → `POST /chat/v1/sessions/{id}/query` (gpt-5.6-sol-medium, sync) | **HTTP 200** ✅ | 4,267 ms | Answer: "The Office of Development Affairs advances the organization's mission by building donor relationships, securing philanth…" |
+| TTS of chat answer | answer text → `text_to_speech` (closes the loop) | **HTTP 200** ✅ | 2,642 ms | **204,000-byte** playable MP3 |
+| STT #1 (EN, docs' own sample) | `{"audioUrl":"https://res.cloudinary.com/dbbqfdikp/.../vhjhqqtqzqtqwlfafm9v.mp3"}` (HEAD-verified 200 audio/mpeg) | **HTTP 400** ❌ | 633 ms | `{"message":"Unknown error","errorCode":"400"}` |
+| STT #2 (EN, own fresh TTS mp3) | audioUrl = the 200-OK English TTS output | **HTTP 400** ❌ | 213 ms | `{"message":"Unknown error","errorCode":"400"}` |
+| STT #3 (AR, own fresh TTS mp3) | audioUrl = the 200-OK Arabic TTS output | **HTTP 400** ❌ | 239 ms | `{"message":"Unknown error","errorCode":"400"}` |
+
+**Truthful conclusion:**
+- **Text-to-speech: WORKING** for English AND Arabic on this key (200 + valid playable MP3, verified by byte download + MP3 frame-sync magic).
+- **Speech-to-text: NOT WORKING** on this key. The error CHANGED from the documented
+  "Please subscribe to the service" (17:06 UTC) to `{"message":"Unknown error","errorCode":"400"}` —
+  returned for THREE distinct, HEAD-verified-reachable, valid MP3 URLs (including MP3s produced
+  seconds earlier by the same platform's own TTS). This exact error body appears nowhere in the
+  documented responses for `convertaudiototext` (documented: 200 success, 400 "Please subscribe
+  to the service to use it", 401 Unauthorized) — it is an undocumented server-side failure,
+  not an input problem. The full voice loop (speech→text→chat→speech) therefore cannot complete;
+  the text→chat→speech portion completes end-to-end with all HTTP 200s.
+- No transcripts are claimed; no STT results were fabricated. The app's mic path surfaces this
+  failure gracefully (tooltip), per the existing graceful-failure design.
