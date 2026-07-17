@@ -76,18 +76,16 @@ export async function createOdSession(externalUserId, pluginIds = []) {
 }
 
 /**
- * Stream a query. Emits events via onEvent(type, payload, meta?) — EVERY upstream SSE event
- * type is forwarded (no filtering/re-synthesis):
- *   ('thinking', text, {channel})  — reasoning delta: fulfillment_thinking | planning_thinking | step_thinking
- *   ('planning', text, {channel})  — planning_output delta (planner's plan JSON)
- *   ('tool_call', text, {channel}) — step_output delta (plugin invocation JSON w/ hydrated args)
- *   ('answer', text)   — fulfillment answer token delta
- *   ('status', {statusType,statusMessage})
- *   ('metrics', {...})
- *   ('done', {fullAnswer})
+ * Stream a query — PURE PASSTHROUGH (2026-07-17 refactor per raw-dump investigation).
+ * Every upstream SSE frame is forwarded UNTOUCHED via onRaw(sseEventName, rawDataString):
+ * planning_thinking, planning_output, step_thinking, step_output (plugin-call args),
+ * fulfillment, statusLog, metricsLog, heartbeat frames, and the [DONE] sentinel —
+ * no filtering, no buffering beyond SSE line assembly, no re-synthesis.
+ * The server still PARSES frames read-only for: fullAnswer accumulation (persistence),
+ * error-frame detection, [DONE] termination, and STREAM_DEBUG logging.
  * EVERY call uses gpt-5.6-sol-medium (ENDPOINT_ID + REASONING_EFFORT) with streaming ON.
  */
-export async function streamQuery({ odSessionId, query, pluginIds = [], systemPrompt, onEvent, signal }) {
+export async function streamQuery({ odSessionId, query, pluginIds = [], systemPrompt, onRaw, onEvent, signal }) {
   const body = {
     query,
     endpointId: ENDPOINT_ID,
@@ -120,23 +118,28 @@ export async function streamQuery({ odSessionId, query, pluginIds = [], systemPr
   const decoder = new TextDecoder();
   let buf = '';
   let fullAnswer = '';
+  let sseEventName = 'message'; // current `event:` field per SSE spec; reset after each dispatch
   // STREAM_DEBUG counters (live-capture-verified: typed frames carry a monotonic eventIndex).
   let fulfillmentCount = 0;   // cumulative fulfillment (answer-token) frame count
   let lastEventIndex = null;  // for gap detection on typed frames
 
   const handleData = (payload) => {
+    // 1) PASSTHROUGH FIRST — forward the raw frame untouched (event name + raw data string),
+    //    before any parsing. This is the 1:1 wire path to the browser.
+    onRaw?.(sseEventName, payload);
+
     if (payload === '[DONE]') {
       dbg({ ts: new Date().toISOString(), dir: 'upstream', type: 'DONE', idx: '-', chars: 0, tok: fulfillmentCount, session: odSessionId });
       return 'done';
     }
+    // 2) READ-ONLY parse for persistence/error-detection/debug — never mutates what was forwarded.
     let evt;
     try { evt = JSON.parse(payload); } catch {
       dbg({ ts: new Date().toISOString(), dir: 'upstream', type: 'unparseable', idx: '-', chars: 0, tok: fulfillmentCount, session: odSessionId });
-      return null; // ignore unparseable keep-alives
+      return null; // unparseable keep-alives were still forwarded above
     }
     const et = evt.eventType;
-    // Heartbeat classification (live capture: heartbeat data frames have NO eventType, shape
-    // {sessionId, messageId, time}) — silent no-op, never an error/unknown-frame path.
+    // Heartbeat (no eventType, shape {sessionId, messageId, time}) — forwarded above, no local action.
     if (!et && evt.sessionId && evt.time) {
       dbg({ ts: new Date().toISOString(), dir: 'upstream', type: 'heartbeat', idx: '-', chars: 0, tok: fulfillmentCount, session: odSessionId });
       return null;
@@ -150,7 +153,8 @@ export async function streamQuery({ odSessionId, query, pluginIds = [], systemPr
     }
     if (et === 'fulfillment' && typeof evt.answer === 'string') fulfillmentCount++;
     const deltaLen = (et === 'fulfillment' && typeof evt.answer === 'string') ? evt.answer.length
-      : (et === 'fulfillment_thinking' && typeof evt?.thinking?.delta === 'string') ? evt.thinking.delta.length
+      : (typeof evt?.thinking?.delta === 'string') ? evt.thinking.delta.length
+      : (typeof evt?.output?.delta === 'string') ? evt.output.delta.length
       : 0;
     dbg({ ts: new Date().toISOString(), dir: 'upstream', type: et || 'heartbeat', idx: evt.eventIndex ?? '-', chars: deltaLen, tok: fulfillmentCount, session: odSessionId });
     if (et === 'error' || evt.error) {
@@ -163,32 +167,8 @@ export async function streamQuery({ odSessionId, query, pluginIds = [], systemPr
       throw err;
     }
     if (et === 'fulfillment' && typeof evt.answer === 'string') {
-      fullAnswer += evt.answer;
-      onEvent('answer', evt.answer);
-    } else if (et === 'fulfillment_thinking' || et === 'planning_thinking' || et === 'step_thinking') {
-      // ALL live thinking channels forwarded (2026-07-17 capture: planning_thinking/step_thinking
-      // arrive on event:thinking frames; fulfillment_thinking retained from the Phase-1 contract).
-      const delta = evt?.thinking?.delta;
-      if (typeof delta === 'string' && delta.length) onEvent('thinking', delta, { channel: et });
-    } else if (et === 'planning_output' || et === 'step_output') {
-      // Planner/tool-call channels (live-captured 2026-07-17): planning_output streams the plan
-      // JSON; step_output streams the ACTUAL plugin invocation JSON (pluginId, name,
-      // api_request_parameters). Forwarded untouched as deltas — the frontend assembles and
-      // renders inline tool-call lines from step_output.
-      const delta = evt?.output?.delta;
-      if (typeof delta === 'string' && delta.length) onEvent(et === 'step_output' ? 'tool_call' : 'planning', delta, { channel: et, eventIndex: evt.eventIndex });
-    } else if (et === 'statusLog' && evt.currentStatusLog) {
-      onEvent('status', {
-        statusType: evt.currentStatusLog.statusType,
-        statusMessage: evt.currentStatusLog.statusMessage,
-      });
-      // Defensive-only fallback: the 2026-07-17 live captures show the fulfillment_completed
-      // statusLog frame carries NO `answer` field — this branch is kept but never expected to fire.
-      if (evt.currentStatusLog.statusType === 'fulfillment_completed' && !fullAnswer && typeof evt.answer === 'string') {
-        fullAnswer = evt.answer;
-      }
-    } else if (et === 'metricsLog' && evt.publicMetrics) {
-      onEvent('metrics', evt.publicMetrics);
+      fullAnswer += evt.answer; // server-side persistence only — browser already got the raw frame
+      onEvent?.('answer', evt.answer);
     }
     return null;
   };
@@ -218,11 +198,15 @@ export async function streamQuery({ odSessionId, query, pluginIds = [], systemPr
       while ((idx = buf.indexOf('\n')) >= 0) {
         const line = buf.slice(0, idx).replace(/\r$/, '');
         buf = buf.slice(idx + 1);
-        if (line.startsWith('data:')) {
+        if (line.startsWith('event:')) {
+          // SSE event-name field — applies to the NEXT data line(s) (live wire: event:thinking/message/heartbeat)
+          sseEventName = line.slice(6).trim() || 'message';
+        } else if (line.startsWith('data:')) {
           const res = handleData(line.slice(5).trim());
+          sseEventName = 'message'; // per SSE spec the event name resets after dispatch
           if (res === 'done') {
             dbg({ ts: new Date().toISOString(), dir: 'upstream', type: 'stream-close', idx: '-', chars: 0, tok: fulfillmentCount, session: odSessionId });
-            onEvent('done', { fullAnswer });
+            onEvent?.('done', { fullAnswer });
             return fullAnswer;
           }
         }
@@ -239,7 +223,7 @@ export async function streamQuery({ odSessionId, query, pluginIds = [], systemPr
     clearStallTimer();
   }
   dbg({ ts: new Date().toISOString(), dir: 'upstream', type: 'stream-close', idx: '-', chars: 0, tok: fulfillmentCount, session: odSessionId });
-  onEvent('done', { fullAnswer });
+  onEvent?.('done', { fullAnswer });
   return fullAnswer;
 }
 

@@ -4,7 +4,7 @@ import Composer from './components/Composer.jsx';
 import PreviewPane from './components/PreviewPane.jsx';
 import { AssistantMessage, UserMessage } from './components/Messages.jsx';
 import { jget, jpost, streamChat } from './api.js';
-import DebugDrawer, { DebugFooter } from './components/DebugDrawer.jsx';
+import DebugDrawer from './components/DebugDrawer.jsx';
 import BilingualLoader from './components/BilingualLoader.jsx';
 import { dissect } from './markdown.jsx';
 
@@ -121,19 +121,59 @@ export default function App() {
       wizard: wizard.active ? { active: true, step: wizard.step } : undefined,
       editTarget: extra.editTarget || undefined,
     };
+    // 2026-07-17 passthrough refactor: raw upstream eventTypes arrive directly.
+    //  planning_thinking / step_thinking → live Thinking… accordion (thinking.delta)
+    //  step_output → tool-call lines (deltas assemble {"plugins":[{pluginId,name,api_request_parameters,…}]})
+    //  fulfillment → answer tokens (evt.answer)
+    //  statusLog / metricsLog → status line / metrics (also to debug bus)
+    //  routing / plugin_status / status / error / done remain locally-synthesized frames.
     const onStreamEvent = (type, evt) => {
       if (type === 'routing') patchLive({ routing: evt });
       else if (type === 'plugin_status') patchLive({ pluginStatus: `${evt.message}` });
       else if (type === 'status') { if (!liveMsgRef.current.answerStarted) patchLive({ pluginStatus: evt.message }); }
-      else if (type === 'thinking') patchLive(prev => ({ thinking: (prev.thinking || '') + evt.delta }));
-      // tool_call: real step_output plugin-invocation deltas (JSON assembled incrementally).
-      // The buffer is parsed by ToolCallLines when it becomes valid JSON; answer arrival marks it done.
-      else if (type === 'tool_call') patchLive(prev => ({ toolCallRaw: (prev.toolCallRaw || '') + evt.delta }));
-      // planning: planner's plan JSON deltas — kept for the debug drawer only (not a chat layer).
-      else if (type === 'planning') patchLive(prev => ({ planningRaw: (prev.planningRaw || '') + evt.delta }));
-      // Appends to the existing text — never resets it, so a reconnect keeps prior output.
-      else if (type === 'answer') patchLive(prev => ({ text: (prev.text || '') + evt.delta, answerStarted: true, pluginStatus: null }));
-      else if (type === 'error') throw new Error(evt.message); // explicit server error — never retried
+      else if (type === 'planning_thinking' || type === 'step_thinking') {
+        const delta = evt?.thinking?.delta;
+        if (typeof delta === 'string' && delta.length) patchLive(prev => ({ thinking: (prev.thinking || '') + delta }));
+      } else if (type === 'step_output') {
+        // Accumulate raw deltas; parse the plugin-call JSON opportunistically as it completes.
+        patchLive(prev => {
+          const rawArgs = (prev.toolRaw || '') + (evt?.output?.delta || '');
+          let toolCalls = prev.toolCalls || [];
+          try {
+            const parsed = JSON.parse(rawArgs);
+            if (Array.isArray(parsed?.plugins)) {
+              toolCalls = parsed.plugins.map((p, i) => ({
+                id: `${p.pluginId || 'plugin'}-${i}`,
+                pluginId: p.pluginId, name: p.name || p.identifier || p.pluginId,
+                args: p.api_request_parameters || p.parameters || {},
+                raw: p, status: 'running',
+              }));
+            }
+          } catch { /* JSON still assembling — keep accumulating */ }
+          return { toolRaw: rawArgs, toolCalls };
+        });
+      } else if (type === 'fulfillment') {
+        if (typeof evt.answer === 'string') {
+          // First answer token: flip running tool calls to done (their result feeds this answer).
+          patchLive(prev => ({
+            text: (prev.text || '') + evt.answer,
+            answerStarted: true,
+            pluginStatus: null,
+            toolCalls: (prev.toolCalls || []).map(tc => tc.status === 'running' ? { ...tc, status: 'done' } : tc),
+          }));
+        }
+      } else if (type === 'statusLog') {
+        const sl = evt.currentStatusLog;
+        if (sl && !liveMsgRef.current.answerStarted) patchLive({ pluginStatus: sl.statusMessage });
+        // fulfillment_completed → ensure tool lines show done
+        if (sl?.statusType === 'fulfillment_completed') {
+          patchLive(prev => ({ toolCalls: (prev.toolCalls || []).map(tc => ({ ...tc, status: 'done' })) }));
+        }
+      } else if (type === 'metricsLog') {
+        if (evt.publicMetrics) patchLive({ metrics: evt.publicMetrics });
+      } else if (type === 'planning_output' || type === 'stream_end') {
+        // planning_output: internal plan JSON — debug bus only; stream_end: [DONE] passthrough marker
+      } else if (type === 'error') throw new Error(evt.message); // explicit server error — never retried
     };
 
     try {
@@ -270,7 +310,7 @@ export default function App() {
           <PreviewPane wizard={wizard} latestDraft={latestDraft} onEditRequest={onEditRequest}
             onCloseWizard={() => setWizard({ active: false, step: 0 })} />
         </div>
-        <DebugFooter />
+        <footer className="app-footer"><span className="app-footer__brand">ODA Productivity Suite</span></footer>
       </div>
       <DebugDrawer />
 

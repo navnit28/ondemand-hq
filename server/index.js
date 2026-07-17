@@ -24,6 +24,9 @@ app.use(express.json({ limit: '4mb' }));
 
 const upload = multer({ storage: multer.memoryStorage(), limits: { fileSize: 25 * 1024 * 1024 } });
 
+// Voice routes — OnDemand Cloud Services (speech_to_text / text_to_speech) ONLY.
+registerSpeechRoutes(app, upload);
+
 // ---------- health ----------
 app.get('/api/health', (req, res) => res.json({
   ok: true, model: `${ENDPOINT_ID}+${REASONING_EFFORT}`, keyLoaded: Boolean(ONDEMAND_API_KEY), streamDebug: STREAM_DEBUG, time: new Date().toISOString(),
@@ -181,20 +184,26 @@ app.post('/api/chat', async (req, res) => {
     // 4) STREAM from OnDemand — thinking tokens separated from answer tokens
     if (pluginLabels.length) send('plugin_status', { plugin: pluginLabels[0], message: `Working with ${pluginLabels.join(', ')}…` });
     let sawAnswer = false;
+    // PURE PASSTHROUGH (2026-07-17): every raw upstream SSE frame is re-emitted to the
+    // browser byte-identical — `event:` name preserved, `data:` payload untouched. No
+    // filtering, no re-synthesis. The browser parses eventType itself (planning_thinking,
+    // planning_output, step_thinking, step_output, fulfillment, statusLog, metricsLog,
+    // heartbeat frames, and the [DONE] sentinel all pass through).
+    const sendRaw = (evName, rawData) => {
+      if (clientClosed) return;
+      if (evName && evName !== 'message') res.write(`event:${evName}\n`);
+      res.write(`data:${rawData}\n\n`);
+      res.flush?.();
+      if (STREAM_DEBUG) console.log(`[stream-debug] ts=${new Date().toISOString()} dir=browser passthrough event=${evName} bytes=${rawData.length} conv=${conversationId}`);
+    };
     const fullAnswer = await streamQuery({
       odSessionId: conv.odSessionId,
       query: queryParts.join('\n\n'),
       pluginIds,
       systemPrompt,
       signal: upstreamAbort.signal, // WS1: cancel upstream when the browser disconnects
-      onEvent: (type, payload, meta) => {
-        if (type === 'thinking') send('thinking', { delta: payload, channel: meta?.channel });
-        else if (type === 'planning') send('planning', { delta: payload, channel: meta?.channel });
-        else if (type === 'tool_call') send('tool_call', { delta: payload, channel: meta?.channel });
-        else if (type === 'answer') { sawAnswer = true; send('answer', { delta: payload }); }
-        else if (type === 'status') send('status', { message: payload.statusMessage, statusType: payload.statusType });
-        else if (type === 'metrics') send('metrics', payload);
-      },
+      onRaw: sendRaw,
+      onEvent: (type) => { if (type === 'answer') sawAnswer = true; },
     });
 
     // 5) Persist + finish
@@ -274,9 +283,6 @@ app.get('/api/export/:id/download', (req, res) => {
   res.setHeader('Content-Disposition', `attachment; filename="${exp.name}"`);
   res.send(exp.buffer);
 });
-
-// ---------- speech (OnDemand Services API: speech_to_text / text_to_speech) ----------
-registerSpeechRoutes(app, upload);
 
 // ---------- static frontend (built SPA) ----------
 const DIST = path.join(__dirname, '..', 'dist');

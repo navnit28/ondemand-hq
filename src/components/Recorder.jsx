@@ -10,10 +10,10 @@ import { t } from '../i18n.js';
  * the live schema); an unsubscribed workspace surfaces a clean unavailable note.
  */
 export default function Recorder({ onTranscript, onError, disabled }) {
-  const [state, setState] = useState('idle'); // idle | recording | paused | transcribing | editing
+  const [state, setState] = useState('idle'); // idle | recording | paused | transcribing | disabled
   const [elapsed, setElapsed] = useState(0);
-  const [transcript, setTranscript] = useState('');
   const [note, setNote] = useState(null);
+  const [disabledReason, setDisabledReason] = useState(null); // graceful permanent-disable w/ tooltip
 
   const mediaRef = useRef(null);   // MediaRecorder
   const streamRef = useRef(null);
@@ -78,10 +78,15 @@ export default function Recorder({ onTranscript, onError, disabled }) {
       timerRef.current = setInterval(() => setElapsed(s => s + 1), 1000);
       setState('recording');
     } catch (e) {
-      const msg = e?.name === 'NotAllowedError' ? t('micDenied')
-        : e?.name === 'NotFoundError' ? t('micUnavailable')
-        : `Microphone error: ${e?.message || e}`;
-      setNote(msg); onError?.(msg); setState('idle'); cleanup();
+      cleanup();
+      if (e?.name === 'NotAllowedError' || e?.name === 'NotFoundError') {
+        // Mic permission denied / no device: quiet disable with explanatory tooltip.
+        setDisabledReason(e?.name === 'NotAllowedError' ? t('micDenied') : t('micUnavailable'));
+        setState('disabled');
+      } else {
+        const msg = `Microphone error: ${e?.message || e}`;
+        setNote(msg); onError?.(msg); setState('idle');
+      }
     }
   };
 
@@ -106,13 +111,18 @@ export default function Recorder({ onTranscript, onError, disabled }) {
         fd.append('audio', blob, 'note.webm');
         const r = await fetch('/api/speech/transcribe', { method: 'POST', body: fd });
         const j = await r.json().catch(() => ({}));
-        if (j.ok && j.text) { setTranscript(j.text); setState('editing'); }
+        // Transcript lands directly in the chat input (editable there before send).
+        if (j.ok && j.text) { onTranscript?.(j.text); setState('idle'); }
         else {
           const err = j?.error || {};
-          const msg = err.errorCode === 'SERVICE_NOT_SUBSCRIBED' || err.errorCode === 'SERVICE_NEEDS_PUBLIC_URL'
-            ? `${t('speechUnavailable')} (${err.errorCode})`
-            : `${err.userMessage || 'Transcription failed'}${err.errorCode ? ` [${err.errorCode}]` : ''}`;
-          setNote(msg); onError?.(msg); setState('idle');
+          if (err.errorCode === 'SERVICE_NOT_SUBSCRIBED' || err.errorCode === 'SERVICE_NEEDS_PUBLIC_URL') {
+            // Graceful failure: quietly disable the mic with an explanatory tooltip — never a broken state.
+            setDisabledReason(`${t('speechUnavailable')} (${err.errorCode})`);
+            setState('disabled');
+          } else {
+            const msg = `${err.userMessage || 'Transcription failed'}${err.errorCode ? ` [${err.errorCode}]` : ''}`;
+            setNote(msg); onError?.(msg); setState('idle');
+          }
         }
       } catch (e) {
         setNote(`Transcription failed: ${e.message}`); onError?.(e.message); setState('idle');
@@ -123,18 +133,16 @@ export default function Recorder({ onTranscript, onError, disabled }) {
 
   const mmss = `${String(Math.floor(elapsed / 60)).padStart(2, '0')}:${String(elapsed % 60).padStart(2, '0')}`;
 
-  if (state === 'editing') {
+  if (state === 'disabled') {
+    // Graceful failure: mic quietly disabled with an explanatory tooltip — never a broken state.
     return (
-      <div className="rec rec--edit">
-        <div className="rec__hint">{t('editTranscript')}</div>
-        <textarea className="rec__ta" value={transcript} dir="auto" rows={3}
-          onChange={e => setTranscript(e.target.value)} aria-label={t('editTranscript')} />
-        <div className="rec__btns">
-          <button className="rec__send" onClick={() => { onTranscript?.(transcript); setState('idle'); setTranscript(''); }}
-            disabled={!transcript.trim()}>Send</button>
-          <button onClick={() => { setState('idle'); setTranscript(''); }}>{t('cancelRecording')}</button>
-        </div>
-      </div>
+      <button type="button" className="rec__mic rec__mic--disabled" disabled
+        title={disabledReason || t('speechUnavailable')} aria-label={disabledReason || t('speechUnavailable')}>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <rect x="9" y="3" width="6" height="11" rx="3" stroke="currentColor" strokeWidth="1.7" />
+          <path d="M5.5 11.5a6.5 6.5 0 0 0 13 0M12 18v3M4 4l16 16" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" />
+        </svg>
+      </button>
     );
   }
 

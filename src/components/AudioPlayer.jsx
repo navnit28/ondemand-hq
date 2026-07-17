@@ -28,6 +28,15 @@ function chunkText(text) {
   return parts.filter(p => p.trim());
 }
 
+/** EN/AR auto-detect: if the text is predominantly Arabic script, default to the
+ *  Arabic-capable voice (the documented voice enum has no language field; onyx is
+ *  used as the Arabic-designated voice per the app's voice policy). */
+function detectDefaultVoice(text) {
+  const arabic = (text.match(/[\u0600-\u06FF]/g) || []).length;
+  const latin = (text.match(/[A-Za-z]/g) || []).length;
+  return arabic > latin ? 'onyx' : 'alloy';
+}
+
 export default function AudioPlayer({ text }) {
   const [state, setState] = useState('idle'); // idle | loading | ready | failed | unavailable
   const [urls, setUrls] = useState([]);       // one per chunk
@@ -36,7 +45,7 @@ export default function AudioPlayer({ text }) {
   const [pos, setPos] = useState(0);
   const [dur, setDur] = useState(0);
   const [speed, setSpeed] = useState(1);
-  const [voice, setVoice] = useState(VOICES[0].id);
+  const [voice, setVoice] = useState(() => detectDefaultVoice(text || ''));
   const [err, setErr] = useState(null);
   const audioRef = useRef(null);
 
@@ -82,10 +91,29 @@ export default function AudioPlayer({ text }) {
   }, [part, urls]); // auto-advance chunks
 
   if (state === 'idle') {
-    return <button className="tts__cta" onClick={() => generate()} aria-label={t('listen')}>▷ {t('listen')}</button>;
+    return (
+      <button className="tts__cta tts__speaker" onClick={() => generate()} aria-label={t('listen')} title={t('listen')}>
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M4 9v6h4l5 4V5L8 9H4z" stroke="currentColor" strokeWidth="1.6" strokeLinejoin="round" />
+          <path d="M16 9a4 4 0 0 1 0 6M18.5 6.5a8 8 0 0 1 0 11" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+        </svg>
+      </button>
+    );
   }
-  if (state === 'loading') return <span className="tts__loading">{t('preparing')}</span>;
-  if (state === 'unavailable') return <span className="tts__note" role="note">{err}</span>;
+  if (state === 'loading') return <span className="tts__loading tts__shimmer" aria-live="polite">{t('preparing')}</span>;
+  if (state === 'unavailable') {
+    // Graceful failure — quiet disabled speaker with explanatory tooltip; never a broken state.
+    return (
+      <button className="tts__cta tts__speaker tts__speaker--disabled" disabled
+        title={err || 'Speech services are not enabled on this OnDemand workspace yet.'}
+        aria-label="Audio unavailable">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M4 9v6h4l5 4V5L8 9H4z" stroke="currentColor" strokeWidth="1.6" strokeLinejoin="round" />
+          <path d="M16 9l5 6M21 9l-5 6" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+        </svg>
+      </button>
+    );
+  }
   if (state === 'failed') {
     return (
       <span className="tts__note" role="alert">

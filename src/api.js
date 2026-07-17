@@ -112,11 +112,38 @@ export async function streamChat(body, onEvent, signal) {
     const line = rawLine.replace(/\r$/, '');
     // Keepalive comment lines (`: keepalive`) — surfaced to the debug bus, never to onEvent.
     if (line.startsWith(':')) { streamDebugBus.emit({ kind: 'frame', type: 'keepalive', chars: 0 }); return; }
+    if (line.startsWith('event:')) return; // SSE event-name line (event:thinking/message/heartbeat) — payload routing keys on eventType below
     if (!line.startsWith('data:')) return;
+    const payload = line.slice(5).trim();
+    // Terminal sentinel — raw passthrough of upstream data:[DONE]
+    if (payload === '[DONE]') {
+      streamDebugBus.emit({ kind: 'frame', type: '[DONE]', chars: 0 });
+      onEvent('stream_end', {});
+      return;
+    }
     let evt;
-    try { evt = JSON.parse(line.slice(5)); } catch { return; }
-    streamDebugBus.emit({ kind: 'frame', type: evt.type, serverTs: evt.ts, chars: (evt.delta || '').length, raw: evt });
-    onEvent(evt.type, evt);
+    try { evt = JSON.parse(payload); } catch { return; }
+    // TWO frame families on this wire (2026-07-17 passthrough refactor):
+    //  A) locally-synthesized frames {type, ts, ...} — routing/status/plugin_status/error/done
+    //  B) RAW upstream OnDemand frames {eventType, ...} forwarded byte-identical —
+    //     planning_thinking, planning_output, step_thinking, step_output, fulfillment,
+    //     statusLog, metricsLog — plus no-eventType heartbeats {sessionId, messageId, time}.
+    if (evt.type) {
+      streamDebugBus.emit({ kind: 'frame', type: evt.type, serverTs: evt.ts, chars: (evt.delta || '').length, raw: evt });
+      onEvent(evt.type, evt);
+      return;
+    }
+    const et = evt.eventType;
+    if (!et) {
+      if (evt.sessionId && evt.time) streamDebugBus.emit({ kind: 'frame', type: 'heartbeat', chars: 0, raw: evt });
+      return; // heartbeat — no UI action
+    }
+    const chars = typeof evt.answer === 'string' ? evt.answer.length
+      : typeof evt?.thinking?.delta === 'string' ? evt.thinking.delta.length
+      : typeof evt?.output?.delta === 'string' ? evt.output.delta.length
+      : 0;
+    streamDebugBus.emit({ kind: 'frame', type: et, chars, raw: evt });
+    onEvent(et, evt); // raw eventType is the event name: UI maps them 1:1
   };
   while (true) {
     let done, value;

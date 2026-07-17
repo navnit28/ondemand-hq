@@ -31,9 +31,9 @@ export const PORT = parseInt(process.env.PORT || '8080', 10);
 export const ENDPOINT_ID = 'predefined-gpt-5.6-sol';
 export const REASONING_EFFORT = 'medium';
 
-// STREAM_DEBUG: verbose SSE frame logging (upstream + browser side). OFF by default —
-// set STREAM_DEBUG=true to enable server-side frame metadata logs (never frame text content).
-export const STREAM_DEBUG = String(process.env.STREAM_DEBUG ?? 'false').toLowerCase() === 'true';
+// STREAM_DEBUG: verbose SSE frame logging (upstream + browser side).
+// endpoint. ON by default at start; set STREAM_DEBUG=false to turn off (STREAM_DEBUG=true = explicit-on).
+export const STREAM_DEBUG = String(process.env.STREAM_DEBUG ?? 'true').toLowerCase() !== 'false';
 
 if (!ONDEMAND_API_KEY) {
   console.error('🔴 [FATAL-CONFIG] ONDEMAND_API_KEY is not set. Create .env from .env.example. Refusing to start with a hardcoded or missing key.');

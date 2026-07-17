@@ -3,6 +3,31 @@ import { Markdown, dissect } from '../markdown.jsx';
 import BilingualLoader from './BilingualLoader.jsx';
 import AudioPlayer from './AudioPlayer.jsx';
 
+/* ---------- tool-call lines (driven ONLY by real step_output SSE events) ---------- */
+/** Slim inline line per plugin call: '⚙ <name> → <query>' with spinner→check,
+ *  expandable to the raw args payload parsed from the step_output deltas. */
+export function ToolCallLine({ call }) {
+  const [open, setOpen] = useState(false);
+  const running = call.status === 'running';
+  const argSummary = call.args?.query || Object.values(call.args || {})[0] || '';
+  return (
+    <div className="toolline">
+      <button className="toolline__head" onClick={() => setOpen(o => !o)} title="Show raw plugin-call payload">
+        <span className="toolline__gear" aria-hidden>⚙</span>
+        <span className="toolline__name">{call.name}</span>
+        {argSummary && <><span className="toolline__arrow">→</span><span className="toolline__arg">{String(argSummary).slice(0, 80)}</span></>}
+        <span style={{ flex: 1 }} />
+        {running
+          ? <span className="toolline__spin" aria-label="running" />
+          : <span className="toolline__check" aria-label="done">✓</span>}
+      </button>
+      {open && (
+        <pre className="toolline__raw">{JSON.stringify(call.raw || call.args, null, 2)}</pre>
+      )}
+    </div>
+  );
+}
+
 /* ---------- STEP 4: thinking accordion ---------- */
 export function ThinkingAccordion({ thinking, live, forceOpenWhileLive }) {
   const [open, setOpen] = useState(false);
@@ -30,48 +55,27 @@ export function ThinkingAccordion({ thinking, live, forceOpenWhileLive }) {
   );
 }
 
-/* ---------- STEP 5: routing trace — ONE slim muted line under the answer ---------- */
-export function TraceCard({ routing }) {
+/* ---------- routing trace: ONE muted expandable line under the answer ---------- */
+export function TraceCard({ routing, traceText }) {
+  const [open, setOpen] = useState(false);
   if (!routing) return null;
   return (
-    <div className="trace-line" title={routing.reason || ''}>
-      {routing.feature} · {routing.mode} · {routing.plugins?.length
-        ? routing.plugins.join(', ')
-        : 'LLM-direct'} · {routing.model}
-    </div>
-  );
-}
-
-/* ---------- Inline tool-call lines — driven by REAL step_output plugin frames ----------
- * The upstream step_output channel streams the plugin invocation JSON as deltas
- * (live-captured 2026-07-17: {"plugins":[{pluginId,name,api_request_parameters,…}]}).
- * While the JSON is still partial → spinner state; once parseable → each plugin gets a
- * slim line "⚙ name → query" with spinner→✓ (done = answer started), expandable args. */
-export function ToolCallLines({ raw, done }) {
-  const [openIdx, setOpenIdx] = useState(null);
-  if (!raw) return null;
-  let plugins = null;
-  try { plugins = JSON.parse(raw)?.plugins || null; } catch { /* still streaming */ }
-  if (!plugins) {
-    return <div className="toolline"><span className="toolline__spin" aria-hidden="true" /> <span className="toolline__name">Preparing tool call…</span></div>;
-  }
-  return (
-    <div className="toollines">
-      {plugins.map((p, i) => {
-        const target = p.api_request_parameters?.query || p.api_request_parameters?.url
-          || Object.values(p.api_request_parameters || {})[0] || '';
-        return (
-          <div key={i} className="toolline">
-            {done ? <span className="toolline__check" aria-hidden="true">✓</span> : <span className="toolline__spin" aria-hidden="true" />}
-            <button className="toolline__btn" onClick={() => setOpenIdx(openIdx === i ? null : i)}>
-              ⚙ {p.name || p.pluginId} {target ? <span className="toolline__target">→ {String(target).slice(0, 80)}</span> : null}
-            </button>
-            {openIdx === i && (
-              <pre className="toolline__args">{JSON.stringify(p.api_request_parameters || {}, null, 2)}</pre>
-            )}
-          </div>
-        );
-      })}
+    <div className="trace trace--slim">
+      <button className="trace__head" onClick={() => setOpen(!open)}>
+        {routing.feature} · {routing.mode} · {routing.plugins?.length ? `${routing.plugins.length} plugin${routing.plugins.length > 1 ? 's' : ''}` : 'LLM-direct'} · {routing.model}
+        <span className={`chev${open ? ' open' : ''}`}>▶</span>
+      </button>
+      {open && (
+        <div className="trace__body">
+          <div><b>Worker:</b> {routing.feature} · <b>Mode:</b> {routing.mode} ({routing.reason})</div>
+          <div><b>Model:</b> {routing.model} · <b>Router:</b> {routing.source}</div>
+          <div><b>Plugins attached:</b> {routing.plugins?.length
+            ? routing.plugins.map(p => <span className="trace__plug" key={p}>{p}</span>)
+            : <span className="trace__plug">none — LLM-direct</span>}</div>
+          {routing.analysisFirst && <div style={{ color: 'var(--warn)' }}>analysis-first bright line applied</div>}
+          {traceText && <div style={{ whiteSpace: 'pre-wrap', marginTop: 6, fontFamily: 'inherit' }}>{traceText}</div>}
+        </div>
+      )}
     </div>
   );
 }
@@ -114,16 +118,16 @@ export function PluginSkeleton({ label }) {
 
 /* ---------- assistant message ---------- */
 export function AssistantMessage({ msg, live, onOption, onExport, exportBusy, artifacts }) {
-  const { body, options } = dissect(msg.text || '');
+  const { body, options, trace } = dissect(msg.text || '');
   const showExports = !live && (msg.text || '').length > 120;
   return (
     <div className="msg-asst">
-      {/* Layer 1 — thinking line (real thinking deltas only; auto-collapses on first answer token) */}
+      {/* Layer 1 — thinking line (live planning_thinking/step_thinking deltas; auto-collapses on first answer token) */}
       <ThinkingAccordion thinking={msg.thinking} live={Boolean(live && !msg.answerStarted)} forceOpenWhileLive={true} />
-      {/* Layer 2 — inline tool-call lines from REAL step_output plugin frames */}
-      <ToolCallLines raw={msg.toolCallRaw} done={Boolean(msg.answerStarted || !live)} />
-      {/* Loader vanishes on the FIRST token: fulfillment (answerStarted) OR any thinking delta. */}
-      {live && !msg.answerStarted && !msg.thinking && <PluginSkeleton label={msg.pluginStatus || 'Routing your request…'} />}
+      {/* Layer 2 — tool-call lines (real step_output plugin-call events only) */}
+      {(msg.toolCalls || []).map(tc => <ToolCallLine key={tc.id} call={tc} />)}
+      {/* Loader vanishes on the FIRST streamed token of any kind. */}
+      {live && !msg.answerStarted && !msg.thinking && !(msg.toolCalls || []).length && <PluginSkeleton label={msg.pluginStatus || 'Routing your request…'} />}
       {/* Layer 3 — streamed answer */}
       <Markdown text={body} />
       {live && <span className="cursor-blink" />}
@@ -133,8 +137,9 @@ export function AssistantMessage({ msg, live, onOption, onExport, exportBusy, ar
         </div>
       )}
       {(msg.artifactIds || []).map(id => artifacts[id] && <ArtifactCard key={id} artifact={artifacts[id]} />)}
-      {/* Per-assistant-message speaker: OnDemand TTS playback (fetch-then-play; Arabic voice offered via voice select). */}
-      {!live && (msg.text || '').length > 40 && <AudioPlayer text={body} />}
+      {/* Speaker — OnDemand text_to_speech playback (fetch-then-play; streaming TTS is not documented).
+          Arabic answers auto-select an Arabic-capable voice inside AudioPlayer. */}
+      {!live && (msg.text || '').length > 0 && <AudioPlayer text={msg.text} />}
       {showExports && (
         <div className="exportbar">
           <span>Export:</span>
@@ -144,7 +149,7 @@ export function AssistantMessage({ msg, live, onOption, onExport, exportBusy, ar
           {exportBusy && <BilingualLoader size="sm" label="Generating document…" />}
         </div>
       )}
-      <TraceCard routing={msg.routing} />
+      <TraceCard routing={msg.routing} traceText={trace} />
     </div>
   );
 }

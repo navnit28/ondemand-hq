@@ -440,3 +440,53 @@ reasoning during the answer phase) — still zero occurrences across all 2026-07
 captures. The `tool_call` frames reassemble to the full plugin invocation JSON
 (`pluginId: plugin-1713924030`, `name: fetchInternetData`, hydrated
 `api_request_parameters`) — rendered as the inline ⚙ tool-call line.
+
+---
+
+## 2026-07-17 — Passthrough refactor + real-events UI + voice integration (17:15–17:35 UTC)
+
+### Backend: pure passthrough proxy
+- `server/ondemand.js` `streamQuery` now forwards EVERY raw upstream SSE frame untouched via
+  `onRaw(sseEventName, rawDataString)` — the SSE `event:` name (`thinking`/`message`/`heartbeat`)
+  is preserved and the `data:` payload is re-emitted byte-identical by `/api/chat`. No filtering,
+  no buffering beyond SSE line assembly, no re-synthesis. The server parses frames READ-ONLY for
+  answer persistence, error-frame detection, `[DONE]` termination, and STREAM_DEBUG logs.
+- Request parameters unchanged and per the verified findings: `responseMode: "stream"`
+  (documented) + `reasoningEffort: "medium"` (live-accepted extension) on
+  `endpointId: predefined-gpt-5.6-sol` — i.e. gpt-5.6-sol-medium on every call.
+- The synthetic `/api/debug/stream-demo` route is DELETED — no demo/mock/simulated streams
+  remain anywhere in runtime code.
+
+### Frontend: driven only by the real event feed
+- `src/api.js` parses the passthrough wire: raw `eventType` frames (`planning_thinking`,
+  `planning_output`, `step_thinking`, `step_output`, `fulfillment`, `statusLog`, `metricsLog`),
+  no-eventType heartbeats, the `data:[DONE]` sentinel, plus the local `routing/plugin_status/
+  status/error/done` frames.
+- Thinking… accordion streams `planning_thinking`/`step_thinking` `.thinking.delta` live,
+  auto-collapses on the first `fulfillment` token, stays re-expandable.
+- Tool-call lines assemble the `step_output` deltas into the plugin-call JSON
+  (`{"plugins":[{pluginId,name,api_request_parameters,…}]}`) and render one slim line per call
+  ('⚙ name → query', spinner → ✓ on first answer token / fulfillment_completed), expandable to
+  the raw payload. NOTE (from the raw dumps): the platform emits NO dedicated plugin-result
+  event — results surface only in the final answer, so ✓ is keyed to answer start.
+- Debug drawer (frame feed, TTFT, tok/s, per-type counters) is gated behind `?debug=1` —
+  invisible otherwise. Default view: three layers per assistant turn (thinking line, tool-call
+  lines, streamed answer) + one muted expandable routing line. `Year`-column mid-word wrapping
+  fixed (`white-space: nowrap` + min-widths on first/numeric columns).
+
+### Voice — OnDemand Cloud Services ONLY
+- Mic (composer) → records via MediaRecorder with waveform+timer → posts the clip to
+  `/api/speech/transcribe` → OnDemand `POST /services/v1/public/service/execute/speech_to_text`
+  `{audioUrl}` per the live schema; transcript lands in the input (dir="auto" → EN/AR) editable
+  before send. No Web Speech API, no third-party providers.
+- Speaker (assistant messages) → `/api/speech/tts` → OnDemand
+  `POST /services/v1/public/service/execute/text_to_speech` `{model:"tts-1", input, voice}`.
+  Streaming TTS is NOT documented (single JSON POST returning `data.audioUrl`), so playback is
+  fetch-then-play with a shimmer on the icon. Arabic-dominant answers auto-select the
+  Arabic-designated voice (`onyx`; the documented voice enum carries no language metadata).
+- **Known limitation (verified in PLUGIN_TESTS.md, 2026-07-17):** this workspace's API key is
+  NOT subscribed to Cloud Services — both endpoints return HTTP 400
+  `{"message":"Please subscribe to the service to use it"}`. The integration is wired fully per
+  the live docs; at runtime the mic and speaker quietly disable themselves with an explanatory
+  tooltip (SERVICE_NOT_SUBSCRIBED) — never a broken state. Once the account is subscribed at
+  app.on-demand.io/cloud-services/explore-services, voice works without code changes.

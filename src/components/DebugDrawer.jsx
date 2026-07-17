@@ -3,51 +3,39 @@ import { streamDebugBus } from '../api.js';
 import ErrorBoundary from './ErrorBoundary.jsx';
 
 /**
- * Stream debug drawer — observability for the /api/chat SSE pipeline.
- * DEV-GATED: renders ONLY when the URL carries ?debug=1 (or #debug) — regular
- * users never see frame logs, TTFT, or event counters. Subscribes to
- * streamDebugBus (tapped inside api.js streamChat BEFORE onEvent) so it never
- * alters the app's stream semantics. Every row is a REAL frame from the live
- * /api/chat stream — no synthetic feed exists.
+ * Stream debug drawer — observability for the /api/chat SSE passthrough.
+ * GATED: rendered ONLY when the page URL carries ?debug=1 (or #debug=1) —
+ * invisible to regular users. No demo/mock/simulated streams: the feed shows
+ * exclusively the REAL event frames tapped from streamChat via streamDebugBus.
+ * Shows the raw event feed (color-tagged: thinking/tool/answer/status/metrics),
+ * TTFT, tokens/sec, per-type counters, and a UTC clock.
  */
 
-/** Dev gate: ?debug=1 in the query string (or #debug hash). */
-export function isDebugUiEnabled() {
+export function isDebugMode() {
   if (typeof window === 'undefined') return false;
   try {
     const qs = new URLSearchParams(window.location.search);
-    return qs.get('debug') === '1' || window.location.hash === '#debug';
+    return qs.get('debug') === '1' || window.location.hash.includes('debug=1');
   } catch { return false; }
 }
 
-/* ---------- shared enabled state (drawer header toggle + footer toggle) ---------- */
-const enabledListeners = new Set();
-export function setStreamDebugEnabled(v) {
-  streamDebugBus.setEnabled(v);
-  for (const fn of enabledListeners) fn(v);
-}
-export function useStreamDebugEnabled() {
-  const [enabled, setLocal] = useState(streamDebugBus.enabled);
-  useEffect(() => {
-    const fn = (v) => setLocal(v);
-    enabledListeners.add(fn);
-    return () => enabledListeners.delete(fn);
-  }, []);
-  return [enabled, setStreamDebugEnabled];
-}
-
-/* ---------- helpers ---------- */
+/* ---------- color tags (real passthrough event types) ---------- */
 const TYPE_CLASS = {
-  thinking: 'dbg-t-thinking',
-  planning: 'dbg-t-thinking',
-  tool_call: 'dbg-t-status',
-  answer: 'dbg-t-answer',
-  status: 'dbg-t-status',
-  plugin_status: 'dbg-t-status',
+  planning_thinking: 'dbg-t-thinking',
+  step_thinking: 'dbg-t-thinking',
+  planning_output: 'dbg-t-plan',
+  step_output: 'dbg-t-tool',
+  fulfillment: 'dbg-t-answer',
+  statusLog: 'dbg-t-status',
+  metricsLog: 'dbg-t-metrics',
   routing: 'dbg-t-status',
-  metrics: 'dbg-t-metrics',
+  plugin_status: 'dbg-t-status',
+  status: 'dbg-t-status',
   error: 'dbg-t-error',
   drop: 'dbg-t-error',
+  done: 'dbg-t-quiet',
+  '[DONE]': 'dbg-t-quiet',
+  heartbeat: 'dbg-t-quiet',
   keepalive: 'dbg-t-quiet',
   open: 'dbg-t-quiet',
   close: 'dbg-t-quiet',
@@ -55,66 +43,36 @@ const TYPE_CLASS = {
 const typeClass = (t) => TYPE_CLASS[t] || 'dbg-t-quiet';
 const feedTime = (iso) => (iso ? `${String(iso).slice(11, 23)}` : '—');
 
-/* ---------- footer (dev-gated with the drawer) ---------- */
-export function DebugFooter() {
-  const [enabled, setEnabled] = useStreamDebugEnabled();
-  if (!isDebugUiEnabled()) return null;
-  return (
-    <footer className="debug-footer">
-      <label className="dbg-switch-label">
-        <span>Stream debug</span>
-        <button
-          type="button"
-          role="switch"
-          aria-checked={enabled}
-          className={`dbg-switch${enabled ? ' on' : ''}`}
-          onClick={() => setEnabled(!enabled)}
-        >
-          <span className="dbg-switch__knob" />
-        </button>
-      </label>
-    </footer>
-  );
-}
-
-/* ---------- the drawer ---------- */
 function freshRun() {
-  return { openAt: null, firstDeltaAt: null, firstAnswerAt: null, answerChars: 0, ttft: null, tps: null };
+  return { openAt: null, firstDeltaAt: null, answerChars: 0, ttft: null, tps: null };
 }
 
 function DebugDrawerInner() {
-  const [enabled, setEnabled] = useStreamDebugEnabled();
   const [openDrawer, setOpenDrawer] = useState(false);
-  const [tick, setTick] = useState(0);           // re-render pump for ref-held feed/metrics
+  const [tick, setTick] = useState(0);
   const [clock, setClock] = useState('');
 
-  const rowsRef = useRef([]);                    // ring buffer, last 300 events
+  const rowsRef = useRef([]);       // ring buffer, last 300 events
   const seqRef = useRef(0);
-  const runRef = useRef(freshRun());             // current-run metric accumulators
-  const countsRef = useRef({});                  // per-type counts (current run)
-  const framesRef = useRef(0);                   // total frames (current run)
+  const framesRef = useRef(0);
+  const countsRef = useRef({});
+  const runRef = useRef(freshRun());
   const feedRef = useRef(null);
 
-  /* subscribe to the bus */
   useEffect(() => {
     const off = streamDebugBus.on((e) => {
       const now = Date.now();
-      if (e.kind === 'lifecycle' && e.type === 'open') {
-        runRef.current = { ...freshRun(), openAt: now };
-        countsRef.current = {};
-        framesRef.current = 0;
-      } else if (e.kind === 'frame') {
-        const run = runRef.current;
+      const run = runRef.current;
+      if (e.kind === 'lifecycle' && e.type === 'open') runRef.current = { ...freshRun(), openAt: now };
+      if (e.kind === 'frame') {
         framesRef.current += 1;
         countsRef.current[e.type] = (countsRef.current[e.type] || 0) + 1;
-        if ((e.type === 'thinking' || e.type === 'answer') && run.openAt && run.ttft == null) {
-          run.ttft = now - run.openAt;
-        }
-        if (e.type === 'answer') {
-          if (run.firstAnswerAt == null) run.firstAnswerAt = now;
-          run.answerChars += e.chars || 0;
-          const elapsed = Math.max(now - run.firstAnswerAt, 1) / 1000;
-          run.tps = (run.answerChars / 4) / elapsed;
+        const isDelta = ['planning_thinking', 'step_thinking', 'fulfillment', 'step_output', 'planning_output'].includes(e.type);
+        if (isDelta && run.openAt && run.ttft == null) run.ttft = now - run.openAt;
+        if (e.type === 'fulfillment' && e.chars) {
+          run.answerChars += e.chars;
+          const elapsed = (now - (run.openAt || now)) / 1000;
+          if (elapsed > 0) run.tps = (run.answerChars / 4) / elapsed;
         }
       }
       const rows = rowsRef.current;
@@ -125,7 +83,6 @@ function DebugDrawerInner() {
     return off;
   }, []);
 
-  /* UTC clock, 1s cadence — 'YYYY-MM-DD HH:MM:SSZ' */
   useEffect(() => {
     const fmt = () => { const iso = new Date().toISOString(); return `${iso.slice(0, 10)} ${iso.slice(11, 19)}Z`; };
     setClock(fmt());
@@ -133,12 +90,9 @@ function DebugDrawerInner() {
     return () => clearInterval(id);
   }, []);
 
-  /* keep feed pinned to the latest row */
   useEffect(() => {
     if (openDrawer && feedRef.current) feedRef.current.scrollTop = feedRef.current.scrollHeight;
   }, [tick, openDrawer]);
-
-  if (!enabled) return null;                     // footer toggle re-enables
 
   const run = runRef.current;
   const ttftLabel = run.ttft != null ? `${Math.round(run.ttft)} ms` : '—';
@@ -148,7 +102,7 @@ function DebugDrawerInner() {
   return (
     <aside className={`debug-drawer${openDrawer ? ' open' : ''}`} data-testid="debug-drawer">
       <div className="debug-drawer__header" onClick={() => setOpenDrawer(o => !o)}>
-        <span className={`debug-drawer__dot${enabled ? ' on' : ''}`} />
+        <span className="debug-drawer__dot on" />
         <span className="debug-drawer__title">Stream debug</span>
         <span className="debug-drawer__counters">
           {framesRef.current} frames · TTFT <b data-testid="debug-ttft">{ttftLabel}</b> · <b data-testid="debug-tps">{tpsLabel}</b> tok/s
@@ -160,19 +114,6 @@ function DebugDrawerInner() {
       {openDrawer && (
         <div className="debug-drawer__body">
           <div className="debug-drawer__controls">
-            <label className="dbg-switch-label">
-              <span>Capture</span>
-              <button
-                type="button"
-                role="switch"
-                aria-checked={enabled}
-                data-testid="debug-toggle"
-                className={`dbg-switch${enabled ? ' on' : ''}`}
-                onClick={() => setEnabled(!enabled)}
-              >
-                <span className="dbg-switch__knob" />
-              </button>
-            </label>
             <div className="debug-drawer__chips">
               {Object.entries(counts).map(([t, n]) => (
                 <span key={t} className={`dbg-chip ${typeClass(t)}`}>{t}:{n}</span>
@@ -181,7 +122,7 @@ function DebugDrawerInner() {
           </div>
 
           <div className="debug-drawer__feed" data-testid="debug-feed" ref={feedRef}>
-            {rowsRef.current.length === 0 && <div className="dbg-row dbg-t-quiet">— no stream events yet; send a message to see live frames —</div>}
+            {rowsRef.current.length === 0 && <div className="dbg-row dbg-t-quiet">— no stream events yet; send a message —</div>}
             {rowsRef.current.map(r => (
               <div key={r.seq} className={`dbg-row ${typeClass(r.type)}`}>
                 <span className="dbg-row__ts">{feedTime(r.clientTs)}</span>
@@ -197,7 +138,7 @@ function DebugDrawerInner() {
 }
 
 export default function DebugDrawer() {
-  if (!isDebugUiEnabled()) return null;          // hard dev gate: ?debug=1 only
+  if (!isDebugMode()) return null; // hidden for regular users — ?debug=1 only
   return (
     <ErrorBoundary name="debug-drawer">
       <DebugDrawerInner />

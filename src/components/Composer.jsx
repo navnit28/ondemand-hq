@@ -1,7 +1,7 @@
 import React, { useRef, useState } from 'react';
 import { uploadFile } from '../api.js';
-import Recorder from './Recorder.jsx';
 import BilingualLoader from './BilingualLoader.jsx';
+import Recorder from './Recorder.jsx';
 
 export default function Composer({ onSend, busy, onError, placeholder }) {
   const [text, setText] = useState('');
@@ -65,9 +65,10 @@ export default function Composer({ onSend, busy, onError, placeholder }) {
         <button className="iconbtn" onClick={pickFile} disabled={busy || uploading} title="Attach pptx / docx / pdf / xlsx">
           {uploading ? <BilingualLoader size="sm" className="biloader--tight" /> : '📎'}
         </button>
-        <Recorder disabled={busy || uploading}
-          onTranscript={(txt) => { if (txt?.trim()) { setText(prev => (prev ? `${prev} ${txt}` : txt)); } taRef.current?.focus(); }}
-          onError={(msg) => onError?.(msg)} />
+        {/* Mic — OnDemand speech_to_text ONLY (no Web Speech API). Transcript lands
+            in the input, editable before send (EN/AR via dir="auto"). */}
+        <Recorder disabled={busy} onError={() => { /* Recorder shows its own quiet note */ }}
+          onTranscript={(t2) => { setText(prev => (prev ? prev + ' ' : '') + t2); taRef.current?.focus(); }} />
         <button className="send" onClick={submit} disabled={busy || uploading || (!text.trim() && !attached)} title="Send">➤</button>
       </div>
     </div>
