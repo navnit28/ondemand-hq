@@ -166,3 +166,20 @@ with the workspace apikey (server-side only).
 - UI consequence unchanged: speaker/TTS buttons ACTIVE; mic/STT remains gracefully
   degraded (structured error surfaces the quiet unavailable note) and will light up
   automatically when the endpoint starts returning 200.
+
+---
+
+## 2026-07-17 18:24 UTC — TTS payload-shape fix ([TTS_UNEXPECTED_SHAPE])
+
+Client error reproduced and root-caused: the live TTS response wraps the audio URL
+in an OBJECT — `{message, data: {audioUrl: "<signed blob URL>"}}` — while
+`server/speech.js` only handled `data` as a bare string (URL or base64), so every
+200 fell through to `TTS_UNEXPECTED_SHAPE`. Parser fixed to read `data.audioUrl`.
+
+| # | Probe | HTTP | Latency | UTC timestamp | Payload shape sample (truncated) |
+|---|---|---|---|---|---|
+| 1 | TTS EN ("The favicon and speech fixes are verified.", voice alloy) | **200** | 2,984 ms | 2026-07-17T18:24:33.120Z | `{"message":"Service executed successfully","data":{"audioUrl":"https://airevprod.blob.core.windows.net/on-demand-prod//llm/…/2026-07-17-18-24-35.mp3?se=…"}}` |
+| 2 | TTS AR ("تم التحقق من إصلاح الصوت بنجاح.", voice onyx) | **200** | 1,892 ms | 2026-07-17T18:24:36.104Z | same shape — `data.audioUrl` signed MP3 URL |
+
+Audio verified playable by download: EN **53,760-byte MP3**, AR **56,640-byte MP3**
+(both with valid MPEG frame header `fff3e4`). No mocked audio; OnDemand cloud TTS only.

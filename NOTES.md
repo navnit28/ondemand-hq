@@ -575,3 +575,15 @@ ALL legitimate (breakdown below). No simulated/mocked runtime content remains.
   400 "Unknown error"** on every input (own-platform MP3 + docs sample) — service-side
   fault, truthfully recorded in PLUGIN_TESTS.md. Mic stays gracefully degraded; speaker
   buttons live.
+
+## 2026-07-17 18:24 UTC — TTS payload shape (fix record)
+
+- REAL live `text_to_speech` 200 shape (raw dumps): `{message, data:{audioUrl}}` —
+  a signed Azure blob MP3 URL under `data.audioUrl`. Previous parser expected
+  `data` as a bare string → every success surfaced `[TTS_UNEXPECTED_SHAPE]`.
+- `server/speech.js` now checks `data.audioUrl` first (object shape), keeping the
+  legacy string/base64/binary branches as fallbacks. Verified EN+AR 200 with
+  playable MP3s (53.8/56.6 KB, `fff3e4` headers).
+- UI: tool-call lines now render the visited site's favicon
+  (`google.com/s2/favicons?sz=32&domain=…`, 16px, onError→gear fallback) with
+  slim single-line rows and ellipsis truncation; gear kept when no domain derivable.

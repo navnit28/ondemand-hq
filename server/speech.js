@@ -73,8 +73,11 @@ export async function ttsGenerate(input, { model = 'tts-1', voice = 'alloy' } = 
   }
   if (ct.includes('application/json')) {
     const body = await r.json();
-    // data may be a hosted URL or base64 audio
+    // REAL live shape (verified 2026-07-17 18:24 UTC raw dumps): {message, data: {audioUrl: "<signed blob URL>"}}
     const d = body?.data;
+    if (d && typeof d === 'object' && typeof d.audioUrl === 'string' && /^https?:\/\//.test(d.audioUrl)) {
+      return { ok: true, meta: { hostedUrl: d.audioUrl, source: 'text_to_speech service' } };
+    }
     if (typeof d === 'string' && /^https?:\/\//.test(d)) {
       return { ok: true, meta: { hostedUrl: d, source: 'text_to_speech service' } };
     }

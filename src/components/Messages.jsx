@@ -6,16 +6,46 @@ import AudioPlayer from './AudioPlayer.jsx';
 /* ---------- tool-call lines (driven ONLY by real step_output SSE events) ---------- */
 /** Slim inline line per plugin call: '⚙ <name> → <query>' with spinner→check,
  *  expandable to the raw args payload parsed from the step_output deltas. */
+/** Extract a website domain from a tool-call query/target string.
+ *  Handles 'site:<domain>' prefixes and full http(s) URLs; returns null when none. */
+export function domainFromToolArg(s) {
+  if (!s || typeof s !== 'string') return null;
+  const site = s.match(/site:([a-z0-9.-]+\.[a-z]{2,})(?:\/[^\s]*)?/i);
+  if (site) return site[1].toLowerCase();
+  const url = s.match(/https?:\/\/([a-z0-9.-]+\.[a-z]{2,})/i);
+  if (url) return url[1].toLowerCase();
+  const bare = s.match(/(?:^|\s)((?:[a-z0-9-]+\.)+(?:org|com|net|io|gov|edu|int|ae))(?:\/[^\s]*)?(?:\s|$)/i);
+  if (bare) return bare[1].toLowerCase();
+  return null;
+}
+
+/** Favicon of the visited site with graceful gear fallback on load error. */
+function ToolIcon({ domain }) {
+  const [failed, setFailed] = useState(false);
+  if (!domain || failed) return <span className="toolline__gear" aria-hidden>⚙</span>;
+  return (
+    <img
+      className="toolline__favicon"
+      src={`https://www.google.com/s2/favicons?sz=32&domain=${encodeURIComponent(domain)}`}
+      alt=""
+      width="16" height="16"
+      loading="lazy"
+      onError={() => setFailed(true)}
+    />
+  );
+}
+
 export function ToolCallLine({ call }) {
   const [open, setOpen] = useState(false);
   const running = call.status === 'running';
   const argSummary = call.args?.query || Object.values(call.args || {})[0] || '';
+  const domain = domainFromToolArg(String(argSummary)) || domainFromToolArg(JSON.stringify(call.args || ''));
   return (
     <div className="toolline">
       <button className="toolline__head" onClick={() => setOpen(o => !o)} title="Show raw plugin-call payload">
-        <span className="toolline__gear" aria-hidden>⚙</span>
+        <ToolIcon domain={domain} />
         <span className="toolline__name">{call.name}</span>
-        {argSummary && <><span className="toolline__arrow">→</span><span className="toolline__arg">{String(argSummary).slice(0, 80)}</span></>}
+        {argSummary && <><span className="toolline__arrow">→</span><span className="toolline__arg">{String(argSummary)}</span></>}
         <span style={{ flex: 1 }} />
         {running
           ? <span className="toolline__spin" aria-label="running" />
