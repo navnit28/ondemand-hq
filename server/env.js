@@ -31,8 +31,8 @@ export const PORT = parseInt(process.env.PORT || '8080', 10);
 export const ENDPOINT_ID = 'predefined-gpt-5.6-sol';
 export const REASONING_EFFORT = 'medium';
 
-// STREAM_DEBUG: verbose SSE frame logging (upstream + browser side) and the /api/debug/stream-demo
-// endpoint. ON by default at start; set STREAM_DEBUG=false to turn off (STREAM_DEBUG=true = explicit-on).
+// STREAM_DEBUG: verbose server-side SSE frame logging (upstream + browser side).
+// Set STREAM_DEBUG=false to turn off (STREAM_DEBUG=true = explicit-on).
 export const STREAM_DEBUG = String(process.env.STREAM_DEBUG ?? 'true').toLowerCase() !== 'false';
 
 if (!ONDEMAND_API_KEY) {

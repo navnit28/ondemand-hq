@@ -27,7 +27,7 @@ by a blank line; the terminal sentinel is the literal `data:[DONE]`.
 | eventType | Payload keys (live) | Meaning |
 |---|---|---|
 | `fulfillment` | `sessionId, messageId, answer, status:"processing", eventIndex, eventType` | **Answer token delta** in `.answer` (the ONLY event type shown in the docs' stream sample) |
-| `fulfillment_thinking` | `.thinking.delta` | **Thinking/reasoning token delta** — NOT in the public docs; retained from prior live captures. **Live status 2026-07-17: `predefined-gpt-5.6-sol` emitted ZERO `fulfillment_thinking` frames at both `medium` and `max` reasoningEffort (45- and 94-frame captures today; consistent with the three captures from the earlier pass).** Parser support kept; synthetic demo route proves the render path. |
+| `fulfillment_thinking` | `.thinking.delta` | **Thinking/reasoning token delta** — NOT in the public docs; retained from prior live captures. **Live status 2026-07-17: `predefined-gpt-5.6-sol` emitted ZERO `fulfillment_thinking` frames at both `medium` and `max` reasoningEffort (45- and 94-frame captures today; consistent with the three captures from the earlier pass).** Parser support kept. (A synthetic debug route previously proved the render path; it was REMOVED in the 2026-07-17 final cleanup — no simulated thinking content remains in the app.) |
 | `statusLog` | `currentStatusLog:{statusType,statusMessage}, eventIndex, …` | Progress/status frames (e.g. `fulfillment_started`, `fulfillment_completed`) — live-observed, not in the docs sample |
 | `metricsLog` | `publicMetrics:{…}, eventIndex, …` | Token/latency metrics at end of generation — live-observed, not in the docs sample |
 | *(no eventType)* | `sessionId, messageId, time` | Heartbeat/keep-alive data frame — live-observed; must be silently ignored |
@@ -60,9 +60,10 @@ by a blank line; the terminal sentinel is the literal `data:[DONE]`.
   form returns HTTP 400 per Phase-1 verification).
 - Even with `reasoningEffort: max`, today's captures show the platform does not currently
   surface thinking frames for this endpoint. If/when it does, the pipeline (parser →
-  SSE passthrough → `Thinking…` accordion) renders them live token-by-token — proven via the
-  synthetic `/api/debug/stream-demo` route which pushes `fulfillment_thinking`-shaped deltas
-  through the identical wire path.
+  SSE passthrough → `Thinking…` accordion) renders them live token-by-token. (Historical
+  note: this was once proven via a synthetic debug route; that route and its 'Demo
+  thinking' UI were REMOVED in the 2026-07-17 final cleanup — no simulated thinking or
+  tool-call content exists anywhere in runtime code.)
 
 ### Workstream 1 audit fixes applied today (see git log for the commit)
 - `/api/chat` now aborts the **upstream** OnDemand fetch when the browser disconnects

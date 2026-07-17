@@ -40,3 +40,17 @@ The requested 200-rule for STT/TTS is therefore **not achievable on this account
 recorded here as a truthful negative rather than fabricated success. Once the
 account is subscribed, the exact same three requests above are the documented path
 (STT returns `data.text`; TTS returns `data.audioUrl` to a permanently stored MP3).
+
+### Confirmation re-run (final-verification pass, 2026-07-17 ~17:09 UTC)
+
+Independent second probe run during the final cleanup/verification pass — same
+negative result, confirming stability of the finding:
+
+| # | Service | Language | UTC timestamp | HTTP | Latency | Verbatim response body |
+|---|---|---|---|---|---|---|
+| 1 | TTS `text_to_speech` | English ("Hello from the ODA Productivity Suite verification run.") | 2026-07-17T17:09:26.663Z | **400** | 250 ms | `{"message":"Please subscribe to the service to use it","errorCode":"invalid_request"}` |
+| 2 | TTS `text_to_speech` | Arabic ("مرحباً بكم في جناح الإنتاجية لمكتب شؤون التنمية.") | 2026-07-17T17:09:26.913Z | **400** | 297 ms | `{"message":"Please subscribe to the service to use it","errorCode":"invalid_request"}` |
+| 3 | STT `speech_to_text` | English (public sample WAV) | 2026-07-17T17:09:27.210Z | **400** | 142 ms | `{"message":"Please subscribe to the service to use it","errorCode":"invalid_request"}` |
+
+No fake audio, no synthetic transcript, and no Web Speech API fallback exists
+anywhere in the codebase (verified by the 2026-07-17 final-cleanup grep pass — see NOTES.md).

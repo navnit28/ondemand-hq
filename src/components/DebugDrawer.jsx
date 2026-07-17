@@ -7,7 +7,7 @@ import ErrorBoundary from './ErrorBoundary.jsx';
  * Subscribes to streamDebugBus (tapped inside api.js streamChat BEFORE onEvent)
  * so it never alters the app's stream semantics. Shows a live frame feed,
  * TTFT / tokens-per-second metrics for the current run, per-type counters,
- * a UTC clock, and a 'Demo thinking' runner against /api/debug/stream-demo.
+ * and a UTC clock.
  */
 
 /* ---------- shared enabled state (drawer header toggle + footer toggle) ---------- */
@@ -43,46 +43,25 @@ const TYPE_CLASS = {
 const typeClass = (t) => TYPE_CLASS[t] || 'dbg-t-quiet';
 const feedTime = (iso) => (iso ? `${String(iso).slice(11, 23)}` : '—');
 
-/** Tiny local SSE reader for the synthetic demo endpoint — same wire format
- *  as streamChat (`data:{type,…}\n\n` + `: keepalive` comments); emits every
- *  frame to streamDebugBus and feeds thinking/answer deltas to onDelta. */
-async function runDemoStream(onDelta) {
-  const r = await fetch('/api/debug/stream-demo');
-  if (!r.ok || !r.body) throw new Error(`demo endpoint HTTP ${r.status} (server STREAM_DEBUG off?)`);
-  streamDebugBus.emit({ kind: 'lifecycle', type: 'open' });
-  const reader = r.body.getReader();
-  const dec = new TextDecoder();
-  let buf = '';
-  const processLine = (rawLine) => {
-    const line = rawLine.replace(/\r$/, '');
-    if (line.startsWith(':')) { streamDebugBus.emit({ kind: 'frame', type: 'keepalive', chars: 0 }); return; }
-    if (!line.startsWith('data:')) return;
-    let evt;
-    try { evt = JSON.parse(line.slice(5)); } catch { return; }
-    streamDebugBus.emit({ kind: 'frame', type: evt.type, serverTs: evt.ts, chars: (evt.delta || '').length, raw: evt });
-    if ((evt.type === 'thinking' || evt.type === 'answer') && evt.delta) onDelta(evt.delta);
-  };
-  const drain = () => {
-    let idx;
-    while ((idx = buf.indexOf('\n')) >= 0) { processLine(buf.slice(0, idx)); buf = buf.slice(idx + 1); }
-  };
-  while (true) {
-    const { done, value } = await reader.read();
-    if (done) {
-      buf += dec.decode();
-      drain();
-      if (buf.trim()) processLine(buf);
-      streamDebugBus.emit({ kind: 'lifecycle', type: 'close' });
-      break;
-    }
-    buf += dec.decode(value, { stream: true });
-    drain();
-  }
-}
+/* ---------- debug-UI gate: visible ONLY with ?debug=1 (or VITE_DEBUG_UI=1 build flag) ---------- */
+export const DEBUG_UI_ENABLED = (() => {
+  try {
+    if (typeof location !== 'undefined' && new URLSearchParams(location.search).get('debug') === '1') return true;
+    if (typeof import.meta !== 'undefined' && import.meta.env?.VITE_DEBUG_UI === '1') return true;
+  } catch { /* SSR / no location */ }
+  return false;
+})();
 
 /* ---------- footer (mounted at the bottom of the main column) ---------- */
 export function DebugFooter() {
   const [enabled, setEnabled] = useStreamDebugEnabled();
+  if (!DEBUG_UI_ENABLED) {
+    return (
+      <footer className="app-footer">
+        <span className="app-footer__brand">ODA Productivity Suite</span>
+      </footer>
+    );
+  }
   return (
     <footer className="app-footer">
       <span className="app-footer__brand">ODA Productivity Suite</span>
@@ -113,9 +92,6 @@ function DebugDrawerInner() {
   const [openDrawer, setOpenDrawer] = useState(false);
   const [tick, setTick] = useState(0);           // re-render pump for ref-held feed/metrics
   const [clock, setClock] = useState('');
-  const [preview, setPreview] = useState('');
-  const [demoBusy, setDemoBusy] = useState(false);
-  const [demoErr, setDemoErr] = useState(null);
 
   const rowsRef = useRef([]);                    // ring buffer, last 300 events
   const seqRef = useRef(0);
@@ -167,20 +143,6 @@ function DebugDrawerInner() {
     if (openDrawer && feedRef.current) feedRef.current.scrollTop = feedRef.current.scrollHeight;
   }, [tick, openDrawer]);
 
-  const onDemo = async () => {
-    if (demoBusy) return;
-    setDemoBusy(true);
-    setDemoErr(null);
-    setPreview('');
-    try {
-      await runDemoStream((delta) => setPreview(p => p + delta));
-    } catch (e) {
-      setDemoErr(e.message || 'Demo stream failed');
-    } finally {
-      setDemoBusy(false);
-    }
-  };
-
   if (!enabled) return null;                     // footer toggle re-enables
 
   const run = runRef.current;
@@ -197,13 +159,6 @@ function DebugDrawerInner() {
           {framesRef.current} frames · TTFT <b data-testid="debug-ttft">{ttftLabel}</b> · <b data-testid="debug-tps">{tpsLabel}</b> tok/s
         </span>
         <span className="debug-drawer__clock" data-testid="debug-clock">{clock}</span>
-        <button
-          type="button"
-          className="debug-drawer__demo"
-          data-testid="debug-demo-btn"
-          disabled={demoBusy}
-          onClick={(e) => { e.stopPropagation(); onDemo(); }}
-        >{demoBusy ? 'Running…' : 'Demo thinking'}</button>
         <span className={`debug-drawer__chev${openDrawer ? ' up' : ''}`} aria-hidden>▾</span>
       </div>
 
@@ -231,7 +186,7 @@ function DebugDrawerInner() {
           </div>
 
           <div className="debug-drawer__feed" data-testid="debug-feed" ref={feedRef}>
-            {rowsRef.current.length === 0 && <div className="dbg-row dbg-t-quiet">— no stream events yet; send a message or run the demo —</div>}
+            {rowsRef.current.length === 0 && <div className="dbg-row dbg-t-quiet">— no stream events yet; send a message —</div>}
             {rowsRef.current.map(r => (
               <div key={r.seq} className={`dbg-row ${typeClass(r.type)}`}>
                 <span className="dbg-row__ts">{feedTime(r.clientTs)}</span>
@@ -241,10 +196,6 @@ function DebugDrawerInner() {
             ))}
           </div>
 
-          <div className="debug-drawer__previewwrap">
-            <div className="debug-drawer__previewtitle">Demo thinking preview{demoErr ? ` — ${demoErr}` : ''}</div>
-            <pre className="debug-drawer__preview" data-testid="debug-preview">{preview || (demoBusy ? '…' : '')}</pre>
-          </div>
         </div>
       )}
     </aside>
@@ -252,6 +203,7 @@ function DebugDrawerInner() {
 }
 
 export default function DebugDrawer() {
+  if (!DEBUG_UI_ENABLED) return null;            // hard gate: never rendered for regular users
   return (
     <ErrorBoundary name="debug-drawer">
       <DebugDrawerInner />

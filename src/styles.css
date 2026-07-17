@@ -396,13 +396,6 @@ textarea, input { font-family: inherit; }
   margin-left: auto; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
   font-size: 10.5px; color: var(--ink-55); white-space: nowrap;
 }
-.debug-drawer__demo {
-  border: 1px solid #159a7a; color: #159a7a; background: #fff;
-  border-radius: 8px; padding: 3px 10px; font-size: 11px; font-weight: 600; cursor: pointer;
-  transition: background .15s, color .15s;
-}
-.debug-drawer__demo:hover:not(:disabled) { background: #159a7a; color: #fff; }
-.debug-drawer__demo:disabled { opacity: .55; cursor: default; }
 .debug-drawer__chev { color: var(--ink-35); font-size: 12px; transition: transform .15s; }
 .debug-drawer__chev.up { transform: rotate(180deg); }
 
@@ -469,8 +462,7 @@ textarea, input { font-family: inherit; }
 .dbg-switch.on .dbg-switch__knob { transform: translateX(14px); }
 
 @media (prefers-reduced-motion: reduce) {
-  .dbg-switch, .dbg-switch__knob, .debug-drawer__chev, .debug-drawer__demo { transition: none; }
-}
+  .dbg-switch, .dbg-switch__knob, .debug-drawer__chev, }
 
 /* ===== Workstream-2: bilingual rotating-word loader (replaces static spinners) ===== */
 .biloader { display: inline-flex; align-items: center; gap: 10px; color: #7c847f; }
