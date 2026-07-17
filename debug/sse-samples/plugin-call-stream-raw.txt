@@ -1,0 +1,333 @@
+event:thinking
+data:{"sessionId":"6a5a60b333960cd24772b05d","messageId":"6a5a60b433960cd24772b05e","eventIndex":1,"eventType":"planning_thinking","status":"processing","thinking":{"delta":"**Planning GDP Query**\n\nI need"}}
+
+event:thinking
+data:{"sessionId":"6a5a60b333960cd24772b05d","messageId":"6a5a60b433960cd24772b05e","eventIndex":2,"eventType":"planning_thinking","status":"processing","thinking":{"delta":" to create a plan that focuses"}}
+
+event:thinking
+data:{"sessionId":"6a5a60b333960cd24772b05d","messageId":"6a5a60b433960cd24772b05e","eventIndex":3,"eventType":"planning_thinking","status":"processing","thinking":{"delta":" solely on using JSON with the"}}
+
+event:thinking
+data:{"sessionId":"6a5a60b333960cd24772b05d","messageId":"6a5a60b433960cd24772b05e","eventIndex":4,"eventType":"planning_thinking","status":"processing","thinking":{"delta":" plugin. The first step should"}}
+
+event:thinking
+data:{"sessionId":"6a5a60b333960cd24772b05d","messageId":"6a5a60b433960cd24772b05e","eventIndex":5,"eventType":"planning_thinking","status":"processing","thinking":{"delta":" be to fetch the latest GDP data"}}
+
+event:thinking
+data:{"sessionId":"6a5a60b333960cd24772b05d","messageId":"6a5a60b433960cd24772b05e","eventIndex":6,"eventType":"planning_thinking","status":"processing","thinking":{"delta":" in USD for the UAE from the World"}}
+
+event:thinking
+data:{"sessionId":"6a5a60b333960cd24772b05d","messageId":"6a5a60b433960cd24772b05e","eventIndex":7,"eventType":"planning_thinking","status":"processing","thinking":{"delta":" Bank. I might consider starting"}}
+
+event:thinking
+data:{"sessionId":"6a5a60b333960cd24772b05d","messageId":"6a5a60b433960cd24772b05e","eventIndex":8,"eventType":"planning_thinking","status":"processing","thinking":{"delta":" with an empty assistant query"}}
+
+event:thinking
+data:{"sessionId":"6a5a60b333960cd24772b05d","messageId":"6a5a60b433960cd24772b05e","eventIndex":9,"eventType":"planning_thinking","status":"processing","thinking":{"delta":" as a baseline. This should help"}}
+
+event:heartbeat
+data:{"sessionId":"6a5a60b333960cd24772b05d","messageId":"6a5a60b433960cd24772b05e","time":"2026-07-17T17:04:55Z"}
+
+event:thinking
+data:{"sessionId":"6a5a60b333960cd24772b05d","messageId":"6a5a60b433960cd24772b05e","eventIndex":10,"eventType":"planning_thinking","status":"processing","thinking":{"delta":" streamline my process for gathering"}}
+
+event:thinking
+data:{"sessionId":"6a5a60b333960cd24772b05d","messageId":"6a5a60b433960cd24772b05e","eventIndex":11,"eventType":"planning_thinking","status":"processing","thinking":{"delta":" the information needed. Alright"}}
+
+event:thinking
+data:{"sessionId":"6a5a60b333960cd24772b05d","messageId":"6a5a60b433960cd24772b05e","eventIndex":12,"eventType":"planning_thinking","status":"processing","thinking":{"delta":", let’s keep things organized and"}}
+
+event:thinking
+data:{"sessionId":"6a5a60b333960cd24772b05d","messageId":"6a5a60b433960cd24772b05e","eventIndex":13,"eventType":"planning_output","status":"processing","output":{"delta":"{\n  \"objective\": \"Find the latest"}}
+
+event:thinking
+data:{"sessionId":"6a5a60b333960cd24772b05d","messageId":"6a5a60b433960cd24772b05e","eventIndex":14,"eventType":"planning_output","status":"processing","output":{"delta":" available GDP figure for the United"}}
+
+event:thinking
+data:{"sessionId":"6a5a60b333960cd24772b05d","messageId":"6a5a60b433960cd24772b05e","eventIndex":15,"eventType":"planning_output","status":"processing","output":{"delta":" Arab Emirates according to World"}}
+
+event:thinking
+data:{"sessionId":"6a5a60b333960cd24772b05d","messageId":"6a5a60b433960cd24772b05e","eventIndex":16,"eventType":"planning_output","status":"processing","output":{"delta":" Bank data.\",\n  \"steps\": [\n   "}}
+
+event:thinking
+data:{"sessionId":"6a5a60b333960cd24772b05d","messageId":"6a5a60b433960cd24772b05e","eventIndex":17,"eventType":"planning_output","status":"processing","output":{"delta":" {\n      \"user_query\": \"Retrieve"}}
+
+event:thinking
+data:{"sessionId":"6a5a60b333960cd24772b05d","messageId":"6a5a60b433960cd24772b05e","eventIndex":18,"eventType":"planning_output","status":"processing","output":{"delta":" the UAE's latest GDP value in"}}
+
+event:thinking
+data:{"sessionId":"6a5a60b333960cd24772b05d","messageId":"6a5a60b433960cd24772b05e","eventIndex":19,"eventType":"planning_output","status":"processing","output":{"delta":" current US dollars, including"}}
+
+event:thinking
+data:{"sessionId":"6a5a60b333960cd24772b05d","messageId":"6a5a60b433960cd24772b05e","eventIndex":20,"eventType":"planning_output","status":"processing","output":{"delta":" the reference year, from World"}}
+
+event:thinking
+data:{"sessionId":"6a5a60b333960cd24772b05d","messageId":"6a5a60b433960cd24772b05e","eventIndex":21,"eventType":"planning_output","status":"processing","output":{"delta":" Bank data.\",\n      \"assistant"}}
+
+event:thinking
+data:{"sessionId":"6a5a60b333960cd24772b05d","messageId":"6a5a60b433960cd24772b05e","eventIndex":22,"eventType":"planning_output","status":"processing","output":{"delta":"_query\": \"\",\n      \"depends\": [],\n"}}
+
+event:thinking
+data:{"sessionId":"6a5a60b333960cd24772b05d","messageId":"6a5a60b433960cd24772b05e","eventIndex":23,"eventType":"planning_output","status":"processing","output":{"delta":"      \"plugins\": [\n        \"fetch"}}
+
+event:thinking
+data:{"sessionId":"6a5a60b333960cd24772b05d","messageId":"6a5a60b433960cd24772b05e","eventIndex":24,"eventType":"planning_output","status":"processing","output":{"delta":"InternetData\"\n      ]\n    }\n  ]\n"}}
+
+event:thinking
+data:{"sessionId":"6a5a60b333960cd24772b05d","messageId":"6a5a60b433960cd24772b05e","eventIndex":25,"eventType":"planning_thinking","status":"processing","thinking":{"delta":" straightforward!"}}
+
+event:thinking
+data:{"sessionId":"6a5a60b333960cd24772b05d","messageId":"6a5a60b433960cd24772b05e","eventIndex":26,"eventType":"planning_output","status":"processing","output":{"delta":"}"}}
+
+event:thinking
+data:{"sessionId":"6a5a60b333960cd24772b05d","messageId":"6a5a60b433960cd24772b05e","eventIndex":27,"eventType":"planning_thinking","status":"processing","thinking":{"delta":""}}
+
+event:thinking
+data:{"sessionId":"6a5a60b333960cd24772b05d","messageId":"6a5a60b433960cd24772b05e","eventIndex":28,"eventType":"planning_output","status":"processing","output":{"delta":""}}
+
+event:thinking
+data:{"sessionId":"6a5a60b333960cd24772b05d","messageId":"6a5a60b433960cd24772b05e","eventIndex":29,"eventType":"step_output","status":"processing","output":{"delta":"{\"plugins\":[{\"pluginId\":\"plugin"}}
+
+event:thinking
+data:{"sessionId":"6a5a60b333960cd24772b05d","messageId":"6a5a60b433960cd24772b05e","eventIndex":30,"eventType":"step_output","status":"processing","output":{"delta":"-1713924030\",\"name\":\"fetchInternet"}}
+
+event:thinking
+data:{"sessionId":"6a5a60b333960cd24772b05d","messageId":"6a5a60b433960cd24772b05e","eventIndex":31,"eventType":"step_output","status":"processing","output":{"delta":"Data\",\"description\":\"Searches for"}}
+
+event:thinking
+data:{"sessionId":"6a5a60b333960cd24772b05d","messageId":"6a5a60b433960cd24772b05e","eventIndex":32,"eventType":"step_output","status":"processing","output":{"delta":" the latest UAE GDP value in current"}}
+
+event:thinking
+data:{"sessionId":"6a5a60b333960cd24772b05d","messageId":"6a5a60b433960cd24772b05e","eventIndex":33,"eventType":"step_output","status":"processing","output":{"delta":" US dollars and its reference year"}}
+
+event:thinking
+data:{"sessionId":"6a5a60b333960cd24772b05d","messageId":"6a5a60b433960cd24772b05e","eventIndex":34,"eventType":"step_output","status":"processing","output":{"delta":" from World Bank data.\",\"api_request"}}
+
+event:thinking
+data:{"sessionId":"6a5a60b333960cd24772b05d","messageId":"6a5a60b433960cd24772b05e","eventIndex":35,"eventType":"step_output","status":"processing","output":{"delta":"_parameters\":{\"query\":\"World Bank"}}
+
+event:thinking
+data:{"sessionId":"6a5a60b333960cd24772b05d","messageId":"6a5a60b433960cd24772b05e","eventIndex":36,"eventType":"step_output","status":"processing","output":{"delta":" UAE GDP current US$ latest value"}}
+
+event:thinking
+data:{"sessionId":"6a5a60b333960cd24772b05d","messageId":"6a5a60b433960cd24772b05e","eventIndex":37,"eventType":"step_output","status":"processing","output":{"delta":" reference year\"},\"all_parameters"}}
+
+event:thinking
+data:{"sessionId":"6a5a60b333960cd24772b05d","messageId":"6a5a60b433960cd24772b05e","eventIndex":38,"eventType":"step_output","status":"processing","output":{"delta":"_hydrated\":true,\"dependencies\":[]"}}
+
+event:thinking
+data:{"sessionId":"6a5a60b333960cd24772b05d","messageId":"6a5a60b433960cd24772b05e","eventIndex":39,"eventType":"step_output","status":"processing","output":{"delta":",\"identifier\":\"rest_api\"}]}"}}
+
+event:thinking
+data:{"sessionId":"6a5a60b333960cd24772b05d","messageId":"6a5a60b433960cd24772b05e","eventIndex":40,"eventType":"step_thinking","status":"processing","thinking":{"delta":""}}
+
+event:thinking
+data:{"sessionId":"6a5a60b333960cd24772b05d","messageId":"6a5a60b433960cd24772b05e","eventIndex":41,"eventType":"step_output","status":"processing","output":{"delta":""}}
+
+event:heartbeat
+data:{"sessionId":"6a5a60b333960cd24772b05d","messageId":"6a5a60b433960cd24772b05e","time":"2026-07-17T17:04:58Z"}
+
+event:heartbeat
+data:{"sessionId":"6a5a60b333960cd24772b05d","messageId":"6a5a60b433960cd24772b05e","time":"2026-07-17T17:05:01Z"}
+
+event:heartbeat
+data:{"sessionId":"6a5a60b333960cd24772b05d","messageId":"6a5a60b433960cd24772b05e","time":"2026-07-17T17:05:04Z"}
+
+event:message
+data:{"sessionId":"6a5a60b333960cd24772b05d","messageId":"6a5a60b433960cd24772b05e","eventIndex":1,"eventType":"statusLog","status":"processing","currentStatusLog":{"statusType":"fulfilling","statusMessage":"Fulfilling the prompt...","time":"2026-07-17T17:05:04Z"}}
+
+event:heartbeat
+data:{"sessionId":"6a5a60b333960cd24772b05d","messageId":"6a5a60b433960cd24772b05e","time":"2026-07-17T17:05:07Z"}
+
+event:message
+data:{"sessionId": "6a5a60b333960cd24772b05d", "messageId": "6a5a60b433960cd24772b05e", "answer": "According", "status": "processing", "eventIndex":2, "eventType": "fulfillment"}
+
+event:message
+data:{"sessionId": "6a5a60b333960cd24772b05d", "messageId": "6a5a60b433960cd24772b05e", "answer": " to", "status": "processing", "eventIndex":3, "eventType": "fulfillment"}
+
+event:message
+data:{"sessionId": "6a5a60b333960cd24772b05d", "messageId": "6a5a60b433960cd24772b05e", "answer": " the", "status": "processing", "eventIndex":4, "eventType": "fulfillment"}
+
+event:message
+data:{"sessionId": "6a5a60b333960cd24772b05d", "messageId": "6a5a60b433960cd24772b05e", "answer": " World", "status": "processing", "eventIndex":5, "eventType": "fulfillment"}
+
+event:message
+data:{"sessionId": "6a5a60b333960cd24772b05d", "messageId": "6a5a60b433960cd24772b05e", "answer": " Bank", "status": "processing", "eventIndex":6, "eventType": "fulfillment"}
+
+event:message
+data:{"sessionId": "6a5a60b333960cd24772b05d", "messageId": "6a5a60b433960cd24772b05e", "answer": ",", "status": "processing", "eventIndex":7, "eventType": "fulfillment"}
+
+event:message
+data:{"sessionId": "6a5a60b333960cd24772b05d", "messageId": "6a5a60b433960cd24772b05e", "answer": " the", "status": "processing", "eventIndex":8, "eventType": "fulfillment"}
+
+event:message
+data:{"sessionId": "6a5a60b333960cd24772b05d", "messageId": "6a5a60b433960cd24772b05e", "answer": " UAE", "status": "processing", "eventIndex":9, "eventType": "fulfillment"}
+
+event:message
+data:{"sessionId": "6a5a60b333960cd24772b05d", "messageId": "6a5a60b433960cd24772b05e", "answer": "\u2019s", "status": "processing", "eventIndex":10, "eventType": "fulfillment"}
+
+event:message
+data:{"sessionId": "6a5a60b333960cd24772b05d", "messageId": "6a5a60b433960cd24772b05e", "answer": " GDP", "status": "processing", "eventIndex":11, "eventType": "fulfillment"}
+
+event:message
+data:{"sessionId": "6a5a60b333960cd24772b05d", "messageId": "6a5a60b433960cd24772b05e", "answer": " was", "status": "processing", "eventIndex":12, "eventType": "fulfillment"}
+
+event:message
+data:{"sessionId": "6a5a60b333960cd24772b05d", "messageId": "6a5a60b433960cd24772b05e", "answer": " approximately", "status": "processing", "eventIndex":13, "eventType": "fulfillment"}
+
+event:message
+data:{"sessionId": "6a5a60b333960cd24772b05d", "messageId": "6a5a60b433960cd24772b05e", "answer": " **", "status": "processing", "eventIndex":14, "eventType": "fulfillment"}
+
+event:message
+data:{"sessionId": "6a5a60b333960cd24772b05d", "messageId": "6a5a60b433960cd24772b05e", "answer": "US", "status": "processing", "eventIndex":15, "eventType": "fulfillment"}
+
+event:message
+data:{"sessionId": "6a5a60b333960cd24772b05d", "messageId": "6a5a60b433960cd24772b05e", "answer": "$", "status": "processing", "eventIndex":16, "eventType": "fulfillment"}
+
+event:message
+data:{"sessionId": "6a5a60b333960cd24772b05d", "messageId": "6a5a60b433960cd24772b05e", "answer": "552", "status": "processing", "eventIndex":17, "eventType": "fulfillment"}
+
+event:message
+data:{"sessionId": "6a5a60b333960cd24772b05d", "messageId": "6a5a60b433960cd24772b05e", "answer": ".", "status": "processing", "eventIndex":18, "eventType": "fulfillment"}
+
+event:message
+data:{"sessionId": "6a5a60b333960cd24772b05d", "messageId": "6a5a60b433960cd24772b05e", "answer": "3", "status": "processing", "eventIndex":19, "eventType": "fulfillment"}
+
+event:message
+data:{"sessionId": "6a5a60b333960cd24772b05d", "messageId": "6a5a60b433960cd24772b05e", "answer": " billion", "status": "processing", "eventIndex":20, "eventType": "fulfillment"}
+
+event:message
+data:{"sessionId": "6a5a60b333960cd24772b05d", "messageId": "6a5a60b433960cd24772b05e", "answer": " in", "status": "processing", "eventIndex":21, "eventType": "fulfillment"}
+
+event:message
+data:{"sessionId": "6a5a60b333960cd24772b05d", "messageId": "6a5a60b433960cd24772b05e", "answer": " ", "status": "processing", "eventIndex":22, "eventType": "fulfillment"}
+
+event:message
+data:{"sessionId": "6a5a60b333960cd24772b05d", "messageId": "6a5a60b433960cd24772b05e", "answer": "202", "status": "processing", "eventIndex":23, "eventType": "fulfillment"}
+
+event:message
+data:{"sessionId": "6a5a60b333960cd24772b05d", "messageId": "6a5a60b433960cd24772b05e", "answer": "4", "status": "processing", "eventIndex":24, "eventType": "fulfillment"}
+
+event:message
+data:{"sessionId": "6a5a60b333960cd24772b05d", "messageId": "6a5a60b433960cd24772b05e", "answer": "**,", "status": "processing", "eventIndex":25, "eventType": "fulfillment"}
+
+event:message
+data:{"sessionId": "6a5a60b333960cd24772b05d", "messageId": "6a5a60b433960cd24772b05e", "answer": " the", "status": "processing", "eventIndex":26, "eventType": "fulfillment"}
+
+event:message
+data:{"sessionId": "6a5a60b333960cd24772b05d", "messageId": "6a5a60b433960cd24772b05e", "answer": " latest", "status": "processing", "eventIndex":27, "eventType": "fulfillment"}
+
+event:message
+data:{"sessionId": "6a5a60b333960cd24772b05d", "messageId": "6a5a60b433960cd24772b05e", "answer": " available", "status": "processing", "eventIndex":28, "eventType": "fulfillment"}
+
+event:message
+data:{"sessionId": "6a5a60b333960cd24772b05d", "messageId": "6a5a60b433960cd24772b05e", "answer": " year", "status": "processing", "eventIndex":29, "eventType": "fulfillment"}
+
+event:message
+data:{"sessionId": "6a5a60b333960cd24772b05d", "messageId": "6a5a60b433960cd24772b05e", "answer": ",", "status": "processing", "eventIndex":30, "eventType": "fulfillment"}
+
+event:message
+data:{"sessionId": "6a5a60b333960cd24772b05d", "messageId": "6a5a60b433960cd24772b05e", "answer": " measured", "status": "processing", "eventIndex":31, "eventType": "fulfillment"}
+
+event:message
+data:{"sessionId": "6a5a60b333960cd24772b05d", "messageId": "6a5a60b433960cd24772b05e", "answer": " in", "status": "processing", "eventIndex":32, "eventType": "fulfillment"}
+
+event:message
+data:{"sessionId": "6a5a60b333960cd24772b05d", "messageId": "6a5a60b433960cd24772b05e", "answer": " current", "status": "processing", "eventIndex":33, "eventType": "fulfillment"}
+
+event:message
+data:{"sessionId": "6a5a60b333960cd24772b05d", "messageId": "6a5a60b433960cd24772b05e", "answer": " U", "status": "processing", "eventIndex":34, "eventType": "fulfillment"}
+
+event:message
+data:{"sessionId": "6a5a60b333960cd24772b05d", "messageId": "6a5a60b433960cd24772b05e", "answer": ".S", "status": "processing", "eventIndex":35, "eventType": "fulfillment"}
+
+event:message
+data:{"sessionId": "6a5a60b333960cd24772b05d", "messageId": "6a5a60b433960cd24772b05e", "answer": ".", "status": "processing", "eventIndex":36, "eventType": "fulfillment"}
+
+event:message
+data:{"sessionId": "6a5a60b333960cd24772b05d", "messageId": "6a5a60b433960cd24772b05e", "answer": " dollars", "status": "processing", "eventIndex":37, "eventType": "fulfillment"}
+
+event:message
+data:{"sessionId": "6a5a60b333960cd24772b05d", "messageId": "6a5a60b433960cd24772b05e", "answer": ".\n\n", "status": "processing", "eventIndex":38, "eventType": "fulfillment"}
+
+event:message
+data:{"sessionId": "6a5a60b333960cd24772b05d", "messageId": "6a5a60b433960cd24772b05e", "answer": "Source", "status": "processing", "eventIndex":39, "eventType": "fulfillment"}
+
+event:message
+data:{"sessionId": "6a5a60b333960cd24772b05d", "messageId": "6a5a60b433960cd24772b05e", "answer": ":", "status": "processing", "eventIndex":40, "eventType": "fulfillment"}
+
+event:message
+data:{"sessionId": "6a5a60b333960cd24772b05d", "messageId": "6a5a60b433960cd24772b05e", "answer": " https", "status": "processing", "eventIndex":41, "eventType": "fulfillment"}
+
+event:message
+data:{"sessionId": "6a5a60b333960cd24772b05d", "messageId": "6a5a60b433960cd24772b05e", "answer": "://", "status": "processing", "eventIndex":42, "eventType": "fulfillment"}
+
+event:message
+data:{"sessionId": "6a5a60b333960cd24772b05d", "messageId": "6a5a60b433960cd24772b05e", "answer": "data", "status": "processing", "eventIndex":43, "eventType": "fulfillment"}
+
+event:message
+data:{"sessionId": "6a5a60b333960cd24772b05d", "messageId": "6a5a60b433960cd24772b05e", "answer": ".world", "status": "processing", "eventIndex":44, "eventType": "fulfillment"}
+
+event:message
+data:{"sessionId": "6a5a60b333960cd24772b05d", "messageId": "6a5a60b433960cd24772b05e", "answer": "bank", "status": "processing", "eventIndex":45, "eventType": "fulfillment"}
+
+event:message
+data:{"sessionId": "6a5a60b333960cd24772b05d", "messageId": "6a5a60b433960cd24772b05e", "answer": ".org", "status": "processing", "eventIndex":46, "eventType": "fulfillment"}
+
+event:message
+data:{"sessionId": "6a5a60b333960cd24772b05d", "messageId": "6a5a60b433960cd24772b05e", "answer": "/", "status": "processing", "eventIndex":47, "eventType": "fulfillment"}
+
+event:message
+data:{"sessionId": "6a5a60b333960cd24772b05d", "messageId": "6a5a60b433960cd24772b05e", "answer": "indicator", "status": "processing", "eventIndex":48, "eventType": "fulfillment"}
+
+event:message
+data:{"sessionId": "6a5a60b333960cd24772b05d", "messageId": "6a5a60b433960cd24772b05e", "answer": "/", "status": "processing", "eventIndex":49, "eventType": "fulfillment"}
+
+event:message
+data:{"sessionId": "6a5a60b333960cd24772b05d", "messageId": "6a5a60b433960cd24772b05e", "answer": "NY", "status": "processing", "eventIndex":50, "eventType": "fulfillment"}
+
+event:message
+data:{"sessionId": "6a5a60b333960cd24772b05d", "messageId": "6a5a60b433960cd24772b05e", "answer": ".G", "status": "processing", "eventIndex":51, "eventType": "fulfillment"}
+
+event:message
+data:{"sessionId": "6a5a60b333960cd24772b05d", "messageId": "6a5a60b433960cd24772b05e", "answer": "DP", "status": "processing", "eventIndex":52, "eventType": "fulfillment"}
+
+event:message
+data:{"sessionId": "6a5a60b333960cd24772b05d", "messageId": "6a5a60b433960cd24772b05e", "answer": ".M", "status": "processing", "eventIndex":53, "eventType": "fulfillment"}
+
+event:message
+data:{"sessionId": "6a5a60b333960cd24772b05d", "messageId": "6a5a60b433960cd24772b05e", "answer": "K", "status": "processing", "eventIndex":54, "eventType": "fulfillment"}
+
+event:message
+data:{"sessionId": "6a5a60b333960cd24772b05d", "messageId": "6a5a60b433960cd24772b05e", "answer": "TP", "status": "processing", "eventIndex":55, "eventType": "fulfillment"}
+
+event:message
+data:{"sessionId": "6a5a60b333960cd24772b05d", "messageId": "6a5a60b433960cd24772b05e", "answer": ".C", "status": "processing", "eventIndex":56, "eventType": "fulfillment"}
+
+event:message
+data:{"sessionId": "6a5a60b333960cd24772b05d", "messageId": "6a5a60b433960cd24772b05e", "answer": "D", "status": "processing", "eventIndex":57, "eventType": "fulfillment"}
+
+event:message
+data:{"sessionId": "6a5a60b333960cd24772b05d", "messageId": "6a5a60b433960cd24772b05e", "answer": "?", "status": "processing", "eventIndex":58, "eventType": "fulfillment"}
+
+event:message
+data:{"sessionId": "6a5a60b333960cd24772b05d", "messageId": "6a5a60b433960cd24772b05e", "answer": "locations", "status": "processing", "eventIndex":59, "eventType": "fulfillment"}
+
+event:message
+data:{"sessionId": "6a5a60b333960cd24772b05d", "messageId": "6a5a60b433960cd24772b05e", "answer": "=", "status": "processing", "eventIndex":60, "eventType": "fulfillment"}
+
+event:message
+data:{"sessionId": "6a5a60b333960cd24772b05d", "messageId": "6a5a60b433960cd24772b05e", "answer": "AE", "status": "processing", "eventIndex":61, "eventType": "fulfillment"}
+
+event:message
+data:{"sessionId":"6a5a60b333960cd24772b05d","messageId":"6a5a60b433960cd24772b05e","eventIndex":62,"eventType":"statusLog","status":"processing","currentStatusLog":{"statusType":"fulfillment_completed","statusMessage":"Fulfillment completed","answer":"According to the World Bank, the UAE’s GDP was approximately **US$552.3 billion in 2024**, the latest available year, measured in current U.S. dollars.\n\nSource: https://data.worldbank.org/indicator/NY.GDP.MKTP.CD?locations=AE","time":"2026-07-17T17:05:08Z"}}
+
+event:message
+data:{"sessionId":"6a5a60b333960cd24772b05d","messageId":"6a5a60b433960cd24772b05e","eventIndex":63,"eventType":"metricsLog","status":"processing","publicMetrics":{"inputTokens":1366,"outputTokens":194,"totalTokens":1560,"ragTimeSec":12.84,"fulfillmentTimeSec":3.66,"totalTimeSec":16.5}}
+
+event:heartbeat
+data:{"sessionId":"6a5a60b333960cd24772b05d","messageId":"6a5a60b433960cd24772b05e","time":"2026-07-17T17:05:10Z"}
+
+event:message
+data:[DONE]
+

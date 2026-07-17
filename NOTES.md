@@ -235,3 +235,148 @@ the grounded `fulfillment` answer deltas (the answer cited the fetched source).
   `statusLog` → phase line, `step_output` → plugin activity, `fulfillment` →
   answer tokens (loader hides on first one), `metricsLog` → debug footer,
   `[DONE]` → close.
+
+---
+
+## 2026-07-17 — Full-proof investigation pass (17:00–17:07 UTC): reasoning param, SSE taxonomy re-verified, Cloud Services STT/TTS
+
+Everything below is backed by a live doc fetch or a raw API response captured this pass.
+Raw SSE dump (source of truth): `debug/sse-samples/plugin-call-stream-raw.txt`
+(22,358 bytes, HTTP 200, session `6a5a60b333960cd24772b05d`, query "What is the current
+GDP of the UAE according to World Bank data?", plugin `plugin-1713924030` attached,
+`endpointId: predefined-gpt-5.6-sol`, `reasoningEffort: "medium"`, `responseMode: "stream"`).
+
+### (1) Reasoning/thinking request parameter — documented vs live
+
+- The live `submitquery` OpenAPI spec (fetched 2026-07-17 via
+  `GET /config/v1/public/docs/reference/api/submitquery`) documents EXACTLY these body
+  properties: `query`, `endpointId`, `responseMode` (enum quoted below), `pluginIds`,
+  `fulfillmentOnly`, `modelConfigs` (`fulfillmentPrompt`, `stopSequences`, `temperature`,
+  `topP`, `presencePenalty`, `frequencyPenalty`). **There is NO documented
+  reasoning/thinking parameter.** `grep -i 'reasoning\|thinking'` over the live
+  `docs/chat-api.md` (fetched today, 958 lines) returns ZERO hits.
+- The only "reasoning" pages in the public docs are BYOR (Bring Your Own Reasoning Mode —
+  a dashboard configuration, not a request parameter) and the Reasoning Modes entity
+  lookup `GET /config/v1/public/entity_definition?entityId=reasoning_modes` (returns a
+  model catalog; no request flag).
+- **Live behaviour:** the top-level body key `reasoningEffort: "medium"` is accepted
+  (HTTP 200, stream proceeds) — an UNDOCUMENTED live-accepted extension. With it, the
+  captured stream DOES contain thinking deltas (`planning_thinking`, `step_thinking`
+  below) during the RAG/agent phase; the fulfillment phase itself emitted no
+  `fulfillment_thinking` frames in this capture.
+
+### (2) Streaming parameter — exact doc quote
+
+From the live submitquery OpenAPI spec, verbatim:
+
+> `"responseMode": { "type": "string", "description": "Response mode to get the query answer", "enum": ["sync", "stream", "webhook"] }`
+
+`responseMode` is in the spec's `required` list (`["query", "endpointId", "responseMode"]`).
+
+### (3) Observed SSE event taxonomy — this pass's raw capture (one real frame each)
+
+Named SSE `event:` lines observed: `event:thinking`, `event:message`, `event:heartbeat`.
+`eventType` values inside `data:` payloads, with counts from this dump:
+`planning_thinking` ×14, `planning_output` ×14, `step_thinking` ×1, `step_output` ×12,
+`fulfillment` ×60, `statusLog` ×2, `metricsLog` ×1, heartbeat-shaped (no eventType) ×6,
+terminal `data:[DONE]` ×1.
+
+One raw frame of each, copied byte-for-byte from `plugin-call-stream-raw.txt`:
+
+**planning_thinking** (thinking/reasoning delta, planning phase):
+```
+event:thinking
+data:{"sessionId":"6a5a60b333960cd24772b05d","messageId":"6a5a60b433960cd24772b05e","eventIndex":1,"eventType":"planning_thinking","status":"processing","thinking":{"delta":"**Planning GDP Query**\n\nI need"}}
+```
+
+**planning_output** (structured plan delta):
+```
+event:thinking
+data:{"sessionId":"6a5a60b333960cd24772b05d","messageId":"6a5a60b433960cd24772b05e","eventIndex":13,"eventType":"planning_output","status":"processing","output":{"delta":"{\n  \"objective\": \"Find the latest"}}
+```
+
+**step_thinking** (thinking delta, step-execution phase; empty delta in this capture):
+```
+event:thinking
+data:{"sessionId":"6a5a60b333960cd24772b05d","messageId":"6a5a60b433960cd24772b05e","eventIndex":40,"eventType":"step_thinking","status":"processing","thinking":{"delta":""}}
+```
+
+**step_output** — the closest thing to a TOOL/PLUGIN-CALL event: the deltas assemble a
+JSON object naming the plugin and its arguments
+(`{"plugins":[{"pluginId":"plugin-1713924030","name":"fetchInternetData",…,"api_request_parameters":{"query":"World Bank UAE GDP current US$ latest value reference year"},…,"identifier":"rest_api"}]}`):
+```
+event:thinking
+data:{"sessionId":"6a5a60b333960cd24772b05d","messageId":"6a5a60b433960cd24772b05e","eventIndex":29,"eventType":"step_output","status":"processing","output":{"delta":"{\"plugins\":[{\"pluginId\":\"plugin"}}
+```
+NOTE: there is NO dedicated "plugin result" event type in this capture — plugin results
+are consumed server-side and surface only in the final answer. No `toolCall`/`tool_result`
+event exists in the dump or the docs.
+
+**fulfillment** (answer token delta — the ONLY event type shown in the public docs' stream sample):
+```
+event:message
+data:{"sessionId": "6a5a60b333960cd24772b05d", "messageId": "6a5a60b433960cd24772b05e", "answer": "According", "status": "processing", "eventIndex":2, "eventType": "fulfillment"}
+```
+
+**statusLog** (status/progress):
+```
+event:message
+data:{"sessionId":"6a5a60b333960cd24772b05d","messageId":"6a5a60b433960cd24772b05e","eventIndex":1,"eventType":"statusLog","status":"processing","currentStatusLog":{"statusType":"fulfilling","statusMessage":"Fulfilling the prompt...","time":"2026-07-17T17:05:04Z"}}
+```
+(The second statusLog frame carries `"statusType":"fulfillment_completed"` and includes the full `answer` text.)
+
+**metricsLog** (end-of-run metrics):
+```
+event:message
+data:{"sessionId":"6a5a60b333960cd24772b05d","messageId":"6a5a60b433960cd24772b05e","eventIndex":63,"eventType":"metricsLog","status":"processing","publicMetrics":{"inputTokens":1366,"outputTokens":194,"totalTokens":1560,"ragTimeSec":12.84,"fulfillmentTimeSec":3.66,"totalTimeSec":16.5}}
+```
+
+**heartbeat** (no eventType):
+```
+event:heartbeat
+data:{"sessionId":"6a5a60b333960cd24772b05d","messageId":"6a5a60b433960cd24772b05e","time":"2026-07-17T17:04:55Z"}
+```
+
+**Completion sentinel:**
+```
+event:message
+data:[DONE]
+```
+
+Doc-coverage statement: of all the above, the public docs' stream sample shows ONLY
+`event:message` + `eventType:"fulfillment"` frames and `data:[DONE]`. Every other event
+type (`planning_*`, `step_*`, `statusLog`, `metricsLog`, `event:thinking`,
+`event:heartbeat`) is live-observed and UNDOCUMENTED.
+
+### (4) Cloud Services — STT / TTS endpoints (docs) and live test result
+
+Documented (live OpenAPI specs `convertaudiototext` / `converttexttoaudio` + live
+`docs/cloud-services-api.md`, all fetched today):
+
+- **STT:** `POST https://api.on-demand.io/services/v1/public/service/execute/speech_to_text`
+  — header `apikey` (required); body `{"audioUrl": "<url>"}` (required); 200 response
+  `{"message":"Service executed successfully","data":{"text":"<transcript>"}}`.
+  Doc quote on formats: *"The Speech to Text API converts audio input into text. It
+  supports the following audio formats: `wav`, `mp3`, `m4a`, `flac`, `aac`, `ogg`,
+  `wma`, `mp4`."*
+- **TTS:** `POST https://api.on-demand.io/services/v1/public/service/execute/text_to_speech`
+  — header `apikey`; body required fields `model` (`"tts-1"|"tts-1-hd"`), `input`,
+  `voice` (`alloy|echo|fable|onyx|nova|shimmer`); 200 response
+  `{"message":"Service executed successfully","data":{"audioUrl":"<mp3 url>"}}`. Doc
+  quote: *"The Text to Speech API converts text input into audio and returns the URL of
+  the audio file. The audio file has permanent storage and is not deleted over time."*
+- **Streaming:** NOT mentioned anywhere in the Cloud Services docs — request/response is
+  a single JSON POST; no streaming variant is documented.
+- **Language coverage:** the docs make NO statement about supported languages for either
+  service (no English/Arabic list). Undocumented.
+- Docs prerequisite quote: *"In order to use these services make sure you have
+  subscribed to these services on the dashboard"* →
+  `https://app.on-demand.io/cloud-services/explore-services`.
+
+**Live test result (2026-07-17 ~17:06 UTC) — HARD-RULE finding:** all three calls (TTS
+English, TTS Arabic, STT with the docs' own sample mp3) returned **HTTP 400
+`{"message":"Please subscribe to the service to use it","errorCode":"invalid_request"}`**
+— exactly the documented 400 "Not subscribed" response. The workspace API key is NOT
+subscribed to Cloud Services, so STT/TTS is **unavailable on this account**; the
+requested 200-rule tests cannot pass with this key. No transcripts or audio were
+produced, and none are claimed. Full request/latency log in `PLUGIN_TESTS.md`.
