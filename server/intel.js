@@ -12,6 +12,7 @@ import path from 'node:path';
 import crypto from 'node:crypto';
 import { fileURLToPath } from 'node:url';
 import { createOdSession, syncQuery } from './ondemand.js';
+import { ANALYSIS_ENDPOINT_ID, ANALYSIS_REASONING_EFFORT } from './env.js';
 import { buildExport } from './exports.js';
 import * as log from './log.js';
 
@@ -116,6 +117,8 @@ async function jsonAnalysis(sessionId, prompt) {
   const answer = await syncQuery({
     odSessionId: sessionId,
     query: prompt,
+    endpointId: ANALYSIS_ENDPOINT_ID,           // analysis model policy (env-overridable for test passes)
+    reasoningEffort: ANALYSIS_REASONING_EFFORT,
     systemPrompt: 'You are the ODA Intelligence analysis engine. Respond with ONE valid JSON object only — no prose, no markdown fences. Every number must be grounded in the provided material; use null when unknown. Never invent facts.',
   });
   return { parsed: extractJson(answer), raw: answer };

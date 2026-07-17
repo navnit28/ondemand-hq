@@ -31,6 +31,13 @@ export const PORT = parseInt(process.env.PORT || '8080', 10);
 export const ENDPOINT_ID = 'predefined-gpt-5.6-sol';
 export const REASONING_EFFORT = 'medium';
 
+// ANALYSIS model policy for the ODA Intelligence pipeline (server/intel.js).
+// PRODUCTION: predefined-gpt-5.6-sol + medium (same as chat). Overridable via env
+// for controlled test passes — e.g. ANALYSIS_ENDPOINT_ID=predefined-gemini-3.5-flash
+// (id verified live against GET /config/v1/public/endpoints, 2026-07-17).
+export const ANALYSIS_ENDPOINT_ID = process.env.ANALYSIS_ENDPOINT_ID || ENDPOINT_ID;
+export const ANALYSIS_REASONING_EFFORT = process.env.ANALYSIS_REASONING_EFFORT || REASONING_EFFORT;
+
 // STREAM_DEBUG: verbose SSE frame logging (upstream + browser side).
 // endpoint. ON by default at start; set STREAM_DEBUG=false to turn off (STREAM_DEBUG=true = explicit-on).
 export const STREAM_DEBUG = String(process.env.STREAM_DEBUG ?? 'true').toLowerCase() !== 'false';

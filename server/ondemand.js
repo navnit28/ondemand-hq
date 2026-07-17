@@ -228,14 +228,14 @@ export async function streamQuery({ odSessionId, query, pluginIds = [], systemPr
 }
 
 /** Non-streaming helper for internal calls (router classification, title generation). Same model policy. */
-export async function syncQuery({ odSessionId, query, systemPrompt, pluginIds = [] }) {
+export async function syncQuery({ odSessionId, query, systemPrompt, pluginIds = [], endpointId, reasoningEffort }) {
   const r = await odFetch(`${ONDEMAND_BASE_URL}/chat/v1/sessions/${odSessionId}/query`, {
     method: 'POST', headers: H,
     body: JSON.stringify({
       query,
-      endpointId: ENDPOINT_ID,
+      endpointId: endpointId || ENDPOINT_ID,
       // reasoningEffort: live-accepted extension beyond the documented submitquery schema (see streamQuery note above).
-      reasoningEffort: REASONING_EFFORT,
+      reasoningEffort: reasoningEffort || REASONING_EFFORT,
       responseMode: 'sync',
       pluginIds,
       modelConfigs: systemPrompt ? { fulfillmentPrompt: systemPrompt, temperature: 0.2 } : { temperature: 0.2 },

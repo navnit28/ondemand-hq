@@ -587,3 +587,32 @@ ALL legitimate (breakdown below). No simulated/mocked runtime content remains.
 - UI: tool-call lines now render the visited site's favicon
   (`google.com/s2/favicons?sz=32&domain=…`, 16px, onError→gear fallback) with
   slim single-line rows and ellipsis truncation; gear kept when no domain derivable.
+
+---
+
+## 2026-07-17 — Full 16-country test pass (Gemini Flash 3.5) + workflow cadence test (19:55–20:47 UTC)
+
+### Model test pass
+- Gemini Flash 3.5 id verified LIVE from `GET /config/v1/public/endpoints`:
+  **`predefined-gemini-3.5-flash`** (probe query returned HTTP 200 "OK" in 4,047 ms).
+- New env-overridable analysis config in `server/env.js`: `ANALYSIS_ENDPOINT_ID` /
+  `ANALYSIS_REASONING_EFFORT` (production defaults = `predefined-gpt-5.6-sol` + `medium`).
+  `syncQuery` accepts per-call overrides; `intel.js` `jsonAnalysis` uses them.
+- All 16 monitored countries ran the full pipeline (Perplexity plugin-1722260873 →
+  X Search plugin-1751872652 → Gemini-3.5-flash strict-JSON analysis → disk persist)
+  in 4 waves, 20:02–20:28 UTC, ZERO retries needed. Per-country verification (all
+  non-empty): items 2–5, opportunities 2–4, risks 2–4, correlations 2–5 per country;
+  snapshots persisted 20:06:51Z–20:28:30Z in `server/data/intel/{ISO}.json`.
+- Production config RESTORED after the pass (env overrides unset): resolved
+  `{endpointId: "predefined-gpt-5.6-sol", reasoningEffort: "medium"}`.
+
+### Workflow cadence test (id 6a5a79840a9d7b5ce1454b3d)
+- Cron temporarily set to `0 */5 * * * *` at 20:31:30Z (lastModified 1784320290102),
+  workflow kept active.
+- Observed cron-triggered run: execution **6a5a91f421d41c1c020731a3** (trigger.type
+  = cron), started 20:35:00.327Z, ended 20:39:23.958Z, 263,631 ms, **status: success**.
+  Node outputs: in-0 (Perplexity) 5,093 ch · in-1 (X) 1,806 ch · in-2 (analysis)
+  20,919 ch · in-3 (brief) 7,229 ch · analyzer 7,165 ch — every node's output covered
+  16/16 monitored countries.
+- Cron RESTORED to `0 0 */12 * * *` at 20:42:33Z (lastModified 1784320953516);
+  GET workflow confirms `isActive: true` on the 12-hour production cadence.
