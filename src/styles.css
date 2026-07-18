@@ -129,7 +129,7 @@ textarea, input { font-family: inherit; }
 .composer {
   position: relative;
   border: 1px solid var(--border); border-radius: 16px;
-  background: #fff; padding: 6px 6px 6px 14px;
+  background: #fff; padding: 6px;
   display: flex; align-items: flex-end; gap: 6px;
   box-shadow: 0 1px 4px rgba(29,37,44,0.04);
   transition: border-color .15s;
@@ -146,6 +146,7 @@ textarea, input { font-family: inherit; }
   display: flex; align-items: center; justify-content: center; font-size: 17px;
 }
 .composer .iconbtn:hover { background: var(--bg-subtle); color: var(--ink); }
+.composer .iconbtn--left { align-self: flex-end; }
 .composer .send {
   width: 36px; height: 36px; border-radius: 10px; border: none;
   background: var(--gold); color: #fff; font-size: 15px;
@@ -337,12 +338,6 @@ textarea, input { font-family: inherit; }
 
 /* ============ STEP 8 — States ============ */
 .skel { display: flex; align-items: center; gap: 10px; padding: 10px 0; color: var(--ink-55); font-size: 13px; }
-.skel__bar { position: relative; overflow: hidden; background: var(--bg-subtle); border: 1px solid var(--border); border-radius: 8px; height: 34px; flex: 1; max-width: 420px; }
-.skel__bar::after {
-  content: ''; position: absolute; inset: 0;
-  background: linear-gradient(90deg, transparent, rgba(29,37,44,0.05), transparent);
-  animation: shimmer 1.4s infinite;
-}
 @keyframes shimmer { 0% { transform: translateX(-100%) } 100% { transform: translateX(100%) } }
 @keyframes spin { to { transform: rotate(360deg) } }
 
@@ -888,3 +883,40 @@ textarea, input { font-family: inherit; }
 }
 .rec__mic:hover:not(:disabled):not(.rec__mic--disabled) { background: var(--bg-subtle); color: var(--ink); }
 .rec__mic svg, .composer .send svg, .composer .iconbtn svg { display: block; flex: none; }
+
+/* ===== X (Twitter)-native post cards (2026-07-18) — light/dark aware ===== */
+.xpost-feed { display: flex; flex-direction: column; gap: 0; border: 1px solid var(--border, #e5e5e8); border-radius: 16px; overflow: hidden; background: #fff; }
+.xpost {
+  display: flex; gap: 12px; padding: 14px 16px 10px;
+  border-bottom: 1px solid var(--border, #eff1f3);
+  cursor: pointer; transition: background 120ms ease;
+  color: #0f1419; background: #fff;
+}
+.xpost-feed > div:last-child .xpost { border-bottom: none; }
+.xpost:hover { background: rgba(0,0,0,.025); }
+.xpost:focus-visible { outline: 2px solid #1d9bf0; outline-offset: -2px; }
+.xpost__avatarcol { flex: none; }
+.xpost__avatar { width: 40px; height: 40px; border-radius: 9999px; object-fit: cover; display: block; background: #eff1f3; }
+.xpost__avatar--fallback { display: flex; align-items: center; justify-content: center; width: 40px; height: 40px; border-radius: 9999px; background: #cfd9de; color: #536471; font-weight: 700; font-size: 17px; }
+.xpost__main { flex: 1; min-width: 0; }
+.xpost__head { display: flex; align-items: center; gap: 4px; min-width: 0; font-size: 14px; line-height: 1.3; }
+.xpost__name { font-weight: 700; color: #0f1419; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 45%; }
+.xpost__badge { color: #1d9bf0; flex: none; }
+.xpost__handle { color: #536471; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.xpost__dot { color: #536471; }
+.xpost__time { color: #536471; white-space: nowrap; }
+.xpost__xlogo { margin-left: auto; color: #0f1419; opacity: .85; flex: none; display: inline-flex; }
+.xpost__text { margin: 3px 0 8px; font-size: 14.5px; line-height: 1.45; color: #0f1419; white-space: pre-line; word-wrap: break-word; }
+.xpost__engage { display: flex; gap: 0; max-width: 340px; justify-content: space-between; padding-right: 20%; }
+.xpost__stat { display: inline-flex; align-items: center; gap: 6px; font-size: 12.5px; color: #536471; transition: color 120ms ease; }
+.xpost:hover .xpost__stat--reply { color: #1d9bf0; }
+.xpost:hover .xpost__stat--repost { color: #00ba7c; }
+.xpost:hover .xpost__stat--like { color: #f91880; }
+@media (prefers-color-scheme: dark) {
+  .xpost-feed { background: #000; border-color: #2f3336; }
+  .xpost { background: #000; color: #e7e9ea; border-bottom-color: #2f3336; }
+  .xpost:hover { background: rgba(255,255,255,.03); }
+  .xpost__name, .xpost__text, .xpost__xlogo { color: #e7e9ea; }
+  .xpost__handle, .xpost__time, .xpost__dot, .xpost__stat { color: #71767b; }
+  .xpost__avatar--fallback { background: #333639; color: #71767b; }
+}

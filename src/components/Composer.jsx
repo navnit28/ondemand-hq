@@ -52,6 +52,11 @@ export default function Composer({ onSend, busy, onError, placeholder }) {
         </div>
       )}
       <div className="composer">
+        {/* Attachment — LEFT side of the input bar */}
+        <input ref={fileRef} type="file" hidden accept=".pptx,.docx,.pdf,.xlsx,.txt,.md,.csv" onChange={onFile} />
+        <button className="iconbtn iconbtn--left" onClick={pickFile} disabled={busy || uploading} title="Attach pptx / docx / pdf / xlsx" aria-label="Attach file">
+          {uploading ? <BilingualLoader size="sm" className="biloader--tight" /> : <Paperclip size={18} strokeWidth={1.9} aria-hidden />}
+        </button>
         <textarea
           ref={taRef}
           rows={1}
@@ -62,10 +67,6 @@ export default function Composer({ onSend, busy, onError, placeholder }) {
           onKeyDown={onKey}
           disabled={busy}
         />
-        <input ref={fileRef} type="file" hidden accept=".pptx,.docx,.pdf,.xlsx,.txt,.md,.csv" onChange={onFile} />
-        <button className="iconbtn" onClick={pickFile} disabled={busy || uploading} title="Attach pptx / docx / pdf / xlsx">
-          {uploading ? <BilingualLoader size="sm" className="biloader--tight" /> : <Paperclip size={16} strokeWidth={1.9} aria-hidden />}
-        </button>
         {/* Mic — OnDemand speech_to_text ONLY (no Web Speech API). Transcript lands
             in the input, editable before send (EN/AR via dir="auto"). */}
         <Recorder disabled={busy} onError={() => { /* Recorder shows its own quiet note */ }}

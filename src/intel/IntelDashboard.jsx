@@ -199,7 +199,7 @@ export default function IntelDashboard({ onExit }) {
               <div className="ig-brief__exports">
                 <span>Export:</span>
                 {['pdf', 'docx', 'pptx'].map(f => (
-                  <a key={f} href={`/api/intel/brief/export/${f}`} target="_blank" rel="noreferrer">{f.toUpperCase()}</a>
+                  <a key={f} href={`/api/intel/brief/export/${f}`} target="_blank" rel="noopener noreferrer">{f.toUpperCase()}</a>
                 ))}
               </div>
             </div>

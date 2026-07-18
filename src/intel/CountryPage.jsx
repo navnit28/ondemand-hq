@@ -3,6 +3,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { getCountry, refreshCountry, refreshStatus } from './api.js';
 import BilingualLoader from '../components/BilingualLoader.jsx';
 import Flag from './Flag.jsx';
+import XPostCard from './XPostCard.jsx';
+import { VERIFIED_TWEETS } from './tweets.js';
 import { ArrowLeft, AlertTriangle, TrendingUp, TrendingDown, ArrowRight, User, Users, BadgeCheck, ExternalLink, RefreshCw } from 'lucide-react';
 
 const spring = { type: 'spring', stiffness: 360, damping: 30 };
@@ -59,7 +61,7 @@ function IntelCard({ item, images }) {
               {item.investmentPotential && <div><b>Investment potential:</b> {item.investmentPotential}</div>}
               {item.relevantUaeOrgs?.length > 0 && <div><b>Relevant UAE organisations:</b> {item.relevantUaeOrgs.join(', ')}</div>}
               {item.recommendedActions?.length > 0 && <div><b>Recommended actions:</b><ul>{item.recommendedActions.map((a, i) => <li key={i}>{a}</li>)}</ul></div>}
-              {item.sources?.length > 0 && <div className="ig-sources">{item.sources.slice(0, 5).map((s, i) => <a key={i} href={s} target="_blank" rel="noreferrer">source {i + 1}</a>)}</div>}
+              {item.sources?.length > 0 && <div className="ig-sources">{item.sources.slice(0, 5).map((s, i) => <a key={i} href={s} target="_blank" rel="noopener noreferrer">source {i + 1}</a>)}</div>}
             </motion.div>
           )}
         </AnimatePresence>
@@ -173,24 +175,14 @@ export default function CountryPage({ iso, onBack }) {
                 <div className="ig-x">
                   {a.xIntel?.summary && <p className="ig-x__summary">{a.xIntel.summary} {a.xIntel.sentiment && <span className={`ig-sent ig-sent--${a.xIntel.sentiment}`}>{a.xIntel.sentiment}</span>}</p>}
                   {a.xIntel?.clusters?.length > 0 && <div className="ig-x__clusters">{a.xIntel.clusters.map((cl, i) => <span key={i}>{cl}</span>)}</div>}
-                  {(a.xIntel?.posts || []).map((p, i) => (
-                    <motion.div key={i} className="ig-xpost" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ ...spring, delay: i * 0.04 }}>
-                      <div className="ig-xpost__head">
-                        <b>@{p.author}</b>
-                        {p.verified === true && <span className="ig-verified" title="Verified"><BadgeCheck size={13} aria-hidden /></span>}
-                        <span className="ig-xpost__aff">{p.affiliation}</span>
-                        <span style={{ flex: 1 }} />
-                        {p.sentiment && <span className={`ig-sent ig-sent--${p.sentiment}`}>{p.sentiment}</span>}
-                        {p.date && <span className="ig-date">{p.date}</span>}
-                      </div>
-                      <p>{p.text}</p>
-                      <div className="ig-xpost__foot">
-                        {p.engagement && <span>{p.engagement}</span>}
-                        {p.url && <a href={p.url} target="_blank" rel="noreferrer">View on X <ExternalLink size={11} aria-hidden style={{ verticalAlign: '-1px' }} /></a>}
-                      </div>
-                    </motion.div>
-                  ))}
-                  {!(a.xIntel?.posts || []).length && <div className="ig-empty">No X posts surfaced in the latest collection for this country.</div>}
+                  {/* Verified real posts from ODA trusted sources — X-native card layout (see tweets.js) */}
+                  <div className="xpost-feed">
+                    {VERIFIED_TWEETS.map((t2, i) => (
+                      <motion.div key={t2.url} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ ...spring, delay: Math.min(i, 8) * 0.05 }}>
+                        <XPostCard tweet={t2} />
+                      </motion.div>
+                    ))}
+                  </div>
                 </div>
               )}
 

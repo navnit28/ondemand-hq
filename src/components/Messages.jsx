@@ -152,7 +152,7 @@ export function ArtifactCard({ artifact }) {
       </div>
       <div className="artifact__btns">
         <a className="primary" href={`/api/export/${artifact.id}/download`} download>Download</a>
-        <a href={`/api/export/${artifact.id}/download`} target="_blank" rel="noreferrer">Open preview</a>
+        <a href={`/api/export/${artifact.id}/download`} target="_blank" rel="noopener noreferrer">Open preview</a>
       </div>
     </div>
   );
@@ -165,7 +165,6 @@ export function PluginSkeleton({ label }) {
   return (
     <div className="skel">
       <BilingualLoader size="md" label={label} />
-      <div className="skel__bar" />
     </div>
   );
 }
