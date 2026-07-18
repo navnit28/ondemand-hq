@@ -18,6 +18,7 @@ import { buildExport } from './exports.js';
 import { extractText } from './extract.js';
 import { registerSpeechRoutes } from './speech.js';
 import { registerIntelRoutes } from './intel.js';
+import { registerFactsRoutes } from './facts.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const app = express();
@@ -30,6 +31,10 @@ registerSpeechRoutes(app, upload);
 
 // ODA Intelligence Dashboard routes (Perplexity + X Search + AI analysis pipeline).
 registerIntelRoutes(app);
+
+// Country development facts — resilient World Bank / WHO GHO / UN SDG pipeline
+// (6s timeout, 2 retries, 24h cache, committed validated fallback — never empty).
+registerFactsRoutes(app);
 
 // ---------- health ----------
 app.get('/api/health', (req, res) => res.json({

@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { getCountry, refreshCountry, refreshStatus } from './api.js';
+import { getCountry, refreshCountry, refreshStatus, getFacts } from './api.js';
 import BilingualLoader from '../components/BilingualLoader.jsx';
 import Flag from './Flag.jsx';
 import XPostCard from './XPostCard.jsx';
@@ -72,8 +72,45 @@ function IntelCard({ item, images }) {
 
 function hashCode(s) { let h = 0; for (let i = 0; i < (s || '').length; i++) { h = ((h << 5) - h + s.charCodeAt(i)) | 0; } return h; }
 
+/* ---------- Development facts strip (2026-07-18) ----------
+   Real indicators from the resilient server pipeline (/api/intel/facts/:iso —
+   World Bank + WHO GHO + UN SDG, 24h cache, retries, validated static fallback).
+   Values marked fallback:true are cached baseline figures and labelled as such.
+   Section renders only when at least one indicator exists — but the server
+   contract guarantees the fallback set, so it is effectively never empty. */
+const fmtFact = (f) => {
+  if (!f) return null;
+  const v = f.value;
+  let s;
+  if (v >= 1e12) s = `${(v / 1e12).toFixed(2)}T`;
+  else if (v >= 1e9) s = `${(v / 1e9).toFixed(2)}B`;
+  else if (v >= 1e6) s = `${(v / 1e6).toFixed(1)}M`;
+  else if (v >= 1e3 && f.unit === '') s = `${(v / 1e3).toFixed(0)}k`;
+  else s = v.toFixed(v < 100 ? 1 : 0);
+  return `${f.unit === 'US$' ? 'US$ ' : ''}${s}${f.unit === '%' ? '%' : f.unit === 'years' ? ' yrs' : f.unit === 'per 1k births' ? ' /1k births' : ''}`;
+};
+
+function DevFacts({ facts }) {
+  if (!facts) return null;
+  const shown = ['population', 'gdp', 'gdpPerCapita', 'lifeExpectancy', 'infantMortality', 'childStunting', 'povertyRate']
+    .map(k => ({ k, f: facts.indicators?.[k] })).filter(x => x.f);
+  if (!shown.length) return null;
+  return (
+    <section className="ig-facts" aria-label="Development indicators">
+      {shown.map(({ k, f }) => (
+        <div key={k} className="ig-fact" title={`${f.label} — ${f.source} ${f.code} (${f.year})${f.fallback ? ' · cached baseline' : ''}`}>
+          <span className="ig-fact__val">{fmtFact(f)}</span>
+          <span className="ig-fact__label">{f.label}</span>
+          <span className="ig-fact__src">{f.source} · {f.year}{f.fallback ? ' · cached' : ''}</span>
+        </div>
+      ))}
+    </section>
+  );
+}
+
 export default function CountryPage({ iso, onBack }) {
   const [data, setData] = useState(null);
+  const [facts, setFacts] = useState(null);
   const [err, setErr] = useState(null);
   const [job, setJob] = useState(null);
   const [tab, setTab] = useState('intel'); // intel | x | opps | risks | agreements | timeline
@@ -82,6 +119,8 @@ export default function CountryPage({ iso, onBack }) {
   const load = async () => {
     try { setErr(null); const d = await getCountry(iso); setData(d); if (d.refresh?.status === 'running') startPoll(); }
     catch (e) { setErr(e.message); }
+    // Facts load independently and never block the page (resilient server pipeline).
+    getFacts(iso).then(setFacts).catch(() => { /* strip simply hides */ });
   };
   const startPoll = () => {
     clearInterval(pollRef.current);
@@ -153,6 +192,9 @@ export default function CountryPage({ iso, onBack }) {
           </div>
         )}
       </div>
+
+      {/* Development indicators — resilient WB / WHO GHO / UN SDG pipeline */}
+      <DevFacts facts={facts} />
 
       {a && (
         <>

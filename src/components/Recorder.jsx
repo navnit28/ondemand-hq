@@ -27,7 +27,12 @@ export default function Recorder({ onTranscript, onError, disabled }) {
   const cleanup = () => {
     cancelAnimationFrame(rafRef.current);
     clearInterval(timerRef.current);
-    try { audioCtxRef.current?.close(); } catch { /* closed */ }
+    // AudioContext.close() is async and REJECTS if already closed — a bare
+    // try/catch misses the promise rejection (it surfaced as a console
+    // pageerror in the 2026-07-18 audit). Catch the promise and null the ref
+    // so double-cleanup (cancel + unmount) is silent.
+    try { audioCtxRef.current?.close()?.catch(() => { /* already closed */ }); } catch { /* closed sync */ }
+    audioCtxRef.current = null;
     streamRef.current?.getTracks().forEach(tr => tr.stop());
     streamRef.current = null; mediaRef.current = null;
   };

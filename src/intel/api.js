@@ -12,6 +12,9 @@ async function j(method, url, body) {
 
 export const getOverview = () => j('GET', '/api/intel/overview');
 export const getCountry = (iso) => j('GET', `/api/intel/country/${iso}`);
+// Development facts — resilient World Bank / WHO GHO / UN SDG pipeline (server-cached
+// 24h, retries + validated static fallback: the strip never renders empty).
+export const getFacts = (iso) => j('GET', `/api/intel/facts/${iso}`);
 export const refreshCountry = (iso) => j('POST', `/api/intel/refresh/${iso}`);
 export const refreshStatus = (iso) => j('GET', `/api/intel/refresh/${iso}/status`);
 export const nlSearch = (query) => j('POST', '/api/intel/search', { query });

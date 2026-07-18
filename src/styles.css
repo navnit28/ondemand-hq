@@ -971,4 +971,41 @@ a.xpost:focus-visible { outline: 2px solid #1d9bf0; outline-offset: -2px; border
    input bar. display:contents removes it from layout so the mic button sits
    directly in the composer flex row. */
 .rec { display: contents; }
-.rec--recording, .rec--paused, .rec--transcribing { display: flex; align-items: center; gap: 6px; }
+.rec--recording, .rec--paused, .rec--transcribing { display: flex; align-items: center; gap: 6px; align-self: center; }
+
+/* (E) 2026-07-18: chat-bar "stray mark" ROOT-CAUSE fix. The recording controls
+   (pause / confirm / cancel) and the transcribing/note spans had NO CSS rules at
+   all, so the browser rendered NATIVE UA button chrome — a grey outset-border
+   box (computed live: background rgb(239,239,239), border '2px outset',
+   appearance:auto) sitting in the input bar. That grey box is the reported
+   artifact. Fix at source: explicit styles for EVERY .rec__live child — native
+   appearance removed, buttons match the composer icon language. */
+.rec__live { display: flex; align-items: center; gap: 6px; }
+.rec__live button {
+  appearance: none; -webkit-appearance: none;
+  width: 28px; height: 28px; padding: 0;
+  border: none; border-radius: 8px; background: none; color: var(--ink-55);
+  display: flex; align-items: center; justify-content: center; cursor: pointer;
+}
+.rec__live button:hover { background: var(--bg-subtle); color: var(--ink); }
+.rec__live .rec__stop { background: var(--gold); color: #fff; }
+.rec__live .rec__stop:hover { background: #96702F; color: #fff; }
+.rec__dot { width: 8px; height: 8px; border-radius: 50%; background: #c02626; animation: pulse 1.2s ease-in-out infinite; flex: none; }
+.rec__dot.paused { animation: none; background: var(--ink-35); }
+.rec__wave { display: block; flex: none; }
+.rec__time { font-size: 12px; color: var(--ink-55); font-variant-numeric: tabular-nums; min-width: 38px; }
+.rec__busy { font-size: 12.5px; color: var(--ink-55); align-self: center; padding: 0 6px; }
+.rec__note { font-size: 12px; color: var(--err, #b3261e); align-self: center; padding: 0 6px; max-width: 260px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+/* Development facts strip (CountryPage) — resilient WB/WHO/UN SDG indicators */
+.ig-facts {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(128px, 1fr));
+  gap: 10px; margin: 14px 0 4px;
+}
+.ig-fact {
+  background: #fff; border: 1px solid var(--border); border-radius: 12px;
+  padding: 10px 12px; display: flex; flex-direction: column; gap: 2px;
+}
+.ig-fact__val { font-size: 16.5px; font-weight: 700; color: var(--ink); letter-spacing: -0.01em; }
+.ig-fact__label { font-size: 11.5px; color: var(--ink-55); }
+.ig-fact__src { font-size: 10px; color: var(--ink-35); }

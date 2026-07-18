@@ -5,3 +5,4 @@ dist
 .env
 server/data/state.json
 server/data/intel/
+server/data/facts-cache.json

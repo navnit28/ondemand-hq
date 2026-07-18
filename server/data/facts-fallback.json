@@ -1,0 +1,1114 @@
+{
+ "EG": {
+  "name": "Egypt",
+  "frozenAt": "2026-07-18T07:40:59.239Z",
+  "indicators": {
+   "population": {
+    "value": 118365995,
+    "year": 2025,
+    "code": "SP.POP.TOTL",
+    "source": "World Bank",
+    "label": "Population",
+    "unit": ""
+   },
+   "gdp": {
+    "value": 365254630179.737,
+    "year": 2025,
+    "code": "NY.GDP.MKTP.CD",
+    "source": "World Bank",
+    "label": "GDP (current US$)",
+    "unit": "US$"
+   },
+   "gdpPerCapita": {
+    "value": 3085.80712036204,
+    "year": 2025,
+    "code": "NY.GDP.PCAP.CD",
+    "source": "World Bank",
+    "label": "GDP per capita",
+    "unit": "US$"
+   },
+   "lifeExpectancy": {
+    "value": 71.806,
+    "year": 2024,
+    "code": "SP.DYN.LE00.IN",
+    "source": "World Bank",
+    "label": "Life expectancy",
+    "unit": "years"
+   },
+   "lifeExpectancyWho": {
+    "value": 69.10821615,
+    "year": 2021,
+    "code": "WHOSIS_000001",
+    "source": "WHO GHO",
+    "label": "Life expectancy (WHO)",
+    "unit": "years"
+   },
+   "infantMortality": {
+    "value": 16.145948742,
+    "year": 2023,
+    "code": "MDG_0000000001",
+    "source": "WHO GHO",
+    "label": "Infant mortality",
+    "unit": "per 1k births"
+   },
+   "childStunting": {
+    "value": 12.9,
+    "year": 2024,
+    "code": "SH_STA_STNT",
+    "source": "UN SDG",
+    "label": "Child stunting <5y",
+    "unit": "%"
+   },
+   "povertyRate": {
+    "value": 1.4,
+    "year": 2021,
+    "code": "SI_POV_DAY1",
+    "source": "UN SDG",
+    "label": "Extreme poverty",
+    "unit": "%"
+   }
+  }
+ },
+ "JO": {
+  "name": "Jordan",
+  "frozenAt": "2026-07-18T07:41:07.293Z",
+  "indicators": {
+   "population": {
+    "value": 11520684,
+    "year": 2025,
+    "code": "SP.POP.TOTL",
+    "source": "World Bank",
+    "label": "Population",
+    "unit": ""
+   },
+   "gdp": {
+    "value": 61610052535.2113,
+    "year": 2025,
+    "code": "NY.GDP.MKTP.CD",
+    "source": "World Bank",
+    "label": "GDP (current US$)",
+    "unit": "US$"
+   },
+   "gdpPerCapita": {
+    "value": 5347.77731384797,
+    "year": 2025,
+    "code": "NY.GDP.PCAP.CD",
+    "source": "World Bank",
+    "label": "GDP per capita",
+    "unit": "US$"
+   },
+   "lifeExpectancy": {
+    "value": 77.981,
+    "year": 2024,
+    "code": "SP.DYN.LE00.IN",
+    "source": "World Bank",
+    "label": "Life expectancy",
+    "unit": "years"
+   },
+   "lifeExpectancyWho": {
+    "value": 75.64973596,
+    "year": 2021,
+    "code": "WHOSIS_000001",
+    "source": "WHO GHO",
+    "label": "Life expectancy (WHO)",
+    "unit": "years"
+   },
+   "infantMortality": {
+    "value": 12.239994113,
+    "year": 2023,
+    "code": "MDG_0000000001",
+    "source": "WHO GHO",
+    "label": "Infant mortality",
+    "unit": "per 1k births"
+   },
+   "childStunting": {
+    "value": 7.7,
+    "year": 2024,
+    "code": "SH_STA_STNT",
+    "source": "UN SDG",
+    "label": "Child stunting <5y",
+    "unit": "%"
+   },
+   "povertyRate": {
+    "value": 0.0687,
+    "year": 2010,
+    "code": "SI_POV_DAY1",
+    "source": "UN SDG",
+    "label": "Extreme poverty",
+    "unit": "%"
+   }
+  }
+ },
+ "PK": {
+  "name": "Pakistan",
+  "frozenAt": "2026-07-18T07:41:13.617Z",
+  "indicators": {
+   "population": {
+    "value": 255219554,
+    "year": 2025,
+    "code": "SP.POP.TOTL",
+    "source": "World Bank",
+    "label": "Population",
+    "unit": ""
+   },
+   "gdp": {
+    "value": 407307214476.222,
+    "year": 2025,
+    "code": "NY.GDP.MKTP.CD",
+    "source": "World Bank",
+    "label": "GDP (current US$)",
+    "unit": "US$"
+   },
+   "gdpPerCapita": {
+    "value": 1595.90912252837,
+    "year": 2025,
+    "code": "NY.GDP.PCAP.CD",
+    "source": "World Bank",
+    "label": "GDP per capita",
+    "unit": "US$"
+   },
+   "lifeExpectancy": {
+    "value": 67.799,
+    "year": 2024,
+    "code": "SP.DYN.LE00.IN",
+    "source": "World Bank",
+    "label": "Life expectancy",
+    "unit": "years"
+   },
+   "lifeExpectancyWho": {
+    "value": 65.99092295,
+    "year": 2021,
+    "code": "WHOSIS_000001",
+    "source": "WHO GHO",
+    "label": "Life expectancy (WHO)",
+    "unit": "years"
+   },
+   "infantMortality": {
+    "value": 50.121942321,
+    "year": 2023,
+    "code": "MDG_0000000001",
+    "source": "WHO GHO",
+    "label": "Infant mortality",
+    "unit": "per 1k births"
+   },
+   "childStunting": {
+    "value": 33.6,
+    "year": 2024,
+    "code": "SH_STA_STNT",
+    "source": "UN SDG",
+    "label": "Child stunting <5y",
+    "unit": "%"
+   },
+   "povertyRate": {
+    "value": 23,
+    "year": 2024,
+    "code": "SI_POV_DAY1",
+    "source": "UN SDG",
+    "label": "Extreme poverty",
+    "unit": "%"
+   }
+  }
+ },
+ "KE": {
+  "name": "Kenya",
+  "frozenAt": "2026-07-18T07:41:32.823Z",
+  "indicators": {
+   "population": {
+    "value": 57532493,
+    "year": 2025,
+    "code": "SP.POP.TOTL",
+    "source": "World Bank",
+    "label": "Population",
+    "unit": ""
+   },
+   "lifeExpectancyWho": {
+    "value": 66.76221995,
+    "year": 2021,
+    "code": "WHOSIS_000001",
+    "source": "WHO GHO",
+    "label": "Life expectancy (WHO)",
+    "unit": "years"
+   },
+   "infantMortality": {
+    "value": 34.725511519,
+    "year": 2023,
+    "code": "MDG_0000000001",
+    "source": "WHO GHO",
+    "label": "Infant mortality",
+    "unit": "per 1k births"
+   },
+   "childStunting": {
+    "value": 17.9,
+    "year": 2024,
+    "code": "SH_STA_STNT",
+    "source": "UN SDG",
+    "label": "Child stunting <5y",
+    "unit": "%"
+   },
+   "povertyRate": {
+    "value": 53.63053,
+    "year": 2022,
+    "code": "SI_POV_DAY1",
+    "source": "UN SDG",
+    "label": "Extreme poverty",
+    "unit": "%"
+   },
+   "gdp": {
+    "value": 135941278878.815,
+    "year": 2025,
+    "code": "NY.GDP.MKTP.CD",
+    "source": "World Bank",
+    "label": "GDP (current US$)",
+    "unit": "US$"
+   },
+   "gdpPerCapita": {
+    "value": 2362.86091198611,
+    "year": 2025,
+    "code": "NY.GDP.PCAP.CD",
+    "source": "World Bank",
+    "label": "GDP per capita",
+    "unit": "US$"
+   },
+   "lifeExpectancy": {
+    "value": 63.834,
+    "year": 2024,
+    "code": "SP.DYN.LE00.IN",
+    "source": "World Bank",
+    "label": "Life expectancy",
+    "unit": "years"
+   }
+  }
+ },
+ "MA": {
+  "name": "Morocco",
+  "frozenAt": "2026-07-18T07:41:48.256Z",
+  "indicators": {
+   "population": {
+    "value": 38430770,
+    "year": 2025,
+    "code": "SP.POP.TOTL",
+    "source": "World Bank",
+    "label": "Population",
+    "unit": ""
+   },
+   "gdp": {
+    "value": 182374250612.28,
+    "year": 2025,
+    "code": "NY.GDP.MKTP.CD",
+    "source": "World Bank",
+    "label": "GDP (current US$)",
+    "unit": "US$"
+   },
+   "gdpPerCapita": {
+    "value": 4672.46826171875,
+    "year": 2025,
+    "code": "NY.GDP.PCAP.CD",
+    "source": "World Bank",
+    "label": "GDP per capita",
+    "unit": "US$"
+   },
+   "lifeExpectancy": {
+    "value": 75.493,
+    "year": 2024,
+    "code": "SP.DYN.LE00.IN",
+    "source": "World Bank",
+    "label": "Life expectancy",
+    "unit": "years"
+   },
+   "lifeExpectancyWho": {
+    "value": 72.61868352,
+    "year": 2021,
+    "code": "WHOSIS_000001",
+    "source": "WHO GHO",
+    "label": "Life expectancy (WHO)",
+    "unit": "years"
+   },
+   "infantMortality": {
+    "value": 15.491406117,
+    "year": 2023,
+    "code": "MDG_0000000001",
+    "source": "WHO GHO",
+    "label": "Infant mortality",
+    "unit": "per 1k births"
+   },
+   "childStunting": {
+    "value": 13.7,
+    "year": 2024,
+    "code": "SH_STA_STNT",
+    "source": "UN SDG",
+    "label": "Child stunting <5y",
+    "unit": "%"
+   },
+   "povertyRate": {
+    "value": 3.7,
+    "year": 2013,
+    "code": "SI_POV_DAY1",
+    "source": "UN SDG",
+    "label": "Extreme poverty",
+    "unit": "%"
+   }
+  }
+ },
+ "ID": {
+  "name": "Indonesia",
+  "frozenAt": "2026-07-18T07:42:07.459Z",
+  "indicators": {
+   "gdp": {
+    "value": 1445642584163.81,
+    "year": 2025,
+    "code": "NY.GDP.MKTP.CD",
+    "source": "World Bank",
+    "label": "GDP (current US$)",
+    "unit": "US$"
+   },
+   "gdpPerCapita": {
+    "value": 5059.62596411213,
+    "year": 2025,
+    "code": "NY.GDP.PCAP.CD",
+    "source": "World Bank",
+    "label": "GDP per capita",
+    "unit": "US$"
+   },
+   "lifeExpectancy": {
+    "value": 71.288,
+    "year": 2024,
+    "code": "SP.DYN.LE00.IN",
+    "source": "World Bank",
+    "label": "Life expectancy",
+    "unit": "years"
+   },
+   "lifeExpectancyWho": {
+    "value": 68.26167935,
+    "year": 2021,
+    "code": "WHOSIS_000001",
+    "source": "WHO GHO",
+    "label": "Life expectancy (WHO)",
+    "unit": "years"
+   },
+   "infantMortality": {
+    "value": 16.954329989,
+    "year": 2023,
+    "code": "MDG_0000000001",
+    "source": "WHO GHO",
+    "label": "Infant mortality",
+    "unit": "per 1k births"
+   },
+   "childStunting": {
+    "value": 22.6,
+    "year": 2024,
+    "code": "SH_STA_STNT",
+    "source": "UN SDG",
+    "label": "Child stunting <5y",
+    "unit": "%"
+   },
+   "povertyRate": {
+    "value": 5.38739,
+    "year": 2025,
+    "code": "SI_POV_DAY1",
+    "source": "UN SDG",
+    "label": "Extreme poverty",
+    "unit": "%"
+   },
+   "population": {
+    "value": 285721236,
+    "year": 2025,
+    "code": "SP.POP.TOTL",
+    "source": "World Bank",
+    "label": "Population",
+    "unit": ""
+   }
+  }
+ },
+ "BD": {
+  "name": "Bangladesh",
+  "frozenAt": "2026-07-18T07:42:16.728Z",
+  "indicators": {
+   "population": {
+    "value": 175686899,
+    "year": 2025,
+    "code": "SP.POP.TOTL",
+    "source": "World Bank",
+    "label": "Population",
+    "unit": ""
+   },
+   "gdp": {
+    "value": 456319229255.578,
+    "year": 2025,
+    "code": "NY.GDP.MKTP.CD",
+    "source": "World Bank",
+    "label": "GDP (current US$)",
+    "unit": "US$"
+   },
+   "gdpPerCapita": {
+    "value": 2597.34352335275,
+    "year": 2025,
+    "code": "NY.GDP.PCAP.CD",
+    "source": "World Bank",
+    "label": "GDP per capita",
+    "unit": "US$"
+   },
+   "lifeExpectancy": {
+    "value": 74.93,
+    "year": 2024,
+    "code": "SP.DYN.LE00.IN",
+    "source": "World Bank",
+    "label": "Life expectancy",
+    "unit": "years"
+   },
+   "lifeExpectancyWho": {
+    "value": 73.10251672,
+    "year": 2021,
+    "code": "WHOSIS_000001",
+    "source": "WHO GHO",
+    "label": "Life expectancy (WHO)",
+    "unit": "years"
+   },
+   "infantMortality": {
+    "value": 24.366614018,
+    "year": 2023,
+    "code": "MDG_0000000001",
+    "source": "WHO GHO",
+    "label": "Infant mortality",
+    "unit": "per 1k births"
+   },
+   "childStunting": {
+    "value": 25.1,
+    "year": 2024,
+    "code": "SH_STA_STNT",
+    "source": "UN SDG",
+    "label": "Child stunting <5y",
+    "unit": "%"
+   },
+   "povertyRate": {
+    "value": 4.45101,
+    "year": 2022,
+    "code": "SI_POV_DAY1",
+    "source": "UN SDG",
+    "label": "Extreme poverty",
+    "unit": "%"
+   }
+  }
+ },
+ "SD": {
+  "name": "Sudan",
+  "frozenAt": "2026-07-18T07:42:22.687Z",
+  "indicators": {
+   "population": {
+    "value": 51662147,
+    "year": 2025,
+    "code": "SP.POP.TOTL",
+    "source": "World Bank",
+    "label": "Population",
+    "unit": ""
+   },
+   "gdp": {
+    "value": 60162634574.4689,
+    "year": 2025,
+    "code": "NY.GDP.MKTP.CD",
+    "source": "World Bank",
+    "label": "GDP (current US$)",
+    "unit": "US$"
+   },
+   "gdpPerCapita": {
+    "value": 1164.53991699219,
+    "year": 2025,
+    "code": "NY.GDP.PCAP.CD",
+    "source": "World Bank",
+    "label": "GDP per capita",
+    "unit": "US$"
+   },
+   "lifeExpectancy": {
+    "value": 66.521,
+    "year": 2024,
+    "code": "SP.DYN.LE00.IN",
+    "source": "World Bank",
+    "label": "Life expectancy",
+    "unit": "years"
+   },
+   "lifeExpectancyWho": {
+    "value": 67.58515204,
+    "year": 2021,
+    "code": "WHOSIS_000001",
+    "source": "WHO GHO",
+    "label": "Life expectancy (WHO)",
+    "unit": "years"
+   },
+   "infantMortality": {
+    "value": 39.152476258,
+    "year": 2023,
+    "code": "MDG_0000000001",
+    "source": "WHO GHO",
+    "label": "Infant mortality",
+    "unit": "per 1k births"
+   },
+   "childStunting": {
+    "value": 35.4,
+    "year": 2024,
+    "code": "SH_STA_STNT",
+    "source": "UN SDG",
+    "label": "Child stunting <5y",
+    "unit": "%"
+   },
+   "povertyRate": {
+    "value": 7.02176,
+    "year": 2014,
+    "code": "SI_POV_DAY1",
+    "source": "UN SDG",
+    "label": "Extreme poverty",
+    "unit": "%"
+   }
+  }
+ },
+ "SO": {
+  "name": "Somalia",
+  "frozenAt": "2026-07-18T07:42:41.890Z",
+  "indicators": {
+   "population": {
+    "value": 19654739,
+    "year": 2025,
+    "code": "SP.POP.TOTL",
+    "source": "World Bank",
+    "label": "Population",
+    "unit": ""
+   },
+   "gdp": {
+    "value": 12995200000.2658,
+    "year": 2025,
+    "code": "NY.GDP.MKTP.CD",
+    "source": "World Bank",
+    "label": "GDP (current US$)",
+    "unit": "US$"
+   },
+   "gdpPerCapita": {
+    "value": 661.173877723116,
+    "year": 2025,
+    "code": "NY.GDP.PCAP.CD",
+    "source": "World Bank",
+    "label": "GDP per capita",
+    "unit": "US$"
+   },
+   "lifeExpectancyWho": {
+    "value": 53.95143945,
+    "year": 2021,
+    "code": "WHOSIS_000001",
+    "source": "WHO GHO",
+    "label": "Life expectancy (WHO)",
+    "unit": "years"
+   },
+   "infantMortality": {
+    "value": 67.839535028,
+    "year": 2023,
+    "code": "MDG_0000000001",
+    "source": "WHO GHO",
+    "label": "Infant mortality",
+    "unit": "per 1k births"
+   },
+   "childStunting": {
+    "value": 23.9,
+    "year": 2024,
+    "code": "SH_STA_STNT",
+    "source": "UN SDG",
+    "label": "Child stunting <5y",
+    "unit": "%"
+   },
+   "lifeExpectancy": {
+    "value": 58.967,
+    "year": 2024,
+    "code": "SP.DYN.LE00.IN",
+    "source": "World Bank",
+    "label": "Life expectancy",
+    "unit": "years"
+   }
+  }
+ },
+ "ET": {
+  "name": "Ethiopia",
+  "frozenAt": "2026-07-18T07:43:01.095Z",
+  "indicators": {
+   "lifeExpectancyWho": {
+    "value": 67.83909086,
+    "year": 2021,
+    "code": "WHOSIS_000001",
+    "source": "WHO GHO",
+    "label": "Life expectancy (WHO)",
+    "unit": "years"
+   },
+   "infantMortality": {
+    "value": 35.741610789,
+    "year": 2023,
+    "code": "MDG_0000000001",
+    "source": "WHO GHO",
+    "label": "Infant mortality",
+    "unit": "per 1k births"
+   },
+   "childStunting": {
+    "value": 35.5,
+    "year": 2024,
+    "code": "SH_STA_STNT",
+    "source": "UN SDG",
+    "label": "Child stunting <5y",
+    "unit": "%"
+   },
+   "povertyRate": {
+    "value": 45.56237,
+    "year": 2021,
+    "code": "SI_POV_DAY1",
+    "source": "UN SDG",
+    "label": "Extreme poverty",
+    "unit": "%"
+   },
+   "population": {
+    "value": 135472051,
+    "year": 2025,
+    "code": "SP.POP.TOTL",
+    "source": "World Bank",
+    "label": "Population",
+    "unit": ""
+   },
+   "gdp": {
+    "value": 126358758448.356,
+    "year": 2025,
+    "code": "NY.GDP.MKTP.CD",
+    "source": "World Bank",
+    "label": "GDP (current US$)",
+    "unit": "US$"
+   },
+   "gdpPerCapita": {
+    "value": 932.729352775179,
+    "year": 2025,
+    "code": "NY.GDP.PCAP.CD",
+    "source": "World Bank",
+    "label": "GDP per capita",
+    "unit": "US$"
+   },
+   "lifeExpectancy": {
+    "value": 67.603,
+    "year": 2024,
+    "code": "SP.DYN.LE00.IN",
+    "source": "World Bank",
+    "label": "Life expectancy",
+    "unit": "years"
+   }
+  }
+ },
+ "LB": {
+  "name": "Lebanon",
+  "frozenAt": "2026-07-18T07:43:20.301Z",
+  "indicators": {
+   "lifeExpectancyWho": {
+    "value": 74.34207035,
+    "year": 2021,
+    "code": "WHOSIS_000001",
+    "source": "WHO GHO",
+    "label": "Life expectancy (WHO)",
+    "unit": "years"
+   },
+   "infantMortality": {
+    "value": 15.995820621,
+    "year": 2023,
+    "code": "MDG_0000000001",
+    "source": "WHO GHO",
+    "label": "Infant mortality",
+    "unit": "per 1k births"
+   },
+   "childStunting": {
+    "value": 10.1,
+    "year": 2024,
+    "code": "SH_STA_STNT",
+    "source": "UN SDG",
+    "label": "Child stunting <5y",
+    "unit": "%"
+   },
+   "povertyRate": {
+    "value": 0.45535,
+    "year": 2022,
+    "code": "SI_POV_DAY1",
+    "source": "UN SDG",
+    "label": "Extreme poverty",
+    "unit": "%"
+   },
+   "population": {
+    "value": 5849421,
+    "year": 2025,
+    "code": "SP.POP.TOTL",
+    "source": "World Bank",
+    "label": "Population",
+    "unit": ""
+   },
+   "gdp": {
+    "value": 25971643441.3408,
+    "year": 2024,
+    "code": "NY.GDP.MKTP.CD",
+    "source": "World Bank",
+    "label": "GDP (current US$)",
+    "unit": "US$"
+   },
+   "gdpPerCapita": {
+    "value": 4473.27134441128,
+    "year": 2024,
+    "code": "NY.GDP.PCAP.CD",
+    "source": "World Bank",
+    "label": "GDP per capita",
+    "unit": "US$"
+   },
+   "lifeExpectancy": {
+    "value": 77.945,
+    "year": 2024,
+    "code": "SP.DYN.LE00.IN",
+    "source": "World Bank",
+    "label": "Life expectancy",
+    "unit": "years"
+   }
+  }
+ },
+ "SY": {
+  "name": "Syria",
+  "frozenAt": "2026-07-18T07:43:39.507Z",
+  "indicators": {
+   "lifeExpectancyWho": {
+    "value": 72.43803165,
+    "year": 2021,
+    "code": "WHOSIS_000001",
+    "source": "WHO GHO",
+    "label": "Life expectancy (WHO)",
+    "unit": "years"
+   },
+   "infantMortality": {
+    "value": 19.03136576,
+    "year": 2023,
+    "code": "MDG_0000000001",
+    "source": "WHO GHO",
+    "label": "Infant mortality",
+    "unit": "per 1k births"
+   },
+   "childStunting": {
+    "value": 23.5,
+    "year": 2024,
+    "code": "SH_STA_STNT",
+    "source": "UN SDG",
+    "label": "Child stunting <5y",
+    "unit": "%"
+   },
+   "povertyRate": {
+    "value": 18,
+    "year": 2022,
+    "code": "SI_POV_DAY1",
+    "source": "UN SDG",
+    "label": "Extreme poverty",
+    "unit": "%"
+   },
+   "population": {
+    "value": 25620427,
+    "year": 2025,
+    "code": "SP.POP.TOTL",
+    "source": "World Bank",
+    "label": "Population",
+    "unit": ""
+   },
+   "gdp": {
+    "value": 23737634644.3994,
+    "year": 2022,
+    "code": "NY.GDP.MKTP.CD",
+    "source": "World Bank",
+    "label": "GDP (current US$)",
+    "unit": "US$"
+   },
+   "gdpPerCapita": {
+    "value": 1056.78264718197,
+    "year": 2022,
+    "code": "NY.GDP.PCAP.CD",
+    "source": "World Bank",
+    "label": "GDP per capita",
+    "unit": "US$"
+   },
+   "lifeExpectancy": {
+    "value": 72.56,
+    "year": 2024,
+    "code": "SP.DYN.LE00.IN",
+    "source": "World Bank",
+    "label": "Life expectancy",
+    "unit": "years"
+   }
+  }
+ },
+ "YE": {
+  "name": "Yemen",
+  "frozenAt": "2026-07-18T07:43:49.630Z",
+  "indicators": {
+   "population": {
+    "value": 41773878,
+    "year": 2025,
+    "code": "SP.POP.TOTL",
+    "source": "World Bank",
+    "label": "Population",
+    "unit": ""
+   },
+   "gdp": {
+    "value": 21606160663.0318,
+    "year": 2018,
+    "code": "NY.GDP.MKTP.CD",
+    "source": "World Bank",
+    "label": "GDP (current US$)",
+    "unit": "US$"
+   },
+   "gdpPerCapita": {
+    "value": 633.887202451545,
+    "year": 2018,
+    "code": "NY.GDP.PCAP.CD",
+    "source": "World Bank",
+    "label": "GDP per capita",
+    "unit": "US$"
+   },
+   "lifeExpectancy": {
+    "value": 69.439,
+    "year": 2024,
+    "code": "SP.DYN.LE00.IN",
+    "source": "World Bank",
+    "label": "Life expectancy",
+    "unit": "years"
+   },
+   "lifeExpectancyWho": {
+    "value": 65.76206783,
+    "year": 2021,
+    "code": "WHOSIS_000001",
+    "source": "WHO GHO",
+    "label": "Life expectancy (WHO)",
+    "unit": "years"
+   },
+   "infantMortality": {
+    "value": 34.650889485,
+    "year": 2023,
+    "code": "MDG_0000000001",
+    "source": "WHO GHO",
+    "label": "Infant mortality",
+    "unit": "per 1k births"
+   },
+   "childStunting": {
+    "value": 47.4,
+    "year": 2024,
+    "code": "SH_STA_STNT",
+    "source": "UN SDG",
+    "label": "Child stunting <5y",
+    "unit": "%"
+   },
+   "povertyRate": {
+    "value": 33.3,
+    "year": 2014,
+    "code": "SI_POV_DAY1",
+    "source": "UN SDG",
+    "label": "Extreme poverty",
+    "unit": "%"
+   }
+  }
+ },
+ "UG": {
+  "name": "Uganda",
+  "frozenAt": "2026-07-18T07:43:51.248Z",
+  "indicators": {
+   "population": {
+    "value": 51384894,
+    "year": 2025,
+    "code": "SP.POP.TOTL",
+    "source": "World Bank",
+    "label": "Population",
+    "unit": ""
+   },
+   "gdp": {
+    "value": 61985829288.1496,
+    "year": 2025,
+    "code": "NY.GDP.MKTP.CD",
+    "source": "World Bank",
+    "label": "GDP (current US$)",
+    "unit": "US$"
+   },
+   "gdpPerCapita": {
+    "value": 1206.30450825002,
+    "year": 2025,
+    "code": "NY.GDP.PCAP.CD",
+    "source": "World Bank",
+    "label": "GDP per capita",
+    "unit": "US$"
+   },
+   "lifeExpectancy": {
+    "value": 68.487,
+    "year": 2024,
+    "code": "SP.DYN.LE00.IN",
+    "source": "World Bank",
+    "label": "Life expectancy",
+    "unit": "years"
+   },
+   "lifeExpectancyWho": {
+    "value": 65.98577935,
+    "year": 2021,
+    "code": "WHOSIS_000001",
+    "source": "WHO GHO",
+    "label": "Life expectancy (WHO)",
+    "unit": "years"
+   },
+   "infantMortality": {
+    "value": 27.563071644,
+    "year": 2023,
+    "code": "MDG_0000000001",
+    "source": "WHO GHO",
+    "label": "Infant mortality",
+    "unit": "per 1k births"
+   },
+   "childStunting": {
+    "value": 23.5,
+    "year": 2024,
+    "code": "SH_STA_STNT",
+    "source": "UN SDG",
+    "label": "Child stunting <5y",
+    "unit": "%"
+   },
+   "povertyRate": {
+    "value": 37.90336,
+    "year": 2019,
+    "code": "SI_POV_DAY1",
+    "source": "UN SDG",
+    "label": "Extreme poverty",
+    "unit": "%"
+   }
+  }
+ },
+ "TZ": {
+  "name": "Tanzania",
+  "frozenAt": "2026-07-18T07:43:52.463Z",
+  "indicators": {
+   "population": {
+    "value": 70545865,
+    "year": 2025,
+    "code": "SP.POP.TOTL",
+    "source": "World Bank",
+    "label": "Population",
+    "unit": ""
+   },
+   "gdp": {
+    "value": 90143496090.4411,
+    "year": 2025,
+    "code": "NY.GDP.MKTP.CD",
+    "source": "World Bank",
+    "label": "GDP (current US$)",
+    "unit": "US$"
+   },
+   "gdpPerCapita": {
+    "value": 1318.81921386719,
+    "year": 2025,
+    "code": "NY.GDP.PCAP.CD",
+    "source": "World Bank",
+    "label": "GDP per capita",
+    "unit": "US$"
+   },
+   "lifeExpectancy": {
+    "value": 67.212,
+    "year": 2024,
+    "code": "SP.DYN.LE00.IN",
+    "source": "World Bank",
+    "label": "Life expectancy",
+    "unit": "years"
+   },
+   "lifeExpectancyWho": {
+    "value": 66.8101483,
+    "year": 2021,
+    "code": "WHOSIS_000001",
+    "source": "WHO GHO",
+    "label": "Life expectancy (WHO)",
+    "unit": "years"
+   },
+   "infantMortality": {
+    "value": 29.932729387,
+    "year": 2023,
+    "code": "MDG_0000000001",
+    "source": "WHO GHO",
+    "label": "Infant mortality",
+    "unit": "per 1k births"
+   },
+   "childStunting": {
+    "value": 29.9,
+    "year": 2024,
+    "code": "SH_STA_STNT",
+    "source": "UN SDG",
+    "label": "Child stunting <5y",
+    "unit": "%"
+   },
+   "povertyRate": {
+    "value": 51.3,
+    "year": 2018,
+    "code": "SI_POV_DAY1",
+    "source": "UN SDG",
+    "label": "Extreme poverty",
+    "unit": "%"
+   }
+  }
+ },
+ "RW": {
+  "name": "Rwanda",
+  "frozenAt": "2026-07-18T07:43:53.519Z",
+  "indicators": {
+   "population": {
+    "value": 14569341,
+    "year": 2025,
+    "code": "SP.POP.TOTL",
+    "source": "World Bank",
+    "label": "Population",
+    "unit": ""
+   },
+   "gdp": {
+    "value": 16372132990.2271,
+    "year": 2025,
+    "code": "NY.GDP.MKTP.CD",
+    "source": "World Bank",
+    "label": "GDP (current US$)",
+    "unit": "US$"
+   },
+   "gdpPerCapita": {
+    "value": 1123.73874633225,
+    "year": 2025,
+    "code": "NY.GDP.PCAP.CD",
+    "source": "World Bank",
+    "label": "GDP per capita",
+    "unit": "US$"
+   },
+   "lifeExpectancy": {
+    "value": 68.017,
+    "year": 2024,
+    "code": "SP.DYN.LE00.IN",
+    "source": "World Bank",
+    "label": "Life expectancy",
+    "unit": "years"
+   },
+   "lifeExpectancyWho": {
+    "value": 67.54213882,
+    "year": 2021,
+    "code": "WHOSIS_000001",
+    "source": "WHO GHO",
+    "label": "Life expectancy (WHO)",
+    "unit": "years"
+   },
+   "infantMortality": {
+    "value": 30.479223905,
+    "year": 2023,
+    "code": "MDG_0000000001",
+    "source": "WHO GHO",
+    "label": "Infant mortality",
+    "unit": "per 1k births"
+   },
+   "childStunting": {
+    "value": 29.8,
+    "year": 2024,
+    "code": "SH_STA_STNT",
+    "source": "UN SDG",
+    "label": "Child stunting <5y",
+    "unit": "%"
+   },
+   "povertyRate": {
+    "value": 34.44959,
+    "year": 2023,
+    "code": "SI_POV_DAY1",
+    "source": "UN SDG",
+    "label": "Extreme poverty",
+    "unit": "%"
+   }
+  }
+ }
+}

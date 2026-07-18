@@ -18,7 +18,39 @@ import * as log from './log.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const DATA_DIR = path.join(__dirname, 'data', 'intel');
+const SEED_DIR = path.join(__dirname, 'data', 'intel-seed');
 fs.mkdirSync(DATA_DIR, { recursive: true });
+
+// ---------- seed hydration (2026-07-18 fix) ----------
+// ROOT CAUSE of the "country information broken" bug: server/data/intel/ is
+// gitignored (live store, mutable), so every fresh clone/deploy started with an
+// EMPTY store — overview() returned countriesWithData:0, the Risk Engine and
+// UAE Correlation Engine rendered empty, and all 16 countries showed no data
+// until a manual refresh. Fix: a COMMITTED read-only seed dataset
+// (server/data/intel-seed/*.json, one validated pipeline snapshot per country,
+// generated 2026-07-18 via the real Perplexity→X→analysis pipeline). At boot,
+// any country missing from the live store is hydrated from its seed file, so
+// the dashboard is never empty; live refreshes then append on top as before.
+function hydrateFromSeed() {
+  let hydrated = 0;
+  try {
+    if (!fs.existsSync(SEED_DIR)) return 0;
+    for (const f of fs.readdirSync(SEED_DIR)) {
+      if (!/^[A-Z]{2}\.json$/.test(f)) continue;
+      const live = path.join(DATA_DIR, f);
+      if (fs.existsSync(live)) continue; // live data wins — never overwrite
+      try {
+        const seed = JSON.parse(fs.readFileSync(path.join(SEED_DIR, f), 'utf8'));
+        if (!seed?.snapshots?.length || !seed.snapshots[seed.snapshots.length - 1]?.analysis) continue; // validate
+        fs.writeFileSync(live, JSON.stringify(seed, null, 1));
+        hydrated++;
+      } catch (e) { log.error('intel.seed_hydrate_file_failed', { file: f, error: e.message }); }
+    }
+  } catch (e) { log.error('intel.seed_hydrate_failed', { error: e.message }); }
+  if (hydrated) log.info('intel.seed_hydrated', { countries: hydrated });
+  return hydrated;
+}
+hydrateFromSeed();
 
 export const PLUGINS = {
   perplexity: 'plugin-1722260873',
@@ -258,14 +290,41 @@ export function overview() {
   const allAgr = withData.flatMap(p => (latestSnapshot(p.iso)?.analysis?.agreements || []).map(a => ({ ...a, country: p.name })));
   const allCorr = withData.flatMap(p => (latestSnapshot(p.iso)?.analysis?.correlations || []).map(x => ({ ...x, country: p.name })));
   const briefs = getBriefs().briefs;
+
+  // (2026-07-18 fix) Risk/Opportunity Engine selection: the old `.slice(0, 12)`
+  // took rows in COUNTRY-REGISTRY ORDER, so with 16 countries the first 2-3
+  // countries' rows filled the entire list and later countries (e.g. Kenya)
+  // never surfaced. Now: severity-ranked round-robin across countries — every
+  // country with data gets its top row first, then seconds, etc. — so the strip
+  // always represents the whole portfolio.
+  const SEV_RANK = { Critical: 0, High: 1, Medium: 2, Low: 3 };
+  const diversify = (rows, cap) => {
+    const byCountry = new Map();
+    for (const r of rows) {
+      if (!byCountry.has(r.country)) byCountry.set(r.country, []);
+      byCountry.get(r.country).push(r);
+    }
+    for (const list of byCountry.values()) {
+      list.sort((a, b) => (SEV_RANK[a.severity] ?? 4) - (SEV_RANK[b.severity] ?? 4) || (b.confidence || 0) - (a.confidence || 0));
+    }
+    const out = [];
+    for (let round = 0; out.length < cap; round++) {
+      let picked = false;
+      for (const list of byCountry.values()) {
+        if (list[round]) { out.push(list[round]); picked = true; if (out.length >= cap) break; }
+      }
+      if (!picked) break;
+    }
+    return out;
+  };
   return {
     countriesMonitored: COUNTRIES.length,
     countriesWithData: withData.length,
     criticalToday: allItems.filter(i => i.uaeImpact?.level === 'Critical').length,
     humanitarianAlerts: allItems.filter(i => i.category === 'humanitarian' && ['High', 'Critical'].includes(i.uaeImpact?.level)).length,
     strategicOpportunities: allOpps.length,
-    risks: allRisks.slice(0, 12),
-    opportunities: allOpps.slice(0, 12),
+    risks: diversify(allRisks, 16),
+    opportunities: diversify(allOpps, 16),
     trendingItems: allItems.sort((a, b) => (b.confidence || 0) - (a.confidence || 0)).slice(0, 8),
     latestAgreements: allAgr.slice(0, 10),
     correlations: allCorr.sort((a, b) => (b.strength || 0) - (a.strength || 0)).slice(0, 20),

@@ -197,3 +197,35 @@ via POST /automation/api/workflow/{id}/execute (trigger.type "api").
 | 3 | 6a5b103c21d41c1c020736ad | 2026-07-18T05:33:48.457Z | 2026-07-18T05:38:38.460Z | 290,003 ms | 200 (executionID returned) | **success** |
 
 3/3 runs completed status=success — repeated execution proven (runs overlapped, all completed).
+
+## 2026-07-18 Country data pipeline verification (URGENT debug pass, 06:07–08:00 UTC)
+
+### Intel pipeline regeneration (16 countries, real plugins, local server)
+| Wave | Countries | Started | All done by | Result |
+|---|---|---|---|---|
+| 1 | EG JO PK KE | 06:28:16Z | 06:34:18Z | 4/4 done, 0 errors |
+| 2 | MA ID BD SD | 06:34:22Z | 06:42:04Z | 4/4 done, 0 errors |
+| 3 | SO ET LB SY | 06:41:29Z | 06:50:58Z | 4/4 done, 0 errors |
+| 4 | YE UG TZ RW | 06:48:36Z | 06:57:38Z | 4/4 done, 0 errors |
+
+Pipeline per country: Perplexity `plugin-1722260873` → X Search `plugin-1751872652` → strict-JSON analysis (`predefined-gpt-5.6-sol` + `reasoningEffort:"medium"`). All 16 snapshots validated (items/risks/opportunities non-empty, no parseFailed) and committed as `server/data/intel-seed/*.json`.
+
+### External facts APIs (server/facts.js) — live verification
+| # | Call | Result |
+|---|---|---|
+| 1 | WB `GET /v2/country/KEN/indicator/SP.POP.TOTL?format=json&mrv=1` | **200** — 57,532,493 (2025). NOTE: `mrnev=1` variant returns an HTML "Request Error" page — do not use |
+| 2 | WHO GHO `GET /api/WHOSIS_000001?$filter=SpatialDim eq 'KEN'` | **200** — 66 rows, 22 SEX_BTSX; server-side Dim1 filter 400s for some codes → filter client-side |
+| 3 | UN SDG `GET /v1/sdg/Series/Data?seriesCode=SH_STA_STNT&areaCode=404` | **200** — 75 rows, latest 2024 = 17.9% (BOTHSEX) |
+| 4 | `GET /api/intel/facts/KE` (local, first call) | **200** in 1.76s — mode live, 8/8 indicators |
+| 5 | `GET /api/intel/facts/JO?force=1` (deployed, 07:53:16.737Z) | **200** — mode live 8/8 (pop 11,520,684 · 2025; GDP US$61.6B · 2025; stunting 7.7% · 2024) |
+| 6 | `GET /api/intel/facts/PK?force=1` (deployed) | **200** — mode live 8/8 |
+| 7 | ALL-APIs-DOWN simulation (fetch throws) → `getCountryFacts('JO', force)` | mode **fallback**, 8/8 filled from committed `facts-fallback.json` — section never empty |
+| 8 | Fallback coverage freeze | 127/128 cells live-frozen; SO×SI_POV_DAY1 = 0 rows at UN SDG (totalElements:0) AND WB SI.POV.DDAY value:null — validated negative, hidden in UI |
+
+### Deployed end-state (https://sb-19jbrors6x5n.vercel.run)
+| Check | Timestamp | Result |
+|---|---|---|
+| `GET /` | 07:59:10Z | **200** (0.11s) |
+| `GET /api/health` | 07:59:10.932Z | **200** `{"ok":true,...,"time":"2026-07-18T07:59:10.932Z"}` |
+| `GET /api/intel/overview` | 07:59:10Z | **200** — countriesWithData 16, risks 16 (all 16 countries, severity round-robin), correlations 20 |
+| Puppeteer DOM audit | 07:59:17Z | Risk Engine 16 rows w/ pills; UAE Correlation Engine SVG rendered; KE facts strip 7/7; console errors 0; failed requests 0 |
