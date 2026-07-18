@@ -20,9 +20,29 @@ export function domainFromToolArg(s) {
   return null;
 }
 
-/** Favicon of the visited site with graceful gear fallback on load error. */
-function ToolIcon({ domain }) {
+/** Official data-source logo matcher — locally hosted assets in public/logos/.
+ *  World Bank → worldbank.png · WHO/WHO GHO → who.svg · UN SDG → unsdg.svg.
+ *  Falls back to the site favicon, then to the gear icon for unmatched sources. */
+const SOURCE_LOGOS = [
+  { test: /world\s*bank/i, src: '/logos/worldbank.png', label: 'World Bank' },
+  { test: /\bWHO\b|WHO\s*GHO/i, src: '/logos/who.svg', label: 'World Health Organization' },
+  { test: /UN\s*SDG|\bSDG\b/i, src: '/logos/unsdg.svg', label: 'UN Sustainable Development Goals' },
+];
+export function matchSourceLogo(text) {
+  if (!text) return null;
+  for (const m of SOURCE_LOGOS) if (m.test.test(text)) return m;
+  return null;
+}
+
+function ToolIcon({ domain, sourceText }) {
   const [failed, setFailed] = useState(false);
+  const matched = matchSourceLogo(sourceText);
+  if (matched && !failed) {
+    return (
+      <img className="toolline__srclogo" src={matched.src} alt={matched.label} title={matched.label}
+        width="16" height="16" loading="lazy" onError={() => setFailed(true)} />
+    );
+  }
   if (!domain || failed) return <span className="toolline__gear" aria-hidden><Cog size={14} strokeWidth={1.9} /></span>;
   return (
     <img
@@ -36,21 +56,24 @@ function ToolIcon({ domain }) {
   );
 }
 
-export function ToolCallLine({ call }) {
+export function ToolCallLine({ call, index = 0 }) {
   const [open, setOpen] = useState(false);
   const running = call.status === 'running';
   const argSummary = call.args?.query || Object.values(call.args || {})[0] || '';
+  const sourceText = `${call.name || ''} ${String(argSummary)} ${call.raw?.description || ''}`;
   const domain = domainFromToolArg(String(argSummary)) || domainFromToolArg(JSON.stringify(call.args || ''));
   return (
-    <div className="toolline">
+    <div className="toolline toolline--animate" style={{ animationDelay: `${Math.min(index, 8) * 70}ms` }}>
       <button className="toolline__head" onClick={() => setOpen(o => !o)} title="Show raw plugin-call payload">
-        <ToolIcon domain={domain} />
+        <span className="toolline__iconslot"><ToolIcon domain={domain} sourceText={sourceText} /></span>
         <span className="toolline__name">{call.name}</span>
-        {argSummary && <><span className="toolline__arrow" aria-hidden><ChevronRight size={12} strokeWidth={2} /></span><span className="toolline__arg">{String(argSummary)}</span></>}
-        <span style={{ flex: 1 }} />
-        {running
-          ? <span className="toolline__spin" aria-label="running" />
-          : <span className="toolline__check" aria-label="done"><Check size={13} strokeWidth={2.6} /></span>}
+        {argSummary && <><span className="toolline__arrow" aria-hidden><ChevronRight size={12} strokeWidth={2} /></span><span className="toolline__arg" title={String(argSummary)}>{String(argSummary)}</span></>}
+        <span className="toolline__spacer" />
+        <span className="toolline__stateslot">
+          {running
+            ? <span className="toolline__spin" aria-label="running" />
+            : <span className="toolline__check" aria-label="done"><Check size={13} strokeWidth={2.6} /></span>}
+        </span>
       </button>
       {open && (
         <pre className="toolline__raw">{JSON.stringify(call.raw || call.args, null, 2)}</pre>
@@ -156,7 +179,7 @@ export function AssistantMessage({ msg, live, onOption, onExport, exportBusy, ar
       {/* Layer 1 — thinking line (live planning_thinking/step_thinking deltas; auto-collapses on first answer token) */}
       <ThinkingAccordion thinking={msg.thinking} live={Boolean(live && !msg.answerStarted)} forceOpenWhileLive={true} />
       {/* Layer 2 — tool-call lines (real step_output plugin-call events only) */}
-      {(msg.toolCalls || []).map(tc => <ToolCallLine key={tc.id} call={tc} />)}
+      {(msg.toolCalls || []).map((tc, i) => <ToolCallLine key={tc.id} call={tc} index={i} />)}
       {/* Loader vanishes on the FIRST streamed token of any kind. */}
       {live && !msg.answerStarted && !msg.thinking && !(msg.toolCalls || []).length && <PluginSkeleton label={msg.pluginStatus || 'Routing your request…'} />}
       {/* Layer 3 — streamed answer */}
