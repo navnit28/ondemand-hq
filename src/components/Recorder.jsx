@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { t } from '../i18n.js';
-import { Pause, Play, Check, X } from 'lucide-react';
+import { Pause, Play, Check, X, Mic, MicOff } from 'lucide-react';
 
 /**
  * STEP 4 — Speech-to-text microphone experience.
@@ -139,10 +139,7 @@ export default function Recorder({ onTranscript, onError, disabled }) {
     return (
       <button type="button" className="rec__mic rec__mic--disabled" disabled
         title={disabledReason || t('speechUnavailable')} aria-label={disabledReason || t('speechUnavailable')}>
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-          <rect x="9" y="3" width="6" height="11" rx="3" stroke="currentColor" strokeWidth="1.7" />
-          <path d="M5.5 11.5a6.5 6.5 0 0 0 13 0M12 18v3M4 4l16 16" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" />
-        </svg>
+        <MicOff size={18} strokeWidth={1.9} aria-hidden />
       </button>
     );
   }
@@ -152,10 +149,7 @@ export default function Recorder({ onTranscript, onError, disabled }) {
       {state === 'idle' && (
         <button type="button" className="rec__mic" title={t('record')} aria-label={t('record')}
           onClick={start} disabled={disabled}>
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-            <rect x="9" y="3" width="6" height="11" rx="3" stroke="currentColor" strokeWidth="1.7" />
-            <path d="M5.5 11.5a6.5 6.5 0 0 0 13 0M12 18v3" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" />
-          </svg>
+          <Mic size={18} strokeWidth={1.9} aria-hidden />
         </button>
       )}
       {(state === 'recording' || state === 'paused') && (

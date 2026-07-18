@@ -36,7 +36,7 @@ export default function Sidebar({ conversations, activeId, onSelect, onNew, onTo
   return (
     <aside className={`sidebar${open ? ' open' : ''}`}>
       <div className="sidebar__logo">
-        <img src="/oda-logo-official.png" alt="مكتب شؤون التنمية — Office of Development Affairs" className="sidebar__logo-official" />
+        <img src="/oda-logo-bw.png" alt="Office of Development Affairs" className="sidebar__logo-official" />
       </div>
       <button className="sidebar__newchat" onClick={() => onNew()}>
         <Plus size={15} strokeWidth={2.2} aria-hidden /> New chat

@@ -616,3 +616,28 @@ ALL legitimate (breakdown below). No simulated/mocked runtime content remains.
   16/16 monitored countries.
 - Cron RESTORED to `0 0 */12 * * *` at 20:42:33Z (lastModified 1784320953516);
   GET workflow confirms `isActive: true` on the 12-hour production cadence.
+
+---
+
+## 2026-07-18 (02:49–02:55 UTC) — Media API serverless-asset attempt: truthful negative
+
+Task: move the ODA sidebar logo + World Bank/WHO/UN SDG source logos off local
+hosting onto the OnDemand Media API. Live docs read via the ondemand-api-docs
+skill flow: `POST https://api.on-demand.io/media/v1/public/file` (slug
+`createmediaurl`), required body `{url, plugins, responseMode}`, 200 response
+carries `data.url` (hosted media URL).
+
+**Result: HTTP 500 `{"message":"errors.server_error","errorCode":"server_error"}`
+on EVERY attempt (6 variants, 02:49–02:51 UTC):** the 4 real asset URLs, the
+docs' own example Cloudinary URL, a minimal required-fields-only body, and a
+full body including a freshly created real `sessionId` (HTTP 201). The failure
+is server-side on this key/deployment — not an input problem. Hosted media URLs
+are therefore unobtainable this pass; the app keeps serving these assets from
+`public/` (working, verified 200 in production) so nothing breaks. If/when the
+Media API recovers, the same documented call is the migration path.
+
+Also this pass: sidebar logo replaced with the official black-and-white
+'Office of Development Affairs' lockup (logo-oda_v1.png, 3980×1222, downscaled
+to 800×246 → public/oda-logo-bw.png); severity-pill hover UX (150ms ease,
+per-token tint deepen + elevation); chat input icons unified on lucide
+(Mic/MicOff + SendHorizontal, 18px, 36×36 flex-centered buttons).

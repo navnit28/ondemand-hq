@@ -70,7 +70,7 @@ export default function Composer({ onSend, busy, onError, placeholder }) {
             in the input, editable before send (EN/AR via dir="auto"). */}
         <Recorder disabled={busy} onError={() => { /* Recorder shows its own quiet note */ }}
           onTranscript={(t2) => { setText(prev => (prev ? prev + ' ' : '') + t2); taRef.current?.focus(); }} />
-        <button className="send" onClick={submit} disabled={busy || uploading || (!text.trim() && !attached)} title="Send" aria-label="Send"><SendHorizontal size={16} strokeWidth={2} aria-hidden /></button>
+        <button className="send" onClick={submit} disabled={busy || uploading || (!text.trim() && !attached)} title="Send" aria-label="Send"><SendHorizontal size={18} strokeWidth={2} aria-hidden /></button>
       </div>
     </div>
   );
