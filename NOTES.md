@@ -1116,3 +1116,79 @@ status/media/narrative-SSE · POST quick-query (real GLM answer) · POST regener
 **Screenshot pack:** before (old build: badge clusters + blob connectors) vs after
 (labeled arced edges, arrowheads/chevrons, expanded entity ring, popover, drawer) —
 7 PNGs delivered with the run response.
+
+## 2026-07-19 — CORRELATION ENGINE V2 (22-item upgrade) + Gemini vision-QA loop + redeploy (06:20–08:15 UTC)
+
+**Scope:** edit-in-place V2 upgrade of the Correlation Engine on top of af93169/fc1c5d5 —
+backend intelligence core + full visual layer. Zero mock data; every surface renders from
+the REAL V2 run. STANDING RULES honored: evidence-gated edges only (inference layer is
+basis-evidence-gated too), fable-5+medium production analysis default in config, GLM 4.7
+Quick Query only, streaming everywhere, ⚡ Quick Query on all new artifacts.
+
+**Milestone commits:**
+- `ab53687` backend V2: SEARCH_WINDOWS (24h→entire-history, default 730d w/ 30d up-weight),
+  context weighting engine (0.2/0.6/1.0 base + ×2 UAE/×2 gov/×3 official/×2 corroboration,
+  cap 3.0, 60/40 blend into edge weights, on-record audit trail), 10-facet Perplexity
+  research fan-out + X + Reddit (bounded 3-way concurrency; intelligence-density prompts:
+  developments/organisations/funding/officials/strategic/12mo/contradictions/missing/
+  analogues/confidence-audit) merged by the normalize orchestration layer into ONE graph,
+  stage 4b tiered inference (Likely/Possible/Predicted; probability+supporting+counter+
+  reasoning; drops any inference without basis_evidence_ids), stage 4c per-article intel
+  (50/100w, key points, NER, risk, importance, UAE relation) + UAE Strategic Impact Engine
+  (Very High→None + reasoning over 14 dimensions), Story Mode SSE route (6 fixed sections,
+  evidence-cited), /api/correlation/config; run schema 2.
+- `906cedf` frontend V2: Expand Intelligence View FAB→fullscreen modal (ESC, zoom state
+  remembered), MiniMap (click-jump/wheel-zoom/viewport rect), nav grammar (Space-pan,
+  dbl-click center, Shift+drag multi-select, CTRL+click lock 🔒, ALT+scroll timeline
+  scrub), Louvain cluster chips (collapse/expand w/ aggregate nodes), Entity/Relationship
+  Inspectors (12-field entity dossier; BFS chain view + why-exists + supporting/counter),
+  HoverPreview card, LightboxV2 (carousel/zoom/fullscreen/AI summary/related), Timeline
+  Replay (drag-through, play/pause), Heat Mode (width=interactions, glow=weight,
+  pulse=breaking), GeoOverlay (d3-geo + world-atlas, fanned anchors, animated arrowed
+  category flows), DeepSearchSelect, TierLegend, PredictionPanel, StoryMode modal,
+  ECharts item-22 fix (donut title above ring + legend-only labels + avoidLabelOverlap;
+  volume axis flat MM-DD), collide-force + label de-clutter grid.
+- `a07d72e` QA-gate fixes + REAL V2 run seeded (KE-20260719070155).
+- `a5de5f8` hover-card full impact-tier color key.
+- (this commit) docs + final hover-card key sizing (wider card, VH/H/M/L/N swatches).
+
+**REAL V2 pipeline run (production models, windowDays=730):** `KE-20260719070155` —
+40 evidence records (12→40 = 3.3× density vs V1 run), 10 verified edges, 7 inferred
+(1 Likely / 2 Possible / 4 Predicted, all basis-evidence-gated), 40 articleIntel entries,
+8 impact scores (uae+ke Very High; etihadrail/kerail/arise High), 1 IG proof, 20.1 min
+(1,207,603 ms — intelligence density over speed, as specified). Run seeded into
+correlation-seed for fresh-deploy hydration.
+
+**Gemini 3.5 Flash vision-QA loop (endpoint predefined-gemini-3.5-flash, graph gate +
+panel gate scripts; per-surface verdicts):**
+- iter1 default graph: FAIL (caption collisions, truncation, no legend) → fixes:
+  in-canvas legend (categories + tier dashes + node-encoding key), caption collision
+  grid (90×18px cells; short pills at low zoom), collide radius+20/charge−220/link 90-160.
+- iter2 default graph: **PASS zero issues** ("wider collide spacing successfully prevents
+  overlapping labels… legend makes directional data flows clear at a single glance").
+- donut fix: **PASS zero issues** (title above ring, legend-only labels, axis legible).
+- entity inspector iter1: FAIL (truncation, no stance key, no direction cues) → full-text
+  + A→B direction lines + stance key → iter2 **PASS zero issues**.
+- geo overlay iter1: FAIL (label overlap, no direction) → per-flow tip+mid arrowheads,
+  greedy label de-clutter w/ halo → iter2 **PASS zero issues**.
+- heat mode: **PASS** (with legend + chevrons; "viewer can easily tell what data is
+  flowing where").
+- fullscreen view iter1: FAIL (legend lacked node-color key) → node-encoding key line →
+  iter2 **PASS zero issues**. relationship inspector iter2 **PASS** (chip/color key line).
+- timeline replay (legend in frame): **PASS zero issues**. prediction mode (color key +
+  wrap fix): **PASS zero issues** (panel gate). story mode ([E#]/[IE#] key line):
+  **PASS zero issues**. hover card: 2 fixes (self-labeling chip → full 5-tier key row on
+  288px card): final **PASS zero issues**.
+Driver: headless Chromium CDP scripts (33-step main driver, all steps OK, `[]` page
+errors); every screenshot uploaded to the live sandbox /qa*/ paths for the vision model.
+
+**Deploy:** FRESH sandbox `sbx_4gB6BdXqx9SeD3SKBGJuEeOxse0l` →
+https://sb-56sjp1ptq1yo.vercel.run (previous QA-host sandbox sb-1bs5p4a4mljf expired 410
+mid-loop; QA hosting moved to the new sandbox). All routes 200 with UTC stamps
+(08:05:36Z–08:06:56Z): `/` · `/api/health` · `/__commit.txt` · msm config/dates/day/
+transcript · correlation config/runs/run/download/diff/status/media · narrative SSE ·
+story SSE (303 data frames) · POST quick-query (real GLM answer + metrics) · POST
+regenerate?windowDays=730 (job KE-20260719080656 started). `/__commit.txt` matches HEAD.
+
+**Innovations logged:** #3 Context-Weighted Evidence Prism, #4 Tiered Epistemic Edge
+Grammar (INNOVATION_LOG.md). ARCHITECTURE.md §11 documents the full V2 backend+frontend.

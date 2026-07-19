@@ -1433,7 +1433,7 @@ body.ce-noscroll { overflow: hidden; }
 .ce-inspector > .ce-pop__qq { margin: 0 16px 14px; width: auto; }
 
 /* item 8 — hover preview card */
-.ce-hoverprev { position: absolute; z-index: 8; width: 262px; background: #fff; border: 1px solid #eef0f3; border-radius: 12px;
+.ce-hoverprev { position: absolute; z-index: 8; width: 288px; background: #fff; border: 1px solid #eef0f3; border-radius: 12px;
   box-shadow: 0 8px 26px rgba(17,24,39,0.12); padding: 10px 12px; pointer-events: none; }
 .ce-hoverprev__head { display: flex; gap: 8px; align-items: center; }
 .ce-hoverprev__head img { width: 34px; height: 34px; border-radius: 50%; object-fit: cover; border: 1.5px solid #ede9fe; }
@@ -1442,10 +1442,11 @@ body.ce-noscroll { overflow: hidden; }
 .ce-hoverprev__meta { font: 500 9px Montserrat, sans-serif; color: #9ca3af; }
 .ce-hoverprev__impact { font: 600 9.5px Montserrat, sans-serif; color: #374151; margin: 7px 0 0; display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
 .ce-hoverprev__impact .ce-impactchip { font-size: 9px; padding: 2px 8px; }
-.ce-hoverprev__tiers { display: flex; gap: 5px; flex-wrap: wrap; width: 100%; margin-top: 3px; }
-.ce-hoverprev__tiers span { display: inline-flex; align-items: center; gap: 3px; font: 500 7.5px Montserrat, sans-serif; color: #9ca3af; }
+.ce-hoverprev__tiers { display: flex; gap: 7px; flex-wrap: nowrap; width: 100%; margin-top: 4px; align-items: center; }
+.ce-hoverprev__tiers b { font: 700 8px Montserrat, sans-serif; color: #9ca3af; }
+.ce-hoverprev__tiers span { display: inline-flex; align-items: center; gap: 3px; font: 500 8px Montserrat, sans-serif; color: #9ca3af; white-space: nowrap; }
 .ce-hoverprev__tiers span.on { font-weight: 700; color: #374151; }
-.ce-hoverprev__tiers i { width: 7px; height: 7px; border-radius: 2.5px; border: 0.5px solid #e5e7eb; }
+.ce-hoverprev__tiers i { width: 8px; height: 8px; border-radius: 2.5px; border: 0.5px solid #e5e7eb; flex: none; }
 .ce-hoverprev__news { font: 500 10px/1.5 Montserrat, sans-serif; color: #4b5563; margin-top: 6px; }
 .ce-hoverprev__foot { font: 500 8.5px Montserrat, sans-serif; color: #b6bcc7; margin-top: 6px; }
 
