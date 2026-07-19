@@ -26,6 +26,9 @@ import {
   GLM_ENDPOINT_ID, QUICK_QUERY_MAX_TOKENS,
 } from './env.js';
 import * as log from './log.js';
+// DEEP PIPELINE v2 (2026-07-19 rewrite): windows / weighting / 16-source retrieval /
+// 10 specialists / AI correlation layer / prediction mode / UAE impact engine.
+import { runDeepPipeline, RESEARCH_WINDOWS, DEFAULT_WINDOW } from './intelligence/deepPipeline.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const DATA_ROOT = path.join(__dirname, 'data', 'correlation');
@@ -557,8 +560,70 @@ export async function quickQuery({ context, question }, res) {
 }
 
 // ---------- routes ----------
+// ---------- DEEP PIPELINE v2 job runner (2026-07-19) ----------
+// Runs the full rewritten pipeline (windows/weighting/16-source/10-specialist/
+// correlation-layer/prediction/impact) and persists the result as a versioned
+// daily snapshot alongside round-1 runs — same run-store, same diff mechanics,
+// so the UI date scrubber and daily-diff (new-edge pulse) work unchanged.
+// EMPTY-UPSTREAM RESILIENT: an empty evidence set still yields a valid snapshot.
+export async function runDeepJob(iso, countryName, { window: windowId, offline = false, seedEvidence = null } = {}) {
+  if (jobs.get(iso)?.status === 'running') return jobs.get(iso);
+  const job = { status: 'running', stage: 'deep:init', runId: null, startedAt: new Date().toISOString(), error: null, pipeline: 'deep-v2', window: windowId || DEFAULT_WINDOW };
+  jobs.set(iso, job);
+  const work = (async () => {
+    try {
+      const run = await runDeepPipeline({
+        iso, countryName, window: windowId,
+        plugins: PLUGINS, registry: UAE_REGISTRY, relationshipTypes: RELATIONSHIP_TYPES,
+        offline, seedEvidence,
+        onStage: (name) => { job.stage = name; },
+      });
+      job.runId = run.runId;
+      const runs = listRuns(iso);
+      const prev = runs.length ? getRun(iso, runs[runs.length - 1].runId) : null;
+      run.diffFromPrevious = diffRuns(prev, run); // daily diff — newEdgeIds drive the frontend pulse
+      writeJson(path.join(countryDir(iso), `run-${run.runId}.json`), run);
+      job.status = 'done'; job.stage = 'complete'; job.finishedAt = new Date().toISOString();
+      job.run = { runId: run.runId, evidence: run.stats.evidenceCount, edges: run.stats.edgeCount, emptyUpstream: run.stats.emptyUpstream };
+      log.info('correlation.deep_run_done', { iso, runId: run.runId, ...run.stats });
+      return run;
+    } catch (e) {
+      job.status = 'error'; job.error = e.message;
+      log.error('correlation.deep_run_failed', { iso, error: e.message });
+      throw e;
+    }
+  })();
+  job.promise = work.catch(() => null);
+  return job;
+}
+
 export function registerCorrelationRoutes(app, { countries }) {
   const countryOf = (iso) => countries.find(c => c.iso === iso.toUpperCase());
+
+  // DEEP SEARCH MODE config: selectable research windows (pipeline parameter + API option).
+  app.get('/api/correlation/windows', (_req, res) => res.json({
+    default: DEFAULT_WINDOW,
+    defaultLabel: 'Last 2 Years + higher weighting on Last 30 Days',
+    windows: Object.values(RESEARCH_WINDOWS),
+  }));
+
+  // Trigger the deep pipeline: POST /api/correlation/deep/:iso?window=2y
+  // body (optional): { window, offline, seedEvidence } — seedEvidence may be [] (empty-but-valid).
+  app.post('/api/correlation/deep/:iso', async (req, res) => {
+    const iso = req.params.iso.toUpperCase();
+    const c = countryOf(iso);
+    if (!c) return res.status(404).json({ error: 'Unknown country' });
+    const windowId = req.query.window || req.body?.window || DEFAULT_WINDOW;
+    if (!RESEARCH_WINDOWS[String(windowId).toLowerCase()]) return res.status(400).json({ error: `Unknown window '${windowId}'`, valid: Object.keys(RESEARCH_WINDOWS) });
+    try {
+      const job = await runDeepJob(iso, c.name, {
+        window: windowId,
+        offline: !!req.body?.offline,
+        seedEvidence: Array.isArray(req.body?.seedEvidence) ? req.body.seedEvidence : null,
+      });
+      res.json({ job: { status: job.status, stage: job.stage, runId: job.runId, pipeline: job.pipeline, window: job.window } });
+    } catch (e) { res.status(400).json({ error: e.message }); }
+  });
 
   app.get('/api/correlation/runs/:iso', (req, res) => {
     const iso = req.params.iso.toUpperCase();

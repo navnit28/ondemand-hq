@@ -53,3 +53,42 @@ dashes from the server-computed `edge.contradiction` flag.
 **Verification.** Rendered against run KE-20260719025015 (11 evidence, 6 edges →
 15 woven threads). Vite build green; served from the deployed sandbox
 (sb-5ezbro8pqhgo.vercel.run) with HTTP 200 on all CE routes.
+
+---
+
+## 2026-07-19T07:19Z — deep-v2 pipeline inventions (research/intelligence rewrite)
+
+**1. Window-boosted context-weight algebra (`server/intelligence/weighting.js`).**
+A single closed-form weight per fact: `final = base(temporal class) × Π(multipliers) ×
+windowBoost`, where temporal class is derived from publish date (Breaking ≤72h → 1.0,
+Recent ≤30d → 0.6, Historical → 0.2), multipliers are detected deterministically from the
+fact's own text/URL/source-type (Direct UAE ×2, Government source ×2, Official statement ×3,
+Multi-source ×2 via claim-fingerprint corroboration groups), and windowBoost implements the
+"Last 2 Years + higher weighting on Last 30 Days" default (×1.5 inside the boost band). The
+theoretical max (36.0) anchors a log-normalisation so edge display weights stay in [0,1]
+while raw weights remain auditable. Verified in test: a breaking+official+gov+UAE fact
+scored exactly 1.0×2×2×3×1.5 = 18.0.
+
+**2. Evidence-gated dual-admission graph (`deepPipeline.js` + `correlationLayer.js`).**
+Two admission lanes into ONE unified graph: stated edges MUST resolve ≥1 evidence id (hard
+gate — dropped otherwise, verified in test), while correlation-layer inferences are admitted
+without direct evidence but forcibly tagged `inference:true` and tier-capped. The
+deterministic tier function (Verified ≥2 evidence incl. gov/official + conf≥0.75; Likely ≥1
+evidence + conf≥0.55; Possible conf≥0.30; Predicted otherwise) is model-free, so tiers can
+never be inflated by a chatty LLM. Each tier carries a persisted style contract using brand
+tokens (#159a7a / #1dac89) so the frontend styles solid/dashed/dotted+pulse without
+re-deriving semantics.
+
+**3. Empty-upstream-resilient pipeline contract.** Every stage of `runDeepPipeline` is
+total over the empty evidence set: normalisation, weighting, gating, inference (deterministic
+co-mention fallback), prediction (empty categories, speculation cap), and impact (structural
+priors explicitly marked non-evidence-based) all emit valid, versioned, diffable snapshots
+when upstream returns 0 articles — exactly the 2026-07-19 live condition (Perplexity
+timeouts). The scheduled workflow therefore never wedges on a bad news day; the next
+successful run's diff simply pulses the newly admitted edges.
+
+**4. Speculation firewall in Prediction Mode (`prediction.js`).** `grounded` is computed
+(not trusted from the model): true only when supporting evidence ids resolve. Ungrounded
+items are probability-capped at 0.4 and tagged `speculation`, with mandatory counter-evidence
+rationale — a structural guarantee that evidence-backed forecasts and speculation can never
+be conflated downstream.
