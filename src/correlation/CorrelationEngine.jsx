@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { RefreshCw, Download, Image as ImageIcon, Search, Zap, X, ExternalLink, BadgeCheck, Send, ChevronDown } from 'lucide-react';
+import { RefreshCw, Download, Image as ImageIcon, Search, Zap, X, ExternalLink, BadgeCheck, Send, ChevronDown, Maximize2, Flame, Globe2, BookOpen, Radio } from 'lucide-react';
 import CorrelationGraph from './CorrelationGraph.jsx';
 import EChartsPanels from './EChartsPanels.jsx';
 import SignalLoom from './BespokeViz.jsx';
@@ -8,12 +8,18 @@ import QuickQuery from './QuickQuery.jsx';
 import BilingualLoader from '../components/BilingualLoader.jsx';
 import {
   getRuns, getRun, regenerate, pipelineStatus, streamNarrative,
-  runDownloadUrl,
+  runDownloadUrl, getCeConfig, streamStory,
 } from './api.js';
 import {
   runToGraph, edgeToMiniArtifact, nodeToMiniArtifact,
-  REL_TYPES, REL_TYPE_COLORS,
+  inferredToMiniArtifact, predictionsToMiniArtifact, storyToMiniArtifact,
+  REL_TYPES, REL_TYPE_COLORS, TIER_STYLES,
 } from './adapter.js';
+import {
+  MiniMap, EntityInspector, RelationshipInspector, HoverPreview, LightboxV2,
+  TimelineReplay, GeoOverlay, PredictionPanel, StoryMode, ClusterChips,
+  DeepSearchSelect, TierLegend,
+} from './V2Surfaces.jsx';
 
 const spring = { type: 'spring', stiffness: 360, damping: 30 };
 
@@ -163,6 +169,38 @@ export default function CorrelationEngine({ iso, countryName }) {
   const graphWrapRef = useRef();
   const pollRef = useRef(null);
   const graphInstRef = useRef(null);
+  // ---------- V2 state ----------
+  const [expanded, setExpanded] = useState(false);            // item 1: fullscreen intelligence view
+  const savedZoom = useRef(null);                             // zoom state across expand toggle
+  const [inspNode, setInspNode] = useState(null);             // item 5
+  const [inspLink, setInspLink] = useState(null);             // item 6
+  const [hoverNode, setHoverNode] = useState(null);           // item 8 hover preview
+  const hoverPos = useRef({ x: 0, y: 0 });
+  const [replayCutoff, setReplayCutoff] = useState(null);     // item 11
+  const [heatMode, setHeatMode] = useState(false);            // item 12
+  const [geoMode, setGeoMode] = useState(false);              // item 13
+  const [windowDays, setWindowDays] = useState(730);          // item 14 (default 2y)
+  const [ceConfig, setCeConfig] = useState(null);
+  const [activeTiers, setActiveTiers] = useState(new Set(['Verified', 'Likely', 'Possible', 'Predicted']));
+  const [collapsedClusters, setCollapsedClusters] = useState(new Set()); // item 4
+  const [showPredict, setShowPredict] = useState(false);      // item 19
+  const [showStory, setShowStory] = useState(false);          // item 21
+  const graphApiRef = useRef(null);                           // CorrelationGraph fwd ref
+  useEffect(() => { getCeConfig().then(setCeConfig).catch(() => {}); }, []);
+  // ESC closes the fullscreen view (item 1)
+  useEffect(() => {
+    if (!expanded) return;
+    const onKey = (e) => { if (e.key === 'Escape') setExpanded(false); };
+    window.addEventListener('keydown', onKey);
+    document.body.classList.add('ce-noscroll');
+    return () => { window.removeEventListener('keydown', onKey); document.body.classList.remove('ce-noscroll'); };
+  }, [expanded]);
+  // breaking evidence ids → pulsing edges in heat mode (real weightClass only)
+  const breakingIds = useMemo(() => {
+    if (!run) return new Set();
+    const breaking = new Set(run.evidence.filter(ev => ev.weightClass === 'breaking').map(ev => ev.id));
+    return new Set(run.edges.filter(e => e.evidence_record_ids.some(id => breaking.has(id))).map(e => e.id));
+  }, [run]);
 
   // ---------- data ----------
   const loadRuns = useCallback(async () => {
@@ -212,7 +250,7 @@ export default function CorrelationEngine({ iso, countryName }) {
   };
 
   const onRegenerate = async () => {
-    try { setErr(null); const { job: j } = await regenerate(iso); setJob(j); startPoll(); }
+    try { setErr(null); const { job: j } = await regenerate(iso, windowDays); setJob(j); startPoll(); }
     catch (e) { setErr(e.message); }
   };
 
@@ -238,8 +276,30 @@ export default function CorrelationEngine({ iso, countryName }) {
   }, []);
 
   // ---------- graph ----------
-  const graph = useMemo(() => (run ? runToGraph(run, filters) : { nodes: [], links: [] }), [run, filters]);
+  const graph = useMemo(() => (run ? runToGraph(run, {
+    ...filters,
+    tiers: activeTiers, showInferred: true,
+    replayCutoff, collapsedClusters,
+  }) : { nodes: [], links: [], clusters: [] }),
+  [run, filters, activeTiers, replayCutoff, collapsedClusters]);
   const pulseKeys = useMemo(() => run?.diffFromPrevious?.newEdgeIds || [], [run]);
+
+  // item 11: ALT+scroll timeline scrub (delegated from the canvas)
+  const scrubDates = useMemo(() => (run ? [...new Set(run.evidence.map(e => e.publish_date).filter(Boolean))].sort() : []), [run]);
+  const onAltScroll = useCallback((dir) => {
+    if (scrubDates.length < 2) return;
+    setReplayCutoff(prev => {
+      const i = prev ? scrubDates.indexOf(prev) : scrubDates.length - 1;
+      const ni = Math.max(0, Math.min(scrubDates.length - 1, i + dir));
+      return ni >= scrubDates.length - 1 ? null : scrubDates[ni];
+    });
+  }, [scrubDates]);
+
+  // item 1: expand toggle preserving zoom state
+  const toggleExpand = useCallback(() => {
+    savedZoom.current = graphApiRef.current?.getZoomState?.() || null;
+    setExpanded(x => !x);
+  }, []);
 
   const graphPos = (evt) => {
     const rect = graphWrapRef.current?.getBoundingClientRect() || { left: 0, top: 0 };
@@ -305,8 +365,11 @@ export default function CorrelationEngine({ iso, countryName }) {
         <div className="ce-head__actions">
           <button className="ce-btn" onClick={() => setQuick({ artifact: runMiniArtifact })} disabled={!run}><Zap size={12} /> Quick Query</button>
           <button className="ce-btn" onClick={() => setDrawerOpen(true)} disabled={!run}>Evidence</button>
+          <button className="ce-btn" onClick={() => setShowStory(true)} disabled={!run}><BookOpen size={12} /> Explain this graph</button>
+          <button className={`ce-btn${showPredict ? ' ce-btn--on' : ''}`} onClick={() => setShowPredict(p => !p)} disabled={!run}><Radio size={12} /> Predictions</button>
           <button className="ce-btn" onClick={exportPng} disabled={!run}><ImageIcon size={12} /> PNG</button>
           <a className="ce-btn" href={run ? runDownloadUrl(iso, run.runId) : '#'} download disabled={!run}><Download size={12} /> JSON</a>
+          <DeepSearchSelect windows={ceConfig?.windows} value={windowDays} onChange={setWindowDays} disabled={Boolean(job)} />
           <button className="ce-btn ce-btn--primary" onClick={onRegenerate} disabled={Boolean(job)}>
             <RefreshCw size={12} className={job ? 'ce-spin' : ''} /> {job ? `Running… ${job.stage}` : 'Regenerate now'}
           </button>
@@ -406,26 +469,71 @@ export default function CorrelationEngine({ iso, countryName }) {
             )}
           </div>
 
+          {/* V2 tier legend + cluster chips + mode toggles */}
+          <div className="ce-v2bar">
+            <TierLegend activeTiers={activeTiers} onToggle={(t) => setActiveTiers(prev => {
+              const s = new Set(prev); if (s.has(t)) s.delete(t); else s.add(t); return s;
+            })} />
+            <div className="ce-v2modes">
+              <button className={`ce-btn${heatMode ? ' ce-btn--on' : ''}`} onClick={() => setHeatMode(h => !h)} aria-pressed={heatMode} title="Heat Mode: edge width = interactions, glow = importance, pulse = breaking">
+                <Flame size={12} /> Heat
+              </button>
+              <button className={`ce-btn${geoMode ? ' ce-btn--on' : ''}`} onClick={() => setGeoMode(g => !g)} aria-pressed={geoMode} title="Geographic overlay: nodes on a world map with flow connections">
+                <Globe2 size={12} /> Geo
+              </button>
+            </div>
+          </div>
+          <ClusterChips clusters={graph.clusters || []} collapsed={collapsedClusters}
+            onToggle={(cid) => setCollapsedClusters(prev => {
+              const s = new Set(prev); if (s.has(cid)) s.delete(cid); else s.add(cid); return s;
+            })} />
+
           {/* graph + panels */}
           <div className="ce-main">
-            <div className="ce-graphwrap" ref={graphWrapRef}>
-              <CorrelationGraph
-                graph={graph} width={size.w - 270} height={size.h}
-                showLabels={showLabels} physics={physics}
-                onHoverLink={onHoverLink}
-                onHoverNode={() => { if (!pinPop) setPop(null); }}
-                onClickLink={(l, evt) => l && setPinPop({ kind: 'edge', id: l.id, ...graphPos(evt || { clientX: 40, clientY: 40 }), link: l })}
-                onClickNode={(n, evt) => {
-                  if (!n) { setPinPop(null); return; }
-                  setPinPop({ kind: 'node', id: n.id, ...graphPos(evt || { clientX: 40, clientY: 40 }), node: n });
-                }}
-                searchNodeId={searchNodeId?.split(':')[0]}
-                pulseKeys={pulseKeys}
-              />
+            <div className="ce-graphwrap" ref={graphWrapRef}
+              onMouseMove={(e) => {
+                const r = graphWrapRef.current?.getBoundingClientRect();
+                if (r) hoverPos.current = { x: Math.min(e.clientX - r.left + 16, r.width - 280), y: Math.max(6, e.clientY - r.top - 10) };
+              }}>
+              {geoMode ? (
+                <GeoOverlay run={run} graph={graph} width={size.w - 270} height={size.h} />
+              ) : (
+                <CorrelationGraph
+                  ref={graphApiRef}
+                  graph={graph} width={size.w - 270} height={size.h}
+                  showLabels={showLabels} physics={physics}
+                  heatMode={heatMode} breakingIds={breakingIds}
+                  onHoverLink={onHoverLink}
+                  onHoverNode={(n) => { setHoverNode(n || null); if (!pinPop) setPop(null); }}
+                  onClickLink={(l, evt) => { setHoverNode(null); if (l) setInspLink(l); }}
+                  onClickNode={(n, evt) => {
+                    setHoverNode(null);
+                    if (!n) { setPinPop(null); setInspNode(null); setInspLink(null); return; }
+                    if (n.kind === 'cluster') { // click a collapsed cluster = expand it
+                      setCollapsedClusters(prev => { const s = new Set(prev); s.delete(n.communityId); return s; });
+                      return;
+                    }
+                    setInspNode(n);
+                  }}
+                  onNodeDouble={() => {}}
+                  onAltScroll={onAltScroll}
+                  onMultiSelect={() => {}}
+                  searchNodeId={searchNodeId?.split(':')[0]}
+                  pulseKeys={pulseKeys}
+                />
+              )}
+              {/* item 1: Expand FAB */}
+              <button className="ce-expandfab" onClick={toggleExpand} aria-label="Expand Intelligence View" title="Expand Intelligence View">
+                <Maximize2 size={14} /> Expand Intelligence View
+              </button>
+              {/* item 2: mini-map */}
+              {!geoMode && <MiniMap fgRef={{ current: graphApiRef.current?.fg?.() }} graph={graph} />}
+              {/* item 8: hover preview card */}
+              {hoverNode && !inspNode && !inspLink && <HoverPreview node={hoverNode} run={run} pos={hoverPos.current} />}
               <AnimatePresence>
                 {(pinPop || pop) && (
                   <HoverPopover pop={pinPop || pop} run={run}
-                    onLightbox={setLightbox}
+                    onLightbox={(d) => setLightbox({ items: [d.media], index: 0, run })}
                     onOpenDrawer={() => { setDrawerOpen(true); setPinPop(null); setPop(null); }}
                     onQuickQuery={(p2) => {
                       setQuick({ artifact: p2.kind === 'edge' ? edgeToMiniArtifact(run, p2.link) : nodeToMiniArtifact(run, p2.node) });
@@ -442,15 +550,80 @@ export default function CorrelationEngine({ iso, countryName }) {
               onPickDate={(d) => setFilters(f => ({ ...f, day: d }))} />
           </div>
 
+          {/* item 11: intelligence timeline replay */}
+          <TimelineReplay run={run} cutoff={replayCutoff} onCutoff={setReplayCutoff} />
+
+          {/* item 19: Prediction Mode */}
+          <AnimatePresence>
+            {showPredict && (
+              <PredictionPanel run={run}
+                onQuickQuery={() => setQuick({ artifact: predictionsToMiniArtifact(run) })}
+                onClose={() => setShowPredict(false)} />
+            )}
+          </AnimatePresence>
+
           {/* bespoke D3 invention */}
           <SignalLoom run={run} onPickEvidence={onPickEvidence} />
         </>
       )}
 
+      {/* V2 inspectors (items 5+6) */}
+      <AnimatePresence>
+        {inspNode && run && (
+          <EntityInspector node={inspNode} run={run}
+            onClose={() => setInspNode(null)}
+            onQuickQuery={() => { setQuick({ artifact: nodeToMiniArtifact(run, inspNode) }); }}
+            onLightbox={setLightbox} />
+        )}
+        {inspLink && run && !inspNode && (
+          <RelationshipInspector link={inspLink} run={run}
+            onClose={() => setInspLink(null)}
+            onQuickQuery={() => { setQuick({ artifact: inspLink.inferred ? inferredToMiniArtifact(run, inspLink) : edgeToMiniArtifact(run, inspLink) }); }}
+            onLightbox={setLightbox} />
+        )}
+      </AnimatePresence>
+
+      {/* item 1: fullscreen Intelligence View modal */}
+      <AnimatePresence>
+        {expanded && run && (
+          <motion.div className="ce-fullscreen" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} role="dialog" aria-label="Fullscreen intelligence view — ESC to close">
+            <div className="ce-fullscreen__bar">
+              <b>{countryName} — Intelligence View</b>
+              <span className="ce-fullscreen__hint">Space=pan · double-click=center · Shift+drag=multi-select · CTRL+click=lock · ALT+scroll=timeline · ESC=close</span>
+              <div>
+                <button className={`ce-btn${heatMode ? ' ce-btn--on' : ''}`} onClick={() => setHeatMode(h => !h)}><Flame size={12} /> Heat</button>
+                <button className="ce-btn" onClick={() => setShowStory(true)}><BookOpen size={12} /> Explain</button>
+                <button className="ce-btn" onClick={toggleExpand} aria-label="Close fullscreen (ESC)"><X size={13} /> Close</button>
+              </div>
+            </div>
+            <FullscreenGraph
+              graph={graph} showLabels={showLabels} physics={physics}
+              heatMode={heatMode} breakingIds={breakingIds}
+              savedZoom={savedZoom} graphApiRef={graphApiRef}
+              onAltScroll={onAltScroll}
+              onClickNode={(n) => { if (n && n.kind !== 'cluster') setInspNode(n); }}
+              onClickLink={(l) => l && setInspLink(l)}
+              run={run}
+            />
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* item 21: Story Mode */}
+      <AnimatePresence>
+        {showStory && run && (
+          <StoryMode run={run} streamStory={streamStory}
+            onClose={() => setShowStory(false)}
+            onQuickQuery={(text) => setQuick({ artifact: storyToMiniArtifact(run, text) })} />
+        )}
+      </AnimatePresence>
+
       {/* lightbox + drawer + quick query */}
       <AnimatePresence>
-        {lightbox && <Lightbox data={lightbox} onClose={() => setLightbox(null)} />}
-        {drawerOpen && run && <EvidenceDrawer run={run} onClose={() => setDrawerOpen(false)} onLightbox={(d) => { setLightbox(d); }} />}
+        {lightbox && (lightbox.items
+          ? <LightboxV2 data={lightbox} onClose={() => setLightbox(null)} />
+          : <Lightbox data={lightbox} onClose={() => setLightbox(null)} />)}
+        {drawerOpen && run && <EvidenceDrawer run={run} onClose={() => setDrawerOpen(false)} onLightbox={(d) => { setLightbox({ items: [d.media], index: 0, run }); }} />}
         {quick && (
           <QuickQuery artifact={quick.artifact}
             onClose={() => setQuick(null)}
@@ -463,5 +636,43 @@ export default function CorrelationEngine({ iso, countryName }) {
         )}
       </AnimatePresence>
     </section>
+  );
+}
+
+/** item 1 — fullscreen canvas that fills the viewport, restores prior zoom on mount,
+ *  and saves it back on unmount (remembered across open/close). */
+function FullscreenGraph({ graph, showLabels, physics, heatMode, breakingIds, savedZoom, graphApiRef, onAltScroll, onClickNode, onClickLink, run }) {
+  const [vp, setVp] = useState({ w: window.innerWidth, h: window.innerHeight - 46 });
+  const localRef = useRef(null);
+  useEffect(() => {
+    const onR = () => setVp({ w: window.innerWidth, h: window.innerHeight - 46 });
+    window.addEventListener('resize', onR);
+    return () => window.removeEventListener('resize', onR);
+  }, []);
+  // restore zoom state once mounted; save back on unmount
+  useEffect(() => {
+    const t = setTimeout(() => { if (savedZoom.current) localRef.current?.setZoomState?.(savedZoom.current); }, 350);
+    return () => {
+      clearTimeout(t);
+      const z = localRef.current?.getZoomState?.();
+      if (z) savedZoom.current = z;
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+  return (
+    <div className="ce-fullscreen__body">
+      <CorrelationGraph
+        ref={localRef}
+        graph={graph} width={vp.w} height={vp.h}
+        showLabels={showLabels} physics={physics}
+        heatMode={heatMode} breakingIds={breakingIds}
+        preserveZoom={Boolean(savedZoom.current)}
+        onHoverLink={() => {}} onHoverNode={() => {}}
+        onClickNode={onClickNode} onClickLink={onClickLink}
+        onNodeDouble={() => {}} onAltScroll={onAltScroll} onMultiSelect={() => {}}
+        pulseKeys={[]}
+      />
+      <MiniMap fgRef={{ current: localRef.current?.fg?.() }} graph={graph} width={210} height={132} />
+    </div>
   );
 }

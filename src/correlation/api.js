@@ -5,8 +5,25 @@ export const getRuns = (iso) => fetch(`/api/correlation/runs/${iso}`).then(j);
 export const getRun = (iso, runId) => fetch(`/api/correlation/run/${iso}/${runId}`).then(j);
 export const getDiff = (iso) => fetch(`/api/correlation/diff/${iso}`).then(j);
 export const runDownloadUrl = (iso, runId) => `/api/correlation/run/${iso}/${runId}/download`;
-export const regenerate = (iso) => fetch(`/api/correlation/regenerate/${iso}`, { method: 'POST' }).then(j);
+export const regenerate = (iso, windowDays) => fetch(`/api/correlation/regenerate/${iso}${windowDays ? `?windowDays=${windowDays}` : ''}`, { method: 'POST' }).then(j);
 export const pipelineStatus = (iso) => fetch(`/api/correlation/status/${iso}`).then(j);
+export const getCeConfig = () => fetch('/api/correlation/config').then(j);
+
+/** Story Mode (item 21): stream the executive briefing over SSE. */
+export function streamStory(iso, runId, { onToken, onError } = {}) {
+  return new Promise((resolve) => {
+    const es = new EventSource(`/api/correlation/story/${iso}/${runId}/stream`);
+    let full = '';
+    es.onmessage = (e) => {
+      if (e.data === '[DONE]') { es.close(); resolve(full); return; }
+      try {
+        const evt = JSON.parse(e.data);
+        if (evt.eventType === 'fulfillment' && typeof evt.answer === 'string') { full += evt.answer; onToken?.(evt.answer, full); }
+      } catch { /* keep-alive */ }
+    };
+    es.onerror = () => { es.close(); onError?.(); resolve(full); };
+  });
+}
 
 /** Stream the Connected Dots narrative (real SSE from the analysis model).
  *  onToken(text) per fulfillment delta; returns final full text. */

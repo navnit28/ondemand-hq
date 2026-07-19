@@ -20,11 +20,19 @@ export default function EChartsPanels({ run, onPickDate, onPickStance, onPickPla
       byDay.set(d, (byDay.get(d) || 0) + 1);
     }
     const days = [...byDay.keys()].sort();
+    // V2 item 22 fix: flat axis labels (no diagonal rotation/clipping) — short
+    // MM-DD form for dates, 'undated' kept whole; extra bottom space instead of rotation.
     const volumeOption = {
-      grid: { left: 30, right: 8, top: 22, bottom: 20 },
-      title: { text: 'Evidence volume over time', textStyle: { ...FONT, fontSize: 11, fontWeight: 600, color: '#374151' } },
+      grid: { left: 30, right: 8, top: 26, bottom: 22 },
+      title: { text: 'Evidence volume over time', top: 0, left: 4, textStyle: { ...FONT, fontSize: 11, fontWeight: 600, color: '#374151' } },
       tooltip: { trigger: 'axis', textStyle: FONT },
-      xAxis: { type: 'category', data: days, axisLabel: { ...FONT, fontSize: 9, rotate: 38, color: '#6b7280' } },
+      xAxis: {
+        type: 'category', data: days,
+        axisLabel: {
+          ...FONT, fontSize: 9, rotate: 0, interval: 0, hideOverlap: true, color: '#6b7280',
+          formatter: (v) => (/^\d{4}-\d{2}-\d{2}$/.test(v) ? v.slice(5) : v),
+        },
+      },
       yAxis: { type: 'value', minInterval: 1, axisLabel: { ...FONT, fontSize: 9, color: '#6b7280' }, splitLine: { lineStyle: { color: '#f3f4f6' } } },
       series: [{
         type: 'bar', data: days.map(d => ({
@@ -56,13 +64,24 @@ export default function EChartsPanels({ run, onPickDate, onPickStance, onPickPla
     // ---- platform split donut ----
     const byPlatform = new Map();
     for (const ev of run.evidence) byPlatform.set(ev.platform, (byPlatform.get(ev.platform) || 0) + 1);
+    // V2 item 22 fix: title ABOVE the chart (top:0, ring center pushed down so the
+    // title never overlaps the ring), legend-only labeling (label.show:false kills
+    // the truncated 'instagr…'/'perplex…' leader lines), avoidLabelOverlap kept on,
+    // tooltip + legend carry the full names and counts.
     const platformOption = {
-      title: { text: 'Platform split', textStyle: { ...FONT, fontSize: 11, fontWeight: 600, color: '#374151' } },
-      tooltip: { textStyle: FONT },
-      legend: { bottom: 0, textStyle: { ...FONT, fontSize: 9, color: '#6b7280' }, itemWidth: 10, itemHeight: 10 },
+      title: { text: 'Platform split', top: 0, left: 'center', textStyle: { ...FONT, fontSize: 11, fontWeight: 600, color: '#374151' } },
+      tooltip: { textStyle: FONT, formatter: (p) => `${p.name}: ${p.value} (${p.percent}%)` },
+      legend: {
+        bottom: 0, left: 'center', textStyle: { ...FONT, fontSize: 9.5, color: '#4b5563' },
+        itemWidth: 10, itemHeight: 10, itemGap: 8,
+        formatter: (name) => `${name} ${byPlatform.get(name) || 0}`,
+      },
       series: [{
-        type: 'pie', radius: ['42%', '68%'], center: ['50%', '46%'],
-        label: { ...FONT, fontSize: 9, color: '#374151' },
+        type: 'pie', radius: ['40%', '62%'], center: ['50%', '52%'],
+        avoidLabelOverlap: true,
+        label: { show: false },            // legend-only labeling — no truncation possible
+        labelLine: { show: false },
+        emphasis: { label: { show: true, ...FONT, fontSize: 11, fontWeight: 700, formatter: '{b}\n{c}' } },
         data: [...byPlatform.entries()].map(([p, v]) => ({
           name: p, value: v,
           itemStyle: { color: PLATFORM_COLORS[p] || '#9ca3af', opacity: !activePlatform || activePlatform === p ? 1 : 0.25 },
