@@ -21,6 +21,7 @@ import { registerIntelRoutes, COUNTRIES } from './intel.js';
 import { registerCorrelationRoutes } from './correlation.js';
 import { registerFactsRoutes } from './facts.js';
 import { registerMsmRoutes, getTranscriptText as getMsmTranscript } from './msm.js';
+import { registerEvidenceRoutes } from './evidenceCorpus.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const app = express();
@@ -45,6 +46,7 @@ registerMsmRoutes(app);
 // Correlation Engine routes (evidence-gated relationship graphs per country,
 // versioned runs + Connected Dots streaming + GLM Quick Query).
 registerCorrelationRoutes(app, { countries: COUNTRIES });
+registerEvidenceRoutes(app);
 
 // ---------- health ----------
 app.get('/api/health', (req, res) => res.json({

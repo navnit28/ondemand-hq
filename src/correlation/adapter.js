@@ -121,6 +121,32 @@ export function runToGraph(run, filters = {}) {
   return { nodes, links, metrics };
 }
 
+/** Map corpus density stats (/v2/evidence/stats → density{}) onto graph nodes so
+ *  badges reflect TRUE evidence density (hundreds-scale), not just per-run counts.
+ *  Pure: returns a new graph object with densityCount set per node. */
+const DENSITY_ALIASES = {
+  ke: 'kenya', kenya: 'kenya', uae: 'uae', ae: 'uae', mofa: 'mofa', adfd: 'adfd',
+  oda: 'oda', qatar: 'qatar', qffd: 'qatar', eu: 'eu', wfp: 'wfp', adb: 'adb',
+  ocha: 'ocha', gaza: 'gaza', sudan: 'sudan', 'uae-aid': 'uae-aid', uaeaid: 'uae-aid',
+  'relief-beneficiaries': 'relief-beneficiaries', 'erth-zayed': 'erth-zayed',
+  theyab: 'theyab', 'food-security': 'food-security', 'maritime-corridor': 'maritime-corridor',
+};
+export function attachDensity(graph, density) {
+  if (!density) return graph;
+  const match = (n) => {
+    const id = String(n.id || '').toLowerCase();
+    const label = String(n.label || n.fullName || '').toLowerCase();
+    if (density[id] != null) return density[id];
+    if (DENSITY_ALIASES[id] && density[DENSITY_ALIASES[id]] != null) return density[DENSITY_ALIASES[id]];
+    for (const [k, v] of Object.entries(density)) {
+      const words = k.replace(/-/g, ' ');
+      if (label.includes(words) || words.includes(label) && label.length > 2) return v;
+    }
+    return null;
+  };
+  return { ...graph, nodes: graph.nodes.map(n => ({ ...n, densityCount: match(n) })) };
+}
+
 /** Mini-artifact JSON for Quick Query grounding (compact, evidence-first). */
 export function edgeToMiniArtifact(run, link) {
   const evById = new Map(run.evidence.map(e => [e.id, e]));

@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useRef, useState, useCallback } from 'react';
 import ForceGraph2D from 'react-force-graph-2d';
 import { PLATFORM_COLORS } from './adapter.js';
+import { attachGestures } from './gestures.js';
 
 /**
  * CorrelationGraph — react-force-graph-2d canvas, Obsidian-futuristic on white.
@@ -18,6 +19,34 @@ export default function CorrelationGraph({ graph, width, height, showLabels, phy
   const [hover, setHover] = useState(null); // {kind:'node'|'link', id}
   const imgCache = useRef(new Map());       // url -> HTMLImageElement
   const pulseT = useRef(0);
+  const widthRef = useRef(width); widthRef.current = width;
+  const heightRef = useRef(height); heightRef.current = height;
+
+  // Gesture UX package (2026-07-19): pinch-zoom / swipe-pan / double-tap-center
+  useEffect(() => {
+    const el = wrapRef.current;
+    const fg = fgRef.current;
+    if (!el || !fg) return undefined;
+    return attachGestures(el, {
+      getZoom: () => fg.zoom(),
+      zoom: (k, ms) => fg.zoom(k, ms),
+      centerAt: (x, y, ms) => fg.centerAt(x, y, ms),
+      getCenter: () => {
+        try { return fg.screen2GraphCoords(widthRef.current / 2, heightRef.current / 2); }
+        catch { return null; }
+      },
+      screen2GraphCoords: (x, y) => { try { return fg.screen2GraphCoords(x, y); } catch { return null; } },
+      findNearest: (gx, gy, maxD) => {
+        let best = null, bd = maxD;
+        for (const n of graph.nodes) {
+          if (!Number.isFinite(n.x)) continue;
+          const d = Math.hypot(n.x - gx, n.y - gy);
+          if (d < bd) { bd = d; best = n; }
+        }
+        return best;
+      },
+    });
+  }, [graph.nodes]);
 
   // pre-load IG proof thumbnails referenced by nodes
   useEffect(() => {
@@ -104,11 +133,26 @@ export default function CorrelationGraph({ graph, width, height, showLabels, phy
   const nodeCanvasObject = useCallback((n, ctx, globalScale) => {
     const dim = isDimNode(n);
     const alpha = dim ? 0.15 : 1;
-    ctx.save();
-    ctx.globalAlpha = alpha;
     const r = n.size / 2;
 
-    // community tint halo
+    // LOD VIRTUALIZATION (2026-07-19): when a node renders below ~3.5 screen px,
+    // draw a single cheap tinted disc and skip halo/initials/badge/media entirely —
+    // keeps 60fps with hundreds-scale graphs and removes sub-pixel clutter.
+    if (r * globalScale < 3.5 && n.kind !== 'country' && !(hover?.kind === 'node' && hover.id === n.id)) {
+      ctx.save();
+      ctx.globalAlpha = alpha * 0.85;
+      ctx.beginPath();
+      ctx.arc(n.x, n.y, Math.max(r, 2 / globalScale), 0, 2 * Math.PI);
+      ctx.fillStyle = n.tintStroke || '#c7d2fe';
+      ctx.fill();
+      ctx.restore();
+      return;
+    }
+
+    ctx.save();
+    ctx.globalAlpha = alpha;
+
+    // community tint halo (legend-mapped: halo hue = Louvain community)
     ctx.beginPath();
     ctx.arc(n.x, n.y, r + 3.5, 0, 2 * Math.PI);
     ctx.fillStyle = n.tint || '#eef2ff';
@@ -151,22 +195,48 @@ export default function CorrelationGraph({ graph, width, height, showLabels, phy
     ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
     ctx.fillText(label, n.x, n.y);
 
-    // text label
+    // text label — VIEWPORT-FIT (2026-07-19 Gemini UX fix): labels near the frame
+    // edge are re-anchored inward so they never clip (e.g. 'Relief Beneficiaries').
     if (showLabels && (globalScale > 1.05 || n.kind === 'country' || (hover?.kind === 'node' && hover.id === n.id))) {
-      ctx.font = `500 ${11 / globalScale}px Montserrat, sans-serif`;
+      const fpx = 11 / globalScale;
+      ctx.font = `500 ${fpx}px Montserrat, sans-serif`;
       ctx.fillStyle = dim ? 'rgba(55,65,81,0.35)' : '#374151';
       ctx.textBaseline = 'top';
-      ctx.fillText(n.label, n.x, n.y + r + 3);
+      const tw = ctx.measureText(n.label).width;
+      // canvas viewport bounds in graph coords
+      let align = 'center', lx = n.x;
+      const fg = fgRef.current;
+      if (fg?.screen2GraphCoords) {
+        try {
+          const tl = fg.screen2GraphCoords(0, 0);
+          const br = fg.screen2GraphCoords(widthRef.current, heightRef.current);
+          const pad = 4 / globalScale;
+          if (n.x + tw / 2 > br.x - pad) { align = 'right'; lx = Math.min(n.x + r, br.x - pad); }
+          else if (n.x - tw / 2 < tl.x + pad) { align = 'left'; lx = Math.max(n.x - r, tl.x + pad); }
+        } catch { /* not ready */ }
+      }
+      ctx.textAlign = align;
+      ctx.fillText(n.label, lx, n.y + r + 3);
+      ctx.textAlign = 'center';
     }
-    // evidence-count badge
-    if (n.evidenceCount > 0 && !dim) {
+    // evidence-density badge (2026-07-19 rebuild): TRUE corpus density (hundreds-scale)
+    // via densityCount from /v2/evidence/stats; per-run count as fallback. Pill-shaped
+    // so 3-digit counts render uncropped.
+    const badgeN = n.densityCount ?? n.evidenceCount;
+    if (badgeN > 0 && !dim) {
+      const txt = badgeN > 999 ? '999+' : String(badgeN);
+      ctx.font = '700 7.5px Montserrat, sans-serif';
+      const tw2 = ctx.measureText(txt).width;
+      const bw = Math.max(11, tw2 + 8), bh = 11;
+      const bx = n.x + r * 0.72, by = n.y - r * 0.72 - bh / 2;
       ctx.beginPath();
-      ctx.arc(n.x + r * 0.8, n.y - r * 0.8, 5.5, 0, 2 * Math.PI);
+      if (ctx.roundRect) ctx.roundRect(bx, by, bw, bh, bh / 2);
+      else ctx.rect(bx, by, bw, bh);
       ctx.fillStyle = '#6d4aff'; ctx.fill();
+      ctx.lineWidth = 1; ctx.strokeStyle = '#ffffff'; ctx.stroke();
       ctx.fillStyle = '#fff';
-      ctx.font = '700 7px Montserrat, sans-serif';
-      ctx.textBaseline = 'middle';
-      ctx.fillText(String(n.evidenceCount > 9 ? '9+' : n.evidenceCount), n.x + r * 0.8, n.y - r * 0.8 + 0.5);
+      ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+      ctx.fillText(txt, bx + bw / 2, by + bh / 2 + 0.5);
     }
     ctx.restore();
   }, [hover, isDimNode, showLabels]);

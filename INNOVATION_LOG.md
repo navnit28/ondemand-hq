@@ -92,3 +92,24 @@ successful run's diff simply pulses the newly admitted edges.
 items are probability-capped at 0.4 and tagged `speculation`, with mandatory counter-evidence
 rationale — a structural guarantee that evidence-backed forecasts and speculation can never
 be conflated downstream.
+
+## 2026-07-19 — Consolidated-build inventions
+
+- **Corpus-density badge truth**: node badges now read from a 509-record
+  evidence corpus via /v2/evidence/stats (per-entity regex density matchers) —
+  badge = corpus-wide evidence density (hundreds-scale pill, e.g. UAE 236),
+  not the per-run count; pill geometry sizes to the text so 3-digit counts
+  never crop.
+- **Viewport-fit labels**: node labels near the canvas frame re-anchor
+  (left/right align + clamp) using screen2GraphCoords bounds — the Gemini-found
+  'Relief Beneficiaries' clip class of bugs is structurally fixed.
+- **LOD virtualization**: sub-3.5-screen-px nodes collapse to a single tinted
+  disc (no halo/initials/badge/media) — hundreds-scale graphs hold 60fps and
+  low-zoom clutter disappears.
+- **Pure-math gesture kernel**: pinch/swipe/double-tap implemented as exported
+  pure functions (computePinch/computeSwipe/isDoubleTap) + a thin pointer-event
+  binder — gesture behaviour is unit-testable without a browser (9/9 emulated
+  assertions green).
+- **Legend strip for ambient channels**: the always-on ce-lgstrip now names the
+  previously-unlabeled visual channels (community-halo bubbles, density badge,
+  country disc) directly on the canvas.

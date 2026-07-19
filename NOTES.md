@@ -1053,3 +1053,70 @@ merged module: 0 hits for `modelConfigs`/`maxTokens` or any undocumented param.
   Correlation Engine tab): in-viewport audit `{canvasInVp:4, echInVp:3, qqInVp:true, scrubInVp:3}`
   — react-force-graph canvas, 3 ECharts panels, ⚡ Quick Query button, date scrubbers all rendered;
   zero page errors. Screenshot: country-overview-correlation-engine.png (session artifact).
+
+## 2026-07-19 11:25 UTC — Consolidated build run (corpus 509 + badges + gestures + workflow)
+
+Pre-run checkpoint: commit af9ef91 → -s ours merge 0586c5e pushed to
+checkpoint-correlation-v2 @ 2026-07-19T10:40:38.226Z (ls-remote verified 0586c5e).
+
+EVIDENCE CORPUS (stage 2): server/data/evidence-corpus-v2.json — 509 REAL
+granular records (zero simulated): decomposed from UAE Embassy Gaza statistics
+(>$100B/​>$3B/90k tons/8,700 trucks/80 airdrops/13 ships/75k patients), UAE Aid
+portal + FA Report 2024, Federal Decrees 27/2024 + 94/2026 (Sheikh Theyab
+chairman), OCHA FTS 2026 ($94,336,382 funded / $133,015,246 paid), EU €458M
+package (Syria 210/Palestine 124/Lebanon 100/Jordan 15.5/Egypt 8), UAE–EU
+Brussels supply-chain panel (11 Jun 2026, DG ECHO, 80+ reps), Gaza maritime
+corridor statements (UK/US/Cyprus/UAE/Qatar/EC + 15 pairwise co-signatory
+records), Sudan co-chairs (EU/Qatar/UAE/Kenya, 2025-09-24 + 6 pairwise), UAE
+$30M Sudan response + $500M SHF pledge (Feb 2026, needs-url flagged), Kenya 30t
+(Feb 2026), $1B AI-for-Development (ADEX/ADFD, G20), ADB $1.5M, July 2026 Gaza
+convoys (416t/47trk/4cv Chivalrous Knight 3; 792t/59trk/5cv 2026-07-12; 69th
+airdrop 3,924t Birds of Goodness; 930t Gallant Knight 3 + 54k/24k patients;
+540t Eid clothing; 301st convoy 290t), 11 X posts snowflake-dated, QFFD ($585M
+2018 AR), Sudan aid study (Int'l Spectator 2024), DRA Gaza (225,013), USAID OIG
+JLOTS, WFP Horn plan (8.8M) + S. Kordofan convoy (130k+) + Sudan evaluation,
+GRFC 2026 famines, NFSS 2051, climate-smart crops, TRENDS-MOCCAE MoU, Erth
+Zayed restructure, AllAfrica analysis, LinkedIn org layer (4 ids). 297 records
+fetched VERBATIM from 15 live source pages (fetched-verbatim tag); 254 dated;
+58 unique URLs. Weighting: deep-pipeline weighFact (0.2/0.6/1.0 × ×2/×2/×3/×2).
+Endpoints: GET /api/correlation/v2/evidence (paginated + per-record weighting),
+GET /api/correlation/v2/evidence/stats (per-entity density: uae 236, gaza 154,
+eu 125, qatar 56, sudan 52, maritime-corridor 49, wfp 37, uae-aid 30, kenya 27
+…), POST /api/correlation/v2/evidence/snapshot → snapshots/evidence-YYYY-MM-DD
+.json (2026-07-19 snapshot written).
+
+BADGE REBUILD (stage 3): adapter.attachDensity maps corpus density onto nodes →
+pill-shaped badges render TRUE hundreds-scale counts (e.g. UAE 236) uncropped;
+CorrelationEngine fetches /v2/evidence/stats and feeds the graph. Gemini UX
+fixes: label viewport-fit (edge-anchored re-alignment — no more clipped 'Relief
+Beneficiaries'), ce-lgstrip legend explains community-halo bubbles/badges/
+country disc, LOD virtualization (<3.5 screen-px nodes → single cheap disc).
+
+GESTURES (stage 4): src/correlation/gestures.js — pinch-zoom (2-pointer ratio,
+clamped 0.15–12), swipe-pan (screen→graph divide-by-zoom), double-tap-center
+(320ms/24px window → nearest node), attached via pointer events (touchAction:
+none) in CorrelationGraph. Emulated QA: 9/9 assertions passed (pinch×4 incl.
+clamps, swipe×1, double-tap×3, dist×1).
+
+BUILD+DEPLOY (stage 7): vite ✓ 7.51s → index-Dj-u6xP_.js/index-CPNROHlY.css.
+Old sandbox sb-1p1q5e0wyltp returned 410 @11:14:06.270Z → fresh node22 sandbox
+sbx_N6i7mf8TyN10Njeti3gqmyXGZrno on :8080 → https://sb-3kxvcpok4u2v.vercel.run.
+LIVENESS: GET / → 200 @ 2026-07-19T11:15:50.836Z · GET /api/health → 200 @
+2026-07-19T11:15:50.902Z. Live checks: bundle matches build; /v2/evidence/stats
+total 509 live; /v2/evidence page 1 serves real records w/ weights.
+
+VISUAL QA GATE (stage 5): headless-Chromium CDP walk (Suite → ODA Intelligence
+→ Kenya → Open → Correlation Engine) on the LIVE app: canvas ✓ legend strip ✓
+type chips ✓. Artifact: ce-v2-visual-qa-gate-consolidated.png (3200×1900 @2x,
+white canvas mean-lum 248.8, 6.2% content px, 130,489 chromatic samples).
+
+30-MIN WORKFLOW (stage 6): 'CE-V2 30-min GitHub Checkpoint + Evidence Ingest'
+CREATED (HTTP 201) and ACTIVATED — workflow ID 6a5cb3868a845853270b9038, cron
+"0 */30 * * * *" (every 30 minutes), isActive:true verified via get-by-id.
+Prior 409 resolved (was a stale in-progress turn; retry clean). Per cycle:
+GitHub Contents-API checkpoint commit to checkpoint-correlation-v2 (server-side
+commit = divergence-safe push) + branch-head verification, fresh evidence
+ingest (3y window, 30d boost, dedupe vs 509 baseline), NOTES-format run log
+line — emailed per run. Note: platform workflows run server-side and cannot
+write this workspace's files directly; the checkpoint commits land on the
+GitHub branch (checkpoints/auto-checkpoint.md) as the durable audit trail.

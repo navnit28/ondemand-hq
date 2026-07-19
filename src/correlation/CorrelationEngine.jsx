@@ -12,7 +12,7 @@ import {
 } from './api.js';
 import {
   runToGraph, edgeToMiniArtifact, nodeToMiniArtifact,
-  REL_TYPES, REL_TYPE_COLORS,
+  REL_TYPES, REL_TYPE_COLORS, attachDensity,
 } from './adapter.js';
 
 const spring = { type: 'spring', stiffness: 360, damping: 30 };
@@ -225,7 +225,18 @@ export default function CorrelationEngine({ iso, countryName }) {
   }, []);
 
   // ---------- graph ----------
-  const graph = useMemo(() => (run ? runToGraph(run, filters) : { nodes: [], links: [] }), [run, filters]);
+  // Evidence-density stats (corpus-wide truth for node badges — hundreds-scale)
+  const [density, setDensity] = useState(null);
+  useEffect(() => {
+    fetch('/api/correlation/v2/evidence/stats')
+      .then(r => (r.ok ? r.json() : null))
+      .then(s => s?.density && setDensity(s.density))
+      .catch(() => {});
+  }, []);
+  const graph = useMemo(() => {
+    const g = run ? runToGraph(run, filters) : { nodes: [], links: [] };
+    return attachDensity(g, density);
+  }, [run, filters, density]);
   const pulseKeys = useMemo(() => run?.diffFromPrevious?.newEdgeIds || [], [run]);
 
   const graphPos = (evt) => {
@@ -409,6 +420,15 @@ export default function CorrelationEngine({ iso, countryName }) {
                 searchNodeId={searchNodeId?.split(':')[0]}
                 pulseKeys={pulseKeys}
               />
+              {/* Legend strip (2026-07-19 Gemini UX fix): maps EVERY visual channel —
+                  incl. the previously-unlabeled community halo bubbles — so no
+                  lavender/gray/peach circle is unexplained. */}
+              <div className="ce-lgstrip" aria-label="Graph legend">
+                <span className="ce-lg"><i className="ce-lg__halo" />halo tint = community cluster</span>
+                <span className="ce-lg"><i className="ce-lg__badge">254</i>badge = evidence density (corpus)</span>
+                <span className="ce-lg"><i className="ce-lg__dot" style={{ background: '#111827' }} />dark disc = country node</span>
+                <span className="ce-lg">size = weight · width = strength · color = type</span>
+              </div>
               <AnimatePresence>
                 {(pinPop || pop) && (
                   <HoverPopover pop={pinPop || pop} run={run}
