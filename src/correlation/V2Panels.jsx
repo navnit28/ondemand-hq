@@ -5,7 +5,7 @@
 // missing media/fields render explicit evidence-gap states, never placeholders.
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { motion } from 'framer-motion';
-import { X, ExternalLink, Zap, ChevronLeft, ChevronRight, Maximize2, Play, Lock } from 'lucide-react';
+import { X, ExternalLink, Zap, ChevronLeft, ChevronRight, ChevronDown, Maximize2, Play, Lock, RotateCw, Sparkles, FileText } from 'lucide-react';
 import { summarizeEvidence, streamStory } from './api.js';
 import { evPlatform, VERIFICATION_STYLES } from './adapter.js';
 
@@ -37,7 +37,7 @@ export function ArticleSummary({ iso, runId, ev }) {
   return (
     <div className="ce2-summary">
       {state === 'idle' && (
-        <button className="ce-btn ce-btn--ghost" onClick={start}>Σ Summarize (50w · 100w · key points · entities · risk · UAE relevance)</button>
+        <button className="ce-btn ce-btn--ghost" onClick={start}><FileText size={11} aria-hidden /> Summarize (50w · 100w · key points · entities · risk · UAE relevance)</button>
       )}
       {state !== 'idle' && (
         <div className="ce2-summary__body" dir="auto">
@@ -253,7 +253,7 @@ export function RelationshipInspector({ link, run, iso, onClose, onQuickQuery, o
       <div className="ce2-inspector__head">
         <div>
           <b style={{ color: vs.color }}>{link.verification || link.type}{link.inference ? ' (inferred)' : ''} · conf {(link.confidence ?? 0).toFixed(2)}</b>
-          <div className="ce2-inspector__sub">{link.type} · weight {(link.weight ?? 0).toFixed(2)}{link.contradiction ? ' · ⚠ contradiction' : ''}</div>
+          <div className="ce2-inspector__sub">{link.type} · weight {(link.weight ?? 0).toFixed(2)}{link.contradiction ? ' · contradiction flagged' : ''}</div>
         </div>
         <button onClick={onClose} aria-label="Close inspector"><X size={14} /></button>
       </div>
@@ -312,7 +312,7 @@ export function ClusterChips({ communities, collapsed, onToggle }) {
       {communities.map(c => (
         <motion.button key={c.id} layout className={`ce2-cluster${collapsed.has(c.id) ? ' ce2-cluster--closed' : ''}`}
           onClick={() => onToggle(c.id)} transition={spring}>
-          {c.label} ({c.count} entities) {collapsed.has(c.id) ? '▸' : '▾'}
+          {c.label} ({c.count} entities) {collapsed.has(c.id) ? <ChevronRight size={10} aria-hidden /> : <ChevronDown size={10} aria-hidden />}
         </motion.button>
       ))}
     </div>
@@ -370,5 +370,61 @@ export function StoryMode({ iso, run, onClose, onQuickQuery }) {
         {streaming && <span className="qq-caret">▍</span>}
       </div>
     </motion.div>
+  );
+}
+
+/**
+ * UX overhaul 2026-07-19 — (1)+(2) EvidenceBreakdown: opens from a badge click.
+ * Lists EXACTLY the edges + evidence records that produce the badge count
+ * (adapter.nodeEvidenceBreakdown — strictly from the run, no invented numbers),
+ * grouped in a clustered hierarchy by relationship_type/dimension. Each
+ * individual connection is separately clickable → Relationship Inspector
+ * (claim, confidence, verification tier, source types).
+ */
+export function EvidenceBreakdown({ node, breakdown, run, onClose, onOpenEdge }) {
+  const [open, setOpen] = useState(() => new Set(Object.keys(breakdown.groups))); // all fanned out
+  const toggle = (g) => setOpen(prev => { const s = new Set(prev); s.has(g) ? s.delete(g) : s.add(g); return s; });
+  return (
+    <motion.aside className="ce2-inspector ce2-breakdown" data-testid="ce-evidence-breakdown"
+      initial={{ x: 380 }} animate={{ x: 0 }} exit={{ x: 380 }} transition={spring} aria-label="Evidence breakdown">
+      <div className="ce2-inspector__head">
+        <div>
+          <b>{node.fullName || node.label} — evidence breakdown</b>
+          <div className="ce2-inspector__sub">
+            badge count {breakdown.total} = {breakdown.total} distinct evidence record{breakdown.total === 1 ? '' : 's'} across {breakdown.edgeCount} edge{breakdown.edgeCount === 1 ? '' : 's'}
+          </div>
+        </div>
+        <button onClick={onClose} aria-label="Close breakdown"><X size={14} /></button>
+      </div>
+      <div className="ce2-inspector__scroll">
+        {Object.keys(breakdown.groups).length === 0 && (
+          <div className="ce2-gap">No evidence-backed edges touch this entity in this run.</div>
+        )}
+        {Object.entries(breakdown.groups).map(([grp, edges]) => (
+          <section key={grp} className="ce2-bd__group" data-testid={`ce-bd-group-${grp}`}>
+            <button className="ce2-bd__grouphead" onClick={() => toggle(grp)} aria-expanded={open.has(grp)}>
+              {open.has(grp) ? <ChevronDown size={12} /> : <ChevronRight size={12} />}
+              <b>{grp}</b>
+              <span>{edges.length} connection{edges.length === 1 ? '' : 's'}</span>
+            </button>
+            {open.has(grp) && edges.map(e => (
+              <div key={e.edgeId} className="ce2-bd__edge" data-testid={`ce-bd-edge-${e.edgeId}`}>
+                <button className="ce2-bd__edgehead" onClick={() => onOpenEdge(e.edgeId)}>
+                  <span className="ce2-tier" style={{ '--tc': VERIFICATION_STYLES[e.verification || 'Likely']?.color }}>{e.verification || e.type}</span>
+                  {e.a} → {e.b} · conf {(e.confidence ?? 0).toFixed(2)}{e.inference ? ' · inferred' : ''}
+                </button>
+                <p className="ce2-bd__claim">{e.claim}</p>
+                {e.evidence.map(ev => (
+                  <div key={ev.id} className="ce2-src">
+                    <span className="ce-ev__plat">{ev.source_type || '?'}</span>
+                    <b>{ev.id}</b> {ev.source}{ev.date ? ` · ${ev.date}` : ''} — {ev.claim?.slice(0, 90)}{ev.claim?.length > 90 ? '…' : ''}
+                  </div>
+                ))}
+              </div>
+            ))}
+          </section>
+        ))}
+      </div>
+    </motion.aside>
   );
 }

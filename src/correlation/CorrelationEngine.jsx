@@ -1,8 +1,8 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { RefreshCw, Download, Image as ImageIcon, Search, Zap, X, ExternalLink, BadgeCheck, Send, ChevronDown, Maximize2 } from 'lucide-react';
+import { RefreshCw, Download, Image as ImageIcon, Search, Zap, X, ExternalLink, BadgeCheck, Send, ChevronDown, Maximize2, Loader2, RotateCw, Sparkles, AlertTriangle } from 'lucide-react';
 import CorrelationGraph from './CorrelationGraph.jsx';
-import { EntityInspector, RelationshipInspector } from './V2Panels.jsx';
+import { EntityInspector, RelationshipInspector, EvidenceBreakdown } from './V2Panels.jsx';
 import EChartsPanels from './EChartsPanels.jsx';
 import SignalLoom from './BespokeViz.jsx';
 import QuickQuery from './QuickQuery.jsx';
@@ -12,7 +12,7 @@ import {
   runDownloadUrl,
 } from './api.js';
 import {
-  runToGraph, edgeToMiniArtifact, nodeToMiniArtifact,
+  runToGraph, edgeToMiniArtifact, nodeToMiniArtifact, nodeEvidenceBreakdown,
   REL_TYPES, REL_TYPE_COLORS, attachDensity,
 } from './adapter.js';
 
@@ -33,7 +33,7 @@ function HoverPopover({ pop, run, onLightbox, onQuickQuery, onClose }) {
       <button className="ce-pop__x" onClick={onClose} aria-label="Close"><X size={11} /></button>
       {pop.kind === 'edge' ? (
         <>
-          <div className="ce-pop__type" style={{ color: pop.link.color }}>{pop.link.type}{pop.link.contradiction ? ' ⚠' : ''}</div>
+          <div className="ce-pop__type" style={{ color: pop.link.color }}>{pop.link.type}{pop.link.contradiction ? <AlertTriangle size={10} aria-hidden style={{ verticalAlign: '-1px', marginLeft: 3, color: '#f59e0b' }} /> : null}</div>
           <div className="ce-pop__claim">{pop.link.claim}</div>
           <div className="ce-pop__meta">weight {pop.link.weight} · confidence {pop.link.confidence}</div>
         </>
@@ -151,9 +151,11 @@ export default function CorrelationEngine({ iso, countryName }) {
   // ---- Expand Intelligence View (full-screen) + inspectors (2026-07-19 fix) ----
   const [expanded, setExpanded] = useState(false);
   const [inspector, setInspector] = useState(null); // {kind:'node'|'edge', node|link}
+  const [breakdown, setBreakdown] = useState(null);  // {node, data} — badge click (UX overhaul)
   const graphWrapRef = useRef();
   const pollRef = useRef(null);
   const graphInstRef = useRef(null);
+  const runRef = useRef(null);
 
   // ESC closes expand mode; lock body scroll while expanded
   useEffect(() => {
@@ -173,6 +175,11 @@ export default function CorrelationEngine({ iso, countryName }) {
   const handleLinkClick = useCallback((l) => {
     if (!l) { setInspector(null); return; }
     setInspector({ kind: 'edge', link: l });
+  }, []);
+  // UX overhaul: badge click → evidence breakdown (strictly run-derived counts)
+  const handleBadgeClick = useCallback((n) => {
+    if (!n || !runRef.current) return;
+    setBreakdown({ node: n, data: nodeEvidenceBreakdown(runRef.current, n.id) });
   }, []);
 
   // ---------- data ----------
@@ -194,6 +201,7 @@ export default function CorrelationEngine({ iso, countryName }) {
     try {
       const full = await getRun(iso, list[clamped].runId);
       setRun(full);
+      runRef.current = full;
       setNarrative({ text: full.narrative?.text || '', streaming: false });
     } catch (e) { setErr(e.message); }
   }, [iso, runs]);
@@ -345,11 +353,16 @@ export default function CorrelationEngine({ iso, countryName }) {
         </div>
       </div>
 
-      {/* bilingual loader on regeneration (EN/AR word loader, RTL-safe) */}
+      {/* (3) UX overhaul 2026-07-19: on-brand white/minimal generation banner —
+          neutral gray spinner, clean status text, RTL-isolated Arabic 'مصادر' label
+          placed at the inline-end. No purple anywhere. */}
       {job && (
-        <div className="ce-running" role="status">
-          <BilingualLoader size="md" label={`Regenerating ${countryName} correlations…`} />
-          <div className="ce-running__stage">stage: {job.stage} · started {new Date(job.startedAt).toLocaleTimeString('en-GB')}</div>
+        <div className="ce-running" role="status" data-testid="ce-running-banner">
+          <span className="ce-running__label">
+            <Loader2 size={15} className="ce-spin-neutral" aria-hidden />
+            Regenerating {countryName} correlations — stage: {job.stage} · started {new Date(job.startedAt).toLocaleTimeString('en-GB')}
+          </span>
+          <span className="ce-sourcing-ar" dir="rtl" lang="ar">مصادر</span>
         </div>
       )}
 
@@ -364,7 +377,7 @@ export default function CorrelationEngine({ iso, countryName }) {
             <div className="ce-dots__head">
               <b>Connected Dots</b>
               <button className="ce-btn ce-btn--ghost" onClick={onReplayNarrative} disabled={narrative.streaming}>
-                {narrative.streaming ? 'Streaming…' : '↻ Stream again'}
+                {narrative.streaming ? 'Streaming…' : <><RotateCw size={11} aria-hidden /> Stream again</>}
               </button>
             </div>
             <p className="ce-dots__text">
@@ -376,7 +389,7 @@ export default function CorrelationEngine({ iso, countryName }) {
                 {run.narrative.trace.map((t, i) => (
                   <span key={i} className={`ce-dots__s${t.evidenceIds.length ? '' : ' ce-dots__s--untagged'}`}
                     title={t.sentence}>
-                    S{i + 1}{t.evidenceIds.length ? `→${t.evidenceIds.join(',')}` : ' ⚠'}
+                    S{i + 1}{t.evidenceIds.length ? `→${t.evidenceIds.join(',')}` : ' (no evidence)'}
                   </span>
                 ))}
               </div>
@@ -393,7 +406,7 @@ export default function CorrelationEngine({ iso, countryName }) {
               <span className="ce-scrub__diff">
                 Δ +{run.diffFromPrevious.addedEdges.length} edges / −{run.diffFromPrevious.removedEdges.length}
                 · +{run.diffFromPrevious.addedEvidence.length} evidence
-                {run.diffFromPrevious.newEdgeIds.length > 0 && ' · ✦ new pulses on canvas'}
+                {run.diffFromPrevious.newEdgeIds.length > 0 && <> · <Sparkles size={10} aria-hidden /> new pulses on canvas</>}
               </span>
             )}
           </div>
@@ -448,6 +461,7 @@ export default function CorrelationEngine({ iso, countryName }) {
                 onHoverNode={() => { if (!pinPop) setPop(null); }}
                 onClickLink={handleLinkClick}
                 onClickNode={handleNodeClick}
+                onBadgeClick={handleBadgeClick}
                 searchNodeId={searchNodeId?.split(':')[0]}
                 pulseKeys={pulseKeys}
               />
@@ -460,7 +474,7 @@ export default function CorrelationEngine({ iso, countryName }) {
                   lavender/gray/peach circle is unexplained. */}
               <div className="ce-lgstrip" aria-label="Graph legend">
                 <span className="ce-lg"><i className="ce-lg__halo" />halo tint = community cluster</span>
-                <span className="ce-lg"><i className="ce-lg__badge">254</i>badge = evidence density (corpus)</span>
+                <span className="ce-lg"><i className="ce-lg__badge">2</i>badge = distinct evidence records on this node's edges (click for breakdown)</span>
                 <span className="ce-lg"><i className="ce-lg__dot" style={{ background: '#111827' }} />dark disc = country node</span>
                 <span className="ce-lg">size = weight · width = strength · color = type</span>
               </div>
@@ -500,6 +514,7 @@ export default function CorrelationEngine({ iso, countryName }) {
             onHoverNode={() => {}}
             onClickLink={handleLinkClick}
             onClickNode={handleNodeClick}
+            onBadgeClick={handleBadgeClick}
             searchNodeId={searchNodeId?.split(':')[0]}
             pulseKeys={pulseKeys}
           />
@@ -513,6 +528,14 @@ export default function CorrelationEngine({ iso, countryName }) {
           section (position:fixed, z-index above .ce2-fullscreen) so they sit ON TOP
           of the full-screen modal and stay interactive in both modes. */}
       <AnimatePresence>
+        {breakdown && run && (
+          <EvidenceBreakdown node={breakdown.node} breakdown={breakdown.data} run={run}
+            onClose={() => setBreakdown(null)}
+            onOpenEdge={(edgeId) => {
+              const l = graph.links.find(x => x.id === edgeId) || run.edges.find(x => x.id === edgeId);
+              if (l) { setBreakdown(null); setInspector({ kind: 'edge', link: l.claim !== undefined && l.source === undefined ? { ...l, evidenceIds: l.evidence_record_ids, type: l.relationship_type, rawA: l.entity_a, rawB: l.entity_b } : l }); }
+            }} />
+        )}
         {inspector?.kind === 'node' && run && (
           <EntityInspector node={inspector.node} run={run} iso={iso}
             onClose={() => setInspector(null)}

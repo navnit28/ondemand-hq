@@ -95,7 +95,7 @@ export default function SignalLoom({ run, onPickEvidence }) {
     // legend
     const lg = svg.append('g').attr('transform', `translate(${padL},${H - 8})`);
     lg.append('text').attr('font-size', 8.5).attr('fill', '#9ca3af').attr('font-family', 'Montserrat, sans-serif')
-      .text(`Signal Loom — ${threads.length} woven threads (edge × evidence) · thickness = confidence · opacity = recency · dashes = ⚠ contradiction · click a thread for evidence`);
+      .text(`Signal Loom — ${threads.length} woven threads (edge × evidence) · thickness = confidence · opacity = recency · dashes = contradiction · click a thread for evidence`);
   }, [run, onPickEvidence]);
 
   return (

@@ -13,7 +13,7 @@ import { attachGestures } from './gestures.js';
  *   is unreliable under changing data); drag physics; 60fps (particle counts bounded)
  */
 export default function CorrelationGraph({ graph, width, height, showLabels, physics,
-  onHoverLink, onHoverNode, onClickLink, onClickNode, searchNodeId, pulseKeys }) {
+  onHoverLink, onHoverNode, onClickLink, onClickNode, onBadgeClick, searchNodeId, pulseKeys }) {
   const fgRef = useRef();
   const wrapRef = useRef();
   const [hover, setHover] = useState(null); // {kind:'node'|'link', id}
@@ -226,27 +226,42 @@ export default function CorrelationGraph({ graph, width, height, showLabels, phy
       ctx.fillText(n.label, lx, n.y + r + 3);
       ctx.textAlign = 'center';
     }
-    // evidence-density badge (2026-07-19 rebuild): TRUE corpus density (hundreds-scale)
-    // via densityCount from /v2/evidence/stats; per-run count as fallback. Pill-shaped
-    // so 3-digit counts render uncropped.
-    const badgeN = n.densityCount ?? n.evidenceCount;
+    // UX overhaul 2026-07-19: EVIDENCE-BACKED badge — badgeCount = distinct evidence
+    // records on this node's incident edges (adapter computes it strictly from the
+    // run; NEVER a corpus/aggregate number). ODA-neutral styling (white pill, dark
+    // text, brand ring) replaces the purple blob. Collision-aware: candidate anchor
+    // angles are tried until the pill overlaps no other node disc; the chosen rect
+    // is registered on n.__badgeRect for click hit-testing (badge → evidence
+    // breakdown panel). Zero-evidence nodes get NO badge — no invented numbers.
+    const badgeN = n.badgeCount ?? 0;
+    n.__badgeRect = null;
     if (badgeN > 0 && !dim) {
-      const txt = badgeN > 999 ? '999+' : String(badgeN);
+      const txt = String(badgeN);
       ctx.font = '700 7.5px Montserrat, sans-serif';
       const tw2 = ctx.measureText(txt).width;
-      const bw = Math.max(11, tw2 + 8), bh = 11;
-      const bx = n.x + r * 0.72, by = n.y - r * 0.72 - bh / 2;
+      const bw = Math.max(13, tw2 + 9), bh = 12;
+      // candidate anchors: NE, NW, SE, SW, E — pick first that avoids other nodes
+      const cand = [[0.85, -0.85], [-0.85 - bw / r, -0.85], [0.85, 0.55], [-0.85 - bw / r, 0.55], [1.15, -0.2]];
+      let bx = n.x + r * 0.85, by = n.y - r * 0.85 - bh / 2;
+      for (const [fx, fy] of cand) {
+        const tx = n.x + r * fx, ty = n.y + r * fy - bh / 2;
+        const cx2 = tx + bw / 2, cy2 = ty + bh / 2;
+        const hit = (graph.nodes || []).some(o => o !== n && Number.isFinite(o.x) &&
+          Math.hypot(o.x - cx2, o.y - cy2) < o.size / 2 + bh / 2 + 1);
+        if (!hit) { bx = tx; by = ty; break; }
+      }
       ctx.beginPath();
       if (ctx.roundRect) ctx.roundRect(bx, by, bw, bh, bh / 2);
       else ctx.rect(bx, by, bw, bh);
-      ctx.fillStyle = '#6d4aff'; ctx.fill();
-      ctx.lineWidth = 1; ctx.strokeStyle = '#ffffff'; ctx.stroke();
-      ctx.fillStyle = '#fff';
+      ctx.fillStyle = '#ffffff'; ctx.fill();
+      ctx.lineWidth = 1.2; ctx.strokeStyle = '#159a7a'; ctx.stroke();
+      ctx.fillStyle = '#0f766e';
       ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
       ctx.fillText(txt, bx + bw / 2, by + bh / 2 + 0.5);
+      n.__badgeRect = { x: bx, y: by, w: bw, h: bh };
     }
     ctx.restore();
-  }, [hover, isDimNode, showLabels]);
+  }, [hover, isDimNode, showLabels, graph.nodes]);
 
   const linkCanvasObject = useCallback((l, ctx) => {
     const s = typeof l.source === 'object' ? l.source : null;
@@ -291,11 +306,17 @@ export default function CorrelationGraph({ graph, width, height, showLabels, phy
       ctx.fillStyle = PLATFORM_COLORS[p] || '#9ca3af';
       ctx.fill();
     });
-    // ⚠ contradiction marker
+    // contradiction marker: drawn triangle-alert (icon audit — no emoji glyphs on canvas)
     if (l.contradiction) {
-      ctx.font = '11px sans-serif';
-      ctx.textAlign = 'center';
-      ctx.fillText('⚠', mx, my + 10);
+      const ty = my + 10;
+      ctx.beginPath();
+      ctx.moveTo(mx, ty - 4); ctx.lineTo(mx + 4.5, ty + 3.5); ctx.lineTo(mx - 4.5, ty + 3.5);
+      ctx.closePath();
+      ctx.fillStyle = '#f59e0b'; ctx.fill();
+      ctx.strokeStyle = '#fff'; ctx.lineWidth = 0.8; ctx.stroke();
+      ctx.fillStyle = '#78350f'; ctx.font = '700 5px Montserrat, sans-serif';
+      ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+      ctx.fillText('!', mx, ty + 1.2);
     }
     ctx.restore();
   }, [hover, pulseKeys]);
@@ -312,6 +333,11 @@ export default function CorrelationGraph({ graph, width, height, showLabels, phy
           ctx.beginPath();
           ctx.arc(n.x, n.y, n.size / 2 + 4, 0, 2 * Math.PI);
           ctx.fill();
+          // badge is part of the node's pointer area (click routed via onNodeClick)
+          if (n.__badgeRect) {
+            const b = n.__badgeRect;
+            ctx.fillRect(b.x - 2, b.y - 2, b.w + 4, b.h + 4);
+          }
         }}
         linkCanvasObject={linkCanvasObject}
         linkCanvasObjectMode={() => 'replace'}
@@ -321,7 +347,22 @@ export default function CorrelationGraph({ graph, width, height, showLabels, phy
         linkDirectionalParticleColor={(l) => l.color}
         onNodeHover={(n) => { setHover(n ? { kind: 'node', id: n.id } : null); onHoverNode?.(n); }}
         onLinkHover={(l) => { setHover(l ? { kind: 'link', id: l.id, link: l } : null); onHoverLink?.(l); }}
-        onNodeClick={(n) => onClickNode?.(n)}
+        onNodeClick={(n, evt) => {
+          // badge hit-test: if click landed inside the badge pill → evidence breakdown
+          try {
+            const fg = fgRef.current;
+            if (n?.__badgeRect && fg && evt) {
+              const rct = wrapRef.current.getBoundingClientRect();
+              const g = fg.screen2GraphCoords(evt.clientX - rct.left, evt.clientY - rct.top);
+              const b = n.__badgeRect;
+              if (g.x >= b.x - 2 && g.x <= b.x + b.w + 2 && g.y >= b.y - 2 && g.y <= b.y + b.h + 2) {
+                onBadgeClick?.(n);
+                return;
+              }
+            }
+          } catch { /* fall through to normal node click */ }
+          onClickNode?.(n);
+        }}
         onLinkClick={(l) => onClickLink?.(l)}
         onBackgroundClick={() => { onClickNode?.(null); onClickLink?.(null); }}
         enableNodeDrag

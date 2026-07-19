@@ -102,3 +102,39 @@ All notable changes to the Correlation Engine, logged with timestamps (UTC).
   → **RESULT: PASS**. QA screenshot: `expand-mode-inspector-qa.png` (Relationship Inspector
   open inside the full-screen expanded view) + `expand-mode-inspector-qa-entity.png`.
   Vite rebuild green (7.5s).
+
+## 2026-07-19 — Correlation Engine UX overhaul (screenshot-driven, 5 fixes)
+
+- **2026-07-19T21:20Z** — screenshot-driven UX overhaul, edited in place at tree 574ec48:
+  1. **Evidence-backed badges** (was: purple "236"/"5" blobs from corpus density):
+     `adapter.js` now computes `badgeCount` = distinct evidence records on the node's
+     incident edges STRICTLY from the run (edgeEvidenceByNode set union; zero → no badge,
+     no invented numbers). Badge redrawn as white pill + #159a7a ring + dark text,
+     collision-aware anchor selection (5 candidate corners tested against all node discs),
+     hit-rect registered per node; new `nodeEvidenceBreakdown()` pure helper.
+  2. **Badge click → EvidenceBreakdown panel + spread/fan-out**: new `EvidenceBreakdown`
+     component (V2Panels) lists exactly the edges + evidence records producing the count,
+     grouped in a clustered hierarchy by relationship_type/dimension with expand/collapse
+     fan-out; each individual connection is clickable → Relationship Inspector showing
+     claim, confidence, verification tier, and source types. Badge hit-test wired through
+     CorrelationGraph.onNodeClick → onBadgeClick (both normal and expand modes).
+  3. **Generation banner restyle**: lavender banner + purple Running pill →
+     white/minimal ODA card, neutral gray Loader2 spinner (`.ce-spin-neutral`), clean
+     one-line status ("Regenerating <country> correlations — stage: X · started HH:MM:SS"),
+     Arabic "مصادر" isolated `dir="rtl" lang="ar"` at inline-end (`.ce-sourcing-ar`).
+  4. **MEDIA/SOURCES restyle**: global de-purple of the CE/QuickQuery palette
+     (#6d4aff→#159a7a accents, #ede9fe→neutral borders, lavender bgs→white/soft-brand);
+     source pills (PERPLEXITY et al.) → neutral gray outline pills; evidence-gap notice
+     mustard/brown → neutral gray dashed; teal MEDIA/SOURCES headings → neutral dark gray
+     with hairline rule. Zero purple values remain in styles.css.
+  5. **Icon audit**: ↻→RotateCw, ✦→Sparkles, Σ→FileText, ▸/▾→ChevronRight/Down,
+     JSX ⚠→AlertTriangle (or plain text), canvas ⚠ emoji→drawn triangle-alert glyph;
+     legend badge swatch updated; all icons lucide-react SVGs; ODA watermark unchanged ≤4%.
+  - **Vite build**: PASS (7.5s). **Headless-Chromium QA click-test: 5/5 PASS** —
+    (a) badge(2) on mofa → breakdown "2 distinct evidence records across 1 edge",
+    group Aid-Humanitarian, evidence E1+E3 listed; (b) group collapse 1→0 edges,
+    re-expand 0→1 (fan-out); (c) clustered hierarchy renders; (d) connection click →
+    Relationship Inspector "Verified · conf 0.90" with claim/tier/source types;
+    (e) computed-style purple scan across .ce subtree → 0 hits; evidence-gap =
+    gray-on-gray dashed. QA screenshots: ce-overhaul-qa-graph.png,
+    ce-overhaul-qa-breakdown.png, ce-overhaul-qa-inspector.png.
