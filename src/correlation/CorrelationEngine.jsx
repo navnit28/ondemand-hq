@@ -88,8 +88,8 @@ function Lightbox({ data, onClose }) {
   );
 }
 
-/** Full evidence drawer with 'Send to chat'. */
-function EvidenceDrawer({ run, onClose }) {
+/** Full evidence drawer with 'Send to chat' + image → lightbox. */
+function EvidenceDrawer({ run, onClose, onLightbox }) {
   if (!run) return null;
   const sendToChat = (ev) => {
     const text = `Correlation Engine evidence (${run.country} run ${run.runId}):\n"${ev.claim}"\n— ${ev.source} via ${ev.platform}${ev.publish_date ? ', ' + ev.publish_date : ''}${ev.url ? '\n' + ev.url : ''}`;
@@ -113,7 +113,11 @@ function EvidenceDrawer({ run, onClose }) {
             <p>{ev.claim}</p>
             {ev.snippet && <p className="ce-ev__snip">{ev.snippet}</p>}
             {ev.media?.length > 0 && (
-              <div className="ce-ev__media">{ev.media.map((m, i) => <img key={i} src={m.url} alt={`proof @${m.sourceHandle}`} loading="lazy" />)}</div>
+              <div className="ce-ev__media">{ev.media.map((m, i) => (
+                <button key={i} className="ce-thumb" onClick={() => onLightbox?.({ media: m, evidence: ev })} aria-label="Open proof image">
+                  <img src={m.url} alt={`proof @${m.sourceHandle}`} loading="lazy" />
+                </button>))}
+              </div>
             )}
             <div className="ce-ev__actions">
               {ev.url && <a href={ev.url} target="_blank" rel="noopener noreferrer"><ExternalLink size={10} /> source</a>}
@@ -432,7 +436,7 @@ export default function CorrelationEngine({ iso, countryName }) {
       {/* lightbox + drawer + quick query */}
       <AnimatePresence>
         {lightbox && <Lightbox data={lightbox} onClose={() => setLightbox(null)} />}
-        {drawerOpen && run && <EvidenceDrawer run={run} onClose={() => setDrawerOpen(false)} />}
+        {drawerOpen && run && <EvidenceDrawer run={run} onClose={() => setDrawerOpen(false)} onLightbox={(d) => { setLightbox(d); }} />}
         {quick && (
           <QuickQuery artifact={quick.artifact}
             onClose={() => setQuick(null)}
