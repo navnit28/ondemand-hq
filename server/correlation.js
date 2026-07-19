@@ -44,6 +44,115 @@ export const PLUGINS = {
 export const RELATIONSHIP_TYPES = ['Investment', 'Trade', 'Aid-Humanitarian', 'Diplomatic',
   'Infrastructure', 'Energy', 'Technology', 'Security', 'Media-narrative'];
 
+// ================= CORRELATION ENGINE V2 (2026-07-19) =================
+// Deep-search windows (item 14): research window selector. Default = 730d
+// (Last 2 Years) with higher weighting on the last 30 days via the context
+// weighting engine below.
+export const SEARCH_WINDOWS = [
+  { key: '24h', days: 1, label: 'Last 24 hours' },
+  { key: 'week', days: 7, label: 'Last week' },
+  { key: 'month', days: 30, label: 'Last month' },
+  { key: '6mo', days: 180, label: 'Last 6 months' },
+  { key: '1y', days: 365, label: 'Last year' },
+  { key: '2y', days: 730, label: 'Last 2 years' },
+  { key: 'all', days: 0, label: 'Entire history' },
+];
+export const DEFAULT_WINDOW_DAYS = 730;
+
+// Context weighting engine (item 15) — deterministic, applied server-side to
+// every evidence record. Base class by age: historical 0.2 / recent 0.6 /
+// breaking 1.0. Multipliers: ×2 direct UAE relevance, ×2 government source,
+// ×3 official statement, ×2 multi-source corroboration. Normalized 0..1
+// (cap 3.0) and blended into edge weights (60% legacy deterministic weight,
+// 40% avg context weight of backing evidence).
+export const WEIGHTING = {
+  base: { historical: 0.2, recent: 0.6, breaking: 1.0 },
+  recentDays: 30, breakingHours: 48,
+  multipliers: { uaeRelevance: 2, governmentSource: 2, officialStatement: 3, multiSource: 2 },
+  cap: 3.0, blend: { legacy: 0.6, context: 0.4 },
+};
+const GOV_SOURCE_RE = /\b(wam|wamnews|mofa|mofauae|ministry|government|embassy|consulate|presiden|sheikh|state house|gov\.|\.gov|official gazette|prime minister|cabinet|parliament|senate|un\b|unicef|who\b|adfd)\b/i;
+const OFFICIAL_STMT_RE = /\b(announced|statement|decree|signed (an?|the) (agreement|mou|deal)|joint (statement|communiqu)|official visit|state visit|memorandum of understanding|press release)\b/i;
+
+function uaeRelevant(text) {
+  const t = String(text || '').toLowerCase();
+  return t.includes('uae') || t.includes('emirat') || UAE_REGISTRY.some(r =>
+    t.includes(r.label.toLowerCase()) || (r.aliases || []).some(a => t.includes(a)));
+}
+
+/** Compute contextWeight for each evidence record; annotate factors for the UI. */
+export function applyContextWeighting(evidence, nowTs) {
+  const seenSources = new Map(); // fuzzy corroboration: same first-6-words claim stem
+  for (const ev of evidence) {
+    const stem = String(ev.claim || '').toLowerCase().split(/\s+/).slice(0, 6).join(' ');
+    const set = seenSources.get(stem) || new Set();
+    set.add(`${ev.platform}:${ev.source}`);
+    seenSources.set(stem, set);
+  }
+  for (const ev of evidence) {
+    const t = Date.parse(ev.publish_date || '');
+    const ageH = Number.isFinite(t) ? (nowTs - t) / 3600000 : Infinity;
+    let cls = 'historical';
+    if (ageH <= WEIGHTING.breakingHours) cls = 'breaking';
+    else if (ageH <= WEIGHTING.recentDays * 24) cls = 'recent';
+    let w = WEIGHTING.base[cls];
+    const factors = [cls];
+    if (uaeRelevant(`${ev.claim} ${ev.snippet}`)) { w *= WEIGHTING.multipliers.uaeRelevance; factors.push('uae-relevance×2'); }
+    if (GOV_SOURCE_RE.test(`${ev.source} ${ev.url || ''}`)) { w *= WEIGHTING.multipliers.governmentSource; factors.push('gov-source×2'); }
+    if (OFFICIAL_STMT_RE.test(`${ev.claim} ${ev.snippet}`)) { w *= WEIGHTING.multipliers.officialStatement; factors.push('official-stmt×3'); }
+    const stem = String(ev.claim || '').toLowerCase().split(/\s+/).slice(0, 6).join(' ');
+    if ((seenSources.get(stem)?.size || 1) >= 2) { w *= WEIGHTING.multipliers.multiSource; factors.push('multi-source×2'); }
+    ev.weightClass = cls;
+    ev.weightFactors = factors;
+    ev.contextWeight = +Math.min(WEIGHTING.cap, w).toFixed(3);
+    ev.contextWeightNorm = +(Math.min(WEIGHTING.cap, w) / WEIGHTING.cap).toFixed(3);
+  }
+  return evidence;
+}
+
+/** Small concurrency limiter for the parallel research fan-out. */
+function pLimit(n) {
+  const q = []; let active = 0;
+  const next = () => {
+    if (!q.length || active >= n) return;
+    active++;
+    const { fn, res, rej } = q.shift();
+    fn().then(res, rej).finally(() => { active--; next(); });
+  };
+  return (fn) => new Promise((res, rej) => { q.push({ fn, res, rej }); next(); });
+}
+
+// Research workflow V2 (items 16+17) — optimized for INTELLIGENCE DENSITY, not
+// speed: ~10 Perplexity specialist sub-prompts fanned out in parallel (bounded
+// concurrency), each steering the researcher across official websites,
+// government releases, press releases, academic papers, think-tank reports,
+// media, financial reports, corporate filings, investor presentations,
+// government PDFs, whitepapers, conference presentations, official speeches,
+// public datasets and satellite-imagery reporting where relevant. The
+// orchestration layer (normalize stage) merges all streams into ONE unified
+// evidence pool feeding one intelligence graph.
+const SOURCE_DIRECTIVE = `Prioritize primary and high-density sources in this order: official government websites and releases (uaeembassy/mofa/wam.ae, national ministries), press releases, corporate filings and investor presentations, government PDFs and whitepapers, academic papers and think-tank reports (e.g. ECSSR, Chatham House, Brookings), conference presentations and official speeches, financial reports, reputable media, public datasets, and satellite-imagery-based reporting where relevant. For EVERY item return: ISO date, entities involved, one-line description, and the exact source URL.`;
+
+export function buildResearchPrompts(countryName, windowDays) {
+  const now = new Date();
+  const from = windowDays > 0 ? new Date(now.getTime() - windowDays * 86400000) : null;
+  const range = from ? `between ${from.toISOString().slice(0, 10)} and ${now.toISOString().slice(0, 10)}` : 'across the entire recorded history of the relationship';
+  const CN = countryName;
+  return {
+    developments: `Comprehensive summary of ALL significant developments between the United Arab Emirates and ${CN} ${range}: agreements, investments, aid, visits, disputes, infrastructure, energy, technology, defence. ${SOURCE_DIRECTIVE}`,
+    organisations: `Every organisation, company, sovereign fund, agency or NGO active in the UAE–${CN} relationship ${range}: role, ownership/parent, sector, and what it did. Include UAE entities (ODA, MOFA, ADQ, Mubadala, G42, Core42, ADNOC, AD Ports, Presight, ADFD, Masdar, Etihad, DP World, EDGE) and ${CN}-side counterparts. ${SOURCE_DIRECTIVE}`,
+    funding: `All funding, investment and financing announcements between UAE entities and ${CN} ${range}: amounts, currencies, instruments (equity/loan/grant/PPP), stage (announced/signed/disbursed), recipients. ${SOURCE_DIRECTIVE}`,
+    officials: `Government officials driving the UAE–${CN} relationship ${range}: names, exact titles, meetings, state visits, and direct quotes from official statements. ${SOURCE_DIRECTIVE}`,
+    strategic: `Strategic implications for the UAE of its relationship with ${CN} ${range}, across trade, diplomacy, investment, technology, food security, energy, defence, climate, education, healthcare, humanitarian aid, the UAE National AI Strategy, economic diversification and foreign policy. Cite concrete evidence per implication. ${SOURCE_DIRECTIVE}`,
+    predictions12mo: `Grounded expectations for the next 12 months in UAE–${CN} relations based ONLY on announced plans, signed frameworks, budget lines and official statements ${range} — no speculation without a cited basis. ${SOURCE_DIRECTIVE}`,
+    contradictions: `Contradictory or disputed reporting about UAE–${CN} relations ${range}: conflicting numbers, denied claims, retracted stories, single-source assertions. Quote both sides with URLs. ${SOURCE_DIRECTIVE}`,
+    missing: `Relationships in the UAE–${CN} network that likely exist but are under-reported ${range}: shared investors or directors, trade dependencies, technology transfer, shared infrastructure, funding chains, policy alignment. For each, state the OBSERVABLE SIGNALS (with URLs) that suggest it — do not assert unverified facts. ${SOURCE_DIRECTIVE}`,
+    analogues: `Historical analogues: earlier UAE partnerships that resemble the current UAE–${CN} trajectory (e.g. ports, energy, food-security or AI partnerships with other countries) ${range} and how they evolved. ${SOURCE_DIRECTIVE}`,
+    confidenceAudit: `Source-confidence audit for UAE–${CN} claims ${range}: which widely-reported claims are single-source, which are corroborated by 2+ independent outlets, which come only from social media. List each claim with its corroboration level and URLs. ${SOURCE_DIRECTIVE}`,
+  };
+}
+// ================= end V2 constants =================
+
 // ---------- UAE node registry (extensible — country-side nodes surface per run) ----------
 export const UAE_REGISTRY = [
   { id: 'uae', label: 'UAE', fullName: 'United Arab Emirates', kind: 'country' },
@@ -189,7 +298,11 @@ function computeEdges(rawEdges, evidenceById, nowTs) {
     const countFactor = Math.min(1, evs.length / 5);
     const diversityFactor = Math.min(1, platforms.size / 4);
     // weight = f(evidence count, source diversity, recency decay, avg confidence)
-    const weight = +(0.35 * countFactor + 0.25 * diversityFactor + 0.20 * recencyFactor + 0.20 * avgConf).toFixed(4);
+    const legacyWeight = 0.35 * countFactor + 0.25 * diversityFactor + 0.20 * recencyFactor + 0.20 * avgConf;
+    // V2 item 15: blend in the context weighting engine (avg normalized context
+    // weight of backing evidence): 60% legacy deterministic + 40% context.
+    const avgCtx = evs.reduce((a, v) => a + (v.contextWeightNorm ?? 0.33), 0) / (evs.length || 1);
+    const weight = +(WEIGHTING.blend.legacy * legacyWeight + WEIGHTING.blend.context * avgCtx).toFixed(4);
     return {
       id: `ED${i + 1}`,
       entity_a: e.entity_a, entity_b: e.entity_b,
@@ -203,6 +316,8 @@ function computeEdges(rawEdges, evidenceById, nowTs) {
       recency: +recencyFactor.toFixed(4),       // → opacity client-side
       evidencePlatforms: [...platforms],
       contradiction: false,                      // set below
+      tier: 'Verified',                          // V2 item 18: evidence-gated = Verified tier
+      interactions: evs.length,                  // V2 item 12: heat mode — interaction count
     };
   });
   // Contradiction ⚠: same unordered pair + type carrying both cooperation and tension stances.
@@ -245,37 +360,50 @@ function diffRuns(prev, curr) {
 const jobs = new Map(); // iso -> job
 export function pipelineStatus(iso) { return jobs.get(iso) || { status: 'idle' }; }
 
-export async function runPipeline(iso, countryName) {
+export async function runPipeline(iso, countryName, opts = {}) {
   if (jobs.get(iso)?.status === 'running') return jobs.get(iso);
+  const windowDays = Number.isFinite(+opts.windowDays) ? +opts.windowDays : DEFAULT_WINDOW_DAYS;
+  const geo = opts.geo || null; // {lat,lng} of the counterpart country
   const startedAt = new Date();
   const runId = `${iso}-${startedAt.toISOString().replace(/[-:]/g, '').replace(/\..+/, '').replace('T', '')}`;
-  const job = { status: 'running', stage: 'gather', runId, startedAt: startedAt.toISOString(), error: null, narrativeTokens: '' };
+  const job = { status: 'running', stage: 'gather', runId, startedAt: startedAt.toISOString(), error: null, narrativeTokens: '', windowDays };
   jobs.set(iso, job);
   (async () => {
     const pluginsCalled = [];
     try {
-      // ---- Stage 1: gather (3 plugins in parallel; plugin-execution model policy) ----
-      const queries = {
-        perplexity: `Latest (June-July 2026) official announcements and news on relations between the United Arab Emirates and ${countryName}: investments, trade agreements, development aid, infrastructure, energy, technology, defence and diplomacy involving UAE entities (ODA, MOFA, ADQ, Mubadala, G42, Core42, ADNOC, AD Ports, Presight, ADFD, Masdar, Etihad, DP World, EDGE). For EACH item give the date, the entities involved, a one-line description and the source URL.`,
-        xsearch: `Posts from 2026-06-19 to 2026-07-19 about UAE and ${countryName} cooperation: investments, aid, agreements, visits. Prioritize official accounts (ministries, embassies, state media, UAE entities). Include each post's x.com URL, author handle, and date.`,
-        reddit: `Fetch recent posts from subreddits about ${countryName} and the UAE (e.g. r/unitedarabemirates, country subreddits): aid, investments, ADNOC, Mubadala, DP World, partnerships. Include post titles, URLs, subreddit names and dates.`,
+      // ---- Stage 1 (V2, items 16+17): intelligence-density research fan-out ----
+      // ~10 Perplexity specialist sub-prompts (bounded 3-way concurrency) + X + Reddit.
+      const now = new Date();
+      const fromDate = windowDays > 0 ? new Date(now.getTime() - windowDays * 86400000).toISOString().slice(0, 10) : null;
+      const subPrompts = buildResearchPrompts(countryName, windowDays);
+      const gather = {}; // perplexity:<facet> streams + xsearch + reddit
+      const limit = pLimit(3);
+      const perplexityJobs = Object.entries(subPrompts).map(([facet, q]) => limit(async () => {
+        const sid = await createOdSession(`ce-${iso}-ppx-${facet}`, [PLUGINS.perplexity]);
+        const answer = await syncQuery({ odSessionId: sid, query: q, pluginIds: [PLUGINS.perplexity], endpointId: CE_PLUGIN_ENDPOINT_ID, reasoningEffort: 'medium' });
+        gather[`perplexity:${facet}`] = answer;
+        pluginsCalled.push({ plugin: `perplexity:${facet}`, pluginId: PLUGINS.perplexity, status: 200, chars: answer.length });
+        job.stage = `gather ${Object.keys(gather).length}/${Object.keys(subPrompts).length + 2}`;
+      }).catch(e => {
+        gather[`perplexity:${facet}`] = '';
+        pluginsCalled.push({ plugin: `perplexity:${facet}`, pluginId: PLUGINS.perplexity, status: 'failed', error: String(e?.message || e).slice(0, 200) });
+        log.error('correlation.gather_failed', { iso, plugin: `perplexity:${facet}`, error: String(e?.message || e).slice(0, 200) });
+      }));
+      const social = {
+        xsearch: `Posts ${fromDate ? `from ${fromDate} to ${now.toISOString().slice(0, 10)}` : 'from any time'} about UAE and ${countryName} cooperation: investments, aid, agreements, visits, disputes. Prioritize official accounts (ministries, embassies, state media, UAE entities). Include each post's x.com URL, author handle, and date.`,
+        reddit: `Fetch recent posts from subreddits about ${countryName} and the UAE (e.g. r/unitedarabemirates, country subreddits): aid, investments, ADNOC, Mubadala, DP World, partnerships, controversies. Include post titles, URLs, subreddit names and dates.`,
       };
-      const gather = {};
-      const gatherResults = await Promise.allSettled(Object.entries(queries).map(async ([key, q]) => {
+      const socialJobs = Object.entries(social).map(([key, q]) => limit(async () => {
         const sid = await createOdSession(`ce-${iso}-${key}`, [PLUGINS[key]]);
         const answer = await syncQuery({ odSessionId: sid, query: q, pluginIds: [PLUGINS[key]], endpointId: CE_PLUGIN_ENDPOINT_ID, reasoningEffort: 'medium' });
         gather[key] = answer;
         pluginsCalled.push({ plugin: key, pluginId: PLUGINS[key], status: 200, chars: answer.length });
+      }).catch(e => {
+        gather[key] = '';
+        pluginsCalled.push({ plugin: key, pluginId: PLUGINS[key], status: 'failed', error: String(e?.message || e).slice(0, 200) });
+        log.error('correlation.gather_failed', { iso, plugin: key, error: String(e?.message || e).slice(0, 200) });
       }));
-      for (let i = 0; i < gatherResults.length; i++) {
-        const r = gatherResults[i];
-        if (r.status === 'rejected') {
-          const key = Object.keys(queries)[i];
-          gather[key] = '';
-          pluginsCalled.push({ plugin: key, pluginId: PLUGINS[key], status: 'failed', error: String(r.reason?.message || r.reason).slice(0, 200) });
-          log.error('correlation.gather_failed', { iso, plugin: key, error: String(r.reason?.message || r.reason).slice(0, 200) });
-        }
-      }
+      await Promise.allSettled([...perplexityJobs, ...socialJobs]);
       job.stage = 'instagram';
 
       // ---- Stage 2: Instagram (official channels only; verify officialness; download proofs to disk) ----
@@ -324,13 +452,20 @@ export async function runPipeline(iso, countryName) {
       }
       job.stage = 'normalize';
 
-      // ---- Stage 3: normalize → evidence records (analysis model policy) ----
+      // ---- Stage 3 (V2 orchestration layer): merge ALL research streams into ONE
+      // unified evidence pool (per-facet sections, each truncated; the merged
+      // material feeds a single extractor so the graph is one unified artifact) ----
       const sidN = await createOdSession(`ce-${iso}-normalize`, []);
+      const facetSections = Object.entries(gather)
+        .filter(([k]) => k.startsWith('perplexity:'))
+        .map(([k, a]) => [`WEB RESEARCH — ${k.split(':')[1].toUpperCase()}`, a]);
       const material = [
-        ['WEB (Perplexity)', gather.perplexity], ['X POSTS', gather.xsearch],
-        ['REDDIT', gather.reddit], ['INSTAGRAM PROFILES', ig.profiles.map(p => `@${p.handle} (${p.role}): ${p.answer}`).join('\n\n')],
+        ...facetSections,
+        ['X POSTS', gather.xsearch],
+        ['REDDIT', gather.reddit],
+        ['INSTAGRAM PROFILES', ig.profiles.map(p => `@${p.handle} (${p.role}): ${p.answer}`).join('\n\n')],
         ['INSTAGRAM POST', ig.downloadAnswer || ''],
-      ].map(([t, a]) => `=== ${t} ===\n${(a || '').slice(0, 9000)}`).join('\n\n');
+      ].map(([t, a]) => `=== ${t} ===\n${(a || '').slice(0, 5000)}`).join('\n\n');
       const { parsed: evParsed, raw: evRaw } = await analysisJson(sidN, `
 You are given raw multi-platform research material about UAE ↔ ${countryName} relations.
 ${material}
@@ -343,7 +478,7 @@ Extract an EVIDENCE ARRAY — ONE valid JSON array only. Each record:
  "publish_date": string (ISO date YYYY-MM-DD if stated/derivable, else null),
  "snippet": string (≤40 words quoted/paraphrased from the material),
  "confidence": number 0-1}
-Rules: ONLY claims present in the material. 6-20 records. Prefer dated, official, URL-backed items.
+Rules: ONLY claims present in the material. 10-40 records (this is a deep multi-facet research pass — extract densely). Prefer dated, official, URL-backed items.
 Include UAE-entity mentions (ODA, MOFA, ADQ, Mubadala, G42, Core42, ADNOC, AD Ports, Presight, ADFD, Masdar, Etihad, DP World, EDGE) whenever present.
 If the INSTAGRAM section has a downloaded post, add one record with platform "instagram" for it.`);
       let evidence = Array.isArray(evParsed) ? evParsed : (evParsed?.evidence || []);
@@ -363,6 +498,8 @@ If the INSTAGRAM section has a downloaded post, add one record with platform "in
         if (igRec) igRec.media = ig.downloads;
         else if (evidence.length) evidence[0].media = ig.downloads; // keep proofs reachable
       }
+      // V2 item 15: context weighting engine — deterministic annotation pass
+      applyContextWeighting(evidence, startedAt.getTime());
       job.stage = 'edges';
 
       // ---- Stage 4: edge extraction (HARD RULE enforced server-side after) ----
@@ -398,6 +535,101 @@ general knowledge — if a relationship is not in the evidence, it does not exis
         relationship_type: RELATIONSHIP_TYPES.includes(e.relationship_type) ? e.relationship_type : 'Diplomatic',
       })).filter(e => e.entity_a && e.entity_b && e.entity_a !== e.entity_b);
       const { edges, droppedNoEvidence } = computeEdges(rawEdges, evidenceById, startedAt.getTime());
+      job.stage = 'correlate';
+
+      // ---- Stage 4b (V2 item 18): AI correlation layer — second-stage reasoning
+      // pass surfacing relationships never explicitly stated. Tiered OUTPUT:
+      // Likely / Possible / Predicted (Verified is reserved for evidence-gated
+      // edges from Stage 4). Every inferred edge must cite the OBSERVABLE
+      // evidence ids that ground the inference + carry probability, supporting
+      // and counter evidence (item 19). Inferred edges are stored SEPARATELY
+      // (inferredEdges) so the evidence-gated core graph stays pure.
+      let inferredEdges = [];
+      try {
+        const sidI = await createOdSession(`ce-${iso}-infer`, []);
+        const verifiedList = edges.map(e => `${e.id}: ${e.entity_a} -[${e.relationship_type}/${e.direction}]-> ${e.entity_b} :: ${e.claim}`).join('\n');
+        const { parsed: infParsed } = await analysisJson(sidI, `
+UAE entity registry: ${registryList}.
+Country: ${countryName} (node id "${iso.toLowerCase()}").
+
+EVIDENCE RECORDS:
+${evList}
+
+VERIFIED (evidence-gated) EDGES already extracted:
+${verifiedList}
+
+Second-stage CORRELATION REASONING: infer relationships that are NOT explicitly stated
+but are structurally suggested by the evidence — shared investors/directors/advisors,
+trade dependency, technology transfer, shared infrastructure, funding chains, policy
+alignment, common counterparties, sequential announcements.
+
+Return ONE JSON array. Each inferred edge:
+{"entity_a": string (registry id or lowercase slug),
+ "entity_b": string,
+ "relationship_type": one of ${JSON.stringify(RELATIONSHIP_TYPES)},
+ "direction": "a->b"|"b->a"|"both",
+ "claim": string (the inferred relationship, phrased as an inference),
+ "tier": "Likely"|"Possible"|"Predicted",
+ "probability": number 0-1 (calibrated: Likely 0.6-0.85, Possible 0.35-0.6, Predicted = forward-looking),
+ "basis_evidence_ids": [ids from the evidence list whose OBSERVABLE facts ground this inference — REQUIRED, ≥1],
+ "supporting": string (one line: the observable signals supporting it),
+ "counter": string (one line: the strongest reason it might be wrong; null if none found),
+ "reasoning": string (≤30 words: why this inference follows from the basis evidence)}
+HARD RULES: never output an inference with empty basis_evidence_ids; never repeat a
+verified edge; 0-8 inferences; mark forward-looking ones tier "Predicted".`);
+        inferredEdges = (Array.isArray(infParsed) ? infParsed : (infParsed?.edges || []))
+          .map((e, i) => ({
+            id: `IE${i + 1}`,
+            entity_a: knownIds.has(slug(e.entity_a)) ? slug(e.entity_a) : (UAE_REGISTRY.find(r => (r.aliases || []).includes(String(e.entity_a).toLowerCase()))?.id || slug(e.entity_a)),
+            entity_b: knownIds.has(slug(e.entity_b)) ? slug(e.entity_b) : (UAE_REGISTRY.find(r => (r.aliases || []).includes(String(e.entity_b).toLowerCase()))?.id || slug(e.entity_b)),
+            relationship_type: RELATIONSHIP_TYPES.includes(e.relationship_type) ? e.relationship_type : 'Diplomatic',
+            direction: ['a->b', 'b->a', 'both'].includes(e.direction) ? e.direction : 'a->b',
+            claim: String(e.claim || '').slice(0, 300),
+            tier: ['Likely', 'Possible', 'Predicted'].includes(e.tier) ? e.tier : 'Possible',
+            probability: Math.max(0, Math.min(1, Number(e.probability) || 0.4)),
+            basis_evidence_ids: (e.basis_evidence_ids || []).filter(id => evidenceById.has(id)),
+            supporting: String(e.supporting || '').slice(0, 300),
+            counter: e.counter ? String(e.counter).slice(0, 300) : null,
+            reasoning: String(e.reasoning || '').slice(0, 240),
+            stance: 'neutral',
+            weight: +(0.25 + (Number(e.probability) || 0.4) * 0.5).toFixed(3),
+            interactions: (e.basis_evidence_ids || []).length,
+          }))
+          // HARD RULE (evidence-gated inference): drop any inference without valid basis evidence
+          .filter(e => e.basis_evidence_ids.length && e.entity_a && e.entity_b && e.entity_a !== e.entity_b);
+      } catch (e) { log.error('correlation.infer_failed', { iso, error: e.message }); }
+      job.stage = 'intel';
+
+      // ---- Stage 4c (V2 items 10+20): per-article intelligence + UAE Strategic
+      // Impact Engine — one batched analysis call for summaries/key-points/NER/
+      // risk (per evidence record) + per-entity impact scores with explicit
+      // reasoning across the 14 strategic dimensions. ----
+      let articleIntel = {}; let impactScores = {};
+      try {
+        const sidA = await createOdSession(`ce-${iso}-intel`, []);
+        const nodeIds = [...new Set([...UAE_REGISTRY.map(r => r.id), iso.toLowerCase(), ...rawEdges.flatMap(e => [e.entity_a, e.entity_b]), ...inferredEdges.flatMap(e => [e.entity_a, e.entity_b])])];
+        const { parsed: aiParsed } = await analysisJson(sidA, `
+EVIDENCE RECORDS about UAE ↔ ${countryName}:
+${evidence.map(v => `${v.id} [${v.platform}/${v.source}${v.publish_date ? '/' + v.publish_date : ''}]: ${v.claim} — ${v.snippet}`).join('\n')}
+
+ENTITY IDS in the graph: ${nodeIds.join(', ')}
+
+Return ONE JSON object with EXACTLY two keys:
+"articles": { "<evidence id>": {
+   "summary50": string (≤50 words), "summary100": string (≤100 words, only when the material supports more detail; else null),
+   "keyPoints": [2-4 short strings], "entities": [named entities mentioned],
+   "riskLevel": "Low"|"Medium"|"High", "importance": number 1-10,
+   "uaeRelation": string (one line: how this item relates to the UAE) } }  — one entry per evidence id;
+"impact": { "<entity id>": {
+   "score": "Very High"|"High"|"Medium"|"Low"|"None",
+   "reasoning": string (≤40 words, explicit, grounded in the evidence),
+   "dimensions": [subset of ["trade","diplomacy","investment","technology","food security","energy","defence","climate","education","healthcare","humanitarian","National AI Strategy","economic diversification","foreign policy"] that apply] } } — one entry per entity id that appears in the evidence; omit entities with zero evidence presence (they default to "None").
+Ground EVERYTHING in the evidence records; no outside knowledge.`);
+        if (aiParsed && typeof aiParsed === 'object') {
+          articleIntel = aiParsed.articles || {};
+          impactScores = aiParsed.impact || {};
+        }
+      } catch (e) { log.error('correlation.intel_failed', { iso, error: e.message }); }
       job.stage = 'narrative';
 
       // ---- Stage 5: Connected Dots narrative (STREAMED, sentence-traceable) ----
@@ -443,16 +675,21 @@ No headings, no bullets — flowing prose only. Never state anything not in the 
       // ---- Stage 6: persist versioned run + diff ----
       const runs = listRuns(iso);
       const prev = runs.length ? getRun(iso, runs[runs.length - 1].runId) : null;
+      const allEdgeNodeIds = [...new Set([...rawEdges, ...inferredEdges].flatMap(e => [e.entity_a, e.entity_b]))];
+      const UAE_GEO = { lat: 24.3, lng: 54.4 }; // Abu Dhabi anchor for the geographic overlay
       const nodes = [
-        ...UAE_REGISTRY.map(r => ({ ...r })),
-        { id: iso.toLowerCase(), label: countryName, fullName: countryName, kind: 'country-side' },
-        ...[...new Set(rawEdges.flatMap(e => [e.entity_a, e.entity_b]))]
+        ...UAE_REGISTRY.map(r => ({ ...r, geo: UAE_GEO })),
+        { id: iso.toLowerCase(), label: countryName, fullName: countryName, kind: 'country-side', geo: geo || null },
+        ...allEdgeNodeIds
           .filter(id => !UAE_REGISTRY.some(r => r.id === id) && id !== iso.toLowerCase())
-          .map(id => ({ id, label: id.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase()), fullName: id, kind: 'country-side' })),
-      ];
+          .map(id => ({ id, label: id.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase()), fullName: id, kind: 'country-side', geo: geo || null })),
+      ].map(n => ({ ...n, impact: impactScores[n.id] || null }));
       const run = {
         runId, iso, country: countryName,
         generated_at: startedAt.toISOString(),
+        schema: 2,                                   // V2 run schema marker
+        windowDays,                                  // item 14: research window used
+        weighting: WEIGHTING,                        // item 15: engine parameters (auditable)
         model: {
           analysis: `${CE_ANALYSIS_ENDPOINT_ID}+${CE_ANALYSIS_REASONING_EFFORT}`,
           plugins: `${CE_PLUGIN_ENDPOINT_ID}+medium`,
@@ -460,14 +697,18 @@ No headings, no bullets — flowing prose only. Never state anything not in the 
         },
         pluginsCalled,
         evidence, edges, nodes,
+        inferredEdges,                               // item 18: tiered inference layer
+        articleIntel,                                // item 10: per-article summaries/NER/risk
+        impactScores,                                // item 20: UAE Strategic Impact Engine
         narrative: { text: narrative.trim(), trace },
         stats: {
           evidenceCount: evidence.length, edgeCount: edges.length,
+          inferredCount: inferredEdges.length,
           droppedNoEvidence, contradictions: edges.filter(e => e.contradiction).length,
           igMediaCount: ig.downloads.length,
           durationMs: Date.now() - startedAt.getTime(),
         },
-        sources: { perplexityChars: gather.perplexity?.length || 0, xChars: gather.xsearch?.length || 0, redditChars: gather.reddit?.length || 0 },
+        sources: Object.fromEntries(Object.entries(gather).map(([k, v]) => [k, (v || '').length])),
       };
       run.diffFromPrevious = diffRuns(prev, run);
       writeJson(path.join(countryDir(iso), `run-${runId}.json`), run);
@@ -594,8 +835,69 @@ export function registerCorrelationRoutes(app, { countries }) {
     const iso = req.params.iso.toUpperCase();
     const c = countryOf(iso);
     if (!c) return res.status(404).json({ error: 'Unknown country' });
-    try { res.json({ job: await runPipeline(iso, c.name) }); }
+    // V2 item 14: optional research window (?windowDays=730 or body {windowDays});
+    // country geo passed through for the geographic overlay.
+    const windowDays = +(req.query.windowDays ?? req.body?.windowDays ?? DEFAULT_WINDOW_DAYS);
+    try { res.json({ job: await runPipeline(iso, c.name, { windowDays, geo: { lat: c.lat, lng: c.lng } }) }); }
     catch (e) { res.status(400).json({ error: e.message }); }
+  });
+
+  // V2 config surface: windows + weighting engine parameters (single source of truth for the UI)
+  app.get('/api/correlation/config', (_req, res) => res.json({
+    schema: 2, windows: SEARCH_WINDOWS, defaultWindowDays: DEFAULT_WINDOW_DAYS,
+    weighting: WEIGHTING, relationshipTypes: RELATIONSHIP_TYPES,
+    tiers: ['Verified', 'Likely', 'Possible', 'Predicted'],
+  }));
+
+  // V2 item 21: Story Mode — 'Explain this graph' executive briefing, streamed
+  // (SSE passthrough from the analysis model, grounded ONLY in the run payload).
+  app.get('/api/correlation/story/:iso/:runId/stream', async (req, res) => {
+    res.writeHead(200, { 'Content-Type': 'text/event-stream', 'Cache-Control': 'no-cache', Connection: 'keep-alive' });
+    try {
+      const run = getRun(req.params.iso.toUpperCase(), req.params.runId);
+      if (!run) throw new Error('Run not found');
+      const evList = run.evidence.map(v => `${v.id}: [${v.platform}/${v.source}${v.publish_date ? '/' + v.publish_date : ''}] ${v.claim}`).join('\n');
+      const edgeList = run.edges.map(e => `${e.id} (Verified): ${e.entity_a} -[${e.relationship_type}/${e.direction}]-> ${e.entity_b} :: ${e.claim}`).join('\n');
+      const infList = (run.inferredEdges || []).map(e => `${e.id} (${e.tier}, p=${e.probability}): ${e.entity_a} -[${e.relationship_type}]-> ${e.entity_b} :: ${e.claim}`).join('\n');
+      const impacts = Object.entries(run.impactScores || {}).map(([id, s]) => `${id}: ${s.score} — ${s.reasoning}`).join('\n');
+      const sid = await createOdSession(`ce-${req.params.iso}-story`, []);
+      await streamQuery({
+        odSessionId: sid,
+        endpointId: CE_ANALYSIS_ENDPOINT_ID,
+        reasoningEffort: CE_ANALYSIS_REASONING_EFFORT,
+        query: `You are briefing the ODA executive team. Explain this correlation graph for ${run.country} (run ${run.runId}, window ${run.windowDays || 'n/a'} days).
+
+EVIDENCE:
+${evList}
+
+VERIFIED EDGES:
+${edgeList}
+
+INFERRED EDGES (tiered):
+${infList || '(none)'}
+
+UAE STRATEGIC IMPACT SCORES:
+${impacts || '(none)'}
+
+Write the executive briefing in EXACTLY these sections, using these markdown headings:
+## The beginning
+## Key actors
+## Major developments
+## Current situation
+## Risks
+## Future outlook
+Each section 2-4 sentences. EVERY factual sentence must cite evidence ids in square brackets [E#].
+In "Future outlook", clearly separate evidence-backed expectations (cite [E#]/[IE#]) from inferred
+possibilities (name the tier: Likely/Possible/Predicted). Nothing beyond the provided material.`,
+        pluginIds: [],
+        systemPrompt: 'You are the ODA Story Mode narrator: executive-brief style, precise, evidence-cited, no fluff.',
+        onRaw: (event, data) => res.write(`event: ${event}\ndata: ${data}\n\n`),
+      });
+      res.write('data: [DONE]\n\n');
+    } catch (e) {
+      res.write(`event: error\ndata: ${JSON.stringify({ error: e.message })}\n\n`);
+    }
+    res.end();
   });
 
   app.get('/api/correlation/status/:iso', (req, res) => res.json(pipelineStatus(req.params.iso.toUpperCase())));
