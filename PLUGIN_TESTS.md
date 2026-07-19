@@ -241,3 +241,60 @@ Pipeline per country: Perplexity `plugin-1722260873` → X Search `plugin-175187
 - Route-level HTTP verification results recorded in NOTES.md merge entry and the run
   response (fresh sandbox: /, /api/health, /api/msm/config, /api/msm/dates,
   /api/msm/day/2026-07-18 — expected 200s; live proof in the deployment log).
+
+---
+
+## 2026-07-19 (02:14–02:24 UTC) — Correlation Engine Phase A: five-plugin 200-test pass (ALL ADOPTED)
+
+Method: one chat session `6a5c330fc496df45298e53e4` (created 02:14:39.885Z, HTTP 201,
+externalUserId corr-engine-phase-a); per-plugin REAL sync queries via
+`POST /chat/v1/sessions/{id}/query` with `endpointId predefined-claude-sonnet-5`,
+top-level `reasoningEffort: "low"`, per-call `agentIds: [<pluginId>]`. All responses
+`status:"completed"` (the HTTP-200 sync success shape). No mocks, no simulated data.
+KEY OPERATIONAL LESSON: sessions created WITH `agentIds` at session-create time returned
+"One or more agents are invalid: agent-<id>" on query; passing the plugin id per-query in
+`agentIds` on submitquery works reliably — adopt this calling convention for the engine.
+
+### (a) Perplexity (default, NOT v2) — plugin-1722260873 — ADOPT ✅
+- Query 02:15:11Z→02:15:26Z (totalTimeSec 27.34, rag 12.96s). messageId 6a5c3322a7f72d53aa64fc31.
+- Real sourced output: MIDAR × Majid Al Futtaim $3.1bn Mada City/New Cairo deal (Jun 21 2026,
+  english.news.cn URL), Egypt $58bn New Administrative Capital, GoGas/Madkour Mauritania CCGT —
+  every item with a source URL. Usable for evidence records.
+
+### (b) X search — plugin-1751872652 (postXSearch) — ADOPT (search index thin for <1wk); PAIR WITH plugin-1716326559 ✅
+- Query 1 02:16:09Z (37.11s): 200/completed but web citations, no tweet-level rows.
+- Query 2 02:16:54Z (26.13s): 200/completed; index returned no <1-week posts for "UAE investment".
+- Complement (already-ADOPTED registry pair) plugin-1716326559 Twitter User Info & Tweets:
+  02:17:54Z→02:18:30Z (56.39s) → @wamnews profile (968,812 followers, blue-verified) + 20 REAL
+  tweets of 2026-07-18 with per-tweet date, likes/RTs and x.com/wamnews/status/... URLs
+  (e.g. 2078580597388366115 GCC/EU Hormuz condemnation; 2078449436104302760, 486 likes).
+- Engine policy: keyword search via plugin-1751872652, account-timeline harvesting via
+  plugin-1716326559.
+
+### (c) Reddit official — plugin-1748003575 (Reddit Posts) — ADOPT ✅ (previously UNTESTED — first-ever 200 proof)
+- Query 1 02:19:04Z (21.8s): 200/completed; r/dubai topical search returned off-topic titles+comments.
+- Query 2 02:19:40Z→02:19:49Z (18.58s): unfiltered r/UAE top posts → 5 REAL posts with full top
+  comments verbatim (tethered-caps rant; black-mold advice; Kuwait desalination concern; visa
+  cancellations; Iran-attack-risk thread quoting IRGC/Tasnim/Jebel Ali) — genuine live community
+  data, matches 2026-07-18 regional events. Field limits: titles+comments only (no upvotes/URLs
+  in tool payload) — record evidence with platform:"reddit", confidence discounted accordingly.
+
+### (d) Instagram Content Downloader (OFFICIAL channels only) — plugin-1762980461 — ADOPT ✅
+- 02:21:21Z attempt with profile URL → plugin error "Shortcode is required" (needs post shortcode,
+  not username). Recovered: shortcodes harvested via (e), then:
+- 02:22:56Z→02:23:09Z shortcode Da8rDLZDYa1 → direct scontent-cph2-1.cdninstagram.com CDN URL +
+  rehosted blob URL. 02:23:54Z→02:24:04Z shortcode Da8jb1KjXZG → scontent-bru2-1.cdninstagram.com
+  CDN URL + rehosted blob URL.
+- VISUAL PROOFS ON DISK (downloaded 02:24:04Z / 02:24:20Z, JPEG verified 1080×1349 progressive):
+  public/proofs/wamnews-Da8rDLZDYa1.jpg (95,209 B) — GCC/EU Strait-of-Hormuz statement post
+  public/proofs/wamnews-Da8jb1KjXZG.jpg (191,436 B) — UAE de-escalation statement post
+- Engine policy: always resolve shortcode first (via (e) recent-media), then download per shortcode.
+
+### (e) Instagram fetch-user-info — plugin-1716164040 — ADOPT ✅ (officialness verifier)
+- 02:20:19Z→02:20:30Z (24.0s), messageId 6a5c3456a7f72d53aa64fc36:
+  @wamnews pk 372421815, VERIFIED, 391,373 followers, 56,700 posts, category Publishers/News,
+  link wam.ae → OFFICIAL state media confirmed.
+  @mubadala pk 207083051, VERIFIED, 89,656 followers, category Government Agencies, link
+  mubadala.ae → OFFICIAL sovereign investor confirmed.
+- 02:21:54Z→02:22:22Z recent-media call → 3 latest wamnews posts with shortcodes
+  (Da8rDLZDYa1 186♥, Da8jb1KjXZG 236♥, Da8YQPUja9_ 60♥), media_type 1, pagination cursor present.
