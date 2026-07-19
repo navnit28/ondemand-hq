@@ -94,15 +94,16 @@ export async function createOdSession(externalUserId, pluginIds = []) {
  * error-frame detection, [DONE] termination, and STREAM_DEBUG logging.
  * EVERY call uses gpt-5.6-sol-medium (ENDPOINT_ID + REASONING_EFFORT) with streaming ON.
  */
-export async function streamQuery({ odSessionId, query, pluginIds = [], systemPrompt, onRaw, onEvent, signal }) {
+export async function streamQuery({ odSessionId, query, pluginIds = [], systemPrompt, onRaw, onEvent, signal, endpointId: endpointOverride, reasoningEffort: reasoningOverride, fulfillmentOnly = false }) {
   const body = {
     query,
-    endpointId: ENDPOINT_ID,
-    reasoningEffort: REASONING_EFFORT,   // reasoning tokens ON (thinking frames surface when the model emits them)
+    endpointId: endpointOverride || ENDPOINT_ID,
+    reasoningEffort: reasoningOverride || REASONING_EFFORT,   // reasoning tokens ON (thinking frames surface when the model emits them)
                                           // NOTE: `reasoningEffort` is not in the documented submitquery schema but is
                                           // accepted by the live API — live-accepted extension beyond the documented schema.
     responseMode: 'stream',
     agentIds: toAgentIds(pluginIds),
+    ...(fulfillmentOnly ? { fulfillmentOnly: true } : {}),
     modelConfigs: systemPrompt ? { fulfillmentPrompt: systemPrompt, temperature: 0.4 } : { temperature: 0.4 },
   };
   // odFetch retry is safe here ONLY because no bytes have been consumed yet (pre-stream).

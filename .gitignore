@@ -6,3 +6,5 @@ dist
 server/data/state.json
 server/data/intel/
 server/data/facts-cache.json
+server/data/correlation/
+server/data/correlation-media/

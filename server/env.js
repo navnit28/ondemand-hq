@@ -47,3 +47,18 @@ if (!ONDEMAND_API_KEY) {
 } else {
   console.log(`[env] loaded ${envPath ? envPath : 'process env'} · base=${ONDEMAND_BASE_URL} · endpoint=${ENDPOINT_ID}+${REASONING_EFFORT} · streamDebug=${STREAM_DEBUG} · key=****${ONDEMAND_API_KEY.slice(-4)}`);
 }
+
+// ---------- Correlation Engine model policy (2026-07-19) ----------
+// Plugin/evidence-gathering calls: Claude endpoints REJECT plugin attachment on this
+// platform (HTTP 400 "agents are invalid", live-logged 2026-07-19 in PLUGIN_TESTS.md),
+// so plugins run on the proven fulfillment model. Overridable via env.
+export const CE_PLUGIN_ENDPOINT_ID = process.env.CE_PLUGIN_ENDPOINT_ID || 'predefined-gpt-5.6-sol';
+// Analysis/extraction/narrative: PRODUCTION default claude-fable-5 + medium reasoning.
+// Build/test override: CE_ANALYSIS_ENDPOINT_ID=predefined-claude-sonnet-5 (both 200-verified
+// 2026-07-19). Set in config here — never hardcoded at call sites.
+export const CE_ANALYSIS_ENDPOINT_ID = process.env.CE_ANALYSIS_ENDPOINT_ID || 'predefined-claude-fable-5';
+export const CE_ANALYSIS_REASONING_EFFORT = process.env.CE_ANALYSIS_REASONING_EFFORT || 'medium';
+// Quick Query: GLM 4.7 Cerebras BYOI only (200-proven 2026-07-19, ~1.28s). No documented
+// max-tokens param → hard stop enforced client-side at QUICK_QUERY_MAX_TOKENS.
+export const GLM_ENDPOINT_ID = 'byoi-6e314690-4eaf-4def-a33c-380809acf1f5';
+export const QUICK_QUERY_MAX_TOKENS = 150;

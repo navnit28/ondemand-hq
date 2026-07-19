@@ -6,6 +6,7 @@ import Flag from './Flag.jsx';
 import XPostCard from './XPostCard.jsx';
 import { VERIFIED_TWEETS, VERIFIED_SOURCES } from './tweets.js';
 import { ArrowLeft, AlertTriangle, TrendingUp, TrendingDown, ArrowRight, User, Users, BadgeCheck, ExternalLink, RefreshCw } from 'lucide-react';
+import CorrelationEngine from '../correlation/CorrelationEngine.jsx';
 
 const spring = { type: 'spring', stiffness: 360, damping: 30 };
 const IMPACT_ORDER = { Critical: 0, High: 1, Medium: 2, Low: 3 };
@@ -199,7 +200,7 @@ export default function CountryPage({ iso, onBack }) {
       {a && (
         <>
           <div className="ig-tabs" role="tablist">
-            {[['intel', 'Intelligence'], ['x', 'X Intelligence'], ['opps', `Opportunities (${a.opportunities?.length || 0})`], ['risks', `Risks (${a.risks?.length || 0})`], ['agreements', `UAE Agreements (${a.agreements?.length || 0})`], ['timeline', 'Timeline']].map(([k, label]) => (
+            {[['intel', 'Intelligence'], ['correlations', 'Correlation Engine'], ['x', 'X Intelligence'], ['opps', `Opportunities (${a.opportunities?.length || 0})`], ['risks', `Risks (${a.risks?.length || 0})`], ['agreements', `UAE Agreements (${a.agreements?.length || 0})`], ['timeline', 'Timeline']].map(([k, label]) => (
               <button key={k} role="tab" aria-selected={tab === k} className={tab === k ? 'on' : ''} onClick={() => setTab(k)}>{label}</button>
             ))}
           </div>
@@ -212,6 +213,8 @@ export default function CountryPage({ iso, onBack }) {
                   {!(a.items || []).length && <div className="ig-empty">The latest collection returned no discrete intelligence items.</div>}
                 </div>
               )}
+
+              {tab === 'correlations' && <CorrelationEngine iso={iso} countryName={country.name} />}
 
               {tab === 'x' && (
                 <div className="ig-x">

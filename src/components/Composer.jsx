@@ -1,10 +1,17 @@
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { uploadFile } from '../api.js';
 import BilingualLoader from './BilingualLoader.jsx';
 import Recorder from './Recorder.jsx';
 import { Paperclip, SendHorizontal, X } from 'lucide-react';
 
-export default function Composer({ onSend, busy, onError, placeholder }) {
+export default function Composer({ onSend, busy, onError, placeholder, prefill }) {
+  // 'oda:compose' handoff (Correlation Engine): seed the draft from the event payload.
+  useEffect(() => {
+    if (!prefill?.text) return;
+    setText(prefill.text);
+    // focus + place cursor at end for immediate editing
+    requestAnimationFrame(() => { try { const el = taRef.current; el?.focus(); el?.setSelectionRange(el.value.length, el.value.length); } catch { /* noop */ } });
+  }, [prefill?.ts]);
   const [text, setText] = useState('');
   const [attached, setAttached] = useState(null); // {id,name,size}
   const [uploading, setUploading] = useState(false);

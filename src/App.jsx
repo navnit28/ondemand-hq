@@ -38,6 +38,7 @@ export default function App() {
   const [atBottom, setAtBottom] = useState(true);
   const [sidebarOpen] = useState(false);
   const [intelOpen, setIntelOpen] = useState(false); // ODA Intelligence module view
+  const [composePrefill, setComposePrefill] = useState(null); // 'oda:compose' handoff (Correlation Engine 'Send to chat' / Quick Query 'Continue in chat')
   // MSM Analysis module view — /msm-analysis route (deep-linkable + history-integrated)
   const [msmOpen, setMsmOpen] = useState(() => {
     try { return window.location.pathname.replace(/\/+$/, '') === '/msm-analysis'; } catch { return false; }
@@ -50,6 +51,23 @@ export default function App() {
     const onPop = () => { try { setMsmOpen(window.location.pathname.replace(/\/+$/, '') === '/msm-analysis'); } catch { /* noop */ } };
     window.addEventListener('popstate', onPop);
     return () => window.removeEventListener('popstate', onPop);
+  }, []);
+
+  // Correlation Engine handoff: any component may dispatch
+  // window.dispatchEvent(new CustomEvent('oda:compose', {detail:{text}})) to land
+  // prefilled text in a fresh chat composer (evidence drawer, Quick Query card).
+  useEffect(() => {
+    const onCompose = async (e) => {
+      const text = e.detail?.text;
+      if (!text) return;
+      setIntelOpen(false);
+      setMsmOpen(false);
+      await newChat();
+      setComposePrefill({ text, ts: Date.now() });
+    };
+    window.addEventListener('oda:compose', onCompose);
+    return () => window.removeEventListener('oda:compose', onCompose);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const streamRef = useRef(null);
@@ -318,7 +336,7 @@ export default function App() {
                 <h1>What are we producing today?</h1>
                 <div style={{ width: 'min(720px, 92%)' }}>
                   {busy && !messages.some(m => m.live && (m.answerStarted || m.thinking)) && <div className="composer-wait"><BilingualLoader size="sm" label="Working…" /></div>}
-                  <ComposerInline onSend={send} busy={busy} onError={(m) => setToast({ message: m })} activeFeature={activeFeature} />
+                  <ComposerInline onSend={send} busy={busy} onError={(m) => setToast({ message: m })} activeFeature={activeFeature} prefill={composePrefill} />
                 </div>
                 <div className="chips">
                   {CHIPS.map(c => (
@@ -345,7 +363,7 @@ export default function App() {
                 )}
                 <div className="composer-wrap">
                   {busy && !messages.some(m => m.live && (m.answerStarted || m.thinking)) && <div className="composer-wait"><BilingualLoader size="sm" label="Working…" /></div>}
-                  <Composer onSend={send} busy={busy} onError={(m) => setToast({ message: m })}
+                  <Composer onSend={send} busy={busy} onError={(m) => setToast({ message: m })} prefill={composePrefill}
                     placeholder={activeFeature ? placeholderFor(activeFeature) : 'Message the ODA suite…'} />
                   <div className="composer-hint">gpt-5.6-sol-medium · every figure sourced or flagged · one verified deliverable per run</div>
                 </div>
@@ -388,11 +406,11 @@ function placeholderFor(f) {
 }
 
 /* Slim composer reused inside the empty state (no border box duplication) */
-function ComposerInline({ onSend, busy, onError, activeFeature }) {
+function ComposerInline({ onSend, busy, onError, activeFeature, prefill }) {
   // Reuse the standard Composer but style-flattened: simplest is to render it directly.
   return (
     <div style={{ width: '100%' }}>
-      <Composer onSend={onSend} busy={busy} onError={onError}
+      <Composer onSend={onSend} busy={busy} onError={onError} prefill={prefill}
         placeholder={activeFeature ? placeholderFor(activeFeature) : 'Describe the deliverable — a deck, a one-pager, a benchmark, a translation…'} />
     </div>
   );

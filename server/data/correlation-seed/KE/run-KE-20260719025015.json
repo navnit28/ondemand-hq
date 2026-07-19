@@ -1,0 +1,581 @@
+{
+ "runId": "KE-20260719025015",
+ "iso": "KE",
+ "country": "Kenya",
+ "generated_at": "2026-07-19T02:50:15.987Z",
+ "model": {
+  "analysis": "predefined-claude-fable-5+medium",
+  "plugins": "predefined-gpt-5.6-sol+medium",
+  "narrative": "streamed"
+ },
+ "pluginsCalled": [
+  {
+   "plugin": "xsearch",
+   "pluginId": "plugin-1751872652",
+   "status": 200,
+   "chars": 716
+  },
+  {
+   "plugin": "reddit",
+   "pluginId": "plugin-1748003575",
+   "status": 200,
+   "chars": 1755
+  },
+  {
+   "plugin": "perplexity",
+   "pluginId": "plugin-1722260873",
+   "status": 200,
+   "chars": 660
+  },
+  {
+   "plugin": "igUserInfo",
+   "pluginId": "plugin-1716164040",
+   "status": 200,
+   "chars": 194,
+   "handle": "wamnews"
+  },
+  {
+   "plugin": "igUserInfo",
+   "pluginId": "plugin-1716164040",
+   "status": 200,
+   "chars": 289,
+   "handle": "mofauae"
+  },
+  {
+   "plugin": "igDownload",
+   "pluginId": "plugin-1762980461",
+   "status": 200,
+   "chars": 693
+  }
+ ],
+ "evidence": [
+  {
+   "id": "E1",
+   "claim": "Real-time news searches could not verify any June–July 2026 UAE–Kenya developments, returning no sources or URLs for entities including ODA, UAE MOFA, ADQ, Mubadala, G42, Core42, ADNOC, AD Ports Group, Presight, ADFD, Masdar, Etihad, DP World, and EDGE.",
+   "platform": "perplexity",
+   "source": "Perplexity web research",
+   "url": null,
+   "publish_date": null,
+   "snippet": "The failed searches produced no verifiable results for ODA, UAE MOFA, ADQ, Mubadala, G42, Core42, ADNOC, AD Ports Group, Presight, ADFD, Masdar, Etihad, DP World, EDGE, or their Kenyan counterparts.",
+   "media": [],
+   "confidence": 0.95
+  },
+  {
+   "id": "E2",
+   "claim": "No qualifying X posts from June 19 to July 19, 2026 about UAE–Kenya investments, aid, bilateral agreements, official visits, or infrastructure could be verified with canonical x.com URLs.",
+   "platform": "x",
+   "source": "X search (UAE/Kenya official accounts)",
+   "url": null,
+   "publish_date": null,
+   "snippet": "No qualifying X posts were found for June 19–July 19, 2026 that could be verified with an exact canonical x.com post URL, author handle, and publication date.",
+   "media": [],
+   "confidence": 0.95
+  },
+  {
+   "id": "E3",
+   "claim": "A Reddit post titled from The National reports Sheikh Mohammed bin Rashid hailing a Dubai relief effort that delivered Dh2.3 billion in support.",
+   "platform": "reddit",
+   "source": "Unknown subreddit (title from The National)",
+   "url": null,
+   "publish_date": null,
+   "snippet": "Sheikh Mohammed bin Rashid hails relief effort as Dubai delivers Dh2.3 billion in support; reports a Dubai relief effort valued at Dh2.3 billion.",
+   "media": [],
+   "confidence": 0.6
+  },
+  {
+   "id": "E4",
+   "claim": "A comment on a Reddit post titled 'Someone tell me something good happening in Kenya' says Kenyan startups are receiving more funding than most in Africa this year.",
+   "platform": "reddit",
+   "source": "Unknown subreddit",
+   "url": null,
+   "publish_date": null,
+   "snippet": "A comment says Kenyan startups are receiving more funding than most in Africa this year.",
+   "media": [],
+   "confidence": 0.6
+  },
+  {
+   "id": "E5",
+   "claim": "A Reddit post reports Dubai unveiling an underground $9 billion Metro Gold Line intended to serve 1.5 million passengers.",
+   "platform": "reddit",
+   "source": "Unknown subreddit",
+   "url": null,
+   "publish_date": null,
+   "snippet": "Dubai unveils underground $9bn Metro Gold Line to serve 1.5 million passengers; concerns a proposed $9 billion transport project.",
+   "media": [],
+   "confidence": 0.6
+  },
+  {
+   "id": "E6",
+   "claim": "A Reddit post reports EU foreign ministers calling for an end to the Iranian occupation of Emirati islands at a GCC–EU meeting.",
+   "platform": "reddit",
+   "source": "Unknown subreddit",
+   "url": null,
+   "publish_date": null,
+   "snippet": "EU foreign ministers call for an end of Iranian occupation of Emirati islands at GCC-EU meeting; references diplomatic coordination at a GCC–EU meeting.",
+   "media": [],
+   "confidence": 0.6
+  },
+  {
+   "id": "E7",
+   "claim": "A Reddit post indicates Sheikh Mohamed reaffirmed the UAE's solidarity with Qatar.",
+   "platform": "reddit",
+   "source": "Unknown subreddit",
+   "url": null,
+   "publish_date": null,
+   "snippet": "Sheikh Mohamed reaffirms UAE's solidarity with Qatar; indicates UAE support for Qatar.",
+   "media": [],
+   "confidence": 0.6
+  },
+  {
+   "id": "E8",
+   "claim": "The retrieved Reddit set contained no posts explicitly mentioning ADNOC, Mubadala, DP World, or Kenya–UAE commercial partnerships, and lacked URLs, dates, and subreddit metadata.",
+   "platform": "reddit",
+   "source": "Reddit search summary",
+   "url": null,
+   "publish_date": null,
+   "snippet": "No matching posts explicitly mentioning ADNOC, Mubadala, DP World, or Kenya–UAE commercial partnerships appeared in the retrieved set; the source returned only post titles and selected comments.",
+   "media": [],
+   "confidence": 0.9
+  },
+  {
+   "id": "E9",
+   "claim": "The Emirates News Agency Instagram account @wamnews is a verified business account with 391,374 followers.",
+   "platform": "instagram",
+   "source": "@wamnews",
+   "url": null,
+   "publish_date": null,
+   "snippet": "Full name: وكالة أنباء الإمارات 'وام'; Followers: 391,374; Verified: Yes; Business account: Yes; Bio: Emirates News Agency (WAM).",
+   "media": [
+    {
+     "kind": "image",
+     "url": "/api/correlation/media/KE/KE-20260719025015-ig1.jpg",
+     "originUrl": "https://airevdev.blob.core.windows.net/on-demand-dev/6692b763e851d28a036ab30e/agents/TNJeRGHYDR.png?se=2026-07-26T02%3A52%3A25Z&sig=mm3MxDAPNml0VvP3i8%2FTxDz%2BxC4t1pkMNm1k0S%2FODJY%3D&ske=2026-07-20T10%3A52%3A25Z&skoid=f6fe3b05-8f6e-4558-96bd-b7f53ddd5066&sks=b&skt=2026-07-19T02%3A42%3A25Z&sktid=03628b8d-e6ad-4dd7-bca0-020e6a6cfdda&skv=2025-05-05&sp=r&sr=b&st=2026-07-19T02%3A52%3A25Z&sv=2025-05-05",
+     "bytes": 95209,
+     "sourceHandle": "wamnews",
+     "shortcode": null
+    }
+   ],
+   "confidence": 0.9
+  },
+  {
+   "id": "E10",
+   "claim": "The Instagram profile lookup for UAE Ministry of Foreign Affairs account @mofauae failed because the required Instagram business-category schema was deleted, so no profile fields could be verified.",
+   "platform": "instagram",
+   "source": "@mofauae",
+   "url": null,
+   "publish_date": null,
+   "snippet": "The Instagram user lookup for mofauae failed because the required Instagram business-category schema has been deleted, so no real-time profile data was returned.",
+   "media": [],
+   "confidence": 0.9
+  },
+  {
+   "id": "E11",
+   "claim": "The most recent @wamnews Instagram post (shortcode Da8rDLZDYa1) had its image downloaded, but its caption was unavailable, so a Kenya or UAE-partnership mention could not be verified.",
+   "platform": "instagram",
+   "source": "@wamnews",
+   "url": "https://airevdev.blob.core.windows.net/on-demand-dev/6692b763e851d28a036ab30e/agents/TNJeRGHYDR.png?se=2026-07-26T02%3A52%3A25Z&sig=mm3MxDAPNml0VvP3i8%2FTxDz%2BxC4t1pkMNm1k0S%2FODJY%3D&ske=2026-07-20T10%3A52%3A25Z&skoid=f6fe3b05-8f6e-4558-96bd-b7f53ddd5066&sks=b&skt=2026-07-19T02%3A42%3A25Z&sktid=03628b8d-e6ad-4dd7-bca0-020e6a6cfdda&skv=2025-05-05&sp=r&sr=b&st=2026-07-19T02%3A52%3A25Z&sv=2025-05-05",
+   "publish_date": null,
+   "snippet": "Post shortcode Da8rDLZDYa1; caption not available in the retrieved post data, so a Kenya or UAE-partnership mention could not be verified.",
+   "media": [],
+   "confidence": 0.85
+  }
+ ],
+ "edges": [
+  {
+   "id": "ED1",
+   "entity_a": "uae",
+   "entity_b": "qatar",
+   "relationship_type": "Diplomatic",
+   "direction": "a->b",
+   "claim": "Sheikh Mohamed reaffirmed the UAE's solidarity with Qatar.",
+   "evidence_record_ids": [
+    "E7"
+   ],
+   "confidence": 0.5,
+   "stance": "cooperation",
+   "weight": 0.276,
+   "recency": 0.1173,
+   "evidencePlatforms": [
+    "reddit"
+   ],
+   "contradiction": false
+  },
+  {
+   "id": "ED2",
+   "entity_a": "iran",
+   "entity_b": "uae",
+   "relationship_type": "Diplomatic",
+   "direction": "a->b",
+   "claim": "EU foreign ministers at a GCC–EU meeting called for an end to the Iranian occupation of Emirati islands, indicating an ongoing territorial dispute between Iran and the UAE.",
+   "evidence_record_ids": [
+    "E6"
+   ],
+   "confidence": 0.5,
+   "stance": "tension",
+   "weight": 0.276,
+   "recency": 0.1173,
+   "evidencePlatforms": [
+    "reddit"
+   ],
+   "contradiction": false
+  },
+  {
+   "id": "ED3",
+   "entity_a": "eu",
+   "entity_b": "uae",
+   "relationship_type": "Diplomatic",
+   "direction": "a->b",
+   "claim": "EU foreign ministers publicly backed the UAE's position on the disputed islands at a GCC–EU meeting.",
+   "evidence_record_ids": [
+    "E6"
+   ],
+   "confidence": 0.45,
+   "stance": "cooperation",
+   "weight": 0.276,
+   "recency": 0.1173,
+   "evidencePlatforms": [
+    "reddit"
+   ],
+   "contradiction": false
+  },
+  {
+   "id": "ED4",
+   "entity_a": "uae",
+   "entity_b": "relief-beneficiaries",
+   "relationship_type": "Aid-Humanitarian",
+   "direction": "a->b",
+   "claim": "Sheikh Mohammed bin Rashid hailed a Dubai relief effort that delivered Dh2.3 billion in support to unspecified beneficiaries.",
+   "evidence_record_ids": [
+    "E3"
+   ],
+   "confidence": 0.45,
+   "stance": "cooperation",
+   "weight": 0.276,
+   "recency": 0.1173,
+   "evidencePlatforms": [
+    "reddit"
+   ],
+   "contradiction": false
+  },
+  {
+   "id": "ED5",
+   "entity_a": "unnamed-investors",
+   "entity_b": "ke",
+   "relationship_type": "Investment",
+   "direction": "a->b",
+   "claim": "Kenyan startups are reportedly receiving more funding than most in Africa this year, per a Reddit comment; no UAE entity is identified as a funder and the sourcing lacks URLs and dates.",
+   "evidence_record_ids": [
+    "E4",
+    "E8"
+   ],
+   "confidence": 0.3,
+   "stance": "cooperation",
+   "weight": 0.376,
+   "recency": 0.1173,
+   "evidencePlatforms": [
+    "reddit"
+   ],
+   "contradiction": false
+  },
+  {
+   "id": "ED6",
+   "entity_a": "uae",
+   "entity_b": "ke",
+   "relationship_type": "Media-narrative",
+   "direction": "both",
+   "claim": "No verifiable UAE–Kenya developments (investments, aid, agreements, visits, or infrastructure) for June–July 2026 could be confirmed across web, X, Reddit, or Instagram sources, including for ODA, MOFA, ADQ, Mubadala, G42, ADNOC, AD Ports, ADFD, Masdar, Etihad, DP World, and EDGE.",
+   "evidence_record_ids": [
+    "E1",
+    "E2",
+    "E8",
+    "E11"
+   ],
+   "confidence": 0.7,
+   "stance": "neutral",
+   "weight": 0.736,
+   "recency": 0.1173,
+   "evidencePlatforms": [
+    "perplexity",
+    "x",
+    "reddit",
+    "instagram"
+   ],
+   "contradiction": false
+  }
+ ],
+ "nodes": [
+  {
+   "id": "uae",
+   "label": "UAE",
+   "fullName": "United Arab Emirates",
+   "kind": "country"
+  },
+  {
+   "id": "oda",
+   "label": "ODA",
+   "fullName": "Office of Development Affairs",
+   "kind": "entity",
+   "aliases": [
+    "office of development affairs"
+   ]
+  },
+  {
+   "id": "mofa",
+   "label": "MOFA",
+   "fullName": "Ministry of Foreign Affairs",
+   "kind": "entity",
+   "aliases": [
+    "ministry of foreign affairs",
+    "mofaic",
+    "uae foreign ministry"
+   ]
+  },
+  {
+   "id": "adq",
+   "label": "ADQ",
+   "fullName": "ADQ (Abu Dhabi sovereign holding)",
+   "kind": "entity",
+   "aliases": [
+    "adq"
+   ]
+  },
+  {
+   "id": "mubadala",
+   "label": "Mubadala",
+   "fullName": "Mubadala Investment Company",
+   "kind": "entity",
+   "aliases": [
+    "mubadala"
+   ]
+  },
+  {
+   "id": "g42",
+   "label": "G42",
+   "fullName": "G42 (Group 42)",
+   "kind": "entity",
+   "aliases": [
+    "g42",
+    "group 42"
+   ]
+  },
+  {
+   "id": "core42",
+   "label": "Core42",
+   "fullName": "Core42 (G42 cloud/AI)",
+   "kind": "entity",
+   "aliases": [
+    "core42"
+   ]
+  },
+  {
+   "id": "adnoc",
+   "label": "ADNOC",
+   "fullName": "Abu Dhabi National Oil Company",
+   "kind": "entity",
+   "aliases": [
+    "adnoc",
+    "adnoc distribution",
+    "adnoc gas"
+   ]
+  },
+  {
+   "id": "adports",
+   "label": "AD Ports",
+   "fullName": "AD Ports Group",
+   "kind": "entity",
+   "aliases": [
+    "ad ports",
+    "ad ports group",
+    "abu dhabi ports"
+   ]
+  },
+  {
+   "id": "presight",
+   "label": "Presight",
+   "fullName": "Presight AI (G42)",
+   "kind": "entity",
+   "aliases": [
+    "presight"
+   ]
+  },
+  {
+   "id": "adfd",
+   "label": "ADFD",
+   "fullName": "Abu Dhabi Fund for Development",
+   "kind": "entity",
+   "aliases": [
+    "adfd",
+    "abu dhabi fund"
+   ]
+  },
+  {
+   "id": "masdar",
+   "label": "Masdar",
+   "fullName": "Masdar (clean energy)",
+   "kind": "entity",
+   "aliases": [
+    "masdar"
+   ]
+  },
+  {
+   "id": "etihad",
+   "label": "Etihad",
+   "fullName": "Etihad Airways",
+   "kind": "entity",
+   "aliases": [
+    "etihad",
+    "etihad airways"
+   ]
+  },
+  {
+   "id": "dpworld",
+   "label": "DP World",
+   "fullName": "DP World",
+   "kind": "entity",
+   "aliases": [
+    "dp world"
+   ]
+  },
+  {
+   "id": "edge",
+   "label": "EDGE",
+   "fullName": "EDGE Group (defence)",
+   "kind": "entity",
+   "aliases": [
+    "edge group",
+    "edge"
+   ]
+  },
+  {
+   "id": "ke",
+   "label": "Kenya",
+   "fullName": "Kenya",
+   "kind": "country-side"
+  },
+  {
+   "id": "qatar",
+   "label": "Qatar",
+   "fullName": "qatar",
+   "kind": "country-side"
+  },
+  {
+   "id": "iran",
+   "label": "Iran",
+   "fullName": "iran",
+   "kind": "country-side"
+  },
+  {
+   "id": "eu",
+   "label": "Eu",
+   "fullName": "eu",
+   "kind": "country-side"
+  },
+  {
+   "id": "relief-beneficiaries",
+   "label": "Relief Beneficiaries",
+   "fullName": "relief-beneficiaries",
+   "kind": "country-side"
+  },
+  {
+   "id": "unnamed-investors",
+   "label": "Unnamed Investors",
+   "fullName": "unnamed-investors",
+   "kind": "country-side"
+  }
+ ],
+ "narrative": {
+  "text": "The central finding of this correlation run is an absence: no verifiable UAE–Kenya developments — spanning investments, aid, bilateral agreements, official visits, or infrastructure, and covering entities from ODA and UAE MOFA to ADQ, Mubadala, G42, ADNOC, AD Ports Group, ADFD, Masdar, Etihad, DP World, and EDGE — could be confirmed for June–July 2026 across web, X, Reddit, or Instagram channels. [E1][E2][E8][E11] The only Kenya-specific dot is a Reddit comment claiming Kenyan startups are receiving more funding than most in Africa this year, but no UAE entity is identified as a funder and the sourcing lacks URLs, dates, and subreddit metadata, leaving the investment edge attributed only to unnamed investors. [E4][E8] On the UAE side, the retrieved signals point elsewhere entirely: Sheikh Mohammed bin Rashid hailed a Dubai relief effort delivering Dh2.3 billion in support to unspecified beneficiaries, Dubai unveiled a $9 billion underground Metro Gold Line intended to serve 1.5 million passengers, Sheikh Mohamed reaffirmed solidarity with Qatar, and EU foreign ministers at a GCC–EU meeting backed the UAE by calling for an end to the Iranian occupation of Emirati islands. [E3][E5][E7][E6] Attempts to close the gap through official Emirati channels also fell short, as the @mofauae Instagram lookup failed due to a deleted business-category schema, and while the verified @wamnews account with 391,374 followers was reachable, its most recent post's caption was unavailable, so no Kenya or UAE-partnership mention could be confirmed. [E10][E9][E11] Taken together, the dots connect into a picture of active UAE diplomatic, humanitarian, and infrastructure activity oriented toward Qatar, Iran-related disputes, and domestic Dubai projects, with the UAE–Kenya corridor itself remaining an unverified media-narrative edge for the period under review. [E6][E7][E3][E5][E1][E2][E8]",
+  "trace": [
+   {
+    "sentence": "The central finding of this correlation run is an absence: no verifiable UAE–Kenya developments — spanning investments, aid, bilateral agreements, official visits, or infrastructure, and covering entities from ODA and UAE MOFA to ADQ, Mubadala, G42, ADNOC, AD Ports Group, ADFD, Masdar, Etihad, DP World, and EDGE — could be confirmed for June–July 2026 across web, X, Reddit, or Instagram channels.",
+    "evidenceIds": []
+   },
+   {
+    "sentence": "[E1][E2][E8][E11] The only Kenya-specific dot is a Reddit comment claiming Kenyan startups are receiving more funding than most in Africa this year, but no UAE entity is identified as a funder and the sourcing lacks URLs, dates, and subreddit metadata, leaving the investment edge attributed only to unnamed investors.",
+    "evidenceIds": [
+     "E1",
+     "E2",
+     "E8",
+     "E11"
+    ]
+   },
+   {
+    "sentence": "[E4][E8] On the UAE side, the retrieved signals point elsewhere entirely: Sheikh Mohammed bin Rashid hailed a Dubai relief effort delivering Dh2.",
+    "evidenceIds": [
+     "E4",
+     "E8"
+    ]
+   },
+   {
+    "sentence": "3 billion in support to unspecified beneficiaries, Dubai unveiled a $9 billion underground Metro Gold Line intended to serve 1.",
+    "evidenceIds": []
+   },
+   {
+    "sentence": "5 million passengers, Sheikh Mohamed reaffirmed solidarity with Qatar, and EU foreign ministers at a GCC–EU meeting backed the UAE by calling for an end to the Iranian occupation of Emirati islands.",
+    "evidenceIds": []
+   },
+   {
+    "sentence": "[E3][E5][E7][E6] Attempts to close the gap through official Emirati channels also fell short, as the @mofauae Instagram lookup failed due to a deleted business-category schema, and while the verified @wamnews account with 391,374 followers was reachable, its most recent post's caption was unavailable, so no Kenya or UAE-partnership mention could be confirmed.",
+    "evidenceIds": [
+     "E3",
+     "E5",
+     "E7",
+     "E6"
+    ]
+   },
+   {
+    "sentence": "[E10][E9][E11] Taken together, the dots connect into a picture of active UAE diplomatic, humanitarian, and infrastructure activity oriented toward Qatar, Iran-related disputes, and domestic Dubai projects, with the UAE–Kenya corridor itself remaining an unverified media-narrative edge for the period under review.",
+    "evidenceIds": [
+     "E10",
+     "E9",
+     "E11"
+    ]
+   }
+  ]
+ },
+ "stats": {
+  "evidenceCount": 11,
+  "edgeCount": 6,
+  "droppedNoEvidence": 0,
+  "contradictions": 0,
+  "igMediaCount": 1,
+  "durationMs": 207547
+ },
+ "sources": {
+  "perplexityChars": 660,
+  "xChars": 716,
+  "redditChars": 1755
+ },
+ "diffFromPrevious": {
+  "addedEdges": [
+   "qatar~uae|Diplomatic",
+   "eu~uae|Diplomatic",
+   "relief-beneficiaries~uae|Aid-Humanitarian",
+   "ke~unnamed-investors|Investment",
+   "ke~uae|Media-narrative"
+  ],
+  "removedEdges": [
+   "ke~uae|Trade",
+   "ke~uae|Investment",
+   "kemfa~uae|Diplomatic",
+   "ke~uae|Infrastructure"
+  ],
+  "addedEvidence": [
+   "E11"
+  ],
+  "weightChanges": [
+   {
+    "key": "iran~uae|Diplomatic",
+    "from": 0.256,
+    "to": 0.276
+   }
+  ],
+  "newEdgeIds": [
+   "ED1",
+   "ED3",
+   "ED4",
+   "ED5",
+   "ED6"
+  ]
+ }
+}

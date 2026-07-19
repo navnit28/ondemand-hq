@@ -1,0 +1,526 @@
+{
+ "runId": "KE-20260719024409",
+ "iso": "KE",
+ "country": "Kenya",
+ "generated_at": "2026-07-19T02:44:09.622Z",
+ "model": {
+  "analysis": "predefined-claude-fable-5+medium",
+  "plugins": "predefined-gpt-5.6-sol+medium",
+  "narrative": "streamed"
+ },
+ "pluginsCalled": [
+  {
+   "plugin": "xsearch",
+   "pluginId": "plugin-1751872652",
+   "status": 200,
+   "chars": 446
+  },
+  {
+   "plugin": "perplexity",
+   "pluginId": "plugin-1722260873",
+   "status": 200,
+   "chars": 1767
+  },
+  {
+   "plugin": "reddit",
+   "pluginId": "plugin-1748003575",
+   "status": 200,
+   "chars": 1223
+  },
+  {
+   "plugin": "igUserInfo",
+   "pluginId": "plugin-1716164040",
+   "status": 200,
+   "chars": 199,
+   "handle": "wamnews"
+  },
+  {
+   "plugin": "igUserInfo",
+   "pluginId": "plugin-1716164040",
+   "status": 200,
+   "chars": 347,
+   "handle": "mofauae"
+  },
+  {
+   "plugin": "igDownload",
+   "pluginId": "plugin-1762980461",
+   "status": 200,
+   "chars": 643
+  }
+ ],
+ "evidence": [
+  {
+   "id": "E1",
+   "claim": "Kenyan officials discussed implementing the Kenya–UAE CEPA, expanding Gulf exports, eliminating tariffs, and attracting UAE investment and PPPs in water, energy, ports, logistics, health, ICT, and agriculture.",
+   "platform": "perplexity",
+   "source": "Logistics Update Africa",
+   "url": "https://www.logupdateafrica.com/trade/kenya-expands-trade-across-gulf-region-and-strengthens-economic-ties-with-uae-1358762",
+   "publish_date": "2026-07-03",
+   "snippet": "Kenyan officials discussed implementing the Kenya–UAE CEPA, expanding exports across the Gulf, eliminating tariffs, improving services-market access, and attracting UAE investment and PPPs; date inferred from source image path, not confirmed.",
+   "media": [],
+   "confidence": 0.6
+  },
+  {
+   "id": "E2",
+   "claim": "Kenya's Ministry of Foreign Affairs issued an official announcement on 6 February 2026 concerning implementation of the Kenya–UAE CEPA and potential growth in exports, services, industrial development, regional value chains, and FDI.",
+   "platform": "perplexity",
+   "source": "Kenya Ministry of Foreign Affairs",
+   "url": "https://mfa.go.ke/index.php/advancing-kenya-uae-comprehensive-economic-partnership-agreement",
+   "publish_date": "2026-02-06",
+   "snippet": "Official Kenyan Ministry of Foreign Affairs announcement dated 6 February 2026 concerned implementation of the CEPA and potential growth in exports, services, industrial development, regional value chains, and foreign direct investment.",
+   "media": [],
+   "confidence": 0.9
+  },
+  {
+   "id": "E3",
+   "claim": "No verified June–July 2026 UAE–Kenya announcements involving ODA, ADQ, Mubadala, G42, Core42, ADNOC, AD Ports, Presight, ADFD, Masdar, Etihad, DP World, or EDGE were identified in web research.",
+   "platform": "perplexity",
+   "source": "Perplexity web research summary",
+   "url": null,
+   "publish_date": null,
+   "snippet": "No verified June–July announcements involving ODA, ADQ, Mubadala, G42, Core42, ADNOC, AD Ports, Presight, ADFD, Masdar, Etihad, DP World, or EDGE were identified.",
+   "media": [],
+   "confidence": 0.85
+  },
+  {
+   "id": "E4",
+   "claim": "The July 2026 CEPA article does not identify any of the specified UAE companies or agencies as participants and is an industry-news piece, not an official government announcement.",
+   "platform": "perplexity",
+   "source": "Perplexity web research summary",
+   "url": "https://www.logupdateafrica.com/trade/kenya-expands-trade-across-gulf-region-and-strengthens-economic-ties-with-uae-1358762",
+   "publish_date": null,
+   "snippet": "The July report is an industry-news article, not an official UAE or Kenyan government announcement; it does not identify any of the specified UAE companies or agencies as participants.",
+   "media": [],
+   "confidence": 0.85
+  },
+  {
+   "id": "E5",
+   "claim": "No relevant X posts about UAE–Kenya cooperation were found for the period June 19 to July 19, 2026, despite searches covering investments, humanitarian aid, agreements, official visits, and government-linked entities.",
+   "platform": "x",
+   "source": "X search summary",
+   "url": null,
+   "publish_date": null,
+   "snippet": "No relevant X posts were found for June 19–July 19, 2026 about UAE–Kenya cooperation; no verified x.com URLs, author handles, or publication dates to list.",
+   "media": [],
+   "confidence": 0.85
+  },
+  {
+   "id": "E6",
+   "claim": "A Reddit post titled 'Sheikh Mohammed bin Rashid hails relief effort as Dubai delivers Dh2.3 billion in support' was retrieved, relating to UAE humanitarian aid and relief funding, but without subreddit, date, or URL metadata.",
+   "platform": "reddit",
+   "source": "Subreddit not returned",
+   "url": null,
+   "publish_date": null,
+   "snippet": "Sheikh Mohammed bin Rashid hails relief effort as Dubai delivers Dh2.3 billion in support; subreddit, date, and URL not returned.",
+   "media": [],
+   "confidence": 0.5
+  },
+  {
+   "id": "E7",
+   "claim": "A Reddit post reported that EU foreign ministers called for an end to Iranian occupation of Emirati islands at a GCC-EU meeting, but no subreddit, date, or URL was returned.",
+   "platform": "reddit",
+   "source": "Subreddit not returned",
+   "url": null,
+   "publish_date": null,
+   "snippet": "EU foreign ministers call for an end of Iranian occupation of Emirati islands at GCC-EU meeting; metadata not returned.",
+   "media": [],
+   "confidence": 0.5
+  },
+  {
+   "id": "E8",
+   "claim": "A Reddit post about Kenya included a comment highlighting Kenyan startups receiving significant African investment funding this year, but no metadata was returned.",
+   "platform": "reddit",
+   "source": "Subreddit not returned",
+   "url": null,
+   "publish_date": null,
+   "snippet": "Someone tell me something good happening in Kenya; a comment highlights Kenyan startups receiving significant African investment funding this year.",
+   "media": [],
+   "confidence": 0.45
+  },
+  {
+   "id": "E9",
+   "claim": "No retrieved Reddit posts specifically mentioned ADNOC, Mubadala, or DP World, and one Reddit request failed due to rejected API authentication, leaving subreddit names, dates, and URLs unavailable.",
+   "platform": "reddit",
+   "source": "Reddit retrieval summary",
+   "url": null,
+   "publish_date": null,
+   "snippet": "No retrieved posts specifically mentioned ADNOC, Mubadala, or DP World; one request failed because Reddit API authentication was rejected.",
+   "media": [],
+   "confidence": 0.85
+  },
+  {
+   "id": "E10",
+   "claim": "The Instagram account @wamnews, the official verified business account of Emirates News Agency (WAM) state media, has 391,374 followers.",
+   "platform": "instagram",
+   "source": "@wamnews",
+   "url": null,
+   "publish_date": null,
+   "snippet": "Emirates News Agency (WAM) official account; follower count 391,374; verified; business account; bio: Emirates News Agency (WAM) | الحساب الرسمي لوكالة أنباء الإمارات.",
+   "media": [
+    {
+     "kind": "image",
+     "url": "/api/correlation/media/KE/KE-20260719024409-ig1.jpg",
+     "originUrl": "https://airevdev.blob.core.windows.net/on-demand-dev/agents/DfQY3ctpZa.png?se=2026-07-26T02%3A45%3A19Z&sig=GuEsQ6kGQmUfIHPgPVxVZKu9YIyqy9KlXPj2N%2F4p5MM%3D&ske=2026-07-20T10%3A45%3A19Z&skoid=f6fe3b05-8f6e-4558-96bd-b7f53ddd5066&sks=b&skt=2026-07-19T02%3A35%3A19Z&sktid=03628b8d-e6ad-4dd7-bca0-020e6a6cfdda&skv=2025-05-05&sp=r&sr=b&st=2026-07-19T02%3A45%3A19Z&sv=2025-05-05",
+     "bytes": 90698,
+     "sourceHandle": "wamnews",
+     "shortcode": null
+    }
+   ],
+   "confidence": 0.9
+  },
+  {
+   "id": "E11",
+   "claim": "The Instagram user lookup for @mofauae (UAE Ministry of Foreign Affairs) failed with a 400 error because the required Instagram business-category schema was deleted, making profile data unavailable.",
+   "platform": "instagram",
+   "source": "@mofauae",
+   "url": null,
+   "publish_date": null,
+   "snippet": "The data source returned a 400 error because the required Instagram business-category schema has been deleted; follower count, verification status, and bio unavailable.",
+   "media": [],
+   "confidence": 0.85
+  },
+  {
+   "id": "E12",
+   "claim": "The most recent fetched @wamnews Instagram post has shortcode Da8rDLZDYa1 with one downloaded image, but its caption was unavailable so a Kenya/UAE partnership mention could not be verified.",
+   "platform": "instagram",
+   "source": "@wamnews",
+   "url": "https://airevdev.blob.core.windows.net/on-demand-dev/agents/DfQY3ctpZa.png?se=2026-07-26T02%3A45%3A19Z&sig=GuEsQ6kGQmUfIHPgPVxVZKu9YIyqy9KlXPj2N%2F4p5MM%3D&ske=2026-07-20T10%3A45%3A19Z&skoid=f6fe3b05-8f6e-4558-96bd-b7f53ddd5066&sks=b&skt=2026-07-19T02%3A35%3A19Z&sktid=03628b8d-e6ad-4dd7-bca0-020e6a6cfdda&skv=2025-05-05&sp=r&sr=b&st=2026-07-19T02%3A45%3A19Z&sv=2025-05-05",
+   "publish_date": null,
+   "snippet": "Post shortcode Da8rDLZDYa1; caption not available in the fetched post data, so a Kenya/UAE-partnership mention could not be verified; one image downloaded.",
+   "media": [],
+   "confidence": 0.8
+  }
+ ],
+ "edges": [
+  {
+   "id": "ED1",
+   "entity_a": "uae",
+   "entity_b": "ke",
+   "relationship_type": "Trade",
+   "direction": "both",
+   "claim": "Kenya and the UAE are implementing the Kenya–UAE CEPA to eliminate tariffs, expand Gulf exports, and grow services, industrial development, and regional value chains.",
+   "evidence_record_ids": [
+    "E1",
+    "E2"
+   ],
+   "confidence": 0.9,
+   "stance": "cooperation",
+   "weight": 0.3528,
+   "recency": 0.0017,
+   "evidencePlatforms": [
+    "perplexity"
+   ],
+   "contradiction": false
+  },
+  {
+   "id": "ED2",
+   "entity_a": "uae",
+   "entity_b": "ke",
+   "relationship_type": "Investment",
+   "direction": "a->b",
+   "claim": "Kenya is seeking UAE investment, FDI, and public-private partnerships in water, energy, ports, logistics, health, ICT, and agriculture under the CEPA framework.",
+   "evidence_record_ids": [
+    "E1",
+    "E2"
+   ],
+   "confidence": 0.75,
+   "stance": "cooperation",
+   "weight": 0.3528,
+   "recency": 0.0017,
+   "evidencePlatforms": [
+    "perplexity"
+   ],
+   "contradiction": false
+  },
+  {
+   "id": "ED3",
+   "entity_a": "kemfa",
+   "entity_b": "uae",
+   "relationship_type": "Diplomatic",
+   "direction": "a->b",
+   "claim": "Kenya's Ministry of Foreign Affairs issued an official announcement on 6 February 2026 concerning implementation of the Kenya–UAE CEPA and anticipated economic gains.",
+   "evidence_record_ids": [
+    "E2"
+   ],
+   "confidence": 0.85,
+   "stance": "cooperation",
+   "weight": 0.3125,
+   "recency": 0,
+   "evidencePlatforms": [
+    "perplexity"
+   ],
+   "contradiction": false
+  },
+  {
+   "id": "ED4",
+   "entity_a": "uae",
+   "entity_b": "ke",
+   "relationship_type": "Infrastructure",
+   "direction": "a->b",
+   "claim": "Kenyan officials discussed attracting UAE participation in ports and logistics infrastructure through PPPs as part of CEPA implementation talks; no specific UAE company or agency (e.g., AD Ports, DP World) was identified as a participant.",
+   "evidence_record_ids": [
+    "E1",
+    "E3",
+    "E4"
+   ],
+   "confidence": 0.6,
+   "stance": "cooperation",
+   "weight": 0.4585,
+   "recency": 0.1633,
+   "evidencePlatforms": [
+    "perplexity"
+   ],
+   "contradiction": false
+  },
+  {
+   "id": "ED5",
+   "entity_a": "iran",
+   "entity_b": "uae",
+   "relationship_type": "Diplomatic",
+   "direction": "a->b",
+   "claim": "A Reddit post reported EU foreign ministers at a GCC-EU meeting calling for an end to Iranian occupation of Emirati islands, indicating an ongoing territorial dispute; the post lacked subreddit, date, and URL metadata.",
+   "evidence_record_ids": [
+    "E7"
+   ],
+   "confidence": 0.4,
+   "stance": "tension",
+   "weight": 0.256,
+   "recency": 0.1173,
+   "evidencePlatforms": [
+    "reddit"
+   ],
+   "contradiction": false
+  }
+ ],
+ "nodes": [
+  {
+   "id": "uae",
+   "label": "UAE",
+   "fullName": "United Arab Emirates",
+   "kind": "country"
+  },
+  {
+   "id": "oda",
+   "label": "ODA",
+   "fullName": "Office of Development Affairs",
+   "kind": "entity",
+   "aliases": [
+    "office of development affairs"
+   ]
+  },
+  {
+   "id": "mofa",
+   "label": "MOFA",
+   "fullName": "Ministry of Foreign Affairs",
+   "kind": "entity",
+   "aliases": [
+    "ministry of foreign affairs",
+    "mofaic",
+    "uae foreign ministry"
+   ]
+  },
+  {
+   "id": "adq",
+   "label": "ADQ",
+   "fullName": "ADQ (Abu Dhabi sovereign holding)",
+   "kind": "entity",
+   "aliases": [
+    "adq"
+   ]
+  },
+  {
+   "id": "mubadala",
+   "label": "Mubadala",
+   "fullName": "Mubadala Investment Company",
+   "kind": "entity",
+   "aliases": [
+    "mubadala"
+   ]
+  },
+  {
+   "id": "g42",
+   "label": "G42",
+   "fullName": "G42 (Group 42)",
+   "kind": "entity",
+   "aliases": [
+    "g42",
+    "group 42"
+   ]
+  },
+  {
+   "id": "core42",
+   "label": "Core42",
+   "fullName": "Core42 (G42 cloud/AI)",
+   "kind": "entity",
+   "aliases": [
+    "core42"
+   ]
+  },
+  {
+   "id": "adnoc",
+   "label": "ADNOC",
+   "fullName": "Abu Dhabi National Oil Company",
+   "kind": "entity",
+   "aliases": [
+    "adnoc",
+    "adnoc distribution",
+    "adnoc gas"
+   ]
+  },
+  {
+   "id": "adports",
+   "label": "AD Ports",
+   "fullName": "AD Ports Group",
+   "kind": "entity",
+   "aliases": [
+    "ad ports",
+    "ad ports group",
+    "abu dhabi ports"
+   ]
+  },
+  {
+   "id": "presight",
+   "label": "Presight",
+   "fullName": "Presight AI (G42)",
+   "kind": "entity",
+   "aliases": [
+    "presight"
+   ]
+  },
+  {
+   "id": "adfd",
+   "label": "ADFD",
+   "fullName": "Abu Dhabi Fund for Development",
+   "kind": "entity",
+   "aliases": [
+    "adfd",
+    "abu dhabi fund"
+   ]
+  },
+  {
+   "id": "masdar",
+   "label": "Masdar",
+   "fullName": "Masdar (clean energy)",
+   "kind": "entity",
+   "aliases": [
+    "masdar"
+   ]
+  },
+  {
+   "id": "etihad",
+   "label": "Etihad",
+   "fullName": "Etihad Airways",
+   "kind": "entity",
+   "aliases": [
+    "etihad",
+    "etihad airways"
+   ]
+  },
+  {
+   "id": "dpworld",
+   "label": "DP World",
+   "fullName": "DP World",
+   "kind": "entity",
+   "aliases": [
+    "dp world"
+   ]
+  },
+  {
+   "id": "edge",
+   "label": "EDGE",
+   "fullName": "EDGE Group (defence)",
+   "kind": "entity",
+   "aliases": [
+    "edge group",
+    "edge"
+   ]
+  },
+  {
+   "id": "ke",
+   "label": "Kenya",
+   "fullName": "Kenya",
+   "kind": "country-side"
+  },
+  {
+   "id": "kemfa",
+   "label": "Kemfa",
+   "fullName": "kemfa",
+   "kind": "country-side"
+  },
+  {
+   "id": "iran",
+   "label": "Iran",
+   "fullName": "iran",
+   "kind": "country-side"
+  }
+ ],
+ "narrative": {
+  "text": "The core thread of this run is the Kenya–UAE Comprehensive Economic Partnership Agreement, which Kenya's Ministry of Foreign Affairs officially addressed on 6 February 2026, projecting growth in exports, services, industrial development, regional value chains, and FDI. [E2] That thread was reinforced in July 2026, when Kenyan officials discussed implementing the CEPA, eliminating tariffs, expanding Gulf exports, and attracting UAE investment and public-private partnerships across water, energy, ports, logistics, health, ICT, and agriculture. [E1] However, the July piece is industry news rather than an official government announcement, and web research identified no verified June–July 2026 UAE–Kenya announcements involving specific entities such as ADQ, Mubadala, G42, ADNOC, AD Ports, Masdar, or DP World, meaning the ports-and-logistics ambitions remain unattached to any named UAE participant. [E3][E4] Social channels offered little corroboration: no relevant X posts on UAE–Kenya cooperation surfaced for June 19 to July 19, 2026, and the retrieved Reddit material—covering a Dh2.3 billion Dubai relief effort, EU ministers urging an end to Iranian occupation of Emirati islands, and Kenyan startups drawing African investment funding—arrived without subreddit, date, or URL metadata. [E5][E6][E7][E8] Verification gaps extended to platform failures, including a rejected Reddit API authentication, a 400 error on the UAE Ministry of Foreign Affairs Instagram lookup due to a deleted business-category schema, and an unavailable caption on the latest @wamnews post that prevented confirming any Kenya/UAE partnership mention. [E9][E11][E12] The connected picture is therefore one of a documented, government-anchored trade and investment framework whose institutional depth is asserted in official Kenyan channels but not yet traceable to specific UAE state-linked companies or verifiable social media signals. [E1][E2][E3][E5]",
+  "trace": [
+   {
+    "sentence": "The core thread of this run is the Kenya–UAE Comprehensive Economic Partnership Agreement, which Kenya's Ministry of Foreign Affairs officially addressed on 6 February 2026, projecting growth in exports, services, industrial development, regional value chains, and FDI.",
+    "evidenceIds": []
+   },
+   {
+    "sentence": "[E2] That thread was reinforced in July 2026, when Kenyan officials discussed implementing the CEPA, eliminating tariffs, expanding Gulf exports, and attracting UAE investment and public-private partnerships across water, energy, ports, logistics, health, ICT, and agriculture.",
+    "evidenceIds": [
+     "E2"
+    ]
+   },
+   {
+    "sentence": "[E1] However, the July piece is industry news rather than an official government announcement, and web research identified no verified June–July 2026 UAE–Kenya announcements involving specific entities such as ADQ, Mubadala, G42, ADNOC, AD Ports, Masdar, or DP World, meaning the ports-and-logistics ambitions remain unattached to any named UAE participant.",
+    "evidenceIds": [
+     "E1"
+    ]
+   },
+   {
+    "sentence": "[E3][E4] Social channels offered little corroboration: no relevant X posts on UAE–Kenya cooperation surfaced for June 19 to July 19, 2026, and the retrieved Reddit material—covering a Dh2.",
+    "evidenceIds": [
+     "E3",
+     "E4"
+    ]
+   },
+   {
+    "sentence": "3 billion Dubai relief effort, EU ministers urging an end to Iranian occupation of Emirati islands, and Kenyan startups drawing African investment funding—arrived without subreddit, date, or URL metadata.",
+    "evidenceIds": []
+   },
+   {
+    "sentence": "[E5][E6][E7][E8] Verification gaps extended to platform failures, including a rejected Reddit API authentication, a 400 error on the UAE Ministry of Foreign Affairs Instagram lookup due to a deleted business-category schema, and an unavailable caption on the latest @wamnews post that prevented confirming any Kenya/UAE partnership mention.",
+    "evidenceIds": [
+     "E5",
+     "E6",
+     "E7",
+     "E8"
+    ]
+   },
+   {
+    "sentence": "[E9][E11][E12] The connected picture is therefore one of a documented, government-anchored trade and investment framework whose institutional depth is asserted in official Kenyan channels but not yet traceable to specific UAE state-linked companies or verifiable social media signals.",
+    "evidenceIds": [
+     "E9",
+     "E11",
+     "E12"
+    ]
+   }
+  ]
+ },
+ "stats": {
+  "evidenceCount": 12,
+  "edgeCount": 5,
+  "droppedNoEvidence": 0,
+  "contradictions": 0,
+  "igMediaCount": 1,
+  "durationMs": 177966
+ },
+ "sources": {
+  "perplexityChars": 1767,
+  "xChars": 446,
+  "redditChars": 1223
+ },
+ "diffFromPrevious": {
+  "addedEdges": [],
+  "removedEdges": [],
+  "addedEvidence": [],
+  "weightChanges": [],
+  "newEdgeIds": []
+ }
+}
