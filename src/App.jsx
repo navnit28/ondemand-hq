@@ -37,7 +37,10 @@ export default function App() {
   const [exportBusy, setExportBusy] = useState(false);
   const [atBottom, setAtBottom] = useState(true);
   const [sidebarOpen] = useState(false);
-  const [intelOpen, setIntelOpen] = useState(false); // ODA Intelligence module view
+  const [intelOpen, setIntelOpen] = useState(() => {
+    // V2 deep link: /correlation-engine opens Intelligence → country → Correlation tab
+    try { return window.location.pathname.replace(/\/+$/, '') === '/correlation-engine'; } catch { return false; }
+  }); // ODA Intelligence module view
   const [composePrefill, setComposePrefill] = useState(null); // 'oda:compose' handoff (Correlation Engine 'Send to chat' / Quick Query 'Continue in chat')
   // MSM Analysis module view — /msm-analysis route (deep-linkable + history-integrated)
   const [msmOpen, setMsmOpen] = useState(() => {

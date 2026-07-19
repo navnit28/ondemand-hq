@@ -24,7 +24,15 @@ function StatCard({ label, value, tone, delay = 0 }) {
 export default function IntelDashboard({ onExit }) {
   const [ov, setOv] = useState(null);
   const [err, setErr] = useState(null);
-  const [countryIso, setCountryIso] = useState(null);
+  const [countryIso, setCountryIso] = useState(() => {
+    // V2 deep link: /correlation-engine[?iso=KE] jumps straight to the country page
+    try {
+      if (window.location.pathname.replace(/\/+$/, '') === '/correlation-engine') {
+        return (new URLSearchParams(window.location.search).get('iso') || 'KE').toUpperCase();
+      }
+    } catch { /* noop */ }
+    return null;
+  });
   const [q, setQ] = useState('');
   const [searching, setSearching] = useState(false);
   const [searchResult, setSearchResult] = useState(null);

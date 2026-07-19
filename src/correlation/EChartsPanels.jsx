@@ -1,19 +1,25 @@
 import React, { useMemo } from 'react';
 import ReactECharts from 'echarts-for-react';
-import { PLATFORM_COLORS, evidenceAgeDays } from './adapter.js';
+import { Zap } from 'lucide-react';
+import { PLATFORM_COLORS, evPlatform } from './adapter.js';
 
 const FONT = { fontFamily: 'Montserrat, sans-serif' };
 
 /**
- * ECharts side panels — all fed from the REAL run payload, all cross-filtering
- * the force graph on click:
- *  1) Evidence volume over time (click a day → time-range filter)
- *  2) Sentiment/stance strip (click → stance filter)
- *  3) Platform split donut (click → platform filter)
+ * ECharts side panels — V2 (2026-07-19).
+ * (16) PIE CHART FIX: the old donut bound raw `ev.platform` (undefined on deep-v2
+ * runs whose evidence carries `source_type`, so every slice landed in one unnamed
+ * bucket), let default labels spill outside the 262px panel, drew the legend over
+ * the slices, and clipped at fixed center. Fixed by:
+ *  - data binding via evPlatform() (platform || source_type) + zero-count pruning
+ *  - labelLine + `alignTo:'labelLine'` with overflow truncation (no overlap)
+ *  - scrollable legend BELOW the chart (type:'scroll', bottom:0), never overlapping
+ *  - percentage in tooltip + label formatter `{b} {d}%`
+ *  - responsive radius/center + avoidLabelOverlap:true + minShowLabelAngle
+ * All three panels keep click cross-filtering and gain a ⚡ Quick Query trigger (17).
  */
-export default function EChartsPanels({ run, onPickDate, onPickStance, onPickPlatform, activePlatform, activeStance, activeDay }) {
-  const { volumeOption, stanceOption, platformOption } = useMemo(() => {
-    // ---- evidence volume over time (by publish_date, undated bucketed as 'undated') ----
+export default function EChartsPanels({ run, onPickDate, onPickStance, onPickPlatform, activePlatform, activeStance, activeDay, onQuickQuery }) {
+  const { volumeOption, stanceOption, platformOption, hasEvidence } = useMemo(() => {
     const byDay = new Map();
     for (const ev of run.evidence) {
       const d = ev.publish_date || 'undated';
@@ -21,7 +27,7 @@ export default function EChartsPanels({ run, onPickDate, onPickStance, onPickPla
     }
     const days = [...byDay.keys()].sort();
     const volumeOption = {
-      grid: { left: 30, right: 8, top: 22, bottom: 20 },
+      grid: { left: 30, right: 8, top: 22, bottom: 24 },
       title: { text: 'Evidence volume over time', textStyle: { ...FONT, fontSize: 11, fontWeight: 600, color: '#374151' } },
       tooltip: { trigger: 'axis', textStyle: FONT },
       xAxis: { type: 'category', data: days, axisLabel: { ...FONT, fontSize: 9, rotate: 38, color: '#6b7280' } },
@@ -29,14 +35,13 @@ export default function EChartsPanels({ run, onPickDate, onPickStance, onPickPla
       series: [{
         type: 'bar', data: days.map(d => ({
           value: byDay.get(d),
-          itemStyle: { color: d === activeDay ? '#6d4aff' : '#c4b5fd', borderRadius: [3, 3, 0, 0] },
+          itemStyle: { color: d === activeDay ? '#159a7a' : '#a7e3d3', borderRadius: [3, 3, 0, 0] },
         })), barMaxWidth: 26,
       }],
     };
 
-    // ---- stance strip (edge stances, weighted) ----
     const stances = ['cooperation', 'neutral', 'tension'];
-    const stanceColors = { cooperation: '#0e9f6e', neutral: '#94a3b8', tension: '#dc2626' };
+    const stanceColors = { cooperation: '#159a7a', neutral: '#94a3b8', tension: '#dc2626' };
     const byStance = Object.fromEntries(stances.map(s => [s, 0]));
     for (const e of run.edges) byStance[e.stance || 'neutral'] = (byStance[e.stance || 'neutral'] || 0) + 1;
     const stanceOption = {
@@ -53,33 +58,66 @@ export default function EChartsPanels({ run, onPickDate, onPickStance, onPickPla
       })),
     };
 
-    // ---- platform split donut ----
+    // ---- (16) FIXED source split donut ----
     const byPlatform = new Map();
-    for (const ev of run.evidence) byPlatform.set(ev.platform, (byPlatform.get(ev.platform) || 0) + 1);
+    for (const ev of run.evidence) {
+      const p = evPlatform(ev);                              // platform || source_type — correct binding
+      byPlatform.set(p, (byPlatform.get(p) || 0) + 1);
+    }
+    const entries = [...byPlatform.entries()].filter(([, v]) => v > 0).sort((a, b) => b[1] - a[1]);
+    const total = entries.reduce((a, [, v]) => a + v, 0);
     const platformOption = {
-      title: { text: 'Platform split', textStyle: { ...FONT, fontSize: 11, fontWeight: 600, color: '#374151' } },
-      tooltip: { textStyle: FONT },
-      legend: { bottom: 0, textStyle: { ...FONT, fontSize: 9, color: '#6b7280' }, itemWidth: 10, itemHeight: 10 },
+      title: { text: 'Source split', subtext: total ? `${total} evidence records` : 'no evidence this run', textStyle: { ...FONT, fontSize: 11, fontWeight: 600, color: '#374151' }, subtextStyle: { ...FONT, fontSize: 9, color: '#9ca3af' } },
+      tooltip: { trigger: 'item', formatter: '{b}: {c} ({d}%)', textStyle: FONT },
+      legend: {
+        type: 'scroll', orient: 'horizontal', bottom: 0, left: 'center',
+        textStyle: { ...FONT, fontSize: 9, color: '#6b7280', overflow: 'truncate', width: 88 },
+        itemWidth: 9, itemHeight: 9, pageIconSize: 8, pageTextStyle: { fontSize: 8 },
+      },
       series: [{
-        type: 'pie', radius: ['42%', '68%'], center: ['50%', '46%'],
-        label: { ...FONT, fontSize: 9, color: '#374151' },
-        data: [...byPlatform.entries()].map(([p, v]) => ({
-          name: p, value: v,
+        type: 'pie',
+        radius: ['38%', '60%'],                    // responsive donut, room for labels
+        center: ['50%', '44%'],                    // clears title above + legend below
+        avoidLabelOverlap: true,
+        minShowLabelAngle: 8,                      // tiny slices: tooltip/legend only, no label spam
+        itemStyle: { borderColor: '#fff', borderWidth: 1.5, borderRadius: 3 },
+        label: {
+          ...FONT, fontSize: 9, color: '#374151',
+          formatter: '{b}\n{d}%',
+          alignTo: 'labelLine', overflow: 'truncate', width: 74,
+        },
+        labelLine: { length: 8, length2: 6, smooth: true },
+        emphasis: { label: { fontWeight: 700 }, itemStyle: { shadowBlur: 8, shadowColor: 'rgba(21,154,122,0.3)' } },
+        data: entries.map(([p, v]) => ({
+          name: p.replace(/_/g, ' '), value: v, rawName: p,
           itemStyle: { color: PLATFORM_COLORS[p] || '#9ca3af', opacity: !activePlatform || activePlatform === p ? 1 : 0.25 },
         })),
       }],
     };
-    return { volumeOption, stanceOption, platformOption };
+    return { volumeOption, stanceOption, platformOption, hasEvidence: total > 0 };
   }, [run, activePlatform, activeStance, activeDay]);
 
   return (
     <div className="ce-panels">
-      <ReactECharts option={volumeOption} style={{ height: 132 }} notMerge
-        onEvents={{ click: (p) => onPickDate?.(p.name === activeDay ? null : p.name) }} />
-      <ReactECharts option={stanceOption} style={{ height: 74 }} notMerge
-        onEvents={{ click: (p) => onPickStance?.(p.seriesName === activeStance ? null : p.seriesName) }} />
-      <ReactECharts option={platformOption} style={{ height: 168 }} notMerge
-        onEvents={{ click: (p) => onPickPlatform?.(p.name === activePlatform ? null : p.name) }} />
+      <div className="ce-panel__wrap">
+        <ReactECharts option={volumeOption} style={{ height: 132, width: '100%' }} notMerge
+          onEvents={{ click: (p) => onPickDate?.(p.name === activeDay ? null : p.name) }} />
+        <button className="ce-panel__qq" onClick={() => onQuickQuery?.('evidence volume over time')} title="Quick Query this chart"><Zap size={10} /></button>
+      </div>
+      <div className="ce-panel__wrap">
+        <ReactECharts option={stanceOption} style={{ height: 74, width: '100%' }} notMerge
+          onEvents={{ click: (p) => onPickStance?.(p.seriesName === activeStance ? null : p.seriesName) }} />
+        <button className="ce-panel__qq" onClick={() => onQuickQuery?.('edge stance distribution')} title="Quick Query this chart"><Zap size={10} /></button>
+      </div>
+      <div className="ce-panel__wrap">
+        {hasEvidence ? (
+          <ReactECharts option={platformOption} style={{ height: 196, width: '100%' }} notMerge
+            onEvents={{ click: (p) => onPickPlatform?.((p.data?.rawName || p.name) === activePlatform ? null : (p.data?.rawName || p.name)) }} />
+        ) : (
+          <div className="ce2-gap" style={{ margin: '8px 0' }}>Source split — evidence gap (empty-upstream snapshot); populated by the 24h workflow.</div>
+        )}
+        <button className="ce-panel__qq" onClick={() => onQuickQuery?.('evidence source split')} title="Quick Query this chart"><Zap size={10} /></button>
+      </div>
     </div>
   );
 }

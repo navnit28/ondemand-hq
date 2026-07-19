@@ -114,7 +114,11 @@ export default function CountryPage({ iso, onBack }) {
   const [facts, setFacts] = useState(null);
   const [err, setErr] = useState(null);
   const [job, setJob] = useState(null);
-  const [tab, setTab] = useState('intel'); // intel | x | opps | risks | agreements | timeline
+  const [tab, setTab] = useState(() => {
+    // V2 deep link: /correlation-engine lands on the Correlation Engine tab
+    try { if (window.location.pathname.replace(/\/+$/, '') === '/correlation-engine') return 'correlations'; } catch { /* noop */ }
+    return 'intel';
+  }); // intel | correlations | x | opps | risks | agreements | timeline
   const pollRef = useRef(null);
 
   const load = async () => {

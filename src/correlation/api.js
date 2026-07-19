@@ -57,3 +57,52 @@ export function quickQuery({ context, question, onToken, onMetrics, onError }) {
   }).catch((e) => { if (e.name !== 'AbortError') onError?.(e.message); });
   return ctrl;
 }
+
+// ---------- V2 (2026-07-19) ----------
+/** Stream a structured article summary for one evidence record (gpt-5.6-sol-medium). */
+export function summarizeEvidence({ iso, runId, evidenceId, onToken, onDone, onError }) {
+  const ctrl = new AbortController();
+  fetch('/api/correlation/summarize', {
+    method: 'POST', headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ iso, runId, evidenceId }), signal: ctrl.signal,
+  }).then(async (r) => {
+    const reader = r.body.getReader();
+    const dec = new TextDecoder();
+    let buf = '', full = '';
+    for (;;) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      buf += dec.decode(value, { stream: true });
+      let idx;
+      while ((idx = buf.indexOf('\n\n')) >= 0) {
+        const frame = buf.slice(0, idx); buf = buf.slice(idx + 2);
+        const data = (frame.match(/^data: (.*)$/m) || [])[1];
+        if (!data) continue;
+        if (data === '[DONE]') { onDone?.(full); return; }
+        try {
+          const jsn = JSON.parse(data);
+          if (jsn.error) { onError?.(jsn.error); return; }
+          if (jsn.eventType === 'fulfillment' && typeof jsn.answer === 'string') { full += jsn.answer; onToken?.(jsn.answer, full); }
+        } catch { /* keep-alive */ }
+      }
+    }
+    onDone?.(full);
+  }).catch((e) => { if (e.name !== 'AbortError') onError?.(e.message); });
+  return ctrl;
+}
+
+/** Stream the one-click Story Mode narration (gpt-5.6-sol-medium). */
+export function streamStory(iso, runId, { onToken, onError } = {}) {
+  return new Promise((resolve) => {
+    const es = new EventSource(`/api/correlation/story/${iso}/${runId}/stream`);
+    let full = '';
+    es.onmessage = (e) => {
+      if (e.data === '[DONE]') { es.close(); resolve(full); return; }
+      try {
+        const evt = JSON.parse(e.data);
+        if (evt.eventType === 'fulfillment' && typeof evt.answer === 'string') { full += evt.answer; onToken?.(evt.answer, full); }
+      } catch { /* keep-alive */ }
+    };
+    es.onerror = () => { es.close(); onError?.(); resolve(full); };
+  });
+}

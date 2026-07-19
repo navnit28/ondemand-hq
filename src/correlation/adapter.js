@@ -1,6 +1,8 @@
 // adapter.js — PURE functions: run JSON → react-force-graph {nodes,links} +
 // graphology pre-render metrics (PageRank → node size, Louvain → community tints).
-// No React, no side effects — fully unit-testable in isolation.
+// V2 (2026-07-19): verification-tier edge styling (Verified/Likely/Possible/Predicted),
+// heat mode, Louvain community collapse, timeline cutoff replay, deep-v2 run tolerance
+// (source_type evidence, styled edges). No React, no side effects.
 import Graph from 'graphology';
 import { pagerank } from 'graphology-metrics';
 import louvain from 'graphology-communities-louvain';
@@ -10,12 +12,44 @@ export const REL_TYPE_COLORS = {
   Investment: '#6d4aff', Trade: '#0e9f6e', 'Aid-Humanitarian': '#f59e0b',
   Diplomatic: '#2563eb', Infrastructure: '#b45309', Energy: '#dc2626',
   Technology: '#0891b2', Security: '#475569', 'Media-narrative': '#db2777',
+  'Influence-network': '#7c3aed',
 };
 export const REL_TYPES = Object.keys(REL_TYPE_COLORS);
 export const PLATFORM_GLYPHS = { perplexity: 'P', x: '𝕏', reddit: 'R', instagram: '◎' };
-export const PLATFORM_COLORS = { perplexity: '#6d4aff', x: '#111827', reddit: '#ff4500', instagram: '#d62976' };
+export const PLATFORM_COLORS = {
+  perplexity: '#6d4aff', x: '#111827', reddit: '#ff4500', instagram: '#d62976',
+  government_release: '#159a7a', government_pdf: '#159a7a', official_website: '#159a7a',
+  official_speech: '#0f766e', press_release: '#1dac89', investor_presentation: '#2563eb',
+  corporate_filing: '#2563eb', financial_report: '#2563eb', think_tank_report: '#b45309',
+  academic_paper: '#7c3aed', whitepaper: '#7c3aed', public_dataset: '#0891b2',
+  social_media: '#111827', perplexity_research: '#6d4aff', image: '#db2777', video: '#db2777',
+};
+
+// (15) verification-tier styling contract — brand tokens #159a7a / #1dac89.
+export const VERIFICATION_STYLES = {
+  Verified:  { color: '#159a7a', dash: [],      label: 'Verified — solid' },
+  Likely:    { color: '#1dac89', dash: [],      label: 'Likely — solid (lighter)' },
+  Possible:  { color: '#1dac89', dash: [7, 5],  label: 'Possible — dashed' },
+  Predicted: { color: '#8aa8a0', dash: [2, 5],  label: 'Predicted — dotted' },
+};
+export const VERIFICATION_TIERS = Object.keys(VERIFICATION_STYLES);
+
+// (13) relationship type → geographic arc type
+export const ARC_TYPES = {
+  Investment: 'investment', Trade: 'trade', 'Aid-Humanitarian': 'aid',
+  Diplomatic: 'diplomacy', Security: 'military', Infrastructure: 'shipping',
+  Energy: 'trade', Technology: 'flight', 'Media-narrative': 'diplomacy',
+  'Influence-network': 'diplomacy',
+};
+export const ARC_COLORS = {
+  flight: '#0891b2', shipping: '#b45309', trade: '#0e9f6e',
+  military: '#475569', diplomacy: '#2563eb', investment: '#6d4aff', aid: '#f59e0b',
+};
 
 const DAY = 86400000;
+
+/** platform-or-source_type accessor (round-1 runs use platform; deep-v2 uses source_type). */
+export const evPlatform = (ev) => ev.platform || ev.source_type || 'other';
 
 /** graphology pre-render pass: PageRank (→ node size) + Louvain communities (→ hue tint). */
 export function computeGraphMetrics(run) {
@@ -42,64 +76,112 @@ export function evidenceAgeDays(ev, run) {
   return Number.isFinite(t) ? Math.max(0, (ref - t) / DAY) : 30;
 }
 
+/** (4) Community descriptor list for cluster chips. */
+export function communityList(run, metrics) {
+  const byComm = new Map();
+  for (const n of run.nodes) {
+    const c = metrics.communities[n.id] ?? 0;
+    (byComm.get(c) || byComm.set(c, []).get(c)).push(n);
+  }
+  return [...byComm.entries()].map(([id, members]) => {
+    const rep = members.slice().sort((a, b) => (metrics.ranks[b.id] ?? 0) - (metrics.ranks[a.id] ?? 0))[0];
+    return { id, label: `${rep?.label || 'Cluster ' + id}`, count: members.length, memberIds: members.map(m => m.id) };
+  }).sort((a, b) => b.count - a.count);
+}
+
+/** (11) Sorted unique evidence dates for the timeline replay. */
+export function timelineDates(run) {
+  return [...new Set(run.evidence.map(e => e.publish_date).filter(Boolean))].sort();
+}
+
 /**
- * runToGraph — the scrubber feeds a different run; filters cross-filter from
- * chips/sliders/ECharts. weight→width, recency→opacity, type→color,
- * platform→glyph badge (rendered by the canvas painter), IG media→image refs.
+ * runToGraph — V2. options: filters + {heatMode, collapsed:Set<communityId>,
+ * timelineCutoff:'YYYY-MM-DD'|null, lockedIds:Set<nodeId>}.
+ * node size = weight (pagerank + incident edge weight); edge width = strength;
+ * edge color/style = verification tier (deep-v2) or relationship type (legacy).
  */
 export function runToGraph(run, filters = {}) {
   const {
-    types = new Set(REL_TYPES), minWeight = 0, maxAgeDays = 365,
+    types = new Set(REL_TYPES), minWeight = 0, maxAgeDays = 3650,
     platform = null, stance = null, day = null, search = '',
+    heatMode = false, collapsed = new Set(), timelineCutoff = null, lockedIds = new Set(),
   } = filters;
   const metrics = computeGraphMetrics(run);
   const evById = new Map(run.evidence.map(e => [e.id, e]));
+  const comms = metrics.communities;
+
+  // collapsed-community remap: member node id → supernode id
+  const remap = (id) => (collapsed.has(comms[id] ?? -1) ? `comm-${comms[id]}` : id);
+
+  const edgeEarliestDate = (e) => {
+    const ds = (e.evidence_record_ids || []).map(id => evById.get(id)?.publish_date).filter(Boolean).sort();
+    return ds[0] || null;
+  };
 
   const keepEdge = (e) => {
-    if (!types.has(e.relationship_type)) return false;
+    if (!types.has(e.relationship_type) && REL_TYPES.includes(e.relationship_type)) return false;
     if ((e.weight ?? 0) < minWeight) return false;
-    // time-range: edge survives if ≥1 backing evidence is inside the window
-    const ages = e.evidence_record_ids.map(id => evById.get(id)).filter(Boolean).map(ev => evidenceAgeDays(ev, run));
+    const ages = (e.evidence_record_ids || []).map(id => evById.get(id)).filter(Boolean).map(ev => evidenceAgeDays(ev, run));
     if (ages.length && Math.min(...ages) > maxAgeDays) return false;
     if (platform) {
-      const plats = new Set(e.evidence_record_ids.map(id => evById.get(id)?.platform));
+      const plats = new Set((e.evidence_record_ids || []).map(id => { const v = evById.get(id); return v && evPlatform(v); }));
       if (!plats.has(platform)) return false;
     }
     if (stance && (e.stance || 'neutral') !== stance) return false;
     if (day) {
-      const days = e.evidence_record_ids.map(id => evById.get(id)?.publish_date || 'undated');
+      const days = (e.evidence_record_ids || []).map(id => evById.get(id)?.publish_date || 'undated');
       if (!days.includes(day)) return false;
+    }
+    // (11) timeline replay: edge appears only once its earliest evidence exists
+    if (timelineCutoff) {
+      const d0 = edgeEarliestDate(e);
+      if (d0 && d0 > timelineCutoff) return false;
+      if (!d0 && e.inference) return false; // inferences appear at end of replay
     }
     return true;
   };
 
-  // Particles flow source→target in react-force-graph, so orient each link so
-  // that the particle direction equals the REAL data/value flow direction.
   const links = run.edges.filter(keepEdge).map(e => {
-    const flip = e.direction === 'b->a';
     const w = e.weight ?? 0;
+    const tier = e.verification || null;
+    const vs = tier ? VERIFICATION_STYLES[tier] : null;
+    const evs = (e.evidence_record_ids || []).map(id => evById.get(id)).filter(Boolean);
+    // (11) strengthening during replay: width grows with evidence admitted ≤ cutoff
+    const evVisible = timelineCutoff ? evs.filter(v => (v.publish_date || '') <= timelineCutoff).length : evs.length;
+    const breaking = evs.some(v => v.weighting?.temporalClass === 'breaking');
+    const baseWidth = 1.1 + w * 3.6;
+    const heatWidth = 1.2 + Math.min(6, evVisible * 1.6);          // (12) width = interactions
+    const flip = e.direction === 'b->a';
+    const sId = remap(flip ? e.entity_b : e.entity_a);
+    const tId = remap(flip ? e.entity_a : e.entity_b);
+    if (sId === tId) return null; // both ends inside one collapsed community
     return {
       id: e.id,
-      source: flip ? e.entity_b : e.entity_a,
-      target: flip ? e.entity_a : e.entity_b,
-      a: e.entity_a, b: e.entity_b,
+      source: sId, target: tId, a: remap(e.entity_a), b: remap(e.entity_b),
+      rawA: e.entity_a, rawB: e.entity_b,
       type: e.relationship_type, direction: e.direction,
-      color: REL_TYPE_COLORS[e.relationship_type] || '#64748b',
-      width: 1.1 + w * 3.2,                                // weight → width (capped, crisp)
-      opacity: 0.92,                                       // solid strokes — no translucent blobs
+      verification: tier, inference: !!e.inference,
+      dash: vs ? vs.dash : [],
+      color: vs ? vs.color : (REL_TYPE_COLORS[e.relationship_type] || '#64748b'),
+      typeColor: REL_TYPE_COLORS[e.relationship_type] || '#64748b',
+      width: heatMode ? heatWidth : baseWidth,
+      glow: heatMode ? Math.min(18, 4 + w * 16) : 0,               // (12) glow = importance
+      breaking,                                                     // (12) pulse = breaking news
+      opacity: 0.92,
       weight: w, recency: e.recency ?? 0.5,
-      particles: e.direction === 'both' ? 0 : 2 + Math.round(w * 4),  // flow pulses
-      particleSpeed: 0.004 + w * 0.012,                    // speed ∝ weight (value volume)
+      particles: e.direction === 'both' ? 0 : Math.max(1, Math.round(1 + w * 4)),
+      particleSpeed: 0.004 + w * 0.012,
       claim: e.claim, stance: e.stance, contradiction: e.contradiction,
-      evidenceIds: e.evidence_record_ids, confidence: e.confidence,
-      platforms: e.evidencePlatforms || [],
+      evidenceIds: e.evidence_record_ids || [], confidence: e.confidence,
+      platforms: e.evidencePlatforms || e.sourceTypes || [],
+      arcType: ARC_TYPES[e.relationship_type] || 'diplomacy',
       isNew: (run.diffFromPrevious?.newEdgeIds || []).includes(e.id),
+      earliestDate: edgeEarliestDate(e),
       curvature: 0,
     };
-  });
+  }).filter(Boolean);
 
-  // Curvature fan: EVERY category edge is curved so parallel relationships
-  // between the same pair render as distinct labeled arcs, never merged.
+  // Curvature fan: parallel relationships render as distinct arcs, never merged.
   const pairGroups = {};
   for (const l of links) {
     const k = [l.a, l.b].sort().join('~');
@@ -107,52 +189,87 @@ export function runToGraph(run, filters = {}) {
   }
   for (const group of Object.values(pairGroups)) {
     group.forEach((l, i) => {
-      const mag = 0.16 + Math.floor(i / 2) * 0.2;          // 0.16, 0.16, 0.36, 0.36…
-      l.curvature = (i % 2 === 0 ? 1 : -1) * mag;          // alternate sides
+      const mag = 0.16 + Math.floor(i / 2) * 0.2;
+      l.curvature = (i % 2 === 0 ? 1 : -1) * mag;
     });
   }
 
-  const used = new Set(links.flatMap(l => [l.a, l.b]));
   const q = search.trim().toLowerCase();
-
-  // CLUSTER EXPANSION: always include every entity node from the run registry
-  // (no more count badges standing in for hidden entities). Entities without a
-  // category edge get a faint dashed "context" tether to their country anchor
-  // so physics clusters them legibly around it.
   const countryId = (run.nodes.find(n => n.kind === 'country') || {}).id;
-  const nodes = run.nodes
+
+  // per-node incident weight sum → node size = weight (QA gate)
+  const incW = {};
+  for (const e of run.edges) {
+    incW[e.entity_a] = (incW[e.entity_a] || 0) + (e.weight || 0);
+    incW[e.entity_b] = (incW[e.entity_b] || 0) + (e.weight || 0);
+  }
+
+  let nodes = run.nodes
+    .filter(n => !collapsed.has(comms[n.id] ?? -1))
     .map(n => {
       const pr = metrics.ranks[n.id] ?? 0;
-      const comm = metrics.communities[n.id] ?? 0;
+      const comm = comms[n.id] ?? 0;
       const degree = metrics.degrees[n.id] ?? 0;
-      const size = n.kind === 'country' ? 16
-        : n.kind === 'country-side' ? 11 + degree * 0.8
-        : 9 + Math.sqrt(Math.max(0, pr)) * 30 + degree * 0.6;
-      // community hue tint (subtle, on white): even-spread golden-angle hues, low saturation
+      const wsum = incW[n.id] || 0;
+      const size = n.kind === 'country' ? 17
+        : 8 + wsum * 10 + Math.sqrt(Math.max(0, pr)) * 22 + degree * 0.5;
       const hue = (comm * 137.508) % 360;
-      const evidence = run.evidence.filter(ev => ev.claim?.toLowerCase().includes(n.label.toLowerCase()) ||
-        links.some(l => (l.a === n.id || l.b === n.id) && l.evidenceIds.includes(ev.id)));
+      const evidence = run.evidence.filter(ev => (ev.entities || []).includes(n.id) ||
+        ev.claim?.toLowerCase().includes(n.label.toLowerCase()) ||
+        links.some(l => (l.rawA === n.id || l.rawB === n.id) && l.evidenceIds.includes(ev.id)));
       const media = evidence.flatMap(ev => ev.media || []);
+      const lastDate = evidence.map(e => e.publish_date).filter(Boolean).sort().pop() || null;
+      const impact = (run.impact || []).find(s => s.entity_id === n.id) || null;
       return {
-        ...n, size, pagerank: pr, community: comm, degree,
-        hasEdges: used.has(n.id),
+        ...n, size: Math.min(26, size), pagerank: pr, community: comm, degree,
+        weightSum: +wsum.toFixed(3),
+        hasEdges: links.some(l => l.rawA === n.id || l.rawB === n.id),
         tint: `hsl(${hue} 55% 88%)`, tintStroke: `hsl(${hue} 45% 62%)`,
         dim: q && !(`${n.label} ${n.fullName}`.toLowerCase().includes(q)),
-        evidenceCount: evidence.length, media,
+        evidenceCount: evidence.length, media, lastDate,
+        impact: impact ? impact.overall : null,
+        locked: lockedIds.has(n.id),
+        keyEntity: false, // set below (halos)
       };
     });
 
-  // faint context tethers: entity nodes with no category edge orbit the country
-  // anchor so the expanded cluster reads as a group, not scattered dots.
-  if (countryId) {
+  // collapsed-community supernodes
+  for (const c of collapsed) {
+    const members = run.nodes.filter(n => (comms[n.id] ?? -1) === c);
+    if (!members.length) continue;
+    const rep = members.slice().sort((a, b) => (metrics.ranks[b.id] ?? 0) - (metrics.ranks[a.id] ?? 0))[0];
+    nodes.push({
+      id: `comm-${c}`, label: `${rep.label} +${members.length - 1}`,
+      fullName: `${members.length} entities (community ${c})`, kind: 'community',
+      size: Math.min(30, 14 + members.length * 1.2), pagerank: 0, community: c,
+      degree: 0, weightSum: 0, hasEdges: true,
+      tint: `hsl(${(c * 137.508) % 360} 55% 88%)`, tintStroke: `hsl(${(c * 137.508) % 360} 45% 52%)`,
+      dim: false, evidenceCount: 0, media: [], lastDate: null, impact: null,
+      locked: false, keyEntity: false, memberCount: members.length,
+    });
+  }
+
+  // halos: country + top-3 by incident weight are key entities
+  const ranked = nodes.filter(n => n.kind !== 'country' && n.kind !== 'community')
+    .sort((a, b) => b.weightSum - a.weightSum);
+  for (const n of ranked.slice(0, 3)) if (n.weightSum > 0) n.keyEntity = true;
+  for (const n of nodes) if (n.kind === 'country') n.keyEntity = true;
+
+  // label policy (QA gate): country + top ~5 by weight get alwaysLabel
+  const topByWeight = new Set(ranked.slice(0, 5).filter(n => n.weightSum > 0).map(n => n.id));
+  for (const n of nodes) n.alwaysLabel = n.kind === 'country' || n.kind === 'community' || topByWeight.has(n.id);
+
+  // faint context tethers so unlinked entities cluster legibly around the country
+  if (countryId && !collapsed.has(comms[countryId] ?? -1)) {
     for (const n of nodes) {
-      if (n.id === countryId || n.hasEdges || n.kind === 'country') continue;
+      if (n.id === countryId || n.hasEdges || n.kind === 'country' || n.kind === 'community') continue;
       links.push({
         id: `ctx-${n.id}`, source: countryId, target: n.id, a: countryId, b: n.id,
+        rawA: countryId, rawB: n.id,
         type: 'context', direction: 'both', color: '#cbd5e1', width: 0.7, opacity: 0.5,
-        weight: 0, recency: 0, particles: 0, particleSpeed: 0,
+        dash: [3, 4], weight: 0, recency: 0, particles: 0, particleSpeed: 0, glow: 0,
         claim: null, evidenceIds: [], platforms: [], isNew: false, curvature: 0,
-        isContext: true,
+        isContext: true, breaking: false,
       });
     }
   }
@@ -164,17 +281,21 @@ export function edgeToMiniArtifact(run, link) {
   const evById = new Map(run.evidence.map(e => [e.id, e]));
   return {
     kind: 'edge', runId: run.runId, country: run.country, generated_at: run.generated_at,
-    edge: { a: link.a || (typeof link.source === 'object' ? link.source.id : link.source), b: link.b || (typeof link.target === 'object' ? link.target.id : link.target), type: link.type, direction: link.direction, claim: link.claim, weight: link.weight, confidence: link.confidence },
-    evidence: link.evidenceIds.map(id => evById.get(id)).filter(Boolean)
-      .map(e => ({ id: e.id, platform: e.platform, source: e.source, date: e.publish_date, claim: e.claim, url: e.url })),
+    edge: {
+      a: link.rawA || link.a, b: link.rawB || link.b, type: link.type, direction: link.direction,
+      claim: link.claim, weight: link.weight, confidence: link.confidence,
+      verification: link.verification || null, inference: link.inference || false,
+    },
+    evidence: (link.evidenceIds || []).map(id => evById.get(id)).filter(Boolean)
+      .map(e => ({ id: e.id, platform: evPlatform(e), source: e.source, date: e.publish_date, claim: e.claim, url: e.url })),
   };
 }
 
 export function nodeToMiniArtifact(run, node) {
   return {
     kind: 'node', runId: run.runId, country: run.country, generated_at: run.generated_at,
-    node: { id: node.id, label: node.label, kind: node.kind, degree: node.degree, pagerank: node.pagerank, community: node.community },
-    evidence: (run.evidence || []).filter(ev => node.evidenceCount && (ev.claim || '').toLowerCase().includes(node.label.toLowerCase()))
-      .slice(0, 6).map(e => ({ id: e.id, platform: e.platform, source: e.source, date: e.publish_date, claim: e.claim, url: e.url })),
+    node: { id: node.id, label: node.label, kind: node.kind, degree: node.degree, pagerank: node.pagerank, community: node.community, impact: node.impact },
+    evidence: (run.evidence || []).filter(ev => (ev.entities || []).includes(node.id) || (ev.claim || '').toLowerCase().includes(node.label.toLowerCase()))
+      .slice(0, 6).map(e => ({ id: e.id, platform: evPlatform(e), source: e.source, date: e.publish_date, claim: e.claim, url: e.url })),
   };
 }
