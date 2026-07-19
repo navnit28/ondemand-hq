@@ -73,51 +73,89 @@ export function runToGraph(run, filters = {}) {
     return true;
   };
 
-  const links = run.edges.filter(keepEdge).map(e => ({
-    id: e.id, source: e.entity_a, target: e.entity_b,
-    type: e.relationship_type, direction: e.direction,
-    color: REL_TYPE_COLORS[e.relationship_type] || '#64748b',
-    width: 0.6 + (e.weight ?? 0) * 5.2,                    // weight → width
-    opacity: 0.25 + (e.recency ?? 0.5) * 0.75,             // recency → opacity
-    weight: e.weight ?? 0, recency: e.recency ?? 0.5,
-    particles: 1 + Math.round((e.recency ?? 0.5) * 4),     // recency → particle count
-    particleSpeed: 0.002 + (e.recency ?? 0.5) * 0.012,     // recency → particle speed
-    claim: e.claim, stance: e.stance, contradiction: e.contradiction,
-    evidenceIds: e.evidence_record_ids, confidence: e.confidence,
-    platforms: e.evidencePlatforms || [],
-    isNew: (run.diffFromPrevious?.newEdgeIds || []).includes(e.id),
-    curvature: 0,
-  }));
+  // Particles flow source→target in react-force-graph, so orient each link so
+  // that the particle direction equals the REAL data/value flow direction.
+  const links = run.edges.filter(keepEdge).map(e => {
+    const flip = e.direction === 'b->a';
+    const w = e.weight ?? 0;
+    return {
+      id: e.id,
+      source: flip ? e.entity_b : e.entity_a,
+      target: flip ? e.entity_a : e.entity_b,
+      a: e.entity_a, b: e.entity_b,
+      type: e.relationship_type, direction: e.direction,
+      color: REL_TYPE_COLORS[e.relationship_type] || '#64748b',
+      width: 1.1 + w * 3.2,                                // weight → width (capped, crisp)
+      opacity: 0.92,                                       // solid strokes — no translucent blobs
+      weight: w, recency: e.recency ?? 0.5,
+      particles: e.direction === 'both' ? 0 : 2 + Math.round(w * 4),  // flow pulses
+      particleSpeed: 0.004 + w * 0.012,                    // speed ∝ weight (value volume)
+      claim: e.claim, stance: e.stance, contradiction: e.contradiction,
+      evidenceIds: e.evidence_record_ids, confidence: e.confidence,
+      platforms: e.evidencePlatforms || [],
+      isNew: (run.diffFromPrevious?.newEdgeIds || []).includes(e.id),
+      curvature: 0,
+    };
+  });
 
-  // self-pair curvature so multi-type links between the same pair don't overlap
-  const pairCount = {};
+  // Curvature fan: EVERY category edge is curved so parallel relationships
+  // between the same pair render as distinct labeled arcs, never merged.
+  const pairGroups = {};
   for (const l of links) {
-    const k = [l.source, l.target].sort().join('~');
-    pairCount[k] = (pairCount[k] || 0) + 1;
-    l.curvature = pairCount[k] > 1 ? 0.18 * (pairCount[k] - 1) : 0;
+    const k = [l.a, l.b].sort().join('~');
+    (pairGroups[k] = pairGroups[k] || []).push(l);
+  }
+  for (const group of Object.values(pairGroups)) {
+    group.forEach((l, i) => {
+      const mag = 0.16 + Math.floor(i / 2) * 0.2;          // 0.16, 0.16, 0.36, 0.36…
+      l.curvature = (i % 2 === 0 ? 1 : -1) * mag;          // alternate sides
+    });
   }
 
-  const used = new Set(links.flatMap(l => [l.source, l.target]));
+  const used = new Set(links.flatMap(l => [l.a, l.b]));
   const q = search.trim().toLowerCase();
+
+  // CLUSTER EXPANSION: always include every entity node from the run registry
+  // (no more count badges standing in for hidden entities). Entities without a
+  // category edge get a faint dashed "context" tether to their country anchor
+  // so physics clusters them legibly around it.
+  const countryId = (run.nodes.find(n => n.kind === 'country') || {}).id;
   const nodes = run.nodes
-    .filter(n => used.has(n.id) || n.kind === 'country' || !run.edges.length)
     .map(n => {
       const pr = metrics.ranks[n.id] ?? 0;
       const comm = metrics.communities[n.id] ?? 0;
       const degree = metrics.degrees[n.id] ?? 0;
-      const size = n.kind === 'country' ? 15 : 5 + Math.sqrt(Math.max(0, pr)) * 42 + degree * 0.55;
+      const size = n.kind === 'country' ? 16
+        : n.kind === 'country-side' ? 11 + degree * 0.8
+        : 9 + Math.sqrt(Math.max(0, pr)) * 30 + degree * 0.6;
       // community hue tint (subtle, on white): even-spread golden-angle hues, low saturation
       const hue = (comm * 137.508) % 360;
       const evidence = run.evidence.filter(ev => ev.claim?.toLowerCase().includes(n.label.toLowerCase()) ||
-        links.some(l => (l.source === n.id || l.target === n.id) && l.evidenceIds.includes(ev.id)));
+        links.some(l => (l.a === n.id || l.b === n.id) && l.evidenceIds.includes(ev.id)));
       const media = evidence.flatMap(ev => ev.media || []);
       return {
         ...n, size, pagerank: pr, community: comm, degree,
+        hasEdges: used.has(n.id),
         tint: `hsl(${hue} 55% 88%)`, tintStroke: `hsl(${hue} 45% 62%)`,
         dim: q && !(`${n.label} ${n.fullName}`.toLowerCase().includes(q)),
         evidenceCount: evidence.length, media,
       };
     });
+
+  // faint context tethers: entity nodes with no category edge orbit the country
+  // anchor so the expanded cluster reads as a group, not scattered dots.
+  if (countryId) {
+    for (const n of nodes) {
+      if (n.id === countryId || n.hasEdges || n.kind === 'country') continue;
+      links.push({
+        id: `ctx-${n.id}`, source: countryId, target: n.id, a: countryId, b: n.id,
+        type: 'context', direction: 'both', color: '#cbd5e1', width: 0.7, opacity: 0.5,
+        weight: 0, recency: 0, particles: 0, particleSpeed: 0,
+        claim: null, evidenceIds: [], platforms: [], isNew: false, curvature: 0,
+        isContext: true,
+      });
+    }
+  }
   return { nodes, links, metrics };
 }
 
@@ -126,7 +164,7 @@ export function edgeToMiniArtifact(run, link) {
   const evById = new Map(run.evidence.map(e => [e.id, e]));
   return {
     kind: 'edge', runId: run.runId, country: run.country, generated_at: run.generated_at,
-    edge: { a: link.source, b: link.target, type: link.type, direction: link.direction, claim: link.claim, weight: link.weight, confidence: link.confidence },
+    edge: { a: link.a || (typeof link.source === 'object' ? link.source.id : link.source), b: link.b || (typeof link.target === 'object' ? link.target.id : link.target), type: link.type, direction: link.direction, claim: link.claim, weight: link.weight, confidence: link.confidence },
     evidence: link.evidenceIds.map(id => evById.get(id)).filter(Boolean)
       .map(e => ({ id: e.id, platform: e.platform, source: e.source, date: e.publish_date, claim: e.claim, url: e.url })),
   };

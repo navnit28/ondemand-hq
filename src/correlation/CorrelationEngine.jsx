@@ -17,8 +17,8 @@ import {
 
 const spring = { type: 'spring', stiffness: 360, damping: 30 };
 
-/** Hover popover (edge or node): claim + source + date + snippet + IG thumbnails. */
-function HoverPopover({ pop, run, onLightbox, onQuickQuery, onClose }) {
+/** Click/hover popover (edge or node): claim + source + date + snippet + IG thumbnails. */
+function HoverPopover({ pop, run, onLightbox, onQuickQuery, onClose, onOpenDrawer }) {
   if (!pop) return null;
   const evById = new Map(run.evidence.map(e => [e.id, e]));
   const evs = pop.kind === 'edge'
@@ -34,25 +34,33 @@ function HoverPopover({ pop, run, onLightbox, onQuickQuery, onClose }) {
         <>
           <div className="ce-pop__type" style={{ color: pop.link.color }}>{pop.link.type}{pop.link.contradiction ? ' ⚠' : ''}</div>
           <div className="ce-pop__claim">{pop.link.claim}</div>
-          <div className="ce-pop__meta">weight {pop.link.weight} · confidence {pop.link.confidence}</div>
+          <div className="ce-pop__meta">
+            {(() => {
+              const a = typeof pop.link.source === 'object' ? pop.link.source.label : pop.link.source;
+              const b = typeof pop.link.target === 'object' ? pop.link.target.label : pop.link.target;
+              return pop.link.direction === 'both' ? `${a} ⇄ ${b}` : `${a} → ${b} (flow)`;
+            })()}
+            {' · '}weight {pop.link.weight} · confidence {pop.link.confidence} · {pop.link.evidenceIds?.length || 0} evidence
+          </div>
         </>
       ) : (
         <>
-          <div className="ce-pop__type">{pop.node.label}</div>
-          <div className="ce-pop__meta">{pop.node.kind} · PageRank {pop.node.pagerank?.toFixed(4)} · community {pop.node.community}</div>
+          <div className="ce-pop__type">{pop.node.fullName || pop.node.label}</div>
+          <div className="ce-pop__meta">{pop.node.kind} · {pop.node.degree ?? 0} connections · PageRank {pop.node.pagerank?.toFixed(4)} · {pop.node.evidenceCount || 0} evidence</div>
         </>
       )}
-      {first && (
-        <div className="ce-pop__ev">
+      {evs.slice(0, 3).map((ev, i) => (
+        <div className="ce-pop__ev" key={ev.id || i}>
           <div className="ce-pop__src">
-            {first.source}
-            {/wamnews|mofauae/i.test(first.source) && <BadgeCheck size={11} aria-label="verified official account" className="ce-verified" />}
-            {first.publish_date && <span className="ce-pop__date">{first.publish_date}</span>}
+            {ev.source}
+            {/wamnews|mofauae/i.test(ev.source) && <BadgeCheck size={11} aria-label="verified official account" className="ce-verified" />}
+            {ev.publish_date && <span className="ce-pop__date">{ev.publish_date}</span>}
           </div>
-          <div className="ce-pop__snippet">{first.snippet || first.claim}</div>
-          {first.url && <a className="ce-pop__link" href={first.url} target="_blank" rel="noopener noreferrer">source <ExternalLink size={10} /></a>}
+          <div className="ce-pop__snippet">{ev.snippet || ev.claim}</div>
+          {ev.url && <a className="ce-pop__link" href={ev.url} target="_blank" rel="noopener noreferrer">source <ExternalLink size={10} /></a>}
         </div>
-      )}
+      ))}
+      {evs.length === 0 && <div className="ce-pop__snippet" style={{ color: '#9ca3af' }}>No direct evidence records tied to this {pop.kind}.</div>}
       {media.length > 0 && (
         <div className="ce-pop__media">
           {media.slice(0, 3).map((m, i) => (
@@ -62,9 +70,14 @@ function HoverPopover({ pop, run, onLightbox, onQuickQuery, onClose }) {
           ))}
         </div>
       )}
-      <button className="ce-pop__qq" onClick={() => onQuickQuery(pop)}>
-        <Zap size={11} aria-hidden /> Quick Query
-      </button>
+      <div className="ce-pop__actions">
+        <button className="ce-pop__qq" onClick={() => onQuickQuery(pop)}>
+          <Zap size={11} aria-hidden /> Quick Query
+        </button>
+        {onOpenDrawer && (
+          <button className="ce-pop__qq" onClick={onOpenDrawer}>All evidence →</button>
+        )}
+      </div>
     </motion.div>
   );
 }
@@ -413,6 +426,7 @@ export default function CorrelationEngine({ iso, countryName }) {
                 {(pinPop || pop) && (
                   <HoverPopover pop={pinPop || pop} run={run}
                     onLightbox={setLightbox}
+                    onOpenDrawer={() => { setDrawerOpen(true); setPinPop(null); setPop(null); }}
                     onQuickQuery={(p2) => {
                       setQuick({ artifact: p2.kind === 'edge' ? edgeToMiniArtifact(run, p2.link) : nodeToMiniArtifact(run, p2.node) });
                       setPinPop(null);

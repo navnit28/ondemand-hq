@@ -1255,6 +1255,8 @@ a.xpost:focus-visible { outline: 2px solid #1d9bf0; outline-offset: -2px; border
 .ce-pop__qq { margin-top: 8px; width: 100%; border: 1px solid #ede9fe; background: #f8f7ff; color: #6d4aff;
   font: 700 10.5px Montserrat, sans-serif; border-radius: 8px; padding: 6px; cursor: pointer;
   display: flex; align-items: center; justify-content: center; gap: 5px; }
+.ce-pop__actions { display: flex; gap: 6px; }
+.ce-pop__actions .ce-pop__qq { margin-top: 8px; }
 .ce-verified { color: #0ea5e9; }
 
 /* lightbox */
