@@ -955,3 +955,29 @@ gpt-5.6-sol-medium analysis; routes GET /api/msm/config|dates|day/:date|transcri
 `server/ondemand.js`, which uses `ENDPOINT_ID = 'predefined-gpt-5.6-sol'` +
 top-level `reasoningEffort` (env REASONING_EFFORT, default 'medium') — grep across the
 merged module: 0 hits for `modelConfigs`/`maxTokens` or any undocumented param.
+
+---
+
+## 2026-07-19 — Correlation Engine build (round 1)
+
+### API docs read (RULE 0) — dated entries
+- ~02:17Z live docs: `GET /config/v1/public/docs/categories` (8 services) + specs for
+  `submitquery`, `post_workflow-id-execute`, `streamworkflowlogs` (saved run-workspace).
+- submitquery documented body: query/endpointId/responseMode/pluginIds/fulfillmentOnly/
+  modelConfigs{fulfillmentPrompt, stopSequences≤4, temperature}. NO max-token param documented.
+- Workflow execute: `POST {base}/automation/api/workflow/{id}/execute` (no required body);
+  logs: `POST /automation/api/workflow/stream_logs` {executionID}.
+
+### BREAKING platform change — pluginIds → agentIds (02:18–02:26Z)
+- Query-time `pluginIds` now HTTP 400s ("One or more agents are invalid: agent-…") on every
+  fulfillment model tested (gpt-5.6-sol, sonnet-5, fable-5). Worked 2026-07-18; broke since.
+- Fix in `server/ondemand.js`: `toAgentIds()` maps `plugin-…`→`agent-…`; session create AND
+  query bodies send `agentIds`. Invariant (empirical): the QUERY body must carry agentIds;
+  session-bound agents alone still 400 at query time.
+- Second constraint: plugin/RAG execution is rejected on Claude endpoints (same 400 with
+  sonnet-5/fable-5 even via agentIds) → pipeline splits models: plugin evidence-gathering on
+  `predefined-gpt-5.6-sol` (proven), pure-LLM evidence normalization/edge extraction/narrative
+  on `predefined-claude-sonnet-5` (build) / `predefined-claude-fable-5` (prod, config).
+
+### Plugin battery → see PLUGIN_TESTS.md 2026-07-19 section (5/5 200-usable + GLM 1.276s + sonnet/fable 200).
+### Prior attempts mined → PRIOR_KNOWLEDGE.md (dead ends D1–D8: 410 webhook chain, suffixed model id, modelConfigs.maxTokens, STT, Media-API 500s, WB mrnev, gitignored-store, old SVG CE).

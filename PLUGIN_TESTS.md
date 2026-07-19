@@ -241,3 +241,52 @@ Pipeline per country: Perplexity `plugin-1722260873` → X Search `plugin-175187
 - Route-level HTTP verification results recorded in NOTES.md merge entry and the run
   response (fresh sandbox: /, /api/health, /api/msm/config, /api/msm/dates,
   /api/msm/day/2026-07-18 — expected 200s; live proof in the deployment log).
+
+---
+
+## 2026-07-19 — Correlation Engine: 5-plugin stack + model policy + GLM (live battery)
+
+Battery: `debug/ce-plugin-tests.mjs` (real session create + sync query per plugin, apikey header, wall-clock latencies). Raw JSON: `/tmp/plugin-test-results.json` (run workspace).
+
+### ⚠ Platform breaking change discovered & fixed (RULE 0 docs read first)
+
+Live docs re-read 2026-07-19 ~02:17Z (`/config/v1/public/docs/categories`, `submitquery`,
+`post_workflow-id-execute`, `streamworkflowlogs`). Documented submitquery body: `query`,
+`endpointId`, `responseMode` (enum sync|stream|webhook), `pluginIds`, `fulfillmentOnly`,
+`modelConfigs` (`fulfillmentPrompt`, `stopSequences` ≤4, `temperature`…). **No documented
+max-token parameter exists** → Quick Query hard ~150-token stop is client-side (see §GLM).
+
+**`pluginIds` is now REJECTED at query time**: HTTP 400
+`"One or more agents are invalid: agent-1722260873"` (`details.invalidAgentIds`) — on
+gpt-5.6-sol, sonnet-5 AND fable-5 alike (02:18–02:24Z). Working form (live-verified):
+`agentIds` with the `agent-…` twin id, on session create AND query. `server/ondemand.js`
+now translates `plugin-…`→`agent-…` at the wire (`toAgentIds`); all callers unchanged.
+Proof: Perplexity via agentIds → 200, 25.9s, sourced ADNOC–Shell South Africa answer.
+Also learned: the query body MUST carry agentIds — a session-bound agent alone 400s.
+
+### Plugin 200-tests (query model: predefined-gpt-5.6-sol + reasoningEffort medium — the proven plugin-execution fulfillment; Claude endpoints reject plugin attachment on this platform)
+
+| # | Plugin | Id | Result | Latency | Output |
+|---|---|---|---|---|---|
+| 1 | **Perplexity (DEFAULT, not v2)** | `plugin-1722260873` (`agent-1722260873`) | ✅ **200 usable** | 150,222 ms | 1,923 ch — dated UAE entity announcements with source URLs |
+| 2 | **X Search** | `plugin-1751872652` | ✅ **200 usable** | 59,903 ms | 552 ch — honest 0-verified-date answer w/ official handle URLs (x.com/Mubadala, ADNOCGroup, Adq_Official) |
+| 3 | **Reddit Posts (official)** | `plugin-1748003575` | ✅ **200 usable** — FIRST Reddit proof anywhere | 15,290 ms | 559 ch — r/unitedarabemirates UAE-aid post (The National Dh2.3bn relief) |
+| 4 | **Instagram Content Downloader (IG+download combined)** | `plugin-1762980461` | ✅ **200 usable** | 30,406 ms | Downloaded @wamnews latest post (shortcode `Da8rDLZDYa1`) → blob URL; server-side GET = **JPEG 1080×1349, 90,698 B** (file(1)-verified) |
+| 5 | **Instagram User Info Extracter** | `plugin-1716164040` | ✅ **200 usable** | 9,260 ms | @wamnews: 391,374 followers, verified=Yes, business=Yes, official bio AR/EN |
+
+### Model-policy probes (no plugins)
+
+| Model | Endpoint | Result | Latency |
+|---|---|---|---|
+| claude-sonnet-5 (build/test) | `predefined-claude-sonnet-5` + medium | ✅ 200 | 1,709 ms |
+| claude-fable-5 (prod default) | `predefined-claude-fable-5` + medium | ✅ 200 | 2,011 ms |
+
+### GLM 4.7 Cerebras (Quick Query)
+
+`byoi-6e314690-4eaf-4def-a33c-380809acf1f5`, sync + fulfillmentOnly, low effort:
+✅ **200 in 1,276 ms** (36-char answer). Hard stop: NO documented max-token param
+(docs 02:17Z; undocumented `modelConfigs.maxTokens` known-empty from 2026-07-18 audit) →
+implemented CLIENT-side: stream abort at ~150 tokens + sentence truncation. Latency stamp
+rendered in UI per call.
+
+**Verdicts: all five CE plugins ADOPTED for the evidence pipeline.**

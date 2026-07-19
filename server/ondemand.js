@@ -6,6 +6,15 @@ import { ONDEMAND_API_KEY, ONDEMAND_BASE_URL, ENDPOINT_ID, REASONING_EFFORT, STR
 
 const H = { apikey: ONDEMAND_API_KEY, 'Content-Type': 'application/json' };
 
+// 2026-07-19 live-verified platform change: the chat API now rejects `pluginIds`
+// at query time with HTTP 400 "One or more agents are invalid: agent-XXXX"
+// (details.invalidAgentIds). The working form — verified live today against
+// Perplexity (200, 25.9s, real sourced answer) — is `agentIds` carrying the
+// `agent-…` twin of each `plugin-…` id, on BOTH session create and query.
+// All callers keep passing plugin-… ids; translation happens here, at the wire.
+export const toAgentIds = (ids = []) => ids.map((id) =>
+  typeof id === 'string' && id.startsWith('plugin-') ? id.replace(/^plugin-/, 'agent-') : id);
+
 // STREAM_DEBUG one-liner: key=value pairs only — NEVER the API key, NEVER frame text content.
 const dbg = (fields) => { if (STREAM_DEBUG) console.log('[stream-debug] ' + Object.entries(fields).map(([k, v]) => `${k}=${v}`).join(' ')); };
 
@@ -58,7 +67,7 @@ async function parseUpstreamError(r) {
 export async function createOdSession(externalUserId, pluginIds = []) {
   const r = await odFetch(`${ONDEMAND_BASE_URL}/chat/v1/sessions`, {
     method: 'POST', headers: H,
-    body: JSON.stringify({ externalUserId, pluginIds }),
+    body: JSON.stringify({ externalUserId, agentIds: toAgentIds(pluginIds) }),
   });
   // Docs label success 200; the live API returns 201 Created — r.ok covers the whole 200-299
   // range, so any 2xx (200 or 201) is treated as success here.
@@ -93,7 +102,7 @@ export async function streamQuery({ odSessionId, query, pluginIds = [], systemPr
                                           // NOTE: `reasoningEffort` is not in the documented submitquery schema but is
                                           // accepted by the live API — live-accepted extension beyond the documented schema.
     responseMode: 'stream',
-    pluginIds,
+    agentIds: toAgentIds(pluginIds),
     modelConfigs: systemPrompt ? { fulfillmentPrompt: systemPrompt, temperature: 0.4 } : { temperature: 0.4 },
   };
   // odFetch retry is safe here ONLY because no bytes have been consumed yet (pre-stream).
@@ -237,7 +246,7 @@ export async function syncQuery({ odSessionId, query, systemPrompt, pluginIds = 
       // reasoningEffort: live-accepted extension beyond the documented submitquery schema (see streamQuery note above).
       reasoningEffort: reasoningEffort || REASONING_EFFORT,
       responseMode: 'sync',
-      pluginIds,
+      agentIds: toAgentIds(pluginIds),
       modelConfigs: systemPrompt ? { fulfillmentPrompt: systemPrompt, temperature: 0.2 } : { temperature: 0.2 },
     }),
   });
