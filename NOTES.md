@@ -1062,3 +1062,47 @@ Decision: 24h scheduling uses the NATIVE Agents Flow Builder API (cron trigger +
   (production), 20 evidence, 12 edges / 12 nodes, diff vs v1 stored in-run (11 new / 9 removed
   edges, 9 new nodes, 1 weight change). Cron 0 15 2 * * * (06:15 GST) remains armed for the
   daily fire; all versions kept on disk for the date scrubber.
+
+---
+
+## 2026-07-19 (Phase C RULE 0, 03:14 UTC) — GLM-4.7 Cerebras verification for Quick Query (live docs + catalogue, never memory)
+
+- 03:14:15Z `GET /config/v1/public/endpoints?type=on_demand` → HTTP 200 in 0.52s. GLM family
+  live state: **byoi-6e314690-4eaf-4def-a33c-380809acf1f5** = "glm-4.7" (model_id zai-glm-4.7,
+  endpoint_url https://api.cerebras.ai/v1, status **active**, streaming_supported **true**,
+  context 65k, reasoning_efforts **null** → do NOT send reasoningEffort, max_token_limit 0).
+  `predefined-glm-4.7` (OpenRouter) status **inactive** — unusable, matches PRIOR_KNOWLEDGE §4.
+- 03:14:15Z `GET /config/v1/public/docs/reference/api/submitquery` → HTTP 200 in 0.46s.
+  Re-verified: **0 hits for `maxTokens`**; modelConfigs fields exactly
+  {fulfillmentPrompt, stopSequences, temperature, topP, presencePenalty, frequencyPenalty};
+  `fulfillmentOnly` present. → The ~150-token Quick Query budget is enforced by PROMPT
+  CONTRACT (1–3 sentences) + a server-side char-cap guard, never via the undocumented
+  `maxTokens` (known dead end: HTTP 200 with EMPTY answer).
+- Design decision logged: Quick Query = fresh throwaway session per micro-query +
+  `responseMode:"stream"` + `fulfillmentOnly:true` on the byoi GLM endpoint; server relays
+  answer deltas and emits a final `done{ms}` frame whose server-measured latency is the UI pill.
+
+## 2026-07-19 (Phase C, 03:20–03:36 UTC) — Visual layer + Quick Query shipped
+
+- graphAdapter.js pure adapter + graphology pre-pass (PageRank→size, Louvain→tints) —
+  scrubber feeds different runs through the same function; recency drives BOTH link
+  opacity and directional-particle speed; daily-diff newEdges drive a gold pulse ring.
+- CorrelationEngine.jsx: custom canvas node draw (country XXL gold, UAE-entity initials,
+  IG photo-nodes clipped from public/proofs/*.jpg), hover neighborhood highlight + 15% dim,
+  hover proof popover, evidence lightbox + drawer w/ Send-to-chat, search→zoom-to-node,
+  zoomToFit on load, PNG export (canvas.toDataURL), evidence-JSON download, EN/AR
+  BilingualLoader on regeneration, ?debug=1 drawer (fps + adapter stats), deep link
+  /correlation-engine. EvidencePanels.jsx: ECharts volume/donut/confidence-strip
+  (cross-filter via platform click) + novel D3 Evidence-Density Heat Ring.
+- Deploy: dist+server rsync'd into live sandbox sbx_0GQSdAAfZGTAFjj1yJ617IWHrxTw; server
+  restart initially FATAL'd on missing ONDEMAND_API_KEY (env not inherited across restart)
+  — fixed by writing /vercel/sandbox/.env (chmod 600) before relaunch; 0 FATAL after.
+- Live verify 03:33:41Z: / 200, /api/health 200, /api/correlate/runs/EG 200,
+  /api/correlate/evidence/EG 200, POST /api/quickquery → 200 SSE, 8 delta frames,
+  done{ms:3773, endpointId byoi-…f5, chars:310, truncated:false}.
+- Visual QA (local Chromium CDP — Chrome MCP tools unavailable this turn): 6 screenshots
+  captured on /correlation-engine — DOM probe {canvas:true, scrubberChips:2, panels:4,
+  edges:12, zaps:13, ringPaths:12}; scrubber v1↔v2 switch OK; lightbox OK; Quick Query
+  card streamed a real grounded answer with a **4032 ms** pill. Caveat (truthful): the
+  hover proof popover did not trigger under synthetic headless mousemove (fg2d needs real
+  pointer events); popover logic verified by code review + click-path (drawer/lightbox) only.

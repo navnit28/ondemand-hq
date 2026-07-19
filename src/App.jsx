@@ -39,7 +39,10 @@ export default function App() {
   const [atBottom, setAtBottom] = useState(true);
   const [sidebarOpen] = useState(false);
   const [intelOpen, setIntelOpen] = useState(false); // ODA Intelligence module view
-  const [corrOpen, setCorrOpen] = useState(false);   // Correlation Engine module view
+  // Correlation Engine module view — /correlation-engine deep-linkable route
+  const [corrOpen, setCorrOpen] = useState(() => {
+    try { return window.location.pathname.replace(/\/+$/, '') === '/correlation-engine'; } catch { return false; }
+  });
   // MSM Analysis module view — /msm-analysis route (deep-linkable + history-integrated)
   const [msmOpen, setMsmOpen] = useState(() => {
     try { return window.location.pathname.replace(/\/+$/, '') === '/msm-analysis'; } catch { return false; }

@@ -334,3 +334,26 @@ KEY OPERATIONAL LESSON: sessions created WITH `agentIds` at session-create time 
 - Evidence store schemaVersion 2, 20 items across web/x/instagram/reddit; IG items carry
   on-disk media proofs (/proofs/wamnews-Da8rDLZDYa1.jpg 95,209 B; /proofs/wamnews-Da8jb1KjXZG.jpg
   191,436 B) re-downloaded in-pipeline at 02:51:30/02:51:42Z.
+
+---
+
+## 2026-07-19 (03:14–03:34 UTC) — GLM-4.7 Cerebras 200-tests + /api/quickquery live proof (Phase C)
+
+Endpoint verified from the live catalogue (03:14:15Z, HTTP 200): byoi-6e314690-4eaf-4def-a33c-380809acf1f5
+("glm-4.7", Cerebras, active, streaming true, reasoning_efforts null). predefined-glm-4.7 INACTIVE.
+
+Platform-level sync 200-tests (session 6a5c41231b012f29069a00a6 created 03:14:43Z; fulfillmentOnly,
+modelConfigs prompt-contract, NO maxTokens):
+| call | started | HTTP | latency | answer (grounded in passed mini-artifact JSON) |
+|---|---|---|---|---|
+| 1 | 03:14:43.602Z | 200 | **1.330 s** | "USD 3.1bn Mada City partnership investment… weight 0.34… 2 evidence points." status completed |
+| 2 | 03:14:44.966Z | 200 | **5.331 s** | grounding refusal (JSON lacked ODA context) — correct no-invent behaviour |
+| 3 | 03:14:50.330Z | 200 | **1.525 s** | grounding refusal — consistent |
+
+Product route test (deployed sandbox, 03:33:41.906Z): POST /api/quickquery →
+HTTP 200 text/event-stream, curl total 3.828s; frames: 8×delta + 1×done;
+done payload {"ms":3773,"endpointId":"byoi-6e314690-4eaf-4def-a33c-380809acf1f5","chars":310,"truncated":false};
+streamed answer grounded in the passed edge artifact. UI verification (Chromium CDP): Quick Query
+card rendered chips EN/AR, streamed the answer, latency pill showed **4032 ms**.
+Note vs sub-second target: session-create + upstream round-trip puts p50 ~1.3–4s on this
+infra; the 1.330s platform-level floor is the best observed — logged honestly, not tuned away.
