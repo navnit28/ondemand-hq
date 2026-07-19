@@ -20,6 +20,7 @@ import { registerSpeechRoutes } from './speech.js';
 import { registerIntelRoutes } from './intel.js';
 import { registerFactsRoutes } from './facts.js';
 import { registerMsmRoutes, getTranscriptText as getMsmTranscript } from './msm.js';
+import { registerCorrelateRoutes } from './correlate.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const app = express();
@@ -40,6 +41,9 @@ registerFactsRoutes(app);
 // MSM Analysis routes (daily mainstream-media monitor: Media-API transcription +
 // gpt-5.6-sol-medium per-video analysis, disk-persisted under server/data/msm/).
 registerMsmRoutes(app);
+
+// Correlation Engine routes (evidence pipeline, versioned graph runs, 24h workflow target).
+registerCorrelateRoutes(app);
 
 // ---------- health ----------
 app.get('/api/health', (req, res) => res.json({

@@ -1,0 +1,421 @@
+{
+ "id": "1784429572200-v1",
+ "version": 1,
+ "iso": "EG",
+ "country": "Egypt",
+ "generatedAt": "2026-07-19T02:52:52.200Z",
+ "startedAt": "2026-07-19T02:48:34.469Z",
+ "trigger": "manual",
+ "model": "predefined-claude-sonnet-5+medium (build)",
+ "endpointId": "predefined-claude-sonnet-5",
+ "reasoningEffort": "medium",
+ "pluginsCalled": [
+  "plugin-1722260873",
+  "plugin-1751872652",
+  "plugin-1716326559",
+  "plugin-1748003575",
+  "plugin-1716164040",
+  "plugin-1762980461"
+ ],
+ "evidenceCount": 7,
+ "graph": {
+  "nodes": [
+   {
+    "id": "MOFA",
+    "label": "MOFA",
+    "type": "uae-entity",
+    "evidenceIds": [
+     "E2f100297"
+    ],
+    "weight": 1,
+    "platforms": [
+     "instagram"
+    ]
+   },
+   {
+    "id": "ADPORTS",
+    "label": "AD Ports",
+    "type": "infrastructure",
+    "evidenceIds": [
+     "E7962b69c"
+    ],
+    "weight": 1,
+    "platforms": [
+     "web"
+    ]
+   },
+   {
+    "id": "UAE",
+    "label": "UAE",
+    "type": "country",
+    "evidenceIds": [
+     "E28f0befb",
+     "E24ef7b5d",
+     "E04baa35c"
+    ],
+    "weight": 3,
+    "platforms": [
+     "web",
+     "instagram"
+    ]
+   },
+   {
+    "id": "EG",
+    "label": "Egypt",
+    "type": "country",
+    "evidenceIds": [
+     "E28f0befb",
+     "E24ef7b5d",
+     "E2f100297",
+     "E04baa35c"
+    ],
+    "weight": 4,
+    "platforms": [
+     "web",
+     "instagram"
+    ]
+   },
+   {
+    "id": "EG_MOP",
+    "label": "Egypt Ministry of Petroleum and Mineral Resources",
+    "type": "ministry",
+    "evidenceIds": [
+     "E326712af",
+     "E7962b69c"
+    ],
+    "weight": 2,
+    "platforms": [
+     "web"
+    ]
+   },
+   {
+    "id": "DANAGAS",
+    "label": "Dana Gas (UAE-based)",
+    "type": "investor",
+    "evidenceIds": [
+     "E326712af"
+    ],
+    "weight": 1,
+    "platforms": [
+     "web"
+    ]
+   },
+   {
+    "id": "GOGAS",
+    "label": "GoGas Holding (Egyptian-UAE joint venture)",
+    "type": "fund",
+    "evidenceIds": [
+     "E542c8081"
+    ],
+    "weight": 1,
+    "platforms": [
+     "web"
+    ]
+   },
+   {
+    "id": "MADKOUR",
+    "label": "Madkour Holding Group",
+    "type": "investor",
+    "evidenceIds": [
+     "E542c8081"
+    ],
+    "weight": 1,
+    "platforms": [
+     "web"
+    ]
+   },
+   {
+    "id": "BANDA_TEVET",
+    "label": "Banda Tevet Offshore Gas Field",
+    "type": "project",
+    "evidenceIds": [
+     "E542c8081"
+    ],
+    "weight": 1,
+    "platforms": [
+     "web"
+    ]
+   },
+   {
+    "id": "MAURITANIA",
+    "label": "Mauritania (Nouakchott project site)",
+    "type": "country",
+    "evidenceIds": [
+     "E542c8081"
+    ],
+    "weight": 1,
+    "platforms": [
+     "web"
+    ]
+   },
+   {
+    "id": "TCM",
+    "label": "TCM Project Manager LLC",
+    "type": "investor",
+    "evidenceIds": [
+     "E7962b69c"
+    ],
+    "weight": 1,
+    "platforms": [
+     "web"
+    ]
+   }
+  ],
+  "edges": [
+   {
+    "id": "UAE--EG::Energy",
+    "source": "UAE",
+    "target": "EG",
+    "type": "Energy",
+    "direction": "bidirectional",
+    "claim": "Egypt and the UAE are advancing discussions to expand natural gas production in the Nile Delta, reflecting deepening Global South energy cooperation and reduced reliance on Western financing and technology.",
+    "allClaims": [
+     "Egypt and the UAE are advancing discussions to expand natural gas production in the Nile Delta, reflecting deepening Global South energy cooperation and reduced reliance on Western financing and technology."
+    ],
+    "evidenceIds": [
+     "E28f0befb"
+    ],
+    "evidenceCount": 1,
+    "platforms": [
+     "web"
+    ],
+    "avgConfidence": 0.85,
+    "recency": 0.45,
+    "weight": 0.272,
+    "contradiction": null
+   },
+   {
+    "id": "EG_MOP--DANAGAS::Energy",
+    "source": "EG_MOP",
+    "target": "DANAGAS",
+    "type": "Energy",
+    "direction": "bidirectional",
+    "claim": "Egypt's Petroleum Minister Karim Badawi met with UAE-based Dana Gas CEO Richard Hall to discuss expanding exploration, development and production in Egypt's Nile Delta, with Dana Gas reporting a 20-25% increase in proven gas reserves.",
+    "allClaims": [
+     "Egypt's Petroleum Minister Karim Badawi met with UAE-based Dana Gas CEO Richard Hall to discuss expanding exploration, development and production in Egypt's Nile Delta, with Dana Gas reporting a 20-25% increase in proven gas reserves."
+    ],
+    "evidenceIds": [
+     "E326712af"
+    ],
+    "evidenceCount": 1,
+    "platforms": [
+     "web"
+    ],
+    "avgConfidence": 0.8,
+    "recency": 0.226,
+    "weight": 0.256,
+    "contradiction": null
+   },
+   {
+    "id": "GOGAS--MADKOUR::Infrastructure",
+    "source": "GOGAS",
+    "target": "MADKOUR",
+    "type": "Infrastructure",
+    "direction": "bidirectional",
+    "claim": "Egyptian-UAE joint venture GoGas Holding signed a Joint Development Agreement with Madkour Holding Group to build a combined-cycle gas power plant in Nouakchott, Mauritania.",
+    "allClaims": [
+     "Egyptian-UAE joint venture GoGas Holding signed a Joint Development Agreement with Madkour Holding Group to build a combined-cycle gas power plant in Nouakchott, Mauritania."
+    ],
+    "evidenceIds": [
+     "E542c8081"
+    ],
+    "evidenceCount": 1,
+    "platforms": [
+     "web"
+    ],
+    "avgConfidence": 0.75,
+    "recency": 0.002,
+    "weight": 0.24,
+    "contradiction": null
+   },
+   {
+    "id": "GOGAS--MAURITANIA::Infrastructure",
+    "source": "GOGAS",
+    "target": "MAURITANIA",
+    "type": "Infrastructure",
+    "direction": "a->b",
+    "claim": "The GoGas Holding-Madkour joint venture will build a combined-cycle gas power plant located in Nouakchott, Mauritania.",
+    "allClaims": [
+     "The GoGas Holding-Madkour joint venture will build a combined-cycle gas power plant located in Nouakchott, Mauritania."
+    ],
+    "evidenceIds": [
+     "E542c8081"
+    ],
+    "evidenceCount": 1,
+    "platforms": [
+     "web"
+    ],
+    "avgConfidence": 0.75,
+    "recency": 0.002,
+    "weight": 0.24,
+    "contradiction": null
+   },
+   {
+    "id": "GOGAS--BANDA_TEVET::Energy",
+    "source": "GOGAS",
+    "target": "BANDA_TEVET",
+    "type": "Energy",
+    "direction": "a->b",
+    "claim": "The Nouakchott combined-cycle gas power plant will be powered by gas from the offshore Banda Tevet field.",
+    "allClaims": [
+     "The Nouakchott combined-cycle gas power plant will be powered by gas from the offshore Banda Tevet field."
+    ],
+    "evidenceIds": [
+     "E542c8081"
+    ],
+    "evidenceCount": 1,
+    "platforms": [
+     "web"
+    ],
+    "avgConfidence": 0.75,
+    "recency": 0.002,
+    "weight": 0.24,
+    "contradiction": null
+   },
+   {
+    "id": "EG_MOP--ADPORTS::Infrastructure",
+    "source": "EG_MOP",
+    "target": "ADPORTS",
+    "type": "Infrastructure",
+    "direction": "bidirectional",
+    "claim": "Egypt's Ministry of Petroleum and Mineral Resources signed an MoU with Abu Dhabi Ports Group to explore joint operation and development of crude oil storage facilities, reinforcing deep energy ties between Egypt and the UAE.",
+    "allClaims": [
+     "Egypt's Ministry of Petroleum and Mineral Resources signed an MoU with Abu Dhabi Ports Group to explore joint operation and development of crude oil storage facilities, reinforcing deep energy ties between Egypt and the UAE."
+    ],
+    "evidenceIds": [
+     "E7962b69c"
+    ],
+    "evidenceCount": 1,
+    "platforms": [
+     "web"
+    ],
+    "avgConfidence": 0.6,
+    "recency": 0.226,
+    "weight": 0.192,
+    "contradiction": null
+   },
+   {
+    "id": "EG_MOP--TCM::Infrastructure",
+    "source": "EG_MOP",
+    "target": "TCM",
+    "type": "Infrastructure",
+    "direction": "bidirectional",
+    "claim": "Egypt's Ministry of Petroleum and Mineral Resources signed an MoU with TCM Project Manager LLC to explore joint operation and development of crude oil storage facilities.",
+    "allClaims": [
+     "Egypt's Ministry of Petroleum and Mineral Resources signed an MoU with TCM Project Manager LLC to explore joint operation and development of crude oil storage facilities."
+    ],
+    "evidenceIds": [
+     "E7962b69c"
+    ],
+    "evidenceCount": 1,
+    "platforms": [
+     "web"
+    ],
+    "avgConfidence": 0.6,
+    "recency": 0.226,
+    "weight": 0.192,
+    "contradiction": null
+   },
+   {
+    "id": "UAE--EG::Technology",
+    "source": "UAE",
+    "target": "EG",
+    "type": "Technology",
+    "direction": "a->b",
+    "claim": "The UAE announced a $1 billion investment to expand AI infrastructure and AI-enabled services across Africa, with Egypt named among the five leading markets for data-centre capacity on the continent.",
+    "allClaims": [
+     "The UAE announced a $1 billion investment to expand AI infrastructure and AI-enabled services across Africa, with Egypt named among the five leading markets for data-centre capacity on the continent."
+    ],
+    "evidenceIds": [
+     "E24ef7b5d"
+    ],
+    "evidenceCount": 1,
+    "platforms": [
+     "web"
+    ],
+    "avgConfidence": 0.5,
+    "recency": 0,
+    "weight": 0.16,
+    "contradiction": null
+   },
+   {
+    "id": "MOFA--EG::Diplomatic",
+    "source": "MOFA",
+    "target": "EG",
+    "type": "Diplomatic",
+    "direction": "a->b",
+    "claim": "The UAE expressed deep concern over recent regional developments and called for an immediate halt to escalation and maximum restraint to avoid the region sliding into further violence and instability.",
+    "allClaims": [
+     "The UAE expressed deep concern over recent regional developments and called for an immediate halt to escalation and maximum restraint to avoid the region sliding into further violence and instability."
+    ],
+    "evidenceIds": [
+     "E2f100297"
+    ],
+    "evidenceCount": 1,
+    "platforms": [
+     "instagram"
+    ],
+    "avgConfidence": 0.85,
+    "recency": 0.946,
+    "weight": 0.272,
+    "contradiction": null
+   },
+   {
+    "id": "UAE--EG::Media narrative",
+    "source": "UAE",
+    "target": "EG",
+    "type": "Media narrative",
+    "direction": "a->b",
+    "claim": "Ras Al Khaimah's Crown Prince Sheikh Mohammed bin Saud bin Saqr Al Qasimi described UAE Union Day as a historic milestone embodying the founding fathers' vision of unity, framed as a model of development and stability for the region.",
+    "allClaims": [
+     "Ras Al Khaimah's Crown Prince Sheikh Mohammed bin Saud bin Saqr Al Qasimi described UAE Union Day as a historic milestone embodying the founding fathers' vision of unity, framed as a model of development and stability for the region."
+    ],
+    "evidenceIds": [
+     "E04baa35c"
+    ],
+    "evidenceCount": 1,
+    "platforms": [
+     "instagram"
+    ],
+    "avgConfidence": 0.85,
+    "recency": 0.946,
+    "weight": 0.272,
+    "contradiction": null
+   }
+  ]
+ },
+ "narrative": {
+  "text": "Momentum in UAE\u2013Egypt relations is concentrated in the energy sector, with expanded Nile Delta gas production discussions signaling deepening Global South energy cooperation as a strategic pillar of the bilateral relationship [E:28f0befb]. This is reinforced operationally through Dana Gas CEO engagement with Egypt's Petroleum Minister on exploration and production expansion, and further evidenced by the GoGas Holding joint venture executing a Joint Development Agreement with Madkour Holding Group for combined-cycle gas power infrastructure [E:326712af,E:542c8081]. The infrastructure footprint is diversifying beyond pure energy, as GoGas-linked evidence also touches Mauritania and Banda Tevet nodes, suggesting the UAE-Egypt energy partnership model is being replicated or extended regionally rather than remaining bilaterally contained [E:542c8081]. Parallel diplomatic-narrative activity shows UAE messaging operating on two tracks: formal MOFA diplomatic concern over regional escalation, and softer cultural-narrative content around UAE Union Day themes, both scored at equal weight to the core energy edge, indicating narrative reinforcement is being deployed alongside substantive economic engagement [E:2f100297,E:04baa35c]. Infrastructure diversification is further signaled by Egypt's Petroleum Ministry MoUs with Abu Dhabi Ports Group, suggesting UAE-Egypt cooperation is expanding from pure energy into ports and logistics coordination [E:7962b69c]. For ODA leadership, the key risk is that diplomatic narrative signals (Union Day messaging, regional de-escalation calls) may mask or need to be read against the concentrated, evidence-thin cluster around a single GoGas source anchoring three separate infrastructure/energy edges, warranting validation of source diversity before treating this as a broad momentum trend [E:542c8081].",
+  "latencyMs": 257731
+ },
+ "diff": {
+  "newEdges": [
+   "UAE--EG::Energy",
+   "EG_MOP--DANAGAS::Energy",
+   "GOGAS--MADKOUR::Infrastructure",
+   "GOGAS--MAURITANIA::Infrastructure",
+   "GOGAS--BANDA_TEVET::Energy",
+   "EG_MOP--ADPORTS::Infrastructure",
+   "EG_MOP--TCM::Infrastructure",
+   "UAE--EG::Technology",
+   "MOFA--EG::Diplomatic",
+   "UAE--EG::Media narrative"
+  ],
+  "removedEdges": [],
+  "newNodes": [
+   "MOFA",
+   "ADPORTS",
+   "UAE",
+   "EG",
+   "EG_MOP",
+   "DANAGAS",
+   "GOGAS",
+   "MADKOUR",
+   "BANDA_TEVET",
+   "MAURITANIA",
+   "TCM"
+  ],
+  "changedWeights": []
+ },
+ "prevRunId": null
+}

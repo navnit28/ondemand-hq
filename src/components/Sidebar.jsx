@@ -1,7 +1,7 @@
 import React from 'react';
 import {
   LayoutGrid, FileText, Scale, BarChart3, Languages, Newspaper, Type, PieChart,
-  Globe, Plus, MonitorPlay,
+  Globe, Plus, MonitorPlay, GitBranch,
 } from 'lucide-react';
 import { LANG } from '../i18n.js';
 
@@ -26,7 +26,7 @@ function groupLabel(iso) {
   return d.toLocaleDateString('en-GB', { month: 'long', year: 'numeric' });
 }
 
-export default function Sidebar({ conversations, activeId, onSelect, onNew, onTool, onIntel, intelActive, onMsm, msmActive, open }) {
+export default function Sidebar({ conversations, activeId, onSelect, onNew, onTool, onIntel, intelActive, onMsm, msmActive, onCorr, corrActive, open }) {
   const groups = [];
   let last = null;
   for (const c of conversations) {
@@ -48,6 +48,9 @@ export default function Sidebar({ conversations, activeId, onSelect, onNew, onTo
       <button className={`sidebar__intel${msmActive ? ' active' : ''}`} onClick={() => onMsm?.()}
         dir={LANG === 'ar' ? 'rtl' : 'ltr'}>
         <MonitorPlay size={15} strokeWidth={2} aria-hidden /> {LANG === 'ar' ? 'تحليل الإعلام' : 'MSM Analysis'}
+      </button>
+      <button className={`sidebar__intel${corrActive ? ' active' : ''}`} onClick={() => onCorr?.()}>
+        <GitBranch size={15} strokeWidth={2} aria-hidden /> Correlation Engine
       </button>
       <div className="sidebar__history">
         {groups.length === 0 && <div className="sidebar__empty">No conversations yet — start one on the right.</div>}

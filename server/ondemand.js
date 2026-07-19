@@ -85,11 +85,11 @@ export async function createOdSession(externalUserId, pluginIds = []) {
  * error-frame detection, [DONE] termination, and STREAM_DEBUG logging.
  * EVERY call uses gpt-5.6-sol-medium (ENDPOINT_ID + REASONING_EFFORT) with streaming ON.
  */
-export async function streamQuery({ odSessionId, query, pluginIds = [], systemPrompt, onRaw, onEvent, signal }) {
+export async function streamQuery({ odSessionId, query, pluginIds = [], systemPrompt, onRaw, onEvent, signal, endpointId, reasoningEffort }) {
   const body = {
     query,
-    endpointId: ENDPOINT_ID,
-    reasoningEffort: REASONING_EFFORT,   // reasoning tokens ON (thinking frames surface when the model emits them)
+    endpointId: endpointId || ENDPOINT_ID,
+    reasoningEffort: reasoningEffort || REASONING_EFFORT,   // reasoning tokens ON (thinking frames surface when the model emits them)
                                           // NOTE: `reasoningEffort` is not in the documented submitquery schema but is
                                           // accepted by the live API — live-accepted extension beyond the documented schema.
     responseMode: 'stream',

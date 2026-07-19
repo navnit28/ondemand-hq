@@ -1003,3 +1003,48 @@ All calls made live via `curl -H "apikey: $ON_DEMAND_API_KEY"` against base host
 | Get all endpoints | GET | `/config/v1/public/endpoints` | `getallendpointspublic` |
 
 All auth via header `apikey: $ON_DEMAND_API_KEY` on every call above. All calls returned HTTP 200; no 404s encountered (the task's suggested slugs `getreasoningmodes`/`getendpoints` were not literal doc slugs — the categories payload resolved them to `getentitydefinitionpublic`/`getallendpointspublic`, fetched successfully instead per the task's fallback instruction).
+
+---
+
+## 2026-07-19 (Phase B RULE 0, 02:34:40–02:34:42 UTC) — LIVE docs re-consult before workflow integration
+
+All fetched live with apikey auth from https://api.on-demand.io/config/v1/public/docs/reference/api/<slug> — every call HTTP 200:
+- 02:34:40Z post_workflow-id-activate (559 ms, 689 B): POST /workflow/{id}/activate — responses 200/500, server https://api.on-demand.io/automation/api.
+- 02:34:40Z post_workflow-id-deactivate (538 ms): POST /workflow/{id}/deactivate — 200/500.
+- 02:34:41Z post_workflow-id-execute (382 ms): POST /workflow/{id}/execute → {executionID}; 400 invalid/inactive, 404, 500.
+- 02:34:41Z streamworkflowlogs (351 ms): POST /workflow/stream_logs body {executionID}; StreamEvent {event_type: log|output, execution_id, workflow_id, message, timestamp}.
+- 02:34:41Z createchatsession (318 ms): POST /chat/v1/sessions, externalUserId required, response data.id (live returns 201).
+- 02:34:42Z submitquery (333 ms): POST /chat/v1/sessions/{sessionId}/query — required query/endpointId/responseMode; reasoningEffort remains a live-accepted TOP-LEVEL extension (enum low|medium|max via server 400 message); no maxTokens in modelConfigs.
+- 02:34:42Z getentitydefinitionpublic (291 ms): GET /config/v1/public/entity_definition?entityId=reasoning_modes.
+Decision: 24h scheduling uses the NATIVE Agents Flow Builder API (cron trigger + webhook delivery to POST /api/correlate/trigger on the deployed app) — no local cron.
+
+## 2026-07-19 (Phase B, 02:36–02:53 UTC) — Correlation Engine Parts 1+2 implemented + RUN 1 proof
+
+- server/correlate.js (391 lines): UAE node registry (16 seed entities, extensible) + country-side
+  nodes surfaced from evidence; 5-plugin collectors normalize into ONE evidence schema
+  {id, claim, platform, source, url, publishDate, snippet, media[], confidence}; edge extractor
+  emits {entity_a, entity_b, relationship_type(9-type fixed taxonomy), direction, claim,
+  evidence_record_ids, confidence}; HARD EVIDENCE GATE server-side (invalid/unbacked edges
+  dropped — validateEdges rejected 0 on run 1 because the prompt pre-constrains ids);
+  weight = min(1, 0.25+0.15·n)·(0.7+0.1·platforms)·avgConf with 14-day half-life recency →
+  edge width/opacity; dedupe merges same pair+type stacking evidence; contradictions ⚠;
+  Connected Dots streamed via the shared SSE passthrough (thinking/tool frames forwarded);
+  versioned runs on disk server/data/correlate/runs/<ISO>/<epochMs>-v<N>.json with
+  model/pluginsCalled/evidenceCount/generatedAt/diff-vs-prev; routes: config/status/runs/run/
+  evidence/download (audit JSON)/regenerate (SSE)/trigger (workflow webhook target).
+- Model contract in env.js corrModel(): build=predefined-claude-sonnet-5, production=
+  predefined-claude-fable-5+medium — env-overridable, never hardcoded at call sites, and the
+  resolved model string is persisted in every run JSON. streamQuery() gained per-call
+  endpointId/reasoningEffort overrides.
+- UI: src/correlate/CorrelationEngine.jsx — run scrubber (all versions), force graph
+  (react-force-graph-2d; width=weight, dash=⚠), Connected Dots with [E:] citation pills,
+  live thinking/tool panel on Regenerate, per-run evidence+edges JSON download button.
+- Fix during bring-up: createOdSession() returns the session-id STRING (not {id}) — three
+  .id call sites corrected; first regenerate attempt failed with upstream "sessionId is
+  invalid" (HTTP 400) until fixed.
+- RUN 1 (build model, sonnet-5): POST /api/correlate/regenerate/EG {"mode":"build"} on the
+  fresh sandbox 02:48:34Z → run 1784429572200-v1, generatedAt 2026-07-19T02:52:52.200Z,
+  model "predefined-claude-sonnet-5+medium (build)", 6 plugins called, 7 evidence
+  (5 web + 2 instagram with in-pipeline re-downloaded on-disk proofs /proofs/wamnews-*.jpg
+  95,209 B + 191,436 B), 10 evidence-gated edges / 11 nodes, narrative 1,852 chars with
+  [E:] citations, diff v0→v1 = 10 new edges / 11 new nodes.

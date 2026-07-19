@@ -8,6 +8,7 @@ import DebugDrawer from './components/DebugDrawer.jsx';
 import BilingualLoader from './components/BilingualLoader.jsx';
 import IntelDashboard from './intel/IntelDashboard.jsx';
 import MsmDashboard from './msm/MsmDashboard.jsx';
+import CorrelationEngine from './correlate/CorrelationEngine.jsx';
 import { ArrowDown, X, AlertTriangle } from 'lucide-react';
 import { dissect } from './markdown.jsx';
 
@@ -38,6 +39,7 @@ export default function App() {
   const [atBottom, setAtBottom] = useState(true);
   const [sidebarOpen] = useState(false);
   const [intelOpen, setIntelOpen] = useState(false); // ODA Intelligence module view
+  const [corrOpen, setCorrOpen] = useState(false);   // Correlation Engine module view
   // MSM Analysis module view — /msm-analysis route (deep-linkable + history-integrated)
   const [msmOpen, setMsmOpen] = useState(() => {
     try { return window.location.pathname.replace(/\/+$/, '') === '/msm-analysis'; } catch { return false; }
@@ -274,7 +276,7 @@ export default function App() {
   const activeFeature = pendingTool;
 
   const startTool = (key) => {
-    setIntelOpen(false); setMsmOpen(false);
+    setIntelOpen(false); setMsmOpen(false); setCorrOpen(false);
     newChat(key, { wizard: WIZARD_FEATURES.has(key) });
   };
 
@@ -296,10 +298,15 @@ export default function App() {
         onSelect={(id) => { setIntelOpen(false); setMsmOpen(false); loadConversation(id); }}
         onNew={() => { setIntelOpen(false); setMsmOpen(false); newChat('chat'); }}
         onTool={startTool}
-        onIntel={() => { setMsmOpen(false); setIntelOpen(true); }} intelActive={intelOpen}
-        onMsm={() => { setIntelOpen(false); setMsmOpen(true); }} msmActive={msmOpen}
+        onIntel={() => { setMsmOpen(false); setCorrOpen(false); setIntelOpen(true); }} intelActive={intelOpen}
+        onMsm={() => { setIntelOpen(false); setCorrOpen(false); setMsmOpen(true); }} msmActive={msmOpen}
+        onCorr={() => { setIntelOpen(false); setMsmOpen(false); setCorrOpen(true); }} corrActive={corrOpen}
         open={sidebarOpen} />
-      {msmOpen ? (
+      {corrOpen ? (
+        <div className="main main--intel">
+          <CorrelationEngine onExit={() => setCorrOpen(false)} />
+        </div>
+      ) : msmOpen ? (
         <div className="main main--intel">
           <MsmDashboard onExit={() => setMsmOpen(false)} onAnalyseDeeper={analyseDeeper} />
         </div>

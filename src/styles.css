@@ -1179,3 +1179,36 @@ a.xpost:focus-visible { outline: 2px solid #1d9bf0; outline-offset: -2px; border
   .msm-grid { grid-template-columns: 1fr; }
   .msm-head__run { align-items: flex-start; }
 }
+
+/* ================= CORRELATION ENGINE — evidence-gated graph (Phase B) ========= */
+.corr { max-width: 1240px; margin: 0 auto; padding: 22px 28px 60px; }
+.corr-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; flex-wrap: wrap; border-bottom: 1px solid var(--border); padding-bottom: 14px; }
+.corr-head h1 { font-family: var(--font-title); font-size: 24px; margin: 0 0 2px; }
+.corr-head p { margin: 0; color: var(--ink-55); font-size: 12.5px; }
+.corr-head__actions { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+.corr-head__actions select { border: 1px solid var(--border); border-radius: 8px; padding: 7px 10px; font: inherit; background: #fff; }
+.corr-btn { display: inline-flex; align-items: center; gap: 6px; background: var(--od-green, #0f6b5c); color: #fff; border: 0; border-radius: 8px; padding: 8px 14px; font: inherit; font-size: 13px; cursor: pointer; text-decoration: none; }
+.corr-btn:disabled { opacity: .55; cursor: default; }
+.corr-btn--ghost { background: #fff; color: var(--ink, #222); border: 1px solid var(--border); }
+.corr-btn .spin { animation: corrspin 1s linear infinite; }
+@keyframes corrspin { to { transform: rotate(360deg); } }
+.corr-scrubber { display: flex; gap: 6px; flex-wrap: wrap; margin: 12px 0 4px; }
+.corr-chip { border: 1px solid var(--border); background: #fff; border-radius: 999px; padding: 5px 12px; font-size: 12px; cursor: pointer; }
+.corr-chip.active { background: var(--od-green, #0f6b5c); color: #fff; border-color: transparent; }
+.corr-live { border: 1px solid var(--border); border-radius: 10px; padding: 10px 14px; margin: 12px 0; background: #fbfaf7; }
+.corr-live__status { font-size: 13px; font-weight: 600; }
+.corr-live__think pre, .corr-live__tool { font-size: 11.5px; white-space: pre-wrap; max-height: 140px; overflow: auto; color: var(--ink-55); margin: 6px 0 0; }
+.corr-err { color: #9b2c2c; font-size: 13px; margin: 10px 0; display: flex; gap: 6px; align-items: center; }
+.corr-narrative { margin: 16px 0 6px; }
+.corr-narrative h2, .corr-edges h2 { font-size: 16px; margin: 0 0 8px; }
+.corr-narrative p { line-height: 1.75; font-size: 14.5px; }
+.corr-cite { background: #eef4f2; border-radius: 5px; padding: 1px 5px; font-size: 11px; margin-inline: 2px; }
+.corr-graphwrap { border: 1px solid var(--border); border-radius: 12px; overflow: hidden; margin: 14px 0; }
+.corr-legend { display: flex; gap: 12px; flex-wrap: wrap; padding: 8px 12px; border-top: 1px solid var(--border); font-size: 11.5px; color: var(--ink-55); }
+.corr-legend__item { display: inline-flex; align-items: center; gap: 5px; }
+.corr-legend__item i { width: 14px; height: 3px; border-radius: 2px; display: inline-block; }
+.corr-edges table { width: 100%; border-collapse: collapse; font-size: 12.5px; }
+.corr-edges th, .corr-edges td { text-align: start; padding: 7px 8px; border-bottom: 1px solid var(--border); vertical-align: top; }
+.corr-claim { color: var(--ink-55); font-size: 11.5px; max-width: 380px; }
+.corr-type { color: #fff; border-radius: 5px; padding: 2px 7px; font-size: 11px; white-space: nowrap; }
+@media (max-width: 900px) { .corr { padding: 16px 14px 50px; } .corr-edges table { font-size: 11px; } }

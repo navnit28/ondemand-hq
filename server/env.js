@@ -38,6 +38,21 @@ export const REASONING_EFFORT = 'medium';
 export const ANALYSIS_ENDPOINT_ID = process.env.ANALYSIS_ENDPOINT_ID || ENDPOINT_ID;
 export const ANALYSIS_REASONING_EFFORT = process.env.ANALYSIS_REASONING_EFFORT || REASONING_EFFORT;
 
+// ---- Correlation Engine model contract (Phase B) ----
+// Build/testing: claude-sonnet-5. Production default: claude-fable-5 + medium reasoning.
+// NEVER hardcoded at call sites — resolved via corrModel() below, overridable by env,
+// and the resolved model is logged into every versioned run JSON (model/endpointId fields).
+export const CORR_BUILD_ENDPOINT_ID = process.env.CORR_BUILD_ENDPOINT_ID || 'predefined-claude-sonnet-5';
+export const CORR_PROD_ENDPOINT_ID = process.env.CORR_PROD_ENDPOINT_ID || 'predefined-claude-fable-5';
+export const CORR_REASONING_EFFORT = process.env.CORR_REASONING_EFFORT || 'medium'; // low|medium|max (live-validated enum)
+// modeOverride: workflow deliveries force 'production'; manual regenerate uses the
+// server default (env CORRELATE_MODE) unless the request specifies build/production.
+export function corrModel(modeOverride) {
+  const mode = String(modeOverride || process.env.CORRELATE_MODE || 'production').toLowerCase() === 'build' ? 'build' : 'production';
+  const endpointId = mode === 'build' ? CORR_BUILD_ENDPOINT_ID : CORR_PROD_ENDPOINT_ID;
+  return { endpointId, reasoningEffort: CORR_REASONING_EFFORT, mode };
+}
+
 // STREAM_DEBUG: verbose SSE frame logging (upstream + browser side).
 // endpoint. ON by default at start; set STREAM_DEBUG=false to turn off (STREAM_DEBUG=true = explicit-on).
 export const STREAM_DEBUG = String(process.env.STREAM_DEBUG ?? 'true').toLowerCase() !== 'false';
