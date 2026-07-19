@@ -20,33 +20,6 @@ function StatCard({ label, value, tone, delay = 0 }) {
   );
 }
 
-/** UAE Correlation network — SVG relationship graph from real correlation records. */
-function CorrelationGraph({ correlations }) {
-  if (!correlations?.length) return <div className="ig-empty">No UAE correlations yet — they appear as intelligence is collected.</div>;
-  const entities = [...new Set(correlations.map(c => c.entity))].slice(0, 10);
-  const countries = [...new Set(correlations.map(c => c.country))];
-  const W = 720, H = 40 + Math.max(entities.length, countries.length) * 44;
-  const ey = (i) => 40 + i * 44, cy = (i) => 40 + i * 44;
-  return (
-    <svg className="ig-network" viewBox={`0 0 ${W} ${H}`} role="img" aria-label="UAE correlation network">
-      {correlations.filter(c => entities.includes(c.entity)).map((c, i) => {
-        const ei = entities.indexOf(c.entity), ci = countries.indexOf(c.country);
-        if (ei < 0 || ci < 0) return null;
-        return <motion.path key={i} d={`M 180 ${ey(ei)} C 360 ${ey(ei)}, 360 ${cy(ci)}, 540 ${cy(ci)}`}
-          fill="none" stroke="#b08d3c" strokeOpacity={0.18 + 0.6 * ((c.strength || 50) / 100)} strokeWidth={1 + ((c.strength || 50) / 40)}
-          initial={{ pathLength: 0 }} animate={{ pathLength: 1 }} transition={{ duration: 0.9, delay: i * 0.03 }} />;
-      })}
-      {entities.map((e, i) => (
-        <g key={e}><circle cx={180} cy={ey(i)} r={5} fill="#0f6b5c" />
-          <text x={168} y={ey(i) + 4} textAnchor="end" className="ig-network__label">{e}</text></g>
-      ))}
-      {countries.map((c, i) => (
-        <g key={c}><circle cx={540} cy={cy(i)} r={5} fill="#b08d3c" />
-          <text x={552} y={cy(i) + 4} className="ig-network__label">{c}</text></g>
-      ))}
-    </svg>
-  );
-}
 
 export default function IntelDashboard({ onExit }) {
   const [ov, setOv] = useState(null);
@@ -176,12 +149,6 @@ export default function IntelDashboard({ onExit }) {
           </div>
         </section>
       )}
-
-      {/* UAE correlation network */}
-      <section className="ig-section">
-        <h2>UAE Correlation Engine</h2>
-        <CorrelationGraph correlations={ov.correlations} />
-      </section>
 
       {/* Latest Executive Brief */}
       {brief && (

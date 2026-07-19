@@ -288,7 +288,6 @@ export function overview() {
   const allOpps = withData.flatMap(p => (latestSnapshot(p.iso)?.analysis?.opportunities || []).map(o => ({ ...o, country: p.name })));
   const allRisks = withData.flatMap(p => (latestSnapshot(p.iso)?.analysis?.risks || []).map(r => ({ ...r, country: p.name })));
   const allAgr = withData.flatMap(p => (latestSnapshot(p.iso)?.analysis?.agreements || []).map(a => ({ ...a, country: p.name })));
-  const allCorr = withData.flatMap(p => (latestSnapshot(p.iso)?.analysis?.correlations || []).map(x => ({ ...x, country: p.name })));
   const briefs = getBriefs().briefs;
 
   // (2026-07-18 fix) Risk/Opportunity Engine selection: the old `.slice(0, 12)`
@@ -327,7 +326,6 @@ export function overview() {
     opportunities: diversify(allOpps, 16),
     trendingItems: allItems.sort((a, b) => (b.confidence || 0) - (a.confidence || 0)).slice(0, 8),
     latestAgreements: allAgr.slice(0, 10),
-    correlations: allCorr.sort((a, b) => (b.strength || 0) - (a.strength || 0)).slice(0, 20),
     latestBrief: briefs.length ? briefs[briefs.length - 1] : null,
     perCountry,
     workflow: getMeta().workflow || null,

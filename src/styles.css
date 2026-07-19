@@ -689,8 +689,6 @@ textarea, input { font-family: inherit; }
 .ig-minirow__c { color: var(--ink-55); font-size: 11.5px; }
 
 /* correlation network */
-.ig-network { width: 100%; height: auto; background: #fff; border: 1px solid var(--border); border-radius: 16px; }
-.ig-network__label { font-size: 11px; fill: #4a4e55; }
 
 /* brief */
 .ig-brief { background: rgba(255,255,255,.8); backdrop-filter: blur(10px); border: 1px solid var(--border); border-radius: 18px; padding: 20px 22px; }
