@@ -1014,3 +1014,99 @@ merged module: 0 hits for `modelConfigs`/`maxTokens` or any undocumented param.
 - GitHub push: BLOCKED — no git credentials in this environment (.creds empty,
   get_github_token path not allowed by security policy). Commits are local, labeled,
   and listed in the run response; push resumes the moment a token is provided.
+
+---
+
+## 2026-07-19 08:02 UTC — Redeploy (existing build, no code changes)
+
+Previous sandbox `sbx_zm9i3Ind7saB4epYAXDcvc05Gp7N` (https://sb-5ezbro8pqhgo.vercel.run)
+expired — verified HTTP 410 `SANDBOX_STOPPED` at 08:00Z. Redeployed the SAME codebase
+(commits `6683c54` / docs `9a05605`, existing `dist/` build — `vite build` NOT re-run)
+to a fresh ephemeral Vercel Sandbox via tarball copy (`sandbox copy` → `/tmp/oda-app.tgz`
+→ `tar -C /vercel/sandbox`, node_modules excluded; `npm install` re-run in-sandbox).
+
+- **New preview URL:** https://sb-7jx87cr0lb7s.vercel.run
+- **New sandbox ID:** `sbx_WnJB7cTwVOIQNyWSD7nvH6cXMBe4` (runtime node22, port 8080, timeout 90m)
+- **Deployment timestamp:** 2026-07-19 ~08:00–08:02 UTC (server listening 08:02Z)
+- **Liveness check:** `GET /` → **HTTP 200** at 2026-07-19T08:02:21Z ·
+  `GET /api/health` → **HTTP 200** at 2026-07-19T08:02:21Z
+  (`{"ok":true,"model":"predefined-gpt-5.6-sol+medium","keyLoaded":true,"time":"2026-07-19T08:02:21.707Z"}`)
+- CLI note: `--timeout 1h30m` rejected by this sandbox CLI version — use `90m`.
+
+## 2026-07-19 08:18 UTC — Correlation Engine V2 frontend upgrade (12 features)
+
+Implemented on the existing codebase (no regeneration; commits base 6683c54/9a05605).
+New module dir `src/correlation/v2/`:
+- `GraphCanvasV2.jsx` — V2 canvas: minimap (F2), nav controls (F3: Space=pan,
+  dbl-click center, Shift+drag select, Ctrl+click lock w/ L-badge, ALT+scroll
+  timeline scrub via capture-phase wheel), pill rendering (F4), rich-media
+  chips + kind glyphs (F7), Heat Mode painters (F11), Meridian Loom geo
+  overlay + lat/lon pinning (F12).
+- `GraphV2Section.jsx` — shell: fullscreen modal w/ ESC + zoom save/restore
+  (F1), mode toolbar (Collapse clusters / Heat / Geo / Expand Intelligence
+  View), legend (rel-type or geo-category), inspector + preview + lightbox
+  wiring, breaking-news detector (evidence <48h of generated_at).
+- `Inspectors.jsx` — EntityInspector (F5, analyst-notebook), Relationship-
+  Inspector (F6, connection-chain pills + "why this exists"), HoverPreview
+  (F8), LightboxV2 (F9: zoom/fullscreen/carousel/caption/source/AI summary/
+  related entities).
+- `IntelligenceTimeline.jsx` — F10 drag-to-replay + play/pause + density bars.
+- `cluster.js` — collapseGraph (Louvain pills, labeled "<anchor> · <topType>
+  (N) ▼"), windowGraph (evidence-fraction strengthen/weaken), heatAnnotate.
+- `geo.js` — coords table, equirectangular projection, category styles, blobs.
+`CorrelationEngine.jsx` now renders GraphV2Section (V1 popover block replaced;
+V1 CorrelationGraph.jsx left intact for reference). ~130 lines of V2 CSS
+appended to styles.css. QA gate preserved: white canvas, 15% dim, size=weight,
+width=strength, color=type, halos, labels country+top5+hover only, legend
+always visible, Quick Query on entity/edge/lightbox artifacts.
+
+## 2026-07-19 08:30 UTC — CE-V2 backend research & intelligence pipeline (9 stages)
+
+New `server/correlationV2.js` (~420 lines), registered via `registerV2Routes` in
+index.js. Edits in place; legacy V1 pipeline (correlation.js) untouched and still
+serving /api/correlation/*. Model policy: EVERY call gpt-5.6-sol + medium
+(ENDPOINT_ID/REASONING_EFFORT) through streamQuery — streaming ON, thinking
+frames passthrough per the existing UI contract; hard failures logged
+`[FAIL] [HARD-FAIL]` + log.error, no silent fallback.
+
+Stages → endpoints:
+1. Deep Search windows (24h/week/month/6m/year/2y/all; default 2y + 30-day
+   recency boost policy) → GET /api/correlation/v2/config
+2. Context weighting (historical 0.2 / recent 0.6 / breaking 1.0; ×2 UAE
+   relevance, ×2 gov source, ×3 official statement, ×2 corroboration via
+   Jaccard≥0.45 cross-source match) — deterministic, per-fact, applied in-run
+   and on demand → GET /api/correlation/v2/weighting/:iso/:runId
+3. Max-density research workflow: source checklist (official sites, gov
+   releases, press releases, academic, think tanks, financial reports,
+   corporate filings, investor decks, gov PDFs, whitepapers, conference
+   presentations, speeches, datasets, social, satellite/maps) embedded in
+   every specialist prompt → GET /api/correlation/v2/prompts/:iso
+4. Perplexity orchestration: 10 specialist prompts fired in parallel
+   (developments, organisations, funding, officials, UAE implications,
+   12-month predictions, contradictions, missing links, historical analogues,
+   confidence audit) → merge model-pass into ONE unified graph with dedupe +
+   alias-based entity resolution → POST /api/correlation/v2/analyze/:iso
+5. AI correlation layer: second reasoning pass ("what was never explicitly
+   stated?") across 18 relationship lenses; every edge classed
+   Verified/Likely/Possible/Predicted with reasoning; server-side evidence
+   gate (edges w/o evidence ids dropped) + Verified demotion when <2 sources
+   and no gov source. Frontend: EDGE_CLASS_STYLE in adapter.js (solid/
+   long-dash/short-dash/dotted + accent tick at midpoint + legend chips +
+   class badge/reasoning in RelationshipInspector).
+6. Predictive intelligence: 9 kinds, each with probability, supporting +
+   counter evidence ids, speculative flag (forced true when no support),
+   confidence, reasoning — stored in run.predictions.
+7. UAE strategic impact engine: Very High…None overall + 14 dimensions
+   (trade…foreignPolicy) with per-entity reasoning citing article ids —
+   run.impact.
+8. Per-article summaries: 50w + 100w + keyPoints + entities-as-written +
+   riskLevel + importance + uaeRelation, embedded on each evidence record
+   (article.summaries).
+9. Story Mode: GET /api/correlation/v2/story/:iso/:runId/stream — SSE
+   executive narrative in 7 titled sections (Beginning/Actors/Developments/
+   Current/Risks/Outlook/Evidence), every sentence cited [A#], speculation
+   marked "(speculative)"; works on V2 AND legacy runs.
+
+HARD RULES enforced: figures copied exactly-as-stated w/ evidence ids or
+flagged in run.gaps; confidence on every article/edge/prediction/impact;
+`extractJson` now exported from correlation.js (shared).

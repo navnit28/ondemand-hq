@@ -12,6 +12,15 @@ export const REL_TYPE_COLORS = {
   Technology: '#0891b2', Security: '#475569', 'Media-narrative': '#db2777',
 };
 export const REL_TYPES = Object.keys(REL_TYPE_COLORS);
+
+// CE-V2 edge classification (stage 5): distinct color accents + line styles.
+// Verified solid, Likely long-dash, Possible short-dash, Predicted dotted.
+export const EDGE_CLASS_STYLE = {
+  Verified:  { dash: [],       accent: '#0e9f6e', alphaMul: 1.0 },
+  Likely:    { dash: [8, 4],   accent: '#2563eb', alphaMul: 0.9 },
+  Possible:  { dash: [3, 3],   accent: '#f59e0b', alphaMul: 0.75 },
+  Predicted: { dash: [1, 3],   accent: '#a855f7', alphaMul: 0.65 },
+};
 export const PLATFORM_GLYPHS = { perplexity: 'P', x: '𝕏', reddit: 'R', instagram: '◎' };
 export const PLATFORM_COLORS = { perplexity: '#6d4aff', x: '#111827', reddit: '#ff4500', instagram: '#d62976' };
 
@@ -84,6 +93,7 @@ export function runToGraph(run, filters = {}) {
     particleSpeed: 0.002 + (e.recency ?? 0.5) * 0.012,     // recency → particle speed
     claim: e.claim, stance: e.stance, contradiction: e.contradiction,
     evidenceIds: e.evidence_record_ids, confidence: e.confidence,
+    edgeClass: e.edge_class || null, classReasoning: e.reasoning || null,   // CE-V2 stage 5
     platforms: e.evidencePlatforms || [],
     isNew: (run.diffFromPrevious?.newEdgeIds || []).includes(e.id),
     curvature: 0,

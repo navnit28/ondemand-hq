@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion';
 import { RefreshCw, Download, Image as ImageIcon, Search, Zap, X, ExternalLink, BadgeCheck, Send, ChevronDown } from 'lucide-react';
 import CorrelationGraph from './CorrelationGraph.jsx';
+import GraphV2Section from './v2/GraphV2Section.jsx';
 import EChartsPanels from './EChartsPanels.jsx';
 import SignalLoom from './BespokeViz.jsx';
 import QuickQuery from './QuickQuery.jsx';
@@ -396,30 +397,13 @@ export default function CorrelationEngine({ iso, countryName }) {
           {/* graph + panels */}
           <div className="ce-main">
             <div className="ce-graphwrap" ref={graphWrapRef}>
-              <CorrelationGraph
-                graph={graph} width={size.w - 270} height={size.h}
+              <GraphV2Section
+                run={run} graph={graph} size={size}
                 showLabels={showLabels} physics={physics}
-                onHoverLink={onHoverLink}
-                onHoverNode={() => { if (!pinPop) setPop(null); }}
-                onClickLink={(l, evt) => l && setPinPop({ kind: 'edge', id: l.id, ...graphPos(evt || { clientX: 40, clientY: 40 }), link: l })}
-                onClickNode={(n, evt) => {
-                  if (!n) { setPinPop(null); return; }
-                  setPinPop({ kind: 'node', id: n.id, ...graphPos(evt || { clientX: 40, clientY: 40 }), node: n });
-                }}
                 searchNodeId={searchNodeId?.split(':')[0]}
                 pulseKeys={pulseKeys}
+                onQuickQuery={(artifact) => setQuick({ artifact })}
               />
-              <AnimatePresence>
-                {(pinPop || pop) && (
-                  <HoverPopover pop={pinPop || pop} run={run}
-                    onLightbox={setLightbox}
-                    onQuickQuery={(p2) => {
-                      setQuick({ artifact: p2.kind === 'edge' ? edgeToMiniArtifact(run, p2.link) : nodeToMiniArtifact(run, p2.node) });
-                      setPinPop(null);
-                    }}
-                    onClose={() => { setPinPop(null); setPop(null); }} />
-                )}
-              </AnimatePresence>
             </div>
             <EChartsPanels run={run}
               activePlatform={filters.platform} activeStance={filters.stance} activeDay={filters.day}

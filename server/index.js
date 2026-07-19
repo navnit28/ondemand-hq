@@ -19,6 +19,7 @@ import { extractText } from './extract.js';
 import { registerSpeechRoutes } from './speech.js';
 import { registerIntelRoutes, COUNTRIES } from './intel.js';
 import { registerCorrelationRoutes } from './correlation.js';
+import { registerV2Routes } from './correlationV2.js';
 import { registerFactsRoutes } from './facts.js';
 import { registerMsmRoutes, getTranscriptText as getMsmTranscript } from './msm.js';
 
@@ -45,6 +46,7 @@ registerMsmRoutes(app);
 // Correlation Engine routes (evidence-gated relationship graphs per country,
 // versioned runs + Connected Dots streaming + GLM Quick Query).
 registerCorrelationRoutes(app, { countries: COUNTRIES });
+registerV2Routes(app, { countries: COUNTRIES });
 
 // ---------- health ----------
 app.get('/api/health', (req, res) => res.json({

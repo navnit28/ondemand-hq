@@ -131,7 +131,7 @@ function extractUrls(md) {
   return { images, links, xPosts, igShortcodes, blobMedia };
 }
 
-function extractJson(text) {
+export function extractJson(text) {
   if (!text) return null;
   const fence = text.match(/```(?:json)?\s*([\s\S]*?)```/);
   for (const c of [fence?.[1], text]) {
