@@ -138,3 +138,19 @@ All notable changes to the Correlation Engine, logged with timestamps (UTC).
     (e) computed-style purple scan across .ce subtree → 0 hits; evidence-gap =
     gray-on-gray dashed. QA screenshots: ce-overhaul-qa-graph.png,
     ce-overhaul-qa-breakdown.png, ce-overhaul-qa-inspector.png.
+
+## 2026-07-19 — staging deployment of UX-overhaul build (HEAD 144b6b3)
+
+- **2026-07-19T21:28:43Z** — fresh clone of mk42-ai/ondemand-hq main verified at HEAD
+  144b6b3 (UX overhaul: evidence-backed clickable badges, EvidenceBreakdown panel,
+  Relationship Inspector wiring, white/minimal generation banner w/ RTL مصادر,
+  de-purpled palette, lucide icon audit). Deep-v2 snapshot run-KE-20260719072125.json
+  restored into server/data/correlation/KE (5 evidence, edges ED1–ED4). Vite build PASS
+  (7.35s). Deployed to fresh node22 staging sandbox **sbx_LZt8O1WsbihWqN4M9zynXmHbjEXO**
+  (12h, Express on 8080) → **https://sb-6foo3smpuq7i.vercel.run** (public preview,
+  NOT production; no user credentials used or stored).
+  Verification (real curl @ 2026-07-19T21:28:43Z): `/` → `HTTP/2 200`;
+  `/api/correlation/runs/KE` → 200; `/api/correlation/run/KE/KE-20260719072125` serves
+  ED1 mofa~kenya-ministry-of-agriculture Aid-Humanitarian **Verified** /
+  ED2 adq~kenya-agri-processors Investment **Likely** / ED3 masdar~kengen Energy
+  **Possible** / ED4 dpworld~mombasa-port Influence-network **Possible**.
