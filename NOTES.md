@@ -1151,3 +1151,73 @@ and every OnDemand call surfaced as HTTP 500 "An unexpected error occurred".
 FIX: inject `ONDEMAND_API_KEY=****redacted****` into the sandbox process environment at
 deploy time (runtime env injection at server start). No code change; no hardcoded keys;
 key never written to files/git/logs.
+
+## 2026-07-20 — PRE-IMPLEMENTATION digest: OnDemand API study for the voice/globe feature
+(All facts below fetched LIVE this run from GET /config/v1/public/docs/categories +
+/docs/reference/api/<slug> and GET /config/v1/public/endpoints — never from memory.)
+
+### Documented public API surface (26 operations, 8 services)
+Media API · Chat & Agent Tools API · Services API (STT/TTS/translate) · MQTT User Mgmt ·
+REST API Key Mgmt · Agents Flow Builder (workflows) · Reasoning Modes · Endpoints.
+
+### Workflows (Agents Flow Builder)
+- Activate:   POST https://api.on-demand.io/automation/api/workflow/{id}/activate   (200/500)
+- Deactivate: POST .../workflow/{id}/deactivate
+- Execute:    POST .../workflow/{id}/execute   (200/400/404/500) → returns executionID
+- Stream logs: POST .../workflow/stream_logs  body {"executionID": string (REQUIRED)} → streamed logs
+- Auth: `apikey` header on every call. Creation/retrieval/config of workflows is NOT in the
+  public docs surface (only activate/deactivate/execute/stream_logs are documented) — the
+  richer CRUD used by this platform's MCP tools is undocumented/deployment-dependent.
+
+### Sessions & streamed queries (Chat & Agent Tools)
+- Create session: POST /chat/v1/sessions — body {externalUserId: string REQUIRED, pluginIds?: string[]≤20}
+  (responses 200/4XX/5XX; live API returns 201 on success — both are 2xx).
+- Submit query:   POST /chat/v1/sessions/{sessionId}/query — body {query REQUIRED,
+  endpointId REQUIRED, responseMode REQUIRED ∈ [sync, stream, webhook], pluginIds?≤20,
+  fulfillmentOnly?: bool (skip RAG), modelConfigs?: {fulfillmentPrompt, temperature, …}}.
+  responseMode=stream → SSE with eventType frames (fulfillment tokens; thinking/planning
+  frames observed live 2026-07-19). RAG/knowledge = pluginIds; structured output via
+  modelConfigs.fulfillmentPrompt contract; session memory = server-side per sessionId.
+
+### Speech / audio (Services API) — the ONLY documented audio pathway
+- STT: POST /services/v1/public/service/execute/speech_to_text — body {audioUrl: string REQUIRED}
+  → 200 {message, data:{text}}. NOTE: takes a URL, not raw bytes — audio must first be
+  hosted (e.g. Media API createmediaurl: POST /media/v1/public/file {url, sessionId,
+  externalUserId, …}). FINAL transcript only — no partial/streaming transcript API.
+- TTS: POST /services/v1/public/service/execute/text_to_speech — body {model REQUIRED
+  ∈ [tts-1, tts-1-hd], input REQUIRED, voice REQUIRED ∈ [alloy, echo, fable, onyx, nova,
+  shimmer]} → 200 {message, data}. Model/voice enums imply an OpenAI-compatible TTS backend.
+- Live probe (2026-07-17, re-confirmed by server/speech.js contract): this workspace key
+  returns 400 "Please subscribe to the service to use it" for both services.
+
+### Realtime / speech-to-speech / VAD / barge-in — NOT DOCUMENTED
+Full-text keyword scan across ALL 26 fetched OpenAPI specs: ZERO occurrences of realtime,
+websocket/wss, VAD/voice-activity, barge/interrupt, speech-to-speech, partial transcript,
+audio chunking. CONCLUSION: the public API supports TURN-BASED voice only —
+record → host audio → STT (final transcript) → streamed LLM (SSE) → TTS → play.
+True realtime duplex audio, VAD and barge-in must be implemented CLIENT-SIDE
+(Web Audio AnalyserNode energy gating, cancel/abort of in-flight SSE + audio playback) —
+consistent with the existing Recorder.jsx/AudioPlayer.jsx architecture.
+
+### GLM 4.7 — exact identifiers (from GET /config/v1/public/endpoints, live)
+| endpoint_id | name | status | backend | context |
+|---|---|---|---|---|
+| **byoi-6e314690-4eaf-4def-a33c-380809acf1f5** | glm-4.7 | **ACTIVE** | api.cerebras.ai (OpenAI-compatible) | 65,000 |
+| predefined-glm-4.7 | glm-4.7 | inactive | openrouter.ai | 200,000 |
+| predefined-glm-4.7-flash | glm-4.7-flash | inactive | openrouter.ai | (openrouter) |
+The ONLY usable GLM 4.7 slug on this deployment is the BYOI Cerebras endpoint —
+already proven live for Quick Query (~1.28s TTFT, streamed, 2026-07-19 PLUGIN_TESTS).
+Capabilities (documented/observed): OpenAI-compatible streaming; low latency (Cerebras);
+tool/plugin attachment NOT proven on this endpoint (fulfillmentOnly used in Quick Query);
+structured output via prompt contract; EN/AR multilingual observed in Quick Query chips.
+Undocumented in public docs: explicit tool-use/HTML-generation capability matrices.
+
+### Auth, rate limits, errors, retention
+- Auth: `apikey` header everywhere (securityScheme apiKey-in-header). Server-side only in
+  this app (env.js, deploy-time injection, keyLoaded flag) — model PRESERVED, unchanged.
+- Rate limits: NOT documented in any fetched spec (no 429 schema) → undocumented/
+  deployment-dependent; app keeps its existing retry/backoff in ondemand.js.
+- Errors: generic 4XX/5XX response objects; STT/TTS return 400 subscription errors with
+  {message} — server/speech.js maps these to SERVICE_NOT_SUBSCRIBED.
+- Data retention / logging / training use: ZERO statements in the public docs → treat as
+  undocumented/deployment-dependent (see BASELINE_AUDIT.md privacy section).
