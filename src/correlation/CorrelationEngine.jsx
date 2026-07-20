@@ -13,7 +13,7 @@ import {
 } from './api.js';
 import {
   runToGraph, edgeToMiniArtifact, nodeToMiniArtifact, nodeEvidenceBreakdown,
-  REL_TYPES, REL_TYPE_COLORS, attachDensity,
+  REL_TYPES, REL_TYPE_COLORS,
 } from './adapter.js';
 
 const spring = { type: 'spring', stiffness: 360, damping: 30 };
@@ -267,8 +267,8 @@ export default function CorrelationEngine({ iso, countryName }) {
   }, [expanded]);
 
   // ---------- graph ----------
-  // Evidence-density stats (corpus-wide truth for node badges — hundreds-scale)
-  const [density, setDensity] = useState(null);
+  // (2026-07-20) corpus density detached from node badges — see BADGE_236_ROOT_CAUSE.md
+  const [density, setDensity] = useState(null); // retained for side panels only
   useEffect(() => {
     fetch('/api/correlation/v2/evidence/stats')
       .then(r => (r.ok ? r.json() : null))
@@ -276,9 +276,11 @@ export default function CorrelationEngine({ iso, countryName }) {
       .catch(() => {});
   }, []);
   const graph = useMemo(() => {
-    const g = run ? runToGraph(run, filters) : { nodes: [], links: [] };
-    return attachDensity(g, density);
-  }, [run, filters, density]);
+    // 236-badge fix (2026-07-20): corpus density is NO LONGER attached to graph nodes.
+    // Badges show ONLY run-derived badgeCount (distinct evidence records on incident
+    // edges). Corpus stats stay available to side panels; see BADGE_236_ROOT_CAUSE.md.
+    return run ? runToGraph(run, filters) : { nodes: [], links: [] };
+  }, [run, filters]);
   const pulseKeys = useMemo(() => run?.diffFromPrevious?.newEdgeIds || [], [run]);
 
   const graphPos = (evt) => {
@@ -471,7 +473,7 @@ export default function CorrelationEngine({ iso, countryName }) {
               </button>
               {/* Legend strip (2026-07-19 Gemini UX fix): maps EVERY visual channel —
                   incl. the previously-unlabeled community halo bubbles — so no
-                  lavender/gray/peach circle is unexplained. */}
+                  tinted circle is unexplained. */}
               <div className="ce-lgstrip" aria-label="Graph legend">
                 <span className="ce-lg"><i className="ce-lg__halo" />halo tint = community cluster</span>
                 <span className="ce-lg"><i className="ce-lg__badge">2</i>badge = distinct evidence records on this node's edges (click for breakdown)</span>

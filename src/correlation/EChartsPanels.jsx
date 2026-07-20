@@ -29,7 +29,7 @@ export default function EChartsPanels({ run, onPickDate, onPickStance, onPickPla
       series: [{
         type: 'bar', data: days.map(d => ({
           value: byDay.get(d),
-          itemStyle: { color: d === activeDay ? '#6d4aff' : '#c4b5fd', borderRadius: [3, 3, 0, 0] },
+          itemStyle: { color: d === activeDay ? '#159a7a' : '#a7d9cb', borderRadius: [3, 3, 0, 0] },
         })), barMaxWidth: 26,
       }],
     };

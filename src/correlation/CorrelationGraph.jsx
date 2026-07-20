@@ -150,7 +150,7 @@ export default function CorrelationGraph({ graph, width, height, showLabels, phy
       ctx.globalAlpha = alpha * 0.85;
       ctx.beginPath();
       ctx.arc(n.x, n.y, Math.max(r, 2 / globalScale), 0, 2 * Math.PI);
-      ctx.fillStyle = n.tintStroke || '#c7d2fe';
+      ctx.fillStyle = n.tintStroke || '#a7d9cb';
       ctx.fill();
       ctx.restore();
       return;
@@ -176,10 +176,10 @@ export default function CorrelationGraph({ graph, width, height, showLabels, phy
     ctx.fillStyle = n.kind === 'country' ? '#111827' : '#ffffff';
     ctx.fill();
     ctx.lineWidth = n.kind === 'country' ? 0 : 1.4;
-    ctx.strokeStyle = n.tintStroke || '#c7d2fe';
+    ctx.strokeStyle = n.tintStroke || '#a7d9cb';
     if (n.kind !== 'country') ctx.stroke();
     if (hover?.kind === 'node' && hover.id === n.id) {
-      ctx.lineWidth = 2; ctx.strokeStyle = '#6d4aff'; ctx.stroke();
+      ctx.lineWidth = 2; ctx.strokeStyle = '#159a7a'; ctx.stroke();
     }
 
     if (imgReady) {
@@ -191,7 +191,7 @@ export default function CorrelationGraph({ graph, width, height, showLabels, phy
       ctx.restore();
       ctx.beginPath();
       ctx.arc(n.x, n.y - r - 7, 7, 0, 2 * Math.PI);
-      ctx.strokeStyle = '#d62976'; ctx.lineWidth = 1; ctx.stroke();
+      ctx.strokeStyle = '#0f766e'; ctx.lineWidth = 1; ctx.stroke();
     }
 
     // initials
@@ -235,7 +235,13 @@ export default function CorrelationGraph({ graph, width, height, showLabels, phy
     // breakdown panel). Zero-evidence nodes get NO badge — no invented numbers.
     const badgeN = n.badgeCount ?? 0;
     n.__badgeRect = null;
-    if (badgeN > 0 && !dim) {
+    // LOD (2026-07-20, 200-point density): badges render only when legible —
+    // zoomed in (globalScale ≥ 1.15), or node hovered, or a high-signal node
+    // (country / top-weight via alwaysLabel / pagerank). Prevents pill soup.
+    const badgeVisible = badgeN > 0 && !dim &&
+      (globalScale >= 1.15 || (hover?.kind === 'node' && hover.id === n.id) ||
+       n.kind === 'country' || n.alwaysLabel || (n.pagerank ?? 0) > 0.06);
+    if (badgeVisible) {
       const txt = String(badgeN);
       ctx.font = '700 7.5px Montserrat, sans-serif';
       const tw2 = ctx.measureText(txt).width;

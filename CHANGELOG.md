@@ -173,3 +173,34 @@ All notable changes to the Correlation Engine, logged with timestamps (UTC).
   runs API 200 (0.047s) w/ ED1 Verified/ED2 Likely/ED3+ED4 Possible @22:04:44Z; health
   keyLoaded:true; session-create via backend **200** (was 500), streamed query on
   gpt-5.6-sol-medium delivered 73 SSE fulfillment tokens (22:05:00→22:05:25Z).
+
+## 2026-07-20 — 236-badge root cause, dense 200-point simulation, full de-purple pass
+
+- **2026-07-20T02:30Z** —
+  **236 ROOT CAUSE (BUG — documented in BADGE_236_ROOT_CAUSE.md):** the purple "236"
+  pill on the UAE node was `densityCount` from `attachDensity()` ←
+  `/api/correlation/v2/evidence/stats` ← `corpusStats()`, which counts CORPUS-WIDE
+  regex text-mentions across the 509-record evidence corpus (UAE regex matches 248/509;
+  ~236 in the default window) — not evidence on the node's edges in the displayed run.
+  Compounded by fuzzy substring alias matching and zero click-through explainability.
+  **FIX:** corpus density fully detached from graph nodes (Engine uses `runToGraph`
+  only); badges show exclusively the run-derived `badgeCount` (distinct
+  `evidence_record_ids` across incident edges), each clickable → EvidenceBreakdown.
+  **DENSE 200-POINT SIMULATION:** new run `BD-20260720021500` (Bangladesh↔UAE):
+  200 evidence records / 188 tier-tagged edges (10 Verified · 107 Likely · 71 Possible)
+  / 28 nodes across all 9 relationship types, dates 2024–2026, realistic entities
+  (ADQ, Mubadala, DP World, Masdar, G42… × Chittagong Port, BIDA, BGMEA, Matarbari…).
+  **LOD AT DENSITY:** badge pills now render only when legible (zoom ≥1.15× or
+  hovered/country/top-weight nodes) on top of the existing collision-aware placement +
+  sub-3.5px LOD discs — no pill soup at 200 points.
+  **FULL DE-PURPLE:** REL_TYPE_COLORS Investment #6d4aff→#159a7a, Media-narrative
+  #db2777→neutral gray; PLATFORM_COLORS perplexity→#159a7a, instagram→gray; ECharts
+  evidence bars #6d4aff/#c4b5fd→#159a7a/#a7d9cb; node lock-ring→#159a7a; IG proof
+  ring→#0f766e; LOD disc fallback #c7d2fe→#a7d9cb; community hue wheel constrained to
+  0–240° (violet/pink band unreachable). Grep audit: 0 purple hex values, 0 purple
+  CSS names in src/.
+  **QA (headless Chromium, dense BD graph): 5/5 PASS** — badge(ADQ) → breakdown
+  "17 distinct evidence records across 14 edges" in 6 relationship groups; fan-out
+  collapse/expand 14→10→14; Relationship Inspector "Likely · conf 0.81" with tier +
+  source types; rendered-page purple pixel scan = 0. Vite build PASS (7.35s).
+  Screenshots: ce-dense-200pt-graph.png · ce-dense-breakdown.png · ce-dense-inspector.png.

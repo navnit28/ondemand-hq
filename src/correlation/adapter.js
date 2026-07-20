@@ -6,14 +6,16 @@ import { pagerank } from 'graphology-metrics';
 import louvain from 'graphology-communities-louvain';
 
 // Obsidian-futuristic on white ODA design language — one hue per relationship type.
+// De-purple brand pass (2026-07-20): ODA green primaries (#159a7a/#1dac89) +
+// neutral/earth secondary encoding. ZERO purple/violet/pink anywhere.
 export const REL_TYPE_COLORS = {
-  Investment: '#6d4aff', Trade: '#0e9f6e', 'Aid-Humanitarian': '#f59e0b',
+  Investment: '#159a7a', Trade: '#0e9f6e', 'Aid-Humanitarian': '#f59e0b',
   Diplomatic: '#2563eb', Infrastructure: '#b45309', Energy: '#dc2626',
-  Technology: '#0891b2', Security: '#475569', 'Media-narrative': '#db2777',
+  Technology: '#0891b2', Security: '#475569', 'Media-narrative': '#6b7280',
 };
 export const REL_TYPES = Object.keys(REL_TYPE_COLORS);
 export const PLATFORM_GLYPHS = { perplexity: 'P', x: '𝕏', reddit: 'R', instagram: '◎' };
-export const PLATFORM_COLORS = { perplexity: '#6d4aff', x: '#111827', reddit: '#ff4500', instagram: '#d62976' };
+export const PLATFORM_COLORS = { perplexity: '#159a7a', x: '#111827', reddit: '#b45309', instagram: '#6b7280' };
 
 const DAY = 86400000;
 
@@ -121,7 +123,8 @@ export function runToGraph(run, filters = {}) {
       const degree = metrics.degrees[n.id] ?? 0;
       const size = n.kind === 'country' ? 15 : 5 + Math.sqrt(Math.max(0, pr)) * 42 + degree * 0.55;
       // community hue tint (subtle, on white): even-spread golden-angle hues, low saturation
-      const hue = (comm * 137.508) % 360;
+      // de-purple: constrain community hues to 0-240 (warm→green→blue), never violet/pink
+      const hue = (comm * 137.508) % 240;
       const evidence = run.evidence.filter(ev => ev.claim?.toLowerCase().includes(n.label.toLowerCase()) ||
         links.some(l => (l.source === n.id || l.target === n.id) && l.evidenceIds.includes(ev.id)));
       const media = evidence.flatMap(ev => ev.media || []);
