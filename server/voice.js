@@ -105,9 +105,14 @@ export function registerVoiceRoutes(app, upload) {
     res.writeHead(200, { 'Content-Type': 'text/event-stream; charset=utf-8', 'Cache-Control': 'no-cache', Connection: 'keep-alive', 'X-Accel-Buffering': 'no' });
     const send = (type, payload) => { try { res.write(`data:${JSON.stringify({ type, ts: new Date().toISOString(), ...payload })}\n\n`); res.flush?.(); } catch { /* closed */ } };
 
-    // barge-in: client abort (fetch AbortController) closes req → propagate upstream
+    // barge-in: client abort (fetch AbortController) tears the connection down →
+    // propagate upstream. FIX 2026-07-20 (found by live deployed-stream verification):
+    // on Node ≥16, req 'close' fires as soon as the request BODY is fully consumed —
+    // NOT on client disconnect — so the old req.on('close') aborted EVERY turn ~3ms in
+    // ("interrupted" frame immediately after "model"). res 'close' fires only when the
+    // underlying connection actually closes (real barge-in / client gone).
     const upstream = new AbortController();
-    req.on('close', () => { if (!res.writableEnded) { metrics.aborts += 1; upstream.abort(); } });
+    res.on('close', () => { if (!res.writableEnded) { metrics.aborts += 1; upstream.abort(); } });
 
     const t0 = Date.now();
     let firstToken = 0;
