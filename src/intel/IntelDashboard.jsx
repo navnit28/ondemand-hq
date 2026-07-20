@@ -92,7 +92,7 @@ export default function IntelDashboard({ onExit }) {
   return (
     <motion.div className="ig-root" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.3 }}>
       <div className="ig-head">
-        <h1><Globe2 size={22} aria-hidden style={{ verticalAlign: '-3px', marginRight: 8, color: 'var(--gold, #b08d3c)' }} />ODA Intelligence</h1>
+        <h1><span className="ig-mark" aria-hidden><Globe2 size={19} strokeWidth={1.9} /></span>ODA Intelligence</h1>
         <span className="ig-head__sub">{ov.countriesWithData}/{ov.countriesMonitored} countries with live intelligence{ov.workflow?.id ? ` · 12-hour workflow ${ov.workflow.active ? 'active' : 'configured'}` : ''}</span>
         <span style={{ flex: 1 }} />
         <button className="ig-briefbtn" onClick={onBrief} disabled={briefBusy || !ov.countriesWithData}>{briefBusy ? 'Generating…' : 'Generate Executive Brief'}</button>

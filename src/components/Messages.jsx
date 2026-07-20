@@ -133,7 +133,7 @@ export function ThinkingAccordion({ thinking, live, forceOpenWhileLive }) {
         <span className={`think__dot${live ? '' : ' idle'}`} />
         {live ? 'Thinking…' : 'Thought process'}
         <span style={{ flex: 1 }} />
-        <span className={`chev${effectiveOpen ? ' open' : ''}`}>▶</span>
+        <span className={`chev${effectiveOpen ? ' open' : ''}`}><ChevronRight size={13} strokeWidth={2} aria-hidden /></span>
       </button>
       {effectiveOpen && <div className="think__body" ref={bodyRef}>{thinking}</div>}
     </div>
@@ -148,7 +148,7 @@ export function TraceCard({ routing, traceText }) {
     <div className="trace trace--slim">
       <button className="trace__head" onClick={() => setOpen(!open)}>
         {routing.feature} · {routing.mode} · {routing.plugins?.length ? `${routing.plugins.length} plugin${routing.plugins.length > 1 ? 's' : ''}` : 'LLM-direct'} · {routing.model}
-        <span className={`chev${open ? ' open' : ''}`}>▶</span>
+        <span className={`chev${open ? ' open' : ''}`}><ChevronRight size={13} strokeWidth={2} aria-hidden /></span>
       </button>
       {open && (
         <div className="trace__body">
@@ -250,10 +250,20 @@ export function AssistantMessage({ msg, live, onOption, onExport, exportBusy, ar
 }
 
 export function UserMessage({ msg }) {
+  // 2026-07-20: long prompts render as a 6-line clamped capsule with a
+  // Read more / Show less toggle (RTL-safe — clamp follows dir="auto").
+  const [expanded, setExpanded] = useState(false);
+  const isLong = (msg.text || '').length > 420 || (msg.text || '').split('\n').length > 6;
   return (
     <div className="msg-user msg--hover">
       <div>
-        <div className="bubble" dir="auto">{msg.text}</div>
+        <div className={`bubble${isLong && !expanded ? ' bubble--clamped' : ''}`} dir="auto">{msg.text}</div>
+        {isLong && (
+          <button type="button" className="bubble-expander" onClick={() => setExpanded(e => !e)}
+            aria-expanded={expanded}>
+            {expanded ? 'Show less' : 'Read more'}
+          </button>
+        )}
         {msg.fileName && <div className="fileref"><Paperclip size={12} aria-hidden style={{ verticalAlign: '-2px', marginRight: 4 }} /> {msg.fileName}</div>}
         {/* Copy the sent prompt text (2026-07-20 UX pass) */}
         <div className="msg-actions msg-actions--user" role="toolbar" aria-label="Prompt actions">

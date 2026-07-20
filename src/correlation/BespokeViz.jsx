@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import * as d3 from 'd3';
+import { Maximize2, X } from 'lucide-react';
 import { REL_TYPE_COLORS, REL_TYPES, PLATFORM_COLORS, evidenceAgeDays } from './adapter.js';
 
 /**
@@ -124,7 +125,7 @@ export default function SignalLoom({ run, onPickEvidence }) {
   if (!xp.expanded) {
     return (
       <div className="xp-host xp-host--loom">
-        <button type="button" className="xp-btn" onClick={() => toggle(true)} aria-label="Expand Signal Loom to fullscreen" title="Expand">⤢</button>
+        <button type="button" className="xp-btn" onClick={() => toggle(true)} aria-label="Expand Signal Loom to fullscreen" title="Expand"><Maximize2 size={12} aria-hidden /></button>
         {inner}
       </div>
     );
@@ -134,7 +135,7 @@ export default function SignalLoom({ run, onPickEvidence }) {
       <div className="xp-overlay__bar">
         <b>Signal Loom</b>
         <span style={{ flex: 1 }} />
-        <button type="button" className="xp-btn xp-btn--close" onClick={() => toggle(false)} aria-label="Close fullscreen" title="Close (Esc)">✕</button>
+        <button type="button" className="xp-btn xp-btn--close" onClick={() => toggle(false)} aria-label="Close fullscreen" title="Close (Esc)"><X size={14} aria-hidden /></button>
       </div>
       <div className="xp-overlay__body">{inner}</div>
     </div>
