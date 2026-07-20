@@ -385,3 +385,24 @@ Per the 200-test rule: every plugin/API call logged with id, query, status, late
 | FV-7 | STT/TTS upstream (speech_to_text / text_to_speech) | degrade probe | 402 upstream → 402 surfaced | — | EXPECTED — "Please subscribe" on this key; graceful degrade verified (documented, not a failure) |
 
 Deployment-time verification (sandbox) appended below after deploy.
+
+### Deployment verification — sandbox sb-msp3d77eqbhq.vercel.run (sbx_WXSK3NuiWMH14nxGQLRaHkeYurU7, node22, 2026-07-20T04:04Z)
+
+Key injected at server start via `--env ONDEMAND_API_KEY` on `sandbox exec` (never in files/git/logs). `/api/health` → `keyLoaded:true`.
+
+| # | endpoint | status | latency | timestamp | verdict |
+|---|---|---|---|---|---|
+| DV-1 | GET / | 200 | 0.051s | 2026-07-20T04:04:42Z | PASS (1349 B) |
+| DV-2 | GET /api/health | 200 | 0.092s | 2026-07-20T04:04:42Z | PASS — keyLoaded:true |
+| DV-3 | GET /api/correlation/runs/KE | 200 | 0.070s | 2026-07-20T04:04:42Z | PASS |
+| DV-4 | GET /api/correlation/run/KE/KE-20260719072125 | 200 | 0.055s | 2026-07-20T04:04:42Z | PASS (47,042 B) |
+| DV-5 | GET /api/correlation/runs/BD | 200 | 0.056s | 2026-07-20T04:04:43Z | PASS |
+| DV-6 | GET /api/correlation/run/BD/BD-20260720021500 | 200 | 0.066s | 2026-07-20T04:04:43Z | PASS (200,738 B — dense run) |
+| DV-7 | POST /api/voice/session | 200 | 0.277s | 2026-07-20T04:04:43Z | PASS — model byoi-6e314690-4eaf-4def-a33c-380809acf1f5, workflowId 6a5d90228a845853270b9b53 |
+| DV-8 | POST /api/voice/turn (SSE) | 200 stream | 4.367s total | start 04:04:43.468Z → end 04:04:47.909Z | **PASS — 11 SSE frames: model → ttft 2326ms → 8 real GLM 4.7 token frames → done (482 chars), 0 interrupted** |
+
+Live-stream bug found & fixed during this verification (commit 89c7602): `req.on('close')`
+fires on request-body consumption under Node ≥16, so every deployed turn aborted ~3ms in
+(`interrupted` immediately after `model`). Abort now keys off `res.on('close')` (real
+connection teardown) — barge-in semantics preserved, normal turns stream fully.
+First deployed token: `"The MoU"` at 2026-07-20T04:04:45.847Z.
