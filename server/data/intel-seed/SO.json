@@ -499,7 +499,13 @@
       "confidence": null,
       "severity": "Critical",
       "trend": "Increasing",
-      "detail": "Potential areas include irrigation, water infrastructure, livestock support, agriculture, fisheries, cold storage and food logistics. Somalia has approximately 8.9 million hectares of arable land, around 57 million livestock and 3,333 kilometres of coastline."
+      "detail": "Potential areas include irrigation, water infrastructure, livestock support, agriculture, fisheries, cold storage and food logistics. Somalia has approximately 8.9 million hectares of arable land, around 57 million livestock and 3,333 kilometres of coastline.",
+      "evidence": {
+       "url": "https://www.worldbank.org/ext/en/country/somalia",
+       "publisher": "World Bank",
+       "date": "2026-07",
+       "gatheredAt": "2026-07-20T18:00:30Z"
+      }
      },
      {
       "title": "Ports, corridors and cold-chain logistics",
@@ -507,7 +513,13 @@
       "confidence": null,
       "severity": "High",
       "trend": "Stable",
-      "detail": "Berbera's continued operation demonstrates commercial resilience, while ports and corridors remain strategic for regional trade. Jurisdiction and sovereignty disputes must be addressed before new commitments."
+      "detail": "Berbera's continued operation demonstrates commercial resilience, while ports and corridors remain strategic for regional trade. Jurisdiction and sovereignty disputes must be addressed before new commitments.",
+      "evidence": {
+       "url": "https://thesoufancenter.org/intelbrief-2025-july-24/",
+       "publisher": "Thesoufancenter",
+       "date": "2026-07",
+       "gatheredAt": "2026-07-20T18:00:30Z"
+      }
      },
      {
       "title": "Renewable and distributed energy",
@@ -515,7 +527,13 @@
       "confidence": null,
       "severity": "High",
       "trend": "Increasing",
-      "detail": "Somalia's exposure to imported oil and food-price shocks supports investment in resilient and distributed energy, including energy for water, agriculture, cold storage and public services."
+      "detail": "Somalia's exposure to imported oil and food-price shocks supports investment in resilient and distributed energy, including energy for water, agriculture, cold storage and public services.",
+      "evidence": {
+       "url": "https://www.worldbank.org/ext/en/country/somalia",
+       "publisher": "World Bank",
+       "date": "2026-07",
+       "gatheredAt": "2026-07-20T18:00:30Z"
+      }
      },
      {
       "title": "Digital identity, payments and cybersecurity",
@@ -523,7 +541,13 @@
       "confidence": null,
       "severity": "High",
       "trend": "Increasing",
-      "detail": "Mobile-money dependence and stated priorities around digital identity, interoperable payments, submarine cables and cybersecurity create potential for governed digital infrastructure. No major Somalia-specific UAE AI agreement was identified."
+      "detail": "Mobile-money dependence and stated priorities around digital identity, interoperable payments, submarine cables and cybersecurity create potential for governed digital infrastructure. No major Somalia-specific UAE AI agreement was identified.",
+      "evidence": {
+       "url": "https://www.worldbank.org/ext/en/country/somalia",
+       "publisher": "World Bank",
+       "date": "2026-07",
+       "gatheredAt": "2026-07-20T18:00:30Z"
+      }
      },
      {
       "title": "Agriculture, livestock and fisheries value chains",
@@ -531,7 +555,13 @@
       "confidence": null,
       "severity": "High",
       "trend": "Increasing",
-      "detail": "Crop and livestock activities contribute more than 70% of GDP and agriculture-related activity employs more than 80% of the population, supporting investment in processing, export logistics and value-chain resilience."
+      "detail": "Crop and livestock activities contribute more than 70% of GDP and agriculture-related activity employs more than 80% of the population, supporting investment in processing, export logistics and value-chain resilience.",
+      "evidence": {
+       "url": "https://www.middleeasteye.net/news/somalia-cancels-all-agreements-uae-including-major-ports",
+       "publisher": "Middleeasteye",
+       "date": "2026-01-12",
+       "gatheredAt": "2026-07-20T18:00:30Z"
+      }
      },
      {
       "title": "Humanitarian health and nutrition logistics",
@@ -539,7 +569,13 @@
       "confidence": null,
       "severity": "Critical",
       "trend": "Increasing",
-      "detail": "Drought, hunger, malnutrition, displacement and aid cuts create an immediate opportunity for coordinated food, water, nutrition, healthcare and logistics support."
+      "detail": "Drought, hunger, malnutrition, displacement and aid cuts create an immediate opportunity for coordinated food, water, nutrition, healthcare and logistics support.",
+      "evidence": {
+       "url": "https://www.worldbank.org/ext/en/country/somalia",
+       "publisher": "World Bank",
+       "date": "2026-07",
+       "gatheredAt": "2026-07-20T18:00:30Z"
+      }
      }
     ],
     "risks": [
@@ -549,7 +585,13 @@
       "confidence": null,
       "severity": "Critical",
       "trend": "Increasing",
-      "detail": "Competing constitutional positions and disputes involving Mogadishu, Puntland, Jubaland and other actors can produce conflicting approvals, contracts and security arrangements."
+      "detail": "Competing constitutional positions and disputes involving Mogadishu, Puntland, Jubaland and other actors can produce conflicting approvals, contracts and security arrangements.",
+      "evidence": {
+       "url": "https://abdirahmanwarsame.substack.com/p/two-constitutions-one-fragile-state",
+       "publisher": "Substack",
+       "date": "2026-03-04",
+       "gatheredAt": "2026-07-20T18:00:30Z"
+      }
      },
      {
       "title": "Al-Shabaab insurgency and weakened security coordination",
@@ -557,7 +599,13 @@
       "confidence": null,
       "severity": "Critical",
       "trend": "Increasing",
-      "detail": "Al-Shabaab remains a significant threat to territory, supply routes, Mogadishu and fixed infrastructure, while political disputes complicate federal-regional coordination."
+      "detail": "Al-Shabaab remains a significant threat to territory, supply routes, Mogadishu and fixed infrastructure, while political disputes complicate federal-regional coordination.",
+      "evidence": {
+       "url": "https://thesoufancenter.org/intelbrief-2025-july-24/",
+       "publisher": "Thesoufancenter",
+       "date": "2026-07",
+       "gatheredAt": "2026-07-20T18:00:30Z"
+      }
      },
      {
       "title": "Drought-driven hunger and malnutrition",
@@ -565,7 +613,13 @@
       "confidence": null,
       "severity": "Critical",
       "trend": "Increasing",
-      "detail": "Drought, food-price pressure, conflict, displacement and aid reductions are sharply increasing humanitarian needs."
+      "detail": "Drought, food-price pressure, conflict, displacement and aid reductions are sharply increasing humanitarian needs.",
+      "evidence": {
+       "url": "https://www.worldbank.org/ext/en/country/somalia",
+       "publisher": "World Bank",
+       "date": "2026-07",
+       "gatheredAt": "2026-07-20T18:00:30Z"
+      }
      },
      {
       "title": "Water scarcity and climate shocks",
@@ -573,7 +627,13 @@
       "confidence": null,
       "severity": "High",
       "trend": "Increasing",
-      "detail": "Climate-related shocks threaten agriculture, livestock, food security and livelihoods and increase the need for resilient water infrastructure."
+      "detail": "Climate-related shocks threaten agriculture, livestock, food security and livelihoods and increase the need for resilient water infrastructure.",
+      "evidence": {
+       "url": "https://www.worldbank.org/ext/en/country/somalia",
+       "publisher": "World Bank",
+       "date": "2026-07",
+       "gatheredAt": "2026-07-20T18:00:30Z"
+      }
      },
      {
       "title": "UAE-Somalia diplomatic rupture",
@@ -581,7 +641,13 @@
       "confidence": null,
       "severity": "High",
       "trend": "Increasing",
-      "detail": "Cancellation of port, security and defence agreements creates legal, diplomatic and operational uncertainty for UAE-linked trade and investment."
+      "detail": "Cancellation of port, security and defence agreements creates legal, diplomatic and operational uncertainty for UAE-linked trade and investment.",
+      "evidence": {
+       "url": "https://www.middleeasteye.net/news/somalia-cancels-all-agreements-uae-including-major-ports",
+       "publisher": "Middleeasteye",
+       "date": "2026-01-12",
+       "gatheredAt": "2026-07-20T18:00:30Z"
+      }
      },
      {
       "title": "Port and corridor disruption",
@@ -589,7 +655,13 @@
       "confidence": null,
       "severity": "High",
       "trend": "Stable",
-      "detail": "Berbera remained operational, but conflicting federal and regional positions and persistent security threats create continuing supply-chain risk."
+      "detail": "Berbera remained operational, but conflicting federal and regional positions and persistent security threats create continuing supply-chain risk.",
+      "evidence": {
+       "url": "https://www.middleeasteye.net/news/somalia-cancels-all-agreements-uae-including-major-ports",
+       "publisher": "Middleeasteye",
+       "date": "2026-01-12",
+       "gatheredAt": "2026-07-20T18:00:30Z"
+      }
      },
      {
       "title": "Aid reduction and insufficient job creation",
@@ -597,7 +669,13 @@
       "confidence": null,
       "severity": "High",
       "trend": "Increasing",
-      "detail": "Official development assistance is declining while nearly 500,000 people enter the labour force annually and only around 80,000 jobs are created."
+      "detail": "Official development assistance is declining while nearly 500,000 people enter the labour force annually and only around 80,000 jobs are created.",
+      "evidence": {
+       "url": "https://abdirahmanwarsame.substack.com/p/two-constitutions-one-fragile-state",
+       "publisher": "Substack",
+       "date": "2026-03-04",
+       "gatheredAt": "2026-07-20T18:00:30Z"
+      }
      },
      {
       "title": "Digital infrastructure and cybersecurity exposure",
@@ -605,7 +683,13 @@
       "confidence": null,
       "severity": "Medium",
       "trend": "Increasing",
-      "detail": "Expansion of digital identity, mobile finance, payment interoperability and submarine cable connectivity increases the importance of cybersecurity and data governance."
+      "detail": "Expansion of digital identity, mobile finance, payment interoperability and submarine cable connectivity increases the importance of cybersecurity and data governance.",
+      "evidence": {
+       "url": "https://www.worldbank.org/ext/en/country/somalia",
+       "publisher": "World Bank",
+       "date": "2026-07",
+       "gatheredAt": "2026-07-20T18:00:30Z"
+      }
      }
     ],
     "agreements": [],

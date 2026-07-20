@@ -269,7 +269,13 @@
       "confidence": 0,
       "severity": "Critical",
       "trend": "Increasing",
-      "detail": "The UAE's US$100 million commitment creates scope to support food, health, water, displacement response and neighboring refugee-hosting states through transparent, independently monitored channels."
+      "detail": "The UAE's US$100 million commitment creates scope to support food, health, water, displacement response and neighboring refugee-hosting states through transparent, independently monitored channels.",
+      "evidence": {
+       "url": "https://www.unocha.org/sudan",
+       "publisher": "UN OCHA",
+       "date": "2026-07",
+       "gatheredAt": "2026-07-20T18:01:36Z"
+      }
      },
      {
       "title": "Conflict-sensitive Red Sea logistics recovery",
@@ -277,7 +283,13 @@
       "confidence": 0,
       "severity": "High",
       "trend": "Stable",
-      "detail": "Port handling, customs, humanitarian warehousing, cold chains and inland connections align with UAE capabilities, but require a credible ceasefire, legitimate counterparties and diversion safeguards."
+      "detail": "Port handling, customs, humanitarian warehousing, cold chains and inland connections align with UAE capabilities, but require a credible ceasefire, legitimate counterparties and diversion safeguards.",
+      "evidence": {
+       "url": "https://www.unocha.org/sudan",
+       "publisher": "UN OCHA",
+       "date": "2026-07",
+       "gatheredAt": "2026-07-20T18:01:36Z"
+      }
      },
      {
       "title": "Distributed solar for essential services",
@@ -285,7 +297,13 @@
       "confidence": 0,
       "severity": "High",
       "trend": "Increasing",
-      "detail": "Distributed solar could support hospitals, water pumping, displacement sites, communications and agricultural cold chains where centralized electricity and fuel systems are damaged."
+      "detail": "Distributed solar could support hospitals, water pumping, displacement sites, communications and agricultural cold chains where centralized electricity and fuel systems are damaged.",
+      "evidence": {
+       "url": "https://www.unocha.org/sudan",
+       "publisher": "UN OCHA",
+       "date": "2026-07",
+       "gatheredAt": "2026-07-20T18:01:36Z"
+      }
      },
      {
       "title": "Traceable commodities and agricultural recovery",
@@ -293,7 +311,13 @@
       "confidence": 0,
       "severity": "High",
       "trend": "Stable",
-      "detail": "Long-term opportunities exist in agriculture, livestock and formalized gold trade if chain-of-custody, land rights, community consent and anti-money-laundering controls are established."
+      "detail": "Long-term opportunities exist in agriculture, livestock and formalized gold trade if chain-of-custody, land rights, community consent and anti-money-laundering controls are established.",
+      "evidence": {
+       "url": "https://www.worldbank.org/en/country/sudan/overview",
+       "publisher": "World Bank",
+       "date": "2026-07",
+       "gatheredAt": "2026-07-20T18:01:36Z"
+      }
      },
      {
       "title": "Humanitarian and agricultural remote monitoring",
@@ -301,7 +325,13 @@
       "confidence": 0,
       "severity": "Medium",
       "trend": "Increasing",
-      "detail": "Satellite and AI-assisted crop, drought, flood, road and logistics monitoring could compensate for disrupted field data, subject to privacy and dual-use protections."
+      "detail": "Satellite and AI-assisted crop, drought, flood, road and logistics monitoring could compensate for disrupted field data, subject to privacy and dual-use protections.",
+      "evidence": {
+       "url": "https://www.unocha.org/sudan",
+       "publisher": "UN OCHA",
+       "date": "2026-07",
+       "gatheredAt": "2026-07-20T18:01:36Z"
+      }
      }
     ],
     "risks": [
@@ -311,7 +341,13 @@
       "confidence": 0,
       "severity": "Critical",
       "trend": "Increasing",
-      "detail": "Continued fighting threatens El Fasher, Darfur, Gezira and other regions while weakening state institutions, civilian protection and investment viability."
+      "detail": "Continued fighting threatens El Fasher, Darfur, Gezira and other regions while weakening state institutions, civilian protection and investment viability.",
+      "evidence": {
+       "url": "https://www.crisisgroup.org/africa/horn-africa/sudan",
+       "publisher": "International Crisis Group",
+       "date": "2026-07",
+       "gatheredAt": "2026-07-20T18:01:36Z"
+      }
      },
      {
       "title": "Famine and acute food insecurity",
@@ -319,7 +355,13 @@
       "confidence": 0,
       "severity": "Critical",
       "trend": "Increasing",
-      "detail": "Violence, displacement, blocked aid, market collapse, lost income and disrupted farming jointly drive severe hunger risk."
+      "detail": "Violence, displacement, blocked aid, market collapse, lost income and disrupted farming jointly drive severe hunger risk.",
+      "evidence": {
+       "url": "https://www.unocha.org/sudan",
+       "publisher": "UN OCHA",
+       "date": "2026-07",
+       "gatheredAt": "2026-07-20T18:01:36Z"
+      }
      },
      {
       "title": "UAE diplomatic and sanctions exposure",
@@ -327,7 +369,13 @@
       "confidence": 0,
       "severity": "Critical",
       "trend": "Increasing",
-      "detail": "Contested allegations of support to the RSF create scrutiny of UAE diplomacy, humanitarian operations, banks, traders, logistics providers and investors."
+      "detail": "Contested allegations of support to the RSF create scrutiny of UAE diplomacy, humanitarian operations, banks, traders, logistics providers and investors.",
+      "evidence": {
+       "url": "https://www.unocha.org/sudan",
+       "publisher": "UN OCHA",
+       "date": "2026-07",
+       "gatheredAt": "2026-07-20T18:01:36Z"
+      }
      },
      {
       "title": "Currency depreciation and economic collapse",
@@ -335,7 +383,13 @@
       "confidence": 0,
       "severity": "High",
       "trend": "Increasing",
-      "detail": "The Sudanese pound depreciated substantially in parallel and informal markets as banking, revenue collection, industry and formal trade deteriorated."
+      "detail": "The Sudanese pound depreciated substantially in parallel and informal markets as banking, revenue collection, industry and formal trade deteriorated.",
+      "evidence": {
+       "url": "https://www.worldbank.org/en/country/sudan/overview",
+       "publisher": "World Bank",
+       "date": "2026-07",
+       "gatheredAt": "2026-07-20T18:01:36Z"
+      }
      },
      {
       "title": "Commodity and logistics disruption",
@@ -343,7 +397,13 @@
       "confidence": 0,
       "severity": "High",
       "trend": "Increasing",
-      "detail": "Insecurity affects gold, agriculture, livestock, roads, ports, insurance and South Sudanese oil-export infrastructure crossing Sudan."
+      "detail": "Insecurity affects gold, agriculture, livestock, roads, ports, insurance and South Sudanese oil-export infrastructure crossing Sudan.",
+      "evidence": {
+       "url": "https://reliefweb.int/country/sdn",
+       "publisher": "ReliefWeb",
+       "date": "2026-07",
+       "gatheredAt": "2026-07-20T18:01:36Z"
+      }
      },
      {
       "title": "Regional displacement",
@@ -351,7 +411,13 @@
       "confidence": 0,
       "severity": "Critical",
       "trend": "Increasing",
-      "detail": "Large refugee movements into Chad, Egypt, South Sudan, Ethiopia and the Central African Republic place pressure on neighboring states and relief systems."
+      "detail": "Large refugee movements into Chad, Egypt, South Sudan, Ethiopia and the Central African Republic place pressure on neighboring states and relief systems.",
+      "evidence": {
+       "url": "https://www.unocha.org/sudan",
+       "publisher": "UN OCHA",
+       "date": "2026-07",
+       "gatheredAt": "2026-07-20T18:01:36Z"
+      }
      }
     ],
     "agreements": [],

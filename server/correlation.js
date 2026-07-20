@@ -534,7 +534,7 @@ export async function quickQuery({ context, question }, res) {
   try {
     await streamQuery({
       odSessionId: sid, query: q, pluginIds: [], systemPrompt,
-      endpointId: GLM_ENDPOINT_ID, reasoningEffort: 'low', fulfillmentOnly: true,
+      endpointId: GLM_ENDPOINT_ID, reasoningEffort: 'max', fulfillmentOnly: true, // (2026-07-20) top-level max
       signal: controller.signal,
       onRaw: (event, data) => {
         if (event === 'message' || event === 'thinking') res.write(`event: ${event}\ndata: ${data}\n\n`);
@@ -699,7 +699,7 @@ export function registerCorrelationRoutes(app, { countries }) {
       const sid = await createOdSession(`ce-sum-${iso}-${evidenceId}`, []);
       await streamQuery({
         odSessionId: sid,
-        endpointId: 'predefined-gpt-5.6-sol', reasoningEffort: 'medium',
+        endpointId: GLM_ENDPOINT_ID, reasoningEffort: 'max', // (2026-07-20 model switch) GLM 4.7 BYOI + top-level max
         query: `Evidence record from the ODA Correlation Engine run on ${run.country} (${run.generated_at}):
 CLAIM: ${ev.claim}
 SOURCE: ${ev.source} (${ev.platform || ev.source_type || 'unknown'})${ev.publish_date ? ' · ' + ev.publish_date : ''}${ev.url ? '\nURL: ' + ev.url : ''}
@@ -736,7 +736,7 @@ Produce EXACTLY these sections, grounded ONLY in the record above (no outside fa
       const sid = await createOdSession(`ce-story-${iso}-${run.runId}`, []);
       await streamQuery({
         odSessionId: sid,
-        endpointId: 'predefined-gpt-5.6-sol', reasoningEffort: 'medium',
+        endpointId: GLM_ENDPOINT_ID, reasoningEffort: 'max', // (2026-07-20 model switch) GLM 4.7 BYOI + top-level max
         query: `ODA Correlation Engine intelligence picture for UAE ↔ ${run.country} (run ${run.runId}).
 EVIDENCE:
 ${evList}

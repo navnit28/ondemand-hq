@@ -332,7 +332,13 @@
       "confidence": 91,
       "severity": "High",
       "trend": "Increasing",
-      "detail": "Pakistan's targets of one million trained AI professionals, 3,000 annual scholarships and 1,000 supported research projects indicate substantial demand for education, research and workforce partnerships."
+      "detail": "Pakistan's targets of one million trained AI professionals, 3,000 annual scholarships and 1,000 supported research projects indicate substantial demand for education, research and workforce partnerships.",
+      "evidence": {
+       "url": "https://finance.yahoo.com/news/pakistan-host-indus-ai-week-125800979.html",
+       "publisher": "Yahoo",
+       "date": "2026-02-09",
+       "gatheredAt": "2026-07-20T18:00:30Z"
+      }
      },
      {
       "title": "Data centres, cloud and fibre infrastructure",
@@ -340,7 +346,13 @@
       "confidence": 89,
       "severity": "High",
       "trend": "Increasing",
-      "detail": "AI, 5G, cloud services, digital payments and the Internet of Things require expanded fibre, data-centre capacity, cloud platforms, internet exchanges and reliable electricity."
+      "detail": "AI, 5G, cloud services, digital payments and the Internet of Things require expanded fibre, data-centre capacity, cloud platforms, internet exchanges and reliable electricity.",
+      "evidence": {
+       "url": "https://techinpakistan.pk/the-hidden-infrastructure-powering-pakistans-digital-economy/",
+       "publisher": "Techinpakistan",
+       "date": "2026-07",
+       "gatheredAt": "2026-07-20T18:00:30Z"
+      }
      },
      {
       "title": "Climate-resilient agriculture and food logistics",
@@ -348,7 +360,13 @@
       "confidence": 93,
       "severity": "Critical",
       "trend": "Increasing",
-      "detail": "Acute hunger, damaged agriculture, drought, market disruption and high food prices create urgent demand for irrigation, resilient farming, cold chains and staple-food supply support."
+      "detail": "Acute hunger, damaged agriculture, drought, market disruption and high food prices create urgent demand for irrigation, resilient farming, cold chains and staple-food supply support.",
+      "evidence": {
+       "url": "https://news.un.org/en/story/2026/02/1166991",
+       "publisher": "United Nations",
+       "date": "2026-02",
+       "gatheredAt": "2026-07-20T18:00:30Z"
+      }
      },
      {
       "title": "Flood-resilient infrastructure and water management",
@@ -356,7 +374,13 @@
       "confidence": 92,
       "severity": "High",
       "trend": "Increasing",
-      "detail": "Flood displacement and infrastructure damage support investment in drainage, water management, resilient housing, environmental assessment and early-warning systems."
+      "detail": "Flood displacement and infrastructure damage support investment in drainage, water management, resilient housing, environmental assessment and early-warning systems.",
+      "evidence": {
+       "url": "https://www.hrw.org/news/2025/09/10/pakistan-floods-highlight-urgent-need-for-reforms",
+       "publisher": "Human Rights Watch",
+       "date": "2025-09-10",
+       "gatheredAt": "2026-07-20T18:00:30Z"
+      }
      },
      {
       "title": "Humanitarian financing through the IOM response plan",
@@ -364,7 +388,13 @@
       "confidence": 97,
       "severity": "Critical",
       "trend": "Stable",
-      "detail": "IOM has identified an approximately $47.91 million requirement for its 2026 Pakistan response, including $26.37 million associated with lifesaving assistance."
+      "detail": "IOM has identified an approximately $47.91 million requirement for its 2026 Pakistan response, including $26.37 million associated with lifesaving assistance.",
+      "evidence": {
+       "url": "https://crisisresponse.iom.int/response/pakistan-crisis-response-plan-2026",
+       "publisher": "Iom",
+       "date": "2026",
+       "gatheredAt": "2026-07-20T18:00:30Z"
+      }
      }
     ],
     "risks": [
@@ -374,7 +404,13 @@
       "confidence": 96,
       "severity": "Critical",
       "trend": "Improving",
-      "detail": "The projection declines from 7.5 million people in December 2025\u2013March 2026 to 6.7 million in April\u2013September 2026, but the scale remains severe."
+      "detail": "The projection declines from 7.5 million people in December 2025\u2013March 2026 to 6.7 million in April\u2013September 2026, but the scale remains severe.",
+      "evidence": {
+       "url": "https://news.un.org/en/story/2026/02/1166991",
+       "publisher": "United Nations",
+       "date": "2026-02",
+       "gatheredAt": "2026-07-20T18:00:30Z"
+      }
      },
      {
       "title": "Flood and drought exposure",
@@ -382,7 +418,13 @@
       "confidence": 95,
       "severity": "Critical",
       "trend": "Increasing",
-      "detail": "Residual flood impacts, drought and extended dry periods are damaging production, markets, infrastructure and household resilience."
+      "detail": "Residual flood impacts, drought and extended dry periods are damaging production, markets, infrastructure and household resilience.",
+      "evidence": {
+       "url": "https://www.hrw.org/news/2025/09/10/pakistan-floods-highlight-urgent-need-for-reforms",
+       "publisher": "Human Rights Watch",
+       "date": "2025-09-10",
+       "gatheredAt": "2026-07-20T18:00:30Z"
+      }
      },
      {
       "title": "Large-scale displacement",
@@ -390,7 +432,13 @@
       "confidence": 94,
       "severity": "High",
       "trend": "Stable",
-      "detail": "The 2025 floods reportedly displaced at least four million people, while vulnerable migrants, refugees and host communities continue to require assistance."
+      "detail": "The 2025 floods reportedly displaced at least four million people, while vulnerable migrants, refugees and host communities continue to require assistance.",
+      "evidence": {
+       "url": "https://www.hrw.org/news/2025/09/10/pakistan-floods-highlight-urgent-need-for-reforms",
+       "publisher": "Human Rights Watch",
+       "date": "2025-09-10",
+       "gatheredAt": "2026-07-20T18:00:30Z"
+      }
      },
      {
       "title": "Digital infrastructure constraints",
@@ -398,7 +446,13 @@
       "confidence": 88,
       "severity": "High",
       "trend": "Increasing",
-      "detail": "Insufficient fibre, data-centre capacity, cloud infrastructure, internet exchanges and dependable power could constrain digital and AI growth."
+      "detail": "Insufficient fibre, data-centre capacity, cloud infrastructure, internet exchanges and dependable power could constrain digital and AI growth.",
+      "evidence": {
+       "url": "https://techinpakistan.pk/the-hidden-infrastructure-powering-pakistans-digital-economy/",
+       "publisher": "Techinpakistan",
+       "date": "2026-07",
+       "gatheredAt": "2026-07-20T18:00:30Z"
+      }
      },
      {
       "title": "Data governance and cybersecurity weaknesses",
@@ -406,7 +460,13 @@
       "confidence": 87,
       "severity": "High",
       "trend": "Increasing",
-      "detail": "AI implementation faces regulatory uncertainty, data-governance weaknesses and a need for cybersecurity safeguards."
+      "detail": "AI implementation faces regulatory uncertainty, data-governance weaknesses and a need for cybersecurity safeguards.",
+      "evidence": {
+       "url": "https://finance.yahoo.com/news/pakistan-host-indus-ai-week-125800979.html",
+       "publisher": "Yahoo",
+       "date": "2026-02-09",
+       "gatheredAt": "2026-07-20T18:00:30Z"
+      }
      },
      {
       "title": "Cross-border trade disruption",
@@ -414,7 +474,13 @@
       "confidence": 90,
       "severity": "High",
       "trend": "Stable",
-      "detail": "Cross-border trade disruption is contributing to food insecurity, price pressure and reduced market access."
+      "detail": "Cross-border trade disruption is contributing to food insecurity, price pressure and reduced market access.",
+      "evidence": {
+       "url": "https://news.un.org/en/story/2026/02/1166991",
+       "publisher": "United Nations",
+       "date": "2026-02",
+       "gatheredAt": "2026-07-20T18:00:30Z"
+      }
      },
      {
       "title": "Water stress and irrigation needs",
@@ -422,7 +488,13 @@
       "confidence": 91,
       "severity": "High",
       "trend": "Increasing",
-      "detail": "Drought, extended dry periods, flood damage and agricultural losses reinforce the need for water management, irrigation and climate adaptation."
+      "detail": "Drought, extended dry periods, flood damage and agricultural losses reinforce the need for water management, irrigation and climate adaptation.",
+      "evidence": {
+       "url": "https://www.hrw.org/news/2025/09/10/pakistan-floods-highlight-urgent-need-for-reforms",
+       "publisher": "Human Rights Watch",
+       "date": "2025-09-10",
+       "gatheredAt": "2026-07-20T18:00:30Z"
+      }
      }
     ],
     "agreements": [],

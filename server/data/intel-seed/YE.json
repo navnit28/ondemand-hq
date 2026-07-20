@@ -410,7 +410,13 @@
       "confidence": null,
       "severity": "Critical",
       "trend": "Increasing",
-      "detail": "More than 22 million people need assistance, 18.3 million face acute food insecurity and more than 2.2 million children under five are acutely malnourished. Recent X results indicate continuing UAE Red Crescent relief activity."
+      "detail": "More than 22 million people need assistance, 18.3 million face acute food insecurity and more than 2.2 million children under five are acutely malnourished. Recent X results indicate continuing UAE Red Crescent relief activity.",
+      "evidence": {
+       "url": "https://yemen.un.org/en/312711-ocha-yemen-yemen-humanitarian-needs-and-response-plan-2026-march-2026",
+       "publisher": "United Nations",
+       "date": "2026-03-01",
+       "gatheredAt": "2026-07-20T18:00:30Z"
+      }
      },
      {
       "title": "Water, health and essential-service rehabilitation",
@@ -418,7 +424,13 @@
       "confidence": null,
       "severity": "High",
       "trend": "Increasing",
-      "detail": "There are 14.4 million people requiring WASH assistance, and only 59.3% of health facilities are fully functional. Any projects would require conflict-sensitive access and delivery controls."
+      "detail": "There are 14.4 million people requiring WASH assistance, and only 59.3% of health facilities are fully functional. Any projects would require conflict-sensitive access and delivery controls.",
+      "evidence": {
+       "url": "https://yemen.un.org/en/312711-ocha-yemen-yemen-humanitarian-needs-and-response-plan-2026-march-2026",
+       "publisher": "United Nations",
+       "date": "2026-03-01",
+       "gatheredAt": "2026-07-20T18:00:30Z"
+      }
      },
      {
       "title": "Road and port reconstruction",
@@ -426,7 +438,13 @@
       "confidence": null,
       "severity": "High",
       "trend": "Increasing",
-      "detail": "At least 100 bridges and 5,000 to 6,000 kilometres of paved roads have been destroyed, creating substantial long-term rehabilitation needs once security and governance conditions permit."
+      "detail": "At least 100 bridges and 5,000 to 6,000 kilometres of paved roads have been destroyed, creating substantial long-term rehabilitation needs once security and governance conditions permit.",
+      "evidence": {
+       "url": "https://sanaacenter.org/publications/policy-research/19304",
+       "publisher": "Sanaacenter",
+       "date": "2026-07",
+       "gatheredAt": "2026-07-20T18:00:30Z"
+      }
      },
      {
       "title": "Food distribution and fisheries recovery",
@@ -434,7 +452,13 @@
       "confidence": null,
       "severity": "High",
       "trend": "Increasing",
-      "detail": "Yemen depends heavily on maritime imports, while fisheries production is about 40% below its 2004 peak. High fuel costs, damaged infrastructure and weak regulation remain major barriers."
+      "detail": "Yemen depends heavily on maritime imports, while fisheries production is about 40% below its 2004 peak. High fuel costs, damaged infrastructure and weak regulation remain major barriers.",
+      "evidence": {
+       "url": "https://yemen.un.org/en/312711-ocha-yemen-yemen-humanitarian-needs-and-response-plan-2026-march-2026",
+       "publisher": "United Nations",
+       "date": "2026-03-01",
+       "gatheredAt": "2026-07-20T18:00:30Z"
+      }
      },
      {
       "title": "Energy-service recovery",
@@ -442,7 +466,13 @@
       "confidence": null,
       "severity": "High",
       "trend": "Increasing",
-      "detail": "Electricity shortages, high fuel costs and disrupted imports create strong needs for energy support, but no new UAE energy commitment is documented."
+      "detail": "Electricity shortages, high fuel costs and disrupted imports create strong needs for energy support, but no new UAE energy commitment is documented.",
+      "evidence": {
+       "url": "https://sanaacenter.org/the-yemen-review/jan-mar-2026/26962",
+       "publisher": "Sanaacenter",
+       "date": "2026-03-01",
+       "gatheredAt": "2026-07-20T18:00:30Z"
+      }
      }
     ],
     "risks": [
@@ -452,7 +482,13 @@
       "confidence": null,
       "severity": "Critical",
       "trend": "Increasing",
-      "detail": "Mobilization, deadly Hodeidah fighting, airport attacks and missile fire indicate that the post-2022 de-escalation may be collapsing."
+      "detail": "Mobilization, deadly Hodeidah fighting, airport attacks and missile fire indicate that the post-2022 de-escalation may be collapsing.",
+      "evidence": {
+       "url": "https://www.aljazeera.com/features/2026/7/14/why-yemens-long-no-war-no-peace-deadlock-may-be-ending",
+       "publisher": "Al Jazeera",
+       "date": "2026-07-14",
+       "gatheredAt": "2026-07-20T18:00:30Z"
+      }
      },
      {
       "title": "Red Sea and Bab al-Mandeb disruption",
@@ -460,7 +496,13 @@
       "confidence": null,
       "severity": "Critical",
       "trend": "Increasing",
-      "detail": "Houthi long-range capabilities and potential threats to international shipping expose commercial vessels, insurance, energy trade and UAE-linked supply chains."
+      "detail": "Houthi long-range capabilities and potential threats to international shipping expose commercial vessels, insurance, energy trade and UAE-linked supply chains.",
+      "evidence": {
+       "url": "https://tcf.org/content/report/from-smugglers-to-supply-chains-how-yemens-houthi-movement-became-a-global-threat/",
+       "publisher": "Tcf",
+       "date": "2026-07-16",
+       "gatheredAt": "2026-07-20T18:00:30Z"
+      }
      },
      {
       "title": "Acute hunger and malnutrition",
@@ -468,7 +510,13 @@
       "confidence": null,
       "severity": "Critical",
       "trend": "Increasing",
-      "detail": "An estimated 18.3 million people face acute food insecurity, including 5.8 million facing emergency hunger and approximately 40,000 expected to experience catastrophic conditions."
+      "detail": "An estimated 18.3 million people face acute food insecurity, including 5.8 million facing emergency hunger and approximately 40,000 expected to experience catastrophic conditions.",
+      "evidence": {
+       "url": "https://yemen.un.org/en/312711-ocha-yemen-yemen-humanitarian-needs-and-response-plan-2026-march-2026",
+       "publisher": "United Nations",
+       "date": "2026-03-01",
+       "gatheredAt": "2026-07-20T18:00:30Z"
+      }
      },
      {
       "title": "Fragmented political and security authority",
@@ -476,7 +524,13 @@
       "confidence": null,
       "severity": "High",
       "trend": "Increasing",
-      "detail": "The STC\u2019s reported dissolution, force integration and growing Saudi primacy are changing authority structures in government-held Yemen."
+      "detail": "The STC\u2019s reported dissolution, force integration and growing Saudi primacy are changing authority structures in government-held Yemen.",
+      "evidence": {
+       "url": "https://sanaacenter.org/the-yemen-review/jan-mar-2026/26957",
+       "publisher": "Sanaacenter",
+       "date": "2026-01-14",
+       "gatheredAt": "2026-07-20T18:00:30Z"
+      }
      },
      {
       "title": "Weak economy and public-finance capacity",
@@ -484,7 +538,13 @@
       "confidence": null,
       "severity": "High",
       "trend": "Stable",
-      "detail": "High inflation, fragile purchasing power, unrealistic budgeting and dependence on external financial support constrain recovery."
+      "detail": "High inflation, fragile purchasing power, unrealistic budgeting and dependence on external financial support constrain recovery.",
+      "evidence": {
+       "url": "https://sanaacenter.org/the-yemen-review/jan-mar-2026/26962",
+       "publisher": "Sanaacenter",
+       "date": "2026-03-01",
+       "gatheredAt": "2026-07-20T18:00:30Z"
+      }
      },
      {
       "title": "Sanctions and divided commercial systems",
@@ -492,7 +552,13 @@
       "confidence": null,
       "severity": "High",
       "trend": "Stable",
-      "detail": "Sanctions, import restrictions, divergent customs and licensing systems, checkpoint levies and extortion complicate trade and investment."
+      "detail": "Sanctions, import restrictions, divergent customs and licensing systems, checkpoint levies and extortion complicate trade and investment.",
+      "evidence": {
+       "url": "https://tcf.org/content/report/from-smugglers-to-supply-chains-how-yemens-houthi-movement-became-a-global-threat/",
+       "publisher": "Tcf",
+       "date": "2026-07-16",
+       "gatheredAt": "2026-07-20T18:00:30Z"
+      }
      },
      {
       "title": "Damaged transport and import networks",
@@ -500,7 +566,13 @@
       "confidence": null,
       "severity": "High",
       "trend": "Increasing",
-      "detail": "Destroyed roads, bridges and damaged ports increase transport costs, delay aid and constrain food, fuel and electricity supplies."
+      "detail": "Destroyed roads, bridges and damaged ports increase transport costs, delay aid and constrain food, fuel and electricity supplies.",
+      "evidence": {
+       "url": "https://sanaacenter.org/publications/policy-research/19304",
+       "publisher": "Sanaacenter",
+       "date": "2026-07",
+       "gatheredAt": "2026-07-20T18:00:30Z"
+      }
      },
      {
       "title": "Large-scale displacement and vulnerable migration flows",
@@ -508,7 +580,13 @@
       "confidence": null,
       "severity": "High",
       "trend": "Stable",
-      "detail": "Yemen has 5.2 million internally displaced people, 329,000 migrants and 63,000 refugees and asylum seekers."
+      "detail": "Yemen has 5.2 million internally displaced people, 329,000 migrants and 63,000 refugees and asylum seekers.",
+      "evidence": {
+       "url": "https://www.aljazeera.com/features/2026/7/14/why-yemens-long-no-war-no-peace-deadlock-may-be-ending",
+       "publisher": "Al Jazeera",
+       "date": "2026-07-14",
+       "gatheredAt": "2026-07-20T18:00:30Z"
+      }
      },
      {
       "title": "Severe WASH deficit",
@@ -516,7 +594,13 @@
       "confidence": null,
       "severity": "High",
       "trend": "Increasing",
-      "detail": "An estimated 14.4 million people require WASH assistance, while damaged infrastructure and conflict restrict reliable service delivery."
+      "detail": "An estimated 14.4 million people require WASH assistance, while damaged infrastructure and conflict restrict reliable service delivery.",
+      "evidence": {
+       "url": "https://yemen.un.org/en/312711-ocha-yemen-yemen-humanitarian-needs-and-response-plan-2026-march-2026",
+       "publisher": "United Nations",
+       "date": "2026-03-01",
+       "gatheredAt": "2026-07-20T18:00:30Z"
+      }
      }
     ],
     "agreements": [

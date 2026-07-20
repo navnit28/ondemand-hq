@@ -182,7 +182,13 @@
       "confidence": 100,
       "severity": "Medium",
       "trend": "Improving",
-      "detail": "The lifting of the UAE travel ban is a positive bilateral signal, while reported progress in southern state security control could support tourism and future commerce. No verified investment package, trade agreement, or commercial project was identified."
+      "detail": "The lifting of the UAE travel ban is a positive bilateral signal, while reported progress in southern state security control could support tourism and future commerce. No verified investment package, trade agreement, or commercial project was identified.",
+      "evidence": {
+       "url": "https://x.com/nawafsalam/status/2071669447622803467",
+       "publisher": "X (Twitter)",
+       "date": "2026-07",
+       "gatheredAt": "2026-07-20T18:00:30Z"
+      }
      },
      {
       "title": "Security-dependent reconstruction and infrastructure engagement",
@@ -190,7 +196,13 @@
       "confidence": 100,
       "severity": "High",
       "trend": "Improving",
-      "detail": "Improved state control in southern Lebanon could facilitate reconstruction, infrastructure access, agriculture, logistics, and energy activity. The opportunity remains conditional because Israeli strikes, occupied locations, unexploded ordnance, tunnels, and weak institutional capacity persist."
+      "detail": "Improved state control in southern Lebanon could facilitate reconstruction, infrastructure access, agriculture, logistics, and energy activity. The opportunity remains conditional because Israeli strikes, occupied locations, unexploded ordnance, tunnels, and weak institutional capacity persist.",
+      "evidence": {
+       "url": "https://www.aljazeera.com/news/2026/1/8/lebanons-army-says-phase-one-of-hezbollah-disarmament-in-south-completed",
+       "publisher": "Al Jazeera",
+       "date": "2026-01-08",
+       "gatheredAt": "2026-07-20T18:00:30Z"
+      }
      }
     ],
     "risks": [
@@ -200,7 +212,13 @@
       "confidence": 100,
       "severity": "High",
       "trend": "Stable",
-      "detail": "Israeli strikes reportedly continued despite the 2024 ceasefire. Occupied locations, unexploded ordnance, and tunnels remain obstacles to civilian safety, reconstruction, agriculture, humanitarian access, and investment."
+      "detail": "Israeli strikes reportedly continued despite the 2024 ceasefire. Occupied locations, unexploded ordnance, and tunnels remain obstacles to civilian safety, reconstruction, agriculture, humanitarian access, and investment.",
+      "evidence": {
+       "url": "https://www.aljazeera.com/news/2026/1/8/lebanons-army-says-phase-one-of-hezbollah-disarmament-in-south-completed",
+       "publisher": "Al Jazeera",
+       "date": "2026-01-08",
+       "gatheredAt": "2026-07-20T18:00:30Z"
+      }
      },
      {
       "title": "Fragile governance and limited state capacity",
@@ -208,7 +226,13 @@
       "confidence": 100,
       "severity": "High",
       "trend": "Stable",
-      "detail": "Lebanon has functioning presidential and governmental institutions, but unresolved arms, border, Syria, regional-conflict, and external-pressure files continue to constrain decision-making and sustainable stability."
+      "detail": "Lebanon has functioning presidential and governmental institutions, but unresolved arms, border, Syria, regional-conflict, and external-pressure files continue to constrain decision-making and sustainable stability.",
+      "evidence": {
+       "url": "https://politicsociety.org/2025/12/29/lebanon-in-2026-state-governance-under-the-pressure-of-concurrent-deadlines/?lang=en",
+       "publisher": "Politicsociety",
+       "date": "2025-12-29",
+       "gatheredAt": "2026-07-20T18:00:30Z"
+      }
      },
      {
       "title": "Unassessed economic and financial exposure",
@@ -216,7 +240,13 @@
       "confidence": 100,
       "severity": "High",
       "trend": "Stable",
-      "detail": "Current GDP, inflation, exchange-rate, fiscal, banking, bilateral trade, and investment figures were unavailable. This prevents a comprehensive assessment of commercial viability and sovereign or financial risk."
+      "detail": "Current GDP, inflation, exchange-rate, fiscal, banking, bilateral trade, and investment figures were unavailable. This prevents a comprehensive assessment of commercial viability and sovereign or financial risk.",
+      "evidence": {
+       "url": "https://x.com/nawafsalam/status/2071669447622803467",
+       "publisher": "X (Twitter)",
+       "date": "2026-07",
+       "gatheredAt": "2026-07-20T18:00:30Z"
+      }
      }
     ],
     "agreements": [],

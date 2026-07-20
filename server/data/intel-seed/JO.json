@@ -279,7 +279,13 @@
       "confidence": 90,
       "severity": "High",
       "trend": "Increasing",
-      "detail": "Construction is expected to begin in Q4 2026, while agreements needed for financial close were still being prepared. Potential areas include desalination, pipeline infrastructure, tanks and pumping stations; no UAE participant has been named."
+      "detail": "Construction is expected to begin in Q4 2026, while agreements needed for financial close were still being prepared. Potential areas include desalination, pipeline infrastructure, tanks and pumping stations; no UAE participant has been named.",
+      "evidence": {
+       "url": "https://jordantimes.com/news/local/national-water-carrier-project-construction-to-begin-in-late-2026-official",
+       "publisher": "Jordantimes",
+       "date": "2026-07-05",
+       "gatheredAt": "2026-07-20T18:00:30Z"
+      }
      },
      {
       "title": "Renewable power for desalination",
@@ -287,7 +293,13 @@
       "confidence": 90,
       "severity": "High",
       "trend": "Increasing",
-      "detail": "The project configuration includes an approximately 281 MWp solar facility intended to provide about 28% of project electricity needs, creating a clear renewable-energy component without a documented UAE role."
+      "detail": "The project configuration includes an approximately 281 MWp solar facility intended to provide about 28% of project electricity needs, creating a clear renewable-energy component without a documented UAE role.",
+      "evidence": {
+       "url": "https://jordantimes.com/news/local/national-water-carrier-project-construction-to-begin-in-late-2026-official",
+       "publisher": "Jordantimes",
+       "date": "2026-07-05",
+       "gatheredAt": "2026-07-20T18:00:30Z"
+      }
      },
      {
       "title": "Water-linked food and humanitarian resilience",
@@ -295,7 +307,13 @@
       "confidence": 90,
       "severity": "High",
       "trend": "Improving",
-      "detail": "Annual output of 300 million cubic metres could cover approximately 40% of drinking-water needs, support about four million people and reduce pressure on depleted water resources."
+      "detail": "Annual output of 300 million cubic metres could cover approximately 40% of drinking-water needs, support about four million people and reduce pressure on depleted water resources.",
+      "evidence": {
+       "url": "https://jordantimes.com/news/local/national-water-carrier-project-construction-to-begin-in-late-2026-official",
+       "publisher": "Jordantimes",
+       "date": "2026-07-05",
+       "gatheredAt": "2026-07-20T18:00:30Z"
+      }
      },
      {
       "title": "Jordanian reform and development pipeline",
@@ -303,7 +321,13 @@
       "confidence": 80,
       "severity": "Medium",
       "trend": "Increasing",
-      "detail": "Germany's \u20ac684 million package signals a substantial externally financed programme linked to economic reform, public-sector reform and development priorities, although project-level opportunities were not disclosed."
+      "detail": "Germany's \u20ac684 million package signals a substantial externally financed programme linked to economic reform, public-sector reform and development priorities, although project-level opportunities were not disclosed.",
+      "evidence": {
+       "url": "https://www.facebook.com/thejordantimes/posts/jordan-and-germany-have-signed-the-official-minutes-of-their-bilateral-developme/1434803542027835/",
+       "publisher": "Facebook",
+       "date": "2026-07",
+       "gatheredAt": "2026-07-20T18:00:30Z"
+      }
      }
     ],
     "risks": [
@@ -313,7 +337,13 @@
       "confidence": 95,
       "severity": "Critical",
       "trend": "Stable",
-      "detail": "Jordan's reported annual water deficit is approximately 400 million cubic metres. The National Water Carrier would address much of this deficit, but pumping is not scheduled until Q4 2030."
+      "detail": "Jordan's reported annual water deficit is approximately 400 million cubic metres. The National Water Carrier would address much of this deficit, but pumping is not scheduled until Q4 2030.",
+      "evidence": {
+       "url": "https://jordantimes.com/news/local/national-water-carrier-project-construction-to-begin-in-late-2026-official",
+       "publisher": "Jordantimes",
+       "date": "2026-07-05",
+       "gatheredAt": "2026-07-20T18:00:30Z"
+      }
      },
      {
       "title": "National Water Carrier financing and schedule risk",
@@ -321,7 +351,13 @@
       "confidence": 85,
       "severity": "High",
       "trend": "Stable",
-      "detail": "Final agreements needed for financial close were still being prepared. Earlier reporting contained conflicting construction and completion schedules, although the 5 July 2026 update is the newest schedule available."
+      "detail": "Final agreements needed for financial close were still being prepared. Earlier reporting contained conflicting construction and completion schedules, although the 5 July 2026 update is the newest schedule available.",
+      "evidence": {
+       "url": "https://jordantimes.com/news/local/national-water-carrier-project-construction-to-begin-in-late-2026-official",
+       "publisher": "Jordantimes",
+       "date": "2026-07-05",
+       "gatheredAt": "2026-07-20T18:00:30Z"
+      }
      },
      {
       "title": "Regional escalation involving Iran and Gulf states",
@@ -329,7 +365,13 @@
       "confidence": 80,
       "severity": "High",
       "trend": "Increasing",
-      "detail": "Jordan condemned reported Iranian attacks against Bahrain, Qatar and Kuwait and called for action addressing Iranian proxy support and destabilising activities."
+      "detail": "Jordan condemned reported Iranian attacks against Bahrain, Qatar and Kuwait and called for action addressing Iranian proxy support and destabilising activities.",
+      "evidence": {
+       "url": "https://www.facebook.com/JewishInsider/posts/jordanian-deputy-prime-minister-ayman-safadi-repeatedly-emphasized-on-wednesday-/1649421920517133/",
+       "publisher": "Facebook",
+       "date": "2026-07",
+       "gatheredAt": "2026-07-20T18:00:30Z"
+      }
      },
      {
       "title": "Incomplete visibility into UAE\u2013Jordan developments",
@@ -337,7 +379,13 @@
       "confidence": 100,
       "severity": "Medium",
       "trend": "Stable",
-      "detail": "One live-search request timed out, several searches returned no results and no verifiable X posts were retrieved. UAE-specific investment, trade or cooperation reporting may therefore be incomplete."
+      "detail": "One live-search request timed out, several searches returned no results and no verifiable X posts were retrieved. UAE-specific investment, trade or cooperation reporting may therefore be incomplete.",
+      "evidence": {
+       "url": "https://www.middleeastmonitor.com/20260221-jordan-venezuela-agree-on-roadmap-for-economic-cooperation/",
+       "publisher": "Middleeastmonitor",
+       "date": "2026-02-21",
+       "gatheredAt": "2026-07-20T18:00:30Z"
+      }
      }
     ],
     "agreements": [

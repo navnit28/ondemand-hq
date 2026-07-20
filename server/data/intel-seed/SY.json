@@ -365,7 +365,13 @@
       "confidence": 85,
       "severity": "High",
       "trend": "Increasing",
-      "detail": "Control of al-Omar, Conoco and Tabqa Dam creates a potential rehabilitation pipeline spanning hydrocarbons, gas-fired generation, hydropower and transmission, subject to technical, political and sanctions due diligence."
+      "detail": "Control of al-Omar, Conoco and Tabqa Dam creates a potential rehabilitation pipeline spanning hydrocarbons, gas-fired generation, hydropower and transmission, subject to technical, political and sanctions due diligence.",
+      "evidence": {
+       "url": "https://www.aljazeera.com/news/2026/1/19/power-lines-and-power-struggles-unpacking-syria-push-towards-unification",
+       "publisher": "Al Jazeera",
+       "date": "2026-01-19",
+       "gatheredAt": "2026-07-20T18:00:30Z"
+      }
      },
      {
       "title": "Public-private reconstruction platforms",
@@ -373,7 +379,13 @@
       "confidence": 85,
       "severity": "High",
       "trend": "Increasing",
-      "detail": "Syria's strategic-partnership model explicitly positions private capital as the recovery engine and could support power, water, construction, transport and industrial projects if bankable rules are established."
+      "detail": "Syria's strategic-partnership model explicitly positions private capital as the recovery engine and could support power, water, construction, transport and industrial projects if bankable rules are established.",
+      "evidence": {
+       "url": "https://english.aawsat.com/business/5280448-new-syria-defines-its-economic-identity-%E2%80%98partnership%E2%80%99-replaces-privatization",
+       "publisher": "Aawsat",
+       "date": "2026",
+       "gatheredAt": "2026-07-20T18:00:30Z"
+      }
      },
      {
       "title": "Logistics, agribusiness and cold-chain recovery",
@@ -381,7 +393,13 @@
       "confidence": 70,
       "severity": "Medium",
       "trend": "Increasing",
-      "detail": "Restored electricity, transport and administration in the northeast could support irrigation, processing, refrigerated storage and movement of grain and livestock, although current agricultural and food-security data are absent."
+      "detail": "Restored electricity, transport and administration in the northeast could support irrigation, processing, refrigerated storage and movement of grain and livestock, although current agricultural and food-security data are absent.",
+      "evidence": {
+       "url": "https://www.aljazeera.com/news/2026/1/19/power-lines-and-power-struggles-unpacking-syria-push-towards-unification",
+       "publisher": "Al Jazeera",
+       "date": "2026-01-19",
+       "gatheredAt": "2026-07-20T18:00:30Z"
+      }
      },
      {
       "title": "Foundational digital government and connectivity",
@@ -389,7 +407,13 @@
       "confidence": 65,
       "severity": "Medium",
       "trend": "Increasing",
-      "detail": "Near-term needs in power, fiber, secure government systems and local hosting may offer a more credible entry point than large frontier-AI facilities."
+      "detail": "Near-term needs in power, fiber, secure government systems and local hosting may offer a more credible entry point than large frontier-AI facilities.",
+      "evidence": {
+       "url": "https://www.renderexpo.com/post/data-centers-in-syria-silklink-potential-challenges-and-national-impact",
+       "publisher": "Renderexpo",
+       "date": "2026",
+       "gatheredAt": "2026-07-20T18:00:30Z"
+      }
      },
      {
       "title": "Essential-service support for return areas",
@@ -397,7 +421,13 @@
       "confidence": 70,
       "severity": "High",
       "trend": "Increasing",
-      "detail": "Cautious family returns create potential demand for water, electricity, housing, schools, healthcare, hazard clearance and livelihoods, but updated beneficiary and funding data are required."
+      "detail": "Cautious family returns create potential demand for water, electricity, housing, schools, healthcare, hazard clearance and livelihoods, but updated beneficiary and funding data are required.",
+      "evidence": {
+       "url": "https://www.aljazeera.com/news/2026/1/19/power-lines-and-power-struggles-unpacking-syria-push-towards-unification",
+       "publisher": "Al Jazeera",
+       "date": "2026-01",
+       "gatheredAt": "2026-07-20T18:00:30Z"
+      }
      }
     ],
     "risks": [
@@ -407,7 +437,13 @@
       "confidence": 85,
       "severity": "High",
       "trend": "Stable",
-      "detail": "The durability of integration depends on relations among Damascus, the SDF and local communities, including revenue-sharing, governance and equitable service delivery."
+      "detail": "The durability of integration depends on relations among Damascus, the SDF and local communities, including revenue-sharing, governance and equitable service delivery.",
+      "evidence": {
+       "url": "https://www.aljazeera.com/news/2026/1/19/power-lines-and-power-struggles-unpacking-syria-push-towards-unification",
+       "publisher": "Al Jazeera",
+       "date": "2026-01-19",
+       "gatheredAt": "2026-07-20T18:00:30Z"
+      }
      },
      {
       "title": "Security exposure around strategic assets and reconstruction sites",
@@ -415,7 +451,13 @@
       "confidence": 75,
       "severity": "High",
       "trend": "Stable",
-      "detail": "Successive conflicts have damaged eastern Syria, and changing administrative or military control creates continuing physical-security and project-execution risks."
+      "detail": "Successive conflicts have damaged eastern Syria, and changing administrative or military control creates continuing physical-security and project-execution risks.",
+      "evidence": {
+       "url": "https://english.aawsat.com/business/5280448-new-syria-defines-its-economic-identity-%E2%80%98partnership%E2%80%99-replaces-privatization",
+       "publisher": "Aawsat",
+       "date": "2026",
+       "gatheredAt": "2026-07-20T18:00:30Z"
+      }
      },
      {
       "title": "Sanctions and restricted financial channels",
@@ -423,7 +465,13 @@
       "confidence": 85,
       "severity": "High",
       "trend": "Stable",
-      "detail": "Prospective investors require clarity on sanctions exposure, banking channels, ownership protections, dispute resolution and currency convertibility before projects can become bankable."
+      "detail": "Prospective investors require clarity on sanctions exposure, banking channels, ownership protections, dispute resolution and currency convertibility before projects can become bankable.",
+      "evidence": {
+       "url": "https://www.aljazeera.com/news/2026/1/19/power-lines-and-power-struggles-unpacking-syria-push-towards-unification",
+       "publisher": "Al Jazeera",
+       "date": "2026-01-19",
+       "gatheredAt": "2026-07-20T18:00:30Z"
+      }
      },
      {
       "title": "Currency convertibility and project-finance uncertainty",
@@ -431,7 +479,13 @@
       "confidence": 75,
       "severity": "High",
       "trend": "Stable",
-      "detail": "The material identifies currency convertibility and financing channels as unresolved requirements for private-sector investment."
+      "detail": "The material identifies currency convertibility and financing channels as unresolved requirements for private-sector investment.",
+      "evidence": {
+       "url": "https://www.renderexpo.com/post/data-centers-in-syria-silklink-potential-challenges-and-national-impact",
+       "publisher": "Renderexpo",
+       "date": "2026",
+       "gatheredAt": "2026-07-20T18:00:30Z"
+      }
      },
      {
       "title": "Unverified asset condition and infrastructure bottlenecks",
@@ -439,7 +493,13 @@
       "confidence": 85,
       "severity": "High",
       "trend": "Stable",
-      "detail": "Production capacity, maintenance needs, grid condition, dependable power, fiber connectivity and access to equipment and capital have not been established."
+      "detail": "Production capacity, maintenance needs, grid condition, dependable power, fiber connectivity and access to equipment and capital have not been established.",
+      "evidence": {
+       "url": "https://www.renderexpo.com/post/data-centers-in-syria-silklink-potential-challenges-and-national-impact",
+       "publisher": "Renderexpo",
+       "date": "2026",
+       "gatheredAt": "2026-07-20T18:00:30Z"
+      }
      },
      {
       "title": "Unquantified food and agricultural vulnerability",
@@ -447,7 +507,13 @@
       "confidence": 60,
       "severity": "Medium",
       "trend": "Stable",
-      "detail": "No current national food-security assessment is available, while harvests, drought, water, irrigation damage, imports, purchasing power and food assistance remain unquantified."
+      "detail": "No current national food-security assessment is available, while harvests, drought, water, irrigation damage, imports, purchasing power and food assistance remain unquantified.",
+      "evidence": {
+       "url": "https://www.renderexpo.com/post/data-centers-in-syria-silklink-potential-challenges-and-national-impact",
+       "publisher": "Renderexpo",
+       "date": "2026",
+       "gatheredAt": "2026-07-20T18:00:30Z"
+      }
      },
      {
       "title": "Return-related displacement and protection pressure",
@@ -455,7 +521,13 @@
       "confidence": 65,
       "severity": "High",
       "trend": "Stable",
-      "detail": "Cautious returns are occurring in war-damaged areas, but the scale, safety, voluntariness and sustainability of return movements are unknown."
+      "detail": "Cautious returns are occurring in war-damaged areas, but the scale, safety, voluntariness and sustainability of return movements are unknown.",
+      "evidence": {
+       "url": "https://www.aljazeera.com/news/2026/1/19/power-lines-and-power-struggles-unpacking-syria-push-towards-unification",
+       "publisher": "Al Jazeera",
+       "date": "2026-01",
+       "gatheredAt": "2026-07-20T18:00:30Z"
+      }
      },
      {
       "title": "Water and irrigation constraints",
@@ -463,7 +535,13 @@
       "confidence": 65,
       "severity": "High",
       "trend": "Stable",
-      "detail": "Agricultural recovery depends on water availability, irrigation systems, pumping power and infrastructure condition, none of which is quantified in the available reporting."
+      "detail": "Agricultural recovery depends on water availability, irrigation systems, pumping power and infrastructure condition, none of which is quantified in the available reporting.",
+      "evidence": {
+       "url": "https://www.renderexpo.com/post/data-centers-in-syria-silklink-potential-challenges-and-national-impact",
+       "publisher": "Renderexpo",
+       "date": "2026",
+       "gatheredAt": "2026-07-20T18:00:30Z"
+      }
      },
      {
       "title": "Cybersecurity and data-governance gaps",
@@ -471,7 +549,13 @@
       "confidence": 65,
       "severity": "Medium",
       "trend": "Stable",
-      "detail": "Sovereign cloud and data-center development require secure systems, dependable connectivity, data regulation and infrastructure security that have not yet been demonstrated."
+      "detail": "Sovereign cloud and data-center development require secure systems, dependable connectivity, data regulation and infrastructure security that have not yet been demonstrated.",
+      "evidence": {
+       "url": "https://www.renderexpo.com/post/data-centers-in-syria-silklink-potential-challenges-and-national-impact",
+       "publisher": "Renderexpo",
+       "date": "2026",
+       "gatheredAt": "2026-07-20T18:00:30Z"
+      }
      }
     ],
     "agreements": [],

@@ -32,8 +32,15 @@ export const PORT = parseInt(process.env.PORT || '8080', 10);
 // The ONE model policy: every call, everywhere, uses gpt-5.6-sol-medium =
 // endpoint predefined-gpt-5.6-sol + reasoningEffort "medium" (verified live in Phase 1:
 // the suffixed id form returns HTTP 400; the decomposition returns 200).
-export const ENDPOINT_ID = 'predefined-gpt-5.6-sol';
-export const REASONING_EFFORT = 'medium';
+// (2026-07-20 model switch) Platform prompts/queries — chat, search, Quick Query,
+// regenerate streams — now run on GLM 4.7 Cerebras BYOI with TOP-LEVEL
+// reasoningEffort 'max' (decomposed; suffixed ids are a proven 400 — dead end D2).
+// Data-gathering call sites (Perplexity/X stages) stay pinned to gpt-5.6-sol below.
+export const ENDPOINT_ID = process.env.CHAT_ENDPOINT_ID || 'byoi-6e314690-4eaf-4def-a33c-380809acf1f5'; // zai-glm-4.7 (Cerebras)
+export const REASONING_EFFORT = process.env.CHAT_REASONING_EFFORT || 'max';
+// Data-gathering model (Perplexity/X plugin stages) — UNCHANGED per 2026-07-20 task.
+export const GATHER_ENDPOINT_ID = 'predefined-gpt-5.6-sol';
+export const GATHER_REASONING_EFFORT = 'medium';
 
 // ANALYSIS model policy for the ODA Intelligence pipeline (server/intel.js).
 // PRODUCTION: predefined-gpt-5.6-sol + medium (same as chat). Overridable via env

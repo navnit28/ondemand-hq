@@ -247,7 +247,13 @@
       "confidence": 75,
       "severity": "High",
       "trend": "Increasing",
-      "detail": "The Regional Economic Integration Framework seeks legitimate cross-border commerce and integrated development. UAE logistics, infrastructure and trade-finance capabilities may be relevant, although no specific UAE project has been identified."
+      "detail": "The Regional Economic Integration Framework seeks legitimate cross-border commerce and integrated development. UAE logistics, infrastructure and trade-finance capabilities may be relevant, although no specific UAE project has been identified.",
+      "evidence": {
+       "url": "https://cd.usembassy.gov/signing-of-the-washington-accords-for-peace-and-prosperity-between-the-democratic-republic-of-the-congo-and-rwanda/",
+       "publisher": "Usembassy",
+       "date": "2025-08",
+       "gatheredAt": "2026-07-20T18:00:30Z"
+      }
      },
      {
       "title": "Transparent critical-mineral supply chains",
@@ -255,7 +261,13 @@
       "confidence": 75,
       "severity": "High",
       "trend": "Increasing",
-      "detail": "The bilateral economic framework seeks investment in critical minerals while improving supply-chain transparency. Opportunity remains contingent on security implementation and rigorous traceability."
+      "detail": "The bilateral economic framework seeks investment in critical minerals while improving supply-chain transparency. Opportunity remains contingent on security implementation and rigorous traceability.",
+      "evidence": {
+       "url": "https://cd.usembassy.gov/signing-of-the-washington-accords-for-peace-and-prosperity-between-the-democratic-republic-of-the-congo-and-rwanda/",
+       "publisher": "Usembassy",
+       "date": "2025-08",
+       "gatheredAt": "2026-07-20T18:00:30Z"
+      }
      },
      {
       "title": "Refugee-led circular agriculture",
@@ -263,7 +275,13 @@
       "confidence": 85,
       "severity": "Medium",
       "trend": "Increasing",
-      "detail": "The Mugombwa cooperative combines crops, poultry, feed production, manure reuse and local sales, offering a practical model for livelihood finance and food-system support."
+      "detail": "The Mugombwa cooperative combines crops, poultry, feed production, manure reuse and local sales, offering a practical model for livelihood finance and food-system support.",
+      "evidence": {
+       "url": "https://www.ktpress.rw/2026/06/in-rwanda-refugees-are-building-businesses-instead-of-waiting-for-aid/",
+       "publisher": "Ktpress",
+       "date": "2026-06",
+       "gatheredAt": "2026-07-20T18:00:30Z"
+      }
      },
      {
       "title": "Rwanda\u2013UAE diplomatic and business engagement",
@@ -271,7 +289,13 @@
       "confidence": 90,
       "severity": "Medium",
       "trend": "Increasing",
-      "detail": "Senior UAE participation in the July 2026 Abu Dhabi celebration and the December 2025 Washington signing indicates active diplomatic engagement, though no new bilateral commercial agreement was reported."
+      "detail": "Senior UAE participation in the July 2026 Abu Dhabi celebration and the December 2025 Washington signing indicates active diplomatic engagement, though no new bilateral commercial agreement was reported.",
+      "evidence": {
+       "url": "https://x.com/RwandaInUAE/status/2074098866329370867",
+       "publisher": "X (Twitter)",
+       "date": "2026-07",
+       "gatheredAt": "2026-07-20T18:00:30Z"
+      }
      }
     ],
     "risks": [
@@ -281,7 +305,13 @@
       "confidence": 90,
       "severity": "Critical",
       "trend": "Stable",
-      "detail": "Unverified troop withdrawals, weak ceasefire monitoring, continued armed-group activity or poorly managed military integration could undermine the peace framework and delay investment and trade projects."
+      "detail": "Unverified troop withdrawals, weak ceasefire monitoring, continued armed-group activity or poorly managed military integration could undermine the peace framework and delay investment and trade projects.",
+      "evidence": {
+       "url": "https://www.justsecurity.org/118753/drc-rwanda-accord-military/",
+       "publisher": "Justsecurity",
+       "date": "2025-12-04",
+       "gatheredAt": "2026-07-20T18:00:30Z"
+      }
      },
      {
       "title": "Critical-mineral traceability and illicit-commerce exposure",
@@ -289,7 +319,13 @@
       "confidence": 85,
       "severity": "High",
       "trend": "Stable",
-      "detail": "The economic framework explicitly seeks greater transparency and reduced incentives for armed groups and illicit commerce, indicating continued due-diligence risk for prospective investors."
+      "detail": "The economic framework explicitly seeks greater transparency and reduced incentives for armed groups and illicit commerce, indicating continued due-diligence risk for prospective investors.",
+      "evidence": {
+       "url": "https://cd.usembassy.gov/signing-of-the-washington-accords-for-peace-and-prosperity-between-the-democratic-republic-of-the-congo-and-rwanda/",
+       "publisher": "Usembassy",
+       "date": "2025-08",
+       "gatheredAt": "2026-07-20T18:00:30Z"
+      }
      },
      {
       "title": "Displacement and refugee-return pressure",
@@ -297,7 +333,13 @@
       "confidence": 80,
       "severity": "High",
       "trend": "Improving",
-      "detail": "The peace framework supports safe voluntary returns, and Burundi began a new voluntary repatriation phase for Congolese refugees on 23 April 2026. Durable progress remains dependent on security and reintegration conditions."
+      "detail": "The peace framework supports safe voluntary returns, and Burundi began a new voluntary repatriation phase for Congolese refugees on 23 April 2026. Durable progress remains dependent on security and reintegration conditions.",
+      "evidence": {
+       "url": "https://www.justsecurity.org/118753/drc-rwanda-accord-military/",
+       "publisher": "Justsecurity",
+       "date": "2025-12-04",
+       "gatheredAt": "2026-07-20T18:00:30Z"
+      }
      }
     ],
     "agreements": [

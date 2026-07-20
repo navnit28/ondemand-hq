@@ -469,7 +469,13 @@
       "confidence": null,
       "severity": "High",
       "trend": "Increasing",
-      "detail": "Cirata provides an operating reference for Masdar and PLN. Expansion remains conditional on approvals, grid integration and commercial arrangements."
+      "detail": "Cirata provides an operating reference for Masdar and PLN. Expansion remains conditional on approvals, grid integration and commercial arrangements.",
+      "evidence": {
+       "url": "https://www.worldbank.org/en/country/indonesia/overview",
+       "publisher": "World Bank",
+       "date": "2026-07",
+       "gatheredAt": "2026-07-20T18:01:36Z"
+      }
      },
      {
       "title": "Develop clean power for mineral downstreaming",
@@ -477,7 +483,13 @@
       "confidence": null,
       "severity": "High",
       "trend": "Increasing",
-      "detail": "Indonesia's nickel and metals-processing strategy creates demand for lower-carbon industrial power, storage and grid infrastructure as coal-intensive smelters face environmental and trade scrutiny."
+      "detail": "Indonesia's nickel and metals-processing strategy creates demand for lower-carbon industrial power, storage and grid infrastructure as coal-intensive smelters face environmental and trade scrutiny.",
+      "evidence": {
+       "url": "https://www.imf.org/en/Countries/IDN",
+       "publisher": "IMF",
+       "date": "2026-07",
+       "gatheredAt": "2026-07-20T18:01:36Z"
+      }
      },
      {
       "title": "Deploy the UAE sovereign-investment framework",
@@ -485,7 +497,13 @@
       "confidence": null,
       "severity": "High",
       "trend": "Stable",
-      "detail": "The US$10 billion commitment associated with the Indonesia Investment Authority identifies roads, ports, airports, logistics, digital infrastructure, healthcare, tourism, renewable energy and food security, but actual deployment requires project-level tracking."
+      "detail": "The US$10 billion commitment associated with the Indonesia Investment Authority identifies roads, ports, airports, logistics, digital infrastructure, healthcare, tourism, renewable energy and food security, but actual deployment requires project-level tracking.",
+      "evidence": {
+       "url": "https://www.imf.org/en/Countries/IDN",
+       "publisher": "IMF",
+       "date": "2026-07",
+       "gatheredAt": "2026-07-20T18:01:36Z"
+      }
      },
      {
       "title": "Scale CEPA-enabled trade",
@@ -493,7 +511,13 @@
       "confidence": null,
       "severity": "High",
       "trend": "Increasing",
-      "detail": "The agreement in force since 1 September 2023 can support Indonesian food, halal, automotive, textile and pharmaceutical exports and UAE aluminium, petrochemical, machinery, logistics and investment-linked flows."
+      "detail": "The agreement in force since 1 September 2023 can support Indonesian food, halal, automotive, textile and pharmaceutical exports and UAE aluminium, petrochemical, machinery, logistics and investment-linked flows.",
+      "evidence": {
+       "url": "https://www.imf.org/en/Countries/IDN",
+       "publisher": "IMF",
+       "date": "2026-07",
+       "gatheredAt": "2026-07-20T18:01:36Z"
+      }
      },
      {
       "title": "Build food and cold-chain infrastructure",
@@ -501,7 +525,13 @@
       "confidence": null,
       "severity": "High",
       "trend": "Increasing",
-      "detail": "Weather-related food pressure and the proposed free-meals programme may increase demand for cold storage, warehousing, food processing, testing, catering and traceability systems."
+      "detail": "Weather-related food pressure and the proposed free-meals programme may increase demand for cold storage, warehousing, food processing, testing, catering and traceability systems.",
+      "evidence": {
+       "url": "https://www.worldbank.org/en/country/indonesia/overview",
+       "publisher": "World Bank",
+       "date": "2026-07",
+       "gatheredAt": "2026-07-20T18:01:36Z"
+      }
      },
      {
       "title": "Develop Gresik port and industrial logistics",
@@ -509,7 +539,13 @@
       "confidence": null,
       "severity": "High",
       "trend": "Stable",
-      "detail": "The approximately US$1.2 billion broader concept involving DP World and Maspion could support East Java manufacturing and regional trade if construction, concessions and cargo commitments are secured."
+      "detail": "The approximately US$1.2 billion broader concept involving DP World and Maspion could support East Java manufacturing and regional trade if construction, concessions and cargo commitments are secured.",
+      "evidence": {
+       "url": "https://www.imf.org/en/Countries/IDN",
+       "publisher": "IMF",
+       "date": "2026-07",
+       "gatheredAt": "2026-07-20T18:01:36Z"
+      }
      },
      {
       "title": "Appraise and potentially develop South Andaman gas",
@@ -517,7 +553,13 @@
       "confidence": null,
       "severity": "High",
       "trend": "Increasing",
-      "detail": "Layaran-1 may support domestic gas, industry, fertilizer, power or LNG, but resource estimates must not be treated as proven reserves before appraisal and commercial evaluation."
+      "detail": "Layaran-1 may support domestic gas, industry, fertilizer, power or LNG, but resource estimates must not be treated as proven reserves before appraisal and commercial evaluation.",
+      "evidence": {
+       "url": "https://www.worldbank.org/en/country/indonesia/overview",
+       "publisher": "World Bank",
+       "date": "2026-07",
+       "gatheredAt": "2026-07-20T18:01:36Z"
+      }
      },
      {
       "title": "Provide smart-city and utility systems for Nusantara",
@@ -525,7 +567,13 @@
       "confidence": null,
       "severity": "Medium",
       "trend": "Stable",
-      "detail": "Potential areas include renewable power, district cooling, water, waste, transport, healthcare, education and smart-city systems, subject to governance, financing, land and demand safeguards."
+      "detail": "Potential areas include renewable power, district cooling, water, waste, transport, healthcare, education and smart-city systems, subject to governance, financing, land and demand safeguards.",
+      "evidence": {
+       "url": "https://www.thenationalnews.com/tags/indonesia/",
+       "publisher": "The National (UAE)",
+       "date": "2026-07",
+       "gatheredAt": "2026-07-20T18:01:36Z"
+      }
      }
     ],
     "risks": [
@@ -535,7 +583,13 @@
       "confidence": null,
       "severity": "Medium",
       "trend": "Increasing",
-      "detail": "Bank Indonesia raised its policy rate to 6.25% in April 2024 to support the rupiah amid a strong US dollar and global volatility."
+      "detail": "Bank Indonesia raised its policy rate to 6.25% in April 2024 to support the rupiah amid a strong US dollar and global volatility.",
+      "evidence": {
+       "url": "https://www.worldbank.org/en/country/indonesia/overview",
+       "publisher": "World Bank",
+       "date": "2026-07",
+       "gatheredAt": "2026-07-20T18:01:36Z"
+      }
      },
      {
       "title": "Nusantara governance and financing uncertainty",
@@ -543,7 +597,13 @@
       "confidence": null,
       "severity": "High",
       "trend": "Increasing",
-      "detail": "The June 2024 resignation of the authority's head and deputy head compounded concerns about leadership continuity, land administration, financing, foreign-investment confirmation and readiness."
+      "detail": "The June 2024 resignation of the authority's head and deputy head compounded concerns about leadership continuity, land administration, financing, foreign-investment confirmation and readiness.",
+      "evidence": {
+       "url": "https://www.imf.org/en/Countries/IDN",
+       "publisher": "IMF",
+       "date": "2026-07",
+       "gatheredAt": "2026-07-20T18:01:36Z"
+      }
      },
      {
       "title": "Food-price and harvest disruption",
@@ -551,7 +611,13 @@
       "confidence": null,
       "severity": "High",
       "trend": "Increasing",
-      "detail": "El Ni\u00f1o-related conditions affected rice harvests and prices, increasing reliance on imports and state intervention while exposing irrigation, fertilizer and climate vulnerabilities."
+      "detail": "El Ni\u00f1o-related conditions affected rice harvests and prices, increasing reliance on imports and state intervention while exposing irrigation, fertilizer and climate vulnerabilities.",
+      "evidence": {
+       "url": "https://reliefweb.int/country/idn",
+       "publisher": "ReliefWeb",
+       "date": "2026-07",
+       "gatheredAt": "2026-07-20T18:01:36Z"
+      }
      },
      {
       "title": "Coal dependence in industrial downstreaming",
@@ -559,7 +625,13 @@
       "confidence": null,
       "severity": "High",
       "trend": "Increasing",
-      "detail": "Coal-powered smelters, captive coal construction and environmental impacts could undermine transition goals and expose industrial exports to reputational and trade pressure."
+      "detail": "Coal-powered smelters, captive coal construction and environmental impacts could undermine transition goals and expose industrial exports to reputational and trade pressure.",
+      "evidence": {
+       "url": "https://www.imf.org/en/Countries/IDN",
+       "publisher": "IMF",
+       "date": "2026-07",
+       "gatheredAt": "2026-07-20T18:01:36Z"
+      }
      },
      {
       "title": "Nickel market concentration and price weakness",
@@ -567,7 +639,13 @@
       "confidence": null,
       "severity": "Medium",
       "trend": "Increasing",
-      "detail": "Chinese investment concentration, falling nickel prices and trade disputes create commercial and policy risks for downstream industrial projects."
+      "detail": "Chinese investment concentration, falling nickel prices and trade disputes create commercial and policy risks for downstream industrial projects.",
+      "evidence": {
+       "url": "https://www.imf.org/en/Countries/IDN",
+       "publisher": "IMF",
+       "date": "2026-07",
+       "gatheredAt": "2026-07-20T18:01:36Z"
+      }
      },
      {
       "title": "Infrastructure execution constraints",
@@ -575,7 +653,13 @@
       "confidence": null,
       "severity": "High",
       "trend": "Stable",
-      "detail": "Land acquisition, regulatory uncertainty, logistics costs, project bankability and compressed construction schedules could delay ports, capital-city and other infrastructure investments."
+      "detail": "Land acquisition, regulatory uncertainty, logistics costs, project bankability and compressed construction schedules could delay ports, capital-city and other infrastructure investments.",
+      "evidence": {
+       "url": "https://www.imf.org/en/Countries/IDN",
+       "publisher": "IMF",
+       "date": "2026-07",
+       "gatheredAt": "2026-07-20T18:01:36Z"
+      }
      },
      {
       "title": "Energy-transition financing gap",
@@ -583,7 +667,13 @@
       "confidence": null,
       "severity": "High",
       "trend": "Stable",
-      "detail": "JETP implementation is constrained by financing terms, transmission capacity, PLN's structure, captive coal and the need to preserve electricity affordability and protect communities."
+      "detail": "JETP implementation is constrained by financing terms, transmission capacity, PLN's structure, captive coal and the need to preserve electricity affordability and protect communities.",
+      "evidence": {
+       "url": "https://www.worldbank.org/en/country/indonesia/overview",
+       "publisher": "World Bank",
+       "date": "2026-07",
+       "gatheredAt": "2026-07-20T18:01:36Z"
+      }
      }
     ],
     "agreements": [

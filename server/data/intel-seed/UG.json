@@ -532,7 +532,13 @@
       "confidence": null,
       "severity": "High",
       "trend": "Increasing",
-      "detail": "Embassy reporting attributes 50% of US$4.72 billion in 2025 bilateral trade to agriculture. Opportunities include fertilizer procurement, cold-chain, warehousing, coffee processing, retail access and structured offtake."
+      "detail": "Embassy reporting attributes 50% of US$4.72 billion in 2025 bilateral trade to agriculture. Opportunities include fertilizer procurement, cold-chain, warehousing, coffee processing, retail access and structured offtake.",
+      "evidence": {
+       "url": "https://x.com/UgandaUae/status/2076613561460351201",
+       "publisher": "X (Twitter)",
+       "date": "2026-07",
+       "gatheredAt": "2026-07-20T18:00:30Z"
+      }
      },
      {
       "title": "Oil marketing, storage and logistics",
@@ -540,7 +546,13 @@
       "confidence": null,
       "severity": "High",
       "trend": "Increasing",
-      "detail": "EACOP was reported at approximately 82% completion by April 2026, with commissioning and first exports targeted during 2026, creating prospective roles for ADNOC, AD Ports and other UAE investors."
+      "detail": "EACOP was reported at approximately 82% completion by April 2026, with commissioning and first exports targeted during 2026, creating prospective roles for ADNOC, AD Ports and other UAE investors.",
+      "evidence": {
+       "url": "https://credendo.com/en/knowledge-hub/uganda-middle-east-conflict-exposes-short-term-risks-despite-ugandas-imminent-oil",
+       "publisher": "Credendo",
+       "date": "2026-04",
+       "gatheredAt": "2026-07-20T18:00:30Z"
+      }
      },
      {
       "title": "Secure digital government",
@@ -548,7 +560,13 @@
       "confidence": null,
       "severity": "High",
       "trend": "Increasing",
-      "detail": "The National Information Security Framework 2026 creates demand for government cloud security, maturity assessments, secure identity, payments protection and critical-infrastructure cybersecurity."
+      "detail": "The National Information Security Framework 2026 creates demand for government cloud security, maturity assessments, secure identity, payments protection and critical-infrastructure cybersecurity.",
+      "evidence": {
+       "url": "https://techafricanews.com/2026/07/16/uganda-launches-national-information-security-framework-2026-to-strengthen-government-cybersecurity/",
+       "publisher": "Techafricanews",
+       "date": "2026-07-16",
+       "gatheredAt": "2026-07-20T18:00:30Z"
+      }
      },
      {
       "title": "Health and humanitarian logistics",
@@ -556,7 +574,13 @@
       "confidence": null,
       "severity": "High",
       "trend": "Increasing",
-      "detail": "The fourth reported Ebola-response airlift and earlier refugee relief demonstrate scope for sustained UAE partnerships in medical supply chains, water purification, health systems and localized refugee support."
+      "detail": "The fourth reported Ebola-response airlift and earlier refugee relief demonstrate scope for sustained UAE partnerships in medical supply chains, water purification, health systems and localized refugee support.",
+      "evidence": {
+       "url": "https://x.com/AletihadEn/status/2077078859988844681",
+       "publisher": "X (Twitter)",
+       "date": "2026-07",
+       "gatheredAt": "2026-07-20T18:00:30Z"
+      }
      },
      {
       "title": "Infrastructure and growth finance",
@@ -564,7 +588,13 @@
       "confidence": null,
       "severity": "High",
       "trend": "Increasing",
-      "detail": "Forecast growth of 6.4% to approximately 7.5% and oil-related construction support opportunities in power, roads, logistics, industrial zones and digital infrastructure, subject to debt and implementation safeguards."
+      "detail": "Forecast growth of 6.4% to approximately 7.5% and oil-related construction support opportunities in power, roads, logistics, industrial zones and digital infrastructure, subject to debt and implementation safeguards.",
+      "evidence": {
+       "url": "https://techafricanews.com/2026/07/16/uganda-launches-national-information-security-framework-2026-to-strengthen-government-cybersecurity/",
+       "publisher": "Techafricanews",
+       "date": "2026-07-16",
+       "gatheredAt": "2026-07-20T18:00:30Z"
+      }
      }
     ],
     "risks": [
@@ -574,7 +604,13 @@
       "confidence": null,
       "severity": "High",
       "trend": "Increasing",
-      "detail": "Restrictions on opposition, journalism, assembly and online expression, combined with expanding military influence and succession concerns, increase policy-continuity and reputational exposure."
+      "detail": "Restrictions on opposition, journalism, assembly and online expression, combined with expanding military influence and succession concerns, increase policy-continuity and reputational exposure.",
+      "evidence": {
+       "url": "https://www.hrw.org/world-report/2026/country-chapters/uganda",
+       "publisher": "Human Rights Watch",
+       "date": "2026",
+       "gatheredAt": "2026-07-20T18:00:30Z"
+      }
      },
      {
       "title": "Fertilizer, fuel and materials disruption",
@@ -582,7 +618,13 @@
       "confidence": null,
       "severity": "High",
       "trend": "Increasing",
-      "detail": "Middle East disruption may interrupt fertilizer and materials supplies, increase transport costs and weaken Gulf remittances."
+      "detail": "Middle East disruption may interrupt fertilizer and materials supplies, increase transport costs and weaken Gulf remittances.",
+      "evidence": {
+       "url": "https://credendo.com/en/knowledge-hub/uganda-middle-east-conflict-exposes-short-term-risks-despite-ugandas-imminent-oil",
+       "publisher": "Credendo",
+       "date": "2026-07",
+       "gatheredAt": "2026-07-20T18:00:30Z"
+      }
      },
      {
       "title": "EACOP commissioning and implementation delays",
@@ -590,7 +632,13 @@
       "confidence": null,
       "severity": "Medium",
       "trend": "Stable",
-      "detail": "Alternative assessments place production around the turn of the year rather than the targeted October 2026 export date because of commissioning complexity."
+      "detail": "Alternative assessments place production around the turn of the year rather than the targeted October 2026 export date because of commissioning complexity.",
+      "evidence": {
+       "url": "https://credendo.com/en/knowledge-hub/uganda-middle-east-conflict-exposes-short-term-risks-despite-ugandas-imminent-oil",
+       "publisher": "Credendo",
+       "date": "2026-04",
+       "gatheredAt": "2026-07-20T18:00:30Z"
+      }
      },
      {
       "title": "Community compensation and environmental disputes",
@@ -598,7 +646,13 @@
       "confidence": null,
       "severity": "High",
       "trend": "Stable",
-      "detail": "A survey of 246 pipeline-affected people found almost one-third dissatisfied, citing compensation, agricultural inputs, safety, environmental concerns and potential property-value losses."
+      "detail": "A survey of 246 pipeline-affected people found almost one-third dissatisfied, citing compensation, agricultural inputs, safety, environmental concerns and potential property-value losses.",
+      "evidence": {
+       "url": "https://credendo.com/en/knowledge-hub/uganda-middle-east-conflict-exposes-short-term-risks-despite-ugandas-imminent-oil",
+       "publisher": "Credendo",
+       "date": "2026-04",
+       "gatheredAt": "2026-07-20T18:00:30Z"
+      }
      },
      {
       "title": "Digital-security misuse and surveillance exposure",
@@ -606,7 +660,13 @@
       "confidence": null,
       "severity": "High",
       "trend": "Increasing",
-      "detail": "Expanding state surveillance creates human-rights and reputational risks for foreign providers even as legitimate government cybersecurity demand grows."
+      "detail": "Expanding state surveillance creates human-rights and reputational risks for foreign providers even as legitimate government cybersecurity demand grows.",
+      "evidence": {
+       "url": "https://techafricanews.com/2026/07/16/uganda-launches-national-information-security-framework-2026-to-strengthen-government-cybersecurity/",
+       "publisher": "Techafricanews",
+       "date": "2026-07-16",
+       "gatheredAt": "2026-07-20T18:00:30Z"
+      }
      },
      {
       "title": "Fiscal and public-debt pressure",
@@ -614,7 +674,13 @@
       "confidence": null,
       "severity": "Medium",
       "trend": "Stable",
-      "detail": "Strong growth prospects coexist with fiscal pressure, public-debt concerns, imported inflation and dependence on timely oil commissioning."
+      "detail": "Strong growth prospects coexist with fiscal pressure, public-debt concerns, imported inflation and dependence on timely oil commissioning.",
+      "evidence": {
+       "url": "https://techafricanews.com/2026/07/16/uganda-launches-national-information-security-framework-2026-to-strengthen-government-cybersecurity/",
+       "publisher": "Techafricanews",
+       "date": "2026-07-16",
+       "gatheredAt": "2026-07-20T18:00:30Z"
+      }
      },
      {
       "title": "Gulf remittance and migration exposure",
@@ -622,7 +688,13 @@
       "confidence": null,
       "severity": "Medium",
       "trend": "Increasing",
-      "detail": "Middle East disruption may weaken remittances, while the overstay-fine waiver indicates active consular management of Ugandans seeking to return home."
+      "detail": "Middle East disruption may weaken remittances, while the overstay-fine waiver indicates active consular management of Ugandans seeking to return home.",
+      "evidence": {
+       "url": "https://credendo.com/en/knowledge-hub/uganda-middle-east-conflict-exposes-short-term-risks-despite-ugandas-imminent-oil",
+       "publisher": "Credendo",
+       "date": "2026-07",
+       "gatheredAt": "2026-07-20T18:00:30Z"
+      }
      }
     ],
     "agreements": [

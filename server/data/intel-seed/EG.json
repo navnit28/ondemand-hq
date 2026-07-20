@@ -393,7 +393,13 @@
       "confidence": null,
       "severity": "High",
       "trend": "Improving",
-      "detail": "Egypt continued state-asset sales involving stakes in banking, fintech, fertilizer and consumer companies. Arab sovereign wealth funds were identified among investors, but no new UAE transaction value was isolated."
+      "detail": "Egypt continued state-asset sales involving stakes in banking, fintech, fertilizer and consumer companies. Arab sovereign wealth funds were identified among investors, but no new UAE transaction value was isolated.",
+      "evidence": {
+       "url": "https://nationalinterest.org/blog/middle-east-watch/why-the-us-needs-a-new-economic-development-playbook-for-the-middle-east",
+       "publisher": "Nationalinterest",
+       "date": "2026-07",
+       "gatheredAt": "2026-07-20T18:00:30Z"
+      }
      },
      {
       "title": "Food and commodity supply-chain resilience",
@@ -401,7 +407,13 @@
       "confidence": null,
       "severity": "High",
       "trend": "Increasing",
-      "detail": "Regional conflict increases the relevance of strategic reserves, agriculture, fertilizers, logistics, warehousing, trade finance and commodity procurement."
+      "detail": "Regional conflict increases the relevance of strategic reserves, agriculture, fertilizers, logistics, warehousing, trade finance and commodity procurement.",
+      "evidence": {
+       "url": "https://www.facebook.com/EgyptTodayMag/posts/president-abdel-fattah-el-sisi-cautioned-that-the-ongoing-conflict-in-the-middle/1406208521521466/",
+       "publisher": "Facebook",
+       "date": "2026-07",
+       "gatheredAt": "2026-07-20T18:00:30Z"
+      }
      },
      {
       "title": "Ports and logistics resilience",
@@ -409,7 +421,13 @@
       "confidence": null,
       "severity": "High",
       "trend": "Increasing",
-      "detail": "Threats to trade routes and supply chains create potential demand for resilient port, storage and logistics capacity, although no new UAE\u2013Egypt agreement was documented."
+      "detail": "Threats to trade routes and supply chains create potential demand for resilient port, storage and logistics capacity, although no new UAE\u2013Egypt agreement was documented.",
+      "evidence": {
+       "url": "https://www.almendron.com/tribuna/egypts-foreign-policy-will-remain-too-little-too-late-in-2026/",
+       "publisher": "Almendron",
+       "date": "2026-07",
+       "gatheredAt": "2026-07-20T18:00:30Z"
+      }
      },
      {
       "title": "Urban infrastructure and smart-city systems",
@@ -417,7 +435,13 @@
       "confidence": null,
       "severity": "Medium",
       "trend": "Stable",
-      "detail": "The approximately $58 billion New Administrative Capital creates potential demand across construction, transport, utilities and digital government, without a documented recent UAE-specific award."
+      "detail": "The approximately $58 billion New Administrative Capital creates potential demand across construction, transport, utilities and digital government, without a documented recent UAE-specific award.",
+      "evidence": {
+       "url": "https://www.threads.com/@businessbulls.in/post/DYyfsORCgcg/egypt-is-investing-around-billion-to-develop-a-completely-new-capital-city-in/",
+       "publisher": "Threads",
+       "date": "2026-07",
+       "gatheredAt": "2026-07-20T18:00:30Z"
+      }
      },
      {
       "title": "Digital payments and financial inclusion",
@@ -425,7 +449,13 @@
       "confidence": null,
       "severity": "Medium",
       "trend": "Increasing",
-      "detail": "Fawry's reported reach of 55 million Egyptians demonstrates market scale, although no substantive recent bilateral UAE\u2013Egypt AI or data-centre agreement was identified."
+      "detail": "Fawry's reported reach of 55 million Egyptians demonstrates market scale, although no substantive recent bilateral UAE\u2013Egypt AI or data-centre agreement was identified.",
+      "evidence": {
+       "url": "https://nationalinterest.org/blog/middle-east-watch/why-the-us-needs-a-new-economic-development-playbook-for-the-middle-east",
+       "publisher": "Nationalinterest",
+       "date": "2026-07",
+       "gatheredAt": "2026-07-20T18:00:30Z"
+      }
      },
      {
       "title": "New Cairo mixed-use development",
@@ -433,7 +463,13 @@
       "confidence": null,
       "severity": "High",
       "trend": "Increasing",
-      "detail": "Two X candidates concerned Majid Al Futtaim's reported $3.1 billion New Cairo development, but exact post metadata and engagement could not be verified."
+      "detail": "Two X candidates concerned Majid Al Futtaim's reported $3.1 billion New Cairo development, but exact post metadata and engagement could not be verified.",
+      "evidence": {
+       "url": "https://x.com/TheNationalNews/status/2068720068536537308",
+       "publisher": "X (Twitter)",
+       "date": "June 2026",
+       "gatheredAt": "2026-07-20T18:00:30Z"
+      }
      }
     ],
     "risks": [
@@ -443,7 +479,13 @@
       "confidence": null,
       "severity": "High",
       "trend": "Increasing",
-      "detail": "The pound reportedly depreciated by roughly 13% since late February, creating valuation and repatriation risks for investors."
+      "detail": "The pound reportedly depreciated by roughly 13% since late February, creating valuation and repatriation risks for investors.",
+      "evidence": {
+       "url": "https://economymiddleeast.com/news/uae-and-egypt-presidents-discuss-expanding-bilateral-relations-on-sidelines-of-g7-summit/",
+       "publisher": "Economymiddleeast",
+       "date": "June 2026",
+       "gatheredAt": "2026-07-20T18:00:30Z"
+      }
      },
      {
       "title": "Regional military escalation",
@@ -451,7 +493,13 @@
       "confidence": null,
       "severity": "Critical",
       "trend": "Increasing",
-      "detail": "Regional conflict threatens Egypt through energy and food inflation, weaker tourism, supply-chain disruption, financing pressure and broader security spillovers."
+      "detail": "Regional conflict threatens Egypt through energy and food inflation, weaker tourism, supply-chain disruption, financing pressure and broader security spillovers.",
+      "evidence": {
+       "url": "https://www.facebook.com/EgyptTodayMag/posts/president-abdel-fattah-el-sisi-cautioned-that-the-ongoing-conflict-in-the-middle/1406208521521466/",
+       "publisher": "Facebook",
+       "date": "2026-07",
+       "gatheredAt": "2026-07-20T18:00:30Z"
+      }
      },
      {
       "title": "External-financing and portfolio-flow exposure",
@@ -459,7 +507,13 @@
       "confidence": null,
       "severity": "High",
       "trend": "Increasing",
-      "detail": "Approximately $10 billion in foreign portfolio outflows followed regional escalation, while Egypt continues to face significant external-financing needs."
+      "detail": "Approximately $10 billion in foreign portfolio outflows followed regional escalation, while Egypt continues to face significant external-financing needs.",
+      "evidence": {
+       "url": "https://en.majalla.com/node/329123/business-economy/egypt%E2%80%99s-economy-2025-tests-and-2026-bets",
+       "publisher": "Majalla",
+       "date": "March 2026",
+       "gatheredAt": "2026-07-20T18:00:30Z"
+      }
      },
      {
       "title": "Energy, fertilizer and food-market disruption",
@@ -467,7 +521,13 @@
       "confidence": null,
       "severity": "High",
       "trend": "Increasing",
-      "detail": "Conflict could increase fuel, fertilizer and food prices and place disproportionate pressure on developing economies."
+      "detail": "Conflict could increase fuel, fertilizer and food prices and place disproportionate pressure on developing economies.",
+      "evidence": {
+       "url": "https://www.facebook.com/EgyptTodayMag/posts/president-abdel-fattah-el-sisi-cautioned-that-the-ongoing-conflict-in-the-middle/1406208521521466/",
+       "publisher": "Facebook",
+       "date": "2026-07",
+       "gatheredAt": "2026-07-20T18:00:30Z"
+      }
      },
      {
       "title": "Trade and logistics disruption",
@@ -475,7 +535,13 @@
       "confidence": null,
       "severity": "High",
       "trend": "Increasing",
-      "detail": "Regional instability threatens trade routes, commodity procurement, tourism and the reliability of global supply chains."
+      "detail": "Regional instability threatens trade routes, commodity procurement, tourism and the reliability of global supply chains.",
+      "evidence": {
+       "url": "https://www.almendron.com/tribuna/egypts-foreign-policy-will-remain-too-little-too-late-in-2026/",
+       "publisher": "Almendron",
+       "date": "2026-07",
+       "gatheredAt": "2026-07-20T18:00:30Z"
+      }
      },
      {
       "title": "Privatization execution and regulatory risk",
@@ -483,7 +549,13 @@
       "confidence": null,
       "severity": "Medium",
       "trend": "Stable",
-      "detail": "Potential investors face regulatory, valuation and execution uncertainty around state divestments, in addition to geopolitical and currency risks."
+      "detail": "Potential investors face regulatory, valuation and execution uncertainty around state divestments, in addition to geopolitical and currency risks.",
+      "evidence": {
+       "url": "https://en.majalla.com/node/329123/business-economy/egypt%E2%80%99s-economy-2025-tests-and-2026-bets",
+       "publisher": "Majalla",
+       "date": "March 2026",
+       "gatheredAt": "2026-07-20T18:00:30Z"
+      }
      }
     ],
     "agreements": [],

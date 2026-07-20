@@ -388,7 +388,13 @@
       "confidence": 95,
       "severity": "Critical",
       "trend": "Increasing",
-      "detail": "Non-oil trade reached $3.1 billion in the first three quarters of 2024 and increased 29.1% year on year. Customs facilitation, logistics, finance and exporter-market access are the most immediate bilateral opportunities."
+      "detail": "Non-oil trade reached $3.1 billion in the first three quarters of 2024 and increased 29.1% year on year. Customs facilitation, logistics, finance and exporter-market access are the most immediate bilateral opportunities.",
+      "evidence": {
+       "url": "https://www.africanews.com/2025/01/16/enhancing-trade-relations-uae-and-kenya-sign-economic-pact/",
+       "publisher": "Africanews",
+       "date": "2025-01",
+       "gatheredAt": "2026-07-20T18:00:30Z"
+      }
      },
      {
       "title": "Agrifood logistics and climate-smart agriculture",
@@ -396,7 +402,13 @@
       "confidence": 94,
       "severity": "High",
       "trend": "Increasing",
-      "detail": "Cold chains, warehousing, irrigation, resilient crops, precision agriculture, fertilizer optimization and food processing address both Kenya's hunger burden and UAE food-security interests."
+      "detail": "Cold chains, warehousing, irrigation, resilient crops, precision agriculture, fertilizer optimization and food processing address both Kenya's hunger burden and UAE food-security interests.",
+      "evidence": {
+       "url": "https://www.actionagainsthunger.org/story/climate-smart-solutions-for-food-security-a-community-led-transformation-in-kenya/",
+       "publisher": "Actionagainsthunger",
+       "date": "2026-07",
+       "gatheredAt": "2026-07-20T18:00:30Z"
+      }
      },
      {
       "title": "AI, cloud and secure digital infrastructure",
@@ -404,7 +416,13 @@
       "confidence": 92,
       "severity": "Critical",
       "trend": "Increasing",
-      "detail": "The bilateral framework covers AI services, a possible digital corridor and data-centre projects with potential total capacity of up to 1,000 MW."
+      "detail": "The bilateral framework covers AI services, a possible digital corridor and data-centre projects with potential total capacity of up to 1,000 MW.",
+      "evidence": {
+       "url": "https://www.telecomreviewafrica.com/articles/general-news/4176-uae-and-kenya-to-advance-digital-infrastructure-and-ai-initiatives/",
+       "publisher": "Telecomreviewafrica",
+       "date": "2026-07-08",
+       "gatheredAt": "2026-07-20T18:00:30Z"
+      }
      },
      {
       "title": "Gulfood360 Africa/Kenya investment pipeline",
@@ -412,7 +430,13 @@
       "confidence": 93,
       "severity": "High",
       "trend": "Increasing",
-      "detail": "The Nairobi event scheduled for 4\u20136 May 2027 provides a defined platform for converting CEPA priorities into agrifood, logistics, manufacturing and technology projects."
+      "detail": "The Nairobi event scheduled for 4\u20136 May 2027 provides a defined platform for converting CEPA priorities into agrifood, logistics, manufacturing and technology projects.",
+      "evidence": {
+       "url": "https://www.potatopro.com/news/2026/gulfood360-africa-launches-nairobi-2027-unlocking-africa%E2%80%99s-usd-567-billion-agrifood",
+       "publisher": "Potatopro",
+       "date": "2027-05-04",
+       "gatheredAt": "2026-07-20T18:00:30Z"
+      }
      },
      {
       "title": "Renewable power for digital infrastructure",
@@ -420,7 +444,13 @@
       "confidence": 85,
       "severity": "High",
       "trend": "Increasing",
-      "detail": "Large data-centre ambitions create a potential need for renewable generation and reliable grid capacity, although no new Kenya-specific UAE energy project was identified."
+      "detail": "Large data-centre ambitions create a potential need for renewable generation and reliable grid capacity, although no new Kenya-specific UAE energy project was identified.",
+      "evidence": {
+       "url": "https://www.telecomreviewafrica.com/articles/general-news/4176-uae-and-kenya-to-advance-digital-infrastructure-and-ai-initiatives/",
+       "publisher": "Telecomreviewafrica",
+       "date": "2026-07-08",
+       "gatheredAt": "2026-07-20T18:00:30Z"
+      }
      }
     ],
     "risks": [
@@ -430,7 +460,13 @@
       "confidence": 92,
       "severity": "High",
       "trend": "Increasing",
-      "detail": "Political mobilization ahead of the 2027 election is occurring alongside reported restrictions on demonstrations, surveillance concerns, arbitrary arrests and inadequate accountability."
+      "detail": "Political mobilization ahead of the 2027 election is occurring alongside reported restrictions on demonstrations, surveillance concerns, arbitrary arrests and inadequate accountability.",
+      "evidence": {
+       "url": "https://www.hrw.org/world-report/2026/country-chapters/kenya",
+       "publisher": "Human Rights Watch",
+       "date": "2026-07-18",
+       "gatheredAt": "2026-07-20T18:00:30Z"
+      }
      },
      {
       "title": "Persistent hunger and weak agricultural resilience",
@@ -438,7 +474,13 @@
       "confidence": 95,
       "severity": "Critical",
       "trend": "Stable",
-      "detail": "The cited profile reports 20.4 million people facing hunger, with droughts, floods, pests, limited tools and isolation weakening food production and pastoral livelihoods."
+      "detail": "The cited profile reports 20.4 million people facing hunger, with droughts, floods, pests, limited tools and isolation weakening food production and pastoral livelihoods.",
+      "evidence": {
+       "url": "https://www.actionagainsthunger.org/story/climate-smart-solutions-for-food-security-a-community-led-transformation-in-kenya/",
+       "publisher": "Actionagainsthunger",
+       "date": "2026-07",
+       "gatheredAt": "2026-07-20T18:00:30Z"
+      }
      },
      {
       "title": "Drought, flooding and agricultural disruption",
@@ -446,7 +488,13 @@
       "confidence": 94,
       "severity": "High",
       "trend": "Increasing",
-      "detail": "Repeated climate shocks are damaging livelihoods and increasing the importance of irrigation, climate-smart farming, resilient crops and diversified diets."
+      "detail": "Repeated climate shocks are damaging livelihoods and increasing the importance of irrigation, climate-smart farming, resilient crops and diversified diets.",
+      "evidence": {
+       "url": "https://www.actionagainsthunger.org/story/climate-smart-solutions-for-food-security-a-community-led-transformation-in-kenya/",
+       "publisher": "Actionagainsthunger",
+       "date": "2026-07",
+       "gatheredAt": "2026-07-20T18:00:30Z"
+      }
      },
      {
       "title": "Data protection, surveillance and cybersecurity exposure",
@@ -454,7 +502,13 @@
       "confidence": 89,
       "severity": "High",
       "trend": "Increasing",
-      "detail": "AI, secure data exchange, digital-government systems and hyperscale data centres create risks involving cybersecurity, personal-data protection, digital sovereignty and public concern about surveillance."
+      "detail": "AI, secure data exchange, digital-government systems and hyperscale data centres create risks involving cybersecurity, personal-data protection, digital sovereignty and public concern about surveillance.",
+      "evidence": {
+       "url": "https://energy-news-network.com/industry-news/how-gulf-investors-are-driving-africas-energy-transition/",
+       "publisher": "Energy-news-network",
+       "date": "2026-07-18",
+       "gatheredAt": "2026-07-20T18:00:30Z"
+      }
      },
      {
       "title": "Water demand from hyperscale digital facilities",
@@ -462,7 +516,13 @@
       "confidence": 84,
       "severity": "High",
       "trend": "Increasing",
-      "detail": "Potential data-centre capacity of up to 1,000 MW makes water use and environmental planning material project-development concerns."
+      "detail": "Potential data-centre capacity of up to 1,000 MW makes water use and environmental planning material project-development concerns.",
+      "evidence": {
+       "url": "https://www.telecomreviewafrica.com/articles/general-news/4176-uae-and-kenya-to-advance-digital-infrastructure-and-ai-initiatives/",
+       "publisher": "Telecomreviewafrica",
+       "date": "2026-07-08",
+       "gatheredAt": "2026-07-20T18:00:30Z"
+      }
      },
      {
       "title": "Agrifood logistics and value-chain vulnerability",
@@ -470,7 +530,13 @@
       "confidence": 88,
       "severity": "High",
       "trend": "Stable",
-      "detail": "Weak storage, geographic isolation, climate shocks and production constraints increase the need for cold chains, warehousing, processing and resilient transport links."
+      "detail": "Weak storage, geographic isolation, climate shocks and production constraints increase the need for cold chains, warehousing, processing and resilient transport links.",
+      "evidence": {
+       "url": "https://www.actionagainsthunger.org/story/climate-smart-solutions-for-food-security-a-community-led-transformation-in-kenya/",
+       "publisher": "Actionagainsthunger",
+       "date": "2026-07",
+       "gatheredAt": "2026-07-20T18:00:30Z"
+      }
      },
      {
       "title": "Uncertain effects of Finance Bill 2026",
@@ -478,7 +544,13 @@
       "confidence": 72,
       "severity": "Medium",
       "trend": "Stable",
-      "detail": "A proposed Sh3.9 trillion Finance Bill 2026 was reported, but detailed provisions were unavailable, preventing a reliable assessment of taxation, investor or household effects."
+      "detail": "A proposed Sh3.9 trillion Finance Bill 2026 was reported, but detailed provisions were unavailable, preventing a reliable assessment of taxation, investor or household effects.",
+      "evidence": {
+       "url": "https://www.hrw.org/world-report/2026/country-chapters/kenya",
+       "publisher": "Human Rights Watch",
+       "date": "2026-07-18",
+       "gatheredAt": "2026-07-20T18:00:30Z"
+      }
      }
     ],
     "agreements": [

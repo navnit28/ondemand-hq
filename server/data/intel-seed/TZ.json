@@ -439,7 +439,13 @@
       "confidence": 94,
       "severity": "Critical",
       "trend": "Increasing",
-      "detail": "DP World's 30-year concession, initial investment above $250 million and potential investment of up to $1 billion position the port as the primary documented UAE commercial opportunity."
+      "detail": "DP World's 30-year concession, initial investment above $250 million and potential investment of up to $1 billion position the port as the primary documented UAE commercial opportunity.",
+      "evidence": {
+       "url": "https://www.arabnews.com/node/2396236/business-economy",
+       "publisher": "Arab News",
+       "date": "2026-07",
+       "gatheredAt": "2026-07-20T18:00:30Z"
+      }
      },
      {
       "title": "Energy storage and supply resilience",
@@ -447,7 +453,13 @@
       "confidence": 80,
       "severity": "High",
       "trend": "Increasing",
-      "detail": "Oil-price exposure, tanker delays and fiscal pressure strengthen the case for storage, efficient fuel handling, domestic gas, strategic reserves and hedging."
+      "detail": "Oil-price exposure, tanker delays and fiscal pressure strengthen the case for storage, efficient fuel handling, domestic gas, strategic reserves and hedging.",
+      "evidence": {
+       "url": "https://ticgl.com/tanzanias-economy-in-june-2026-inflation-rises-to-4-2-a-middle-east-oil-shock-and-a-tzs-62-33-trillion-budget/",
+       "publisher": "Ticgl",
+       "date": "2026-05",
+       "gatheredAt": "2026-07-20T18:00:30Z"
+      }
      },
      {
       "title": "Renewable power",
@@ -455,7 +467,13 @@
       "confidence": 76,
       "severity": "High",
       "trend": "Increasing",
-      "detail": "Solar and other renewable power could reduce imported-fuel exposure and improve resilience to Gulf energy shocks."
+      "detail": "Solar and other renewable power could reduce imported-fuel exposure and improve resilience to Gulf energy shocks.",
+      "evidence": {
+       "url": "https://ticgl.com/tanzanias-economy-in-june-2026-inflation-rises-to-4-2-a-middle-east-oil-shock-and-a-tzs-62-33-trillion-budget/",
+       "publisher": "Ticgl",
+       "date": "2026-05",
+       "gatheredAt": "2026-07-20T18:00:30Z"
+      }
      },
      {
       "title": "Agriculture, processing and cold chains",
@@ -463,7 +481,13 @@
       "confidence": 78,
       "severity": "High",
       "trend": "Increasing",
-      "detail": "Tanzania's reported 124% food self-sufficiency ratio and regional logistics position support potential agriculture, storage, processing, cold-chain and export projects aligned with UAE food security."
+      "detail": "Tanzania's reported 124% food self-sufficiency ratio and regional logistics position support potential agriculture, storage, processing, cold-chain and export projects aligned with UAE food security.",
+      "evidence": {
+       "url": "https://www.tanzaniainvest.com/economy/bot-monetary-policy-statement-2026-2027",
+       "publisher": "Tanzaniainvest",
+       "date": "2026-06",
+       "gatheredAt": "2026-07-20T18:00:30Z"
+      }
      },
      {
       "title": "Investment-led infrastructure pipeline",
@@ -471,7 +495,13 @@
       "confidence": 86,
       "severity": "High",
       "trend": "Increasing",
-      "detail": "The TZS 62.33 trillion FY2026/27 budget prioritizes transport, logistics, energy, mining, industrial development and private investment."
+      "detail": "The TZS 62.33 trillion FY2026/27 budget prioritizes transport, logistics, energy, mining, industrial development and private investment.",
+      "evidence": {
+       "url": "https://ticgl.com/tanzanias-economy-in-june-2026-inflation-rises-to-4-2-a-middle-east-oil-shock-and-a-tzs-62-33-trillion-budget/",
+       "publisher": "Ticgl",
+       "date": "2026-05",
+       "gatheredAt": "2026-07-20T18:00:30Z"
+      }
      },
      {
       "title": "Digital government and smart logistics",
@@ -479,7 +509,13 @@
       "confidence": 65,
       "severity": "Medium",
       "trend": "Stable",
-      "detail": "Potential use cases exist in government services, ports and logistics, although no major bilateral Tanzania\u2013UAE AI agreement was identified."
+      "detail": "Potential use cases exist in government services, ports and logistics, although no major bilateral Tanzania\u2013UAE AI agreement was identified.",
+      "evidence": {
+       "url": "https://www.thenationalnews.com/news/uae/2026/02/04/sheikh-mohammed-bin-rashid-meets-president-of-tanzania-at-dubai-summit/",
+       "publisher": "The National (UAE)",
+       "date": "2026-02",
+       "gatheredAt": "2026-07-20T18:00:30Z"
+      }
      }
     ],
     "risks": [
@@ -489,7 +525,13 @@
       "confidence": 92,
       "severity": "High",
       "trend": "Stable",
-      "detail": "Opposition exclusion, reported killings, disappearances, arrests and internet restrictions create operational, ESG and reputational exposure."
+      "detail": "Opposition exclusion, reported killings, disappearances, arrests and internet restrictions create operational, ESG and reputational exposure.",
+      "evidence": {
+       "url": "https://www.nbcnews.com/world/africa/tanzania-president-hassan-wins-disputed-election-97-vote-official-resu-rcna241260",
+       "publisher": "Nbcnews",
+       "date": "2025-10-29",
+       "gatheredAt": "2026-07-20T18:00:30Z"
+      }
      },
      {
       "title": "Oil-driven transport and inflation shock",
@@ -497,7 +539,13 @@
       "confidence": 88,
       "severity": "High",
       "trend": "Increasing",
-      "detail": "Higher fuel and transport costs are affecting inflation, tourism, food prices, customs receipts, subsidies and the national budget."
+      "detail": "Higher fuel and transport costs are affecting inflation, tourism, food prices, customs receipts, subsidies and the national budget.",
+      "evidence": {
+       "url": "https://ticgl.com/tanzanias-economy-in-june-2026-inflation-rises-to-4-2-a-middle-east-oil-shock-and-a-tzs-62-33-trillion-budget/",
+       "publisher": "Ticgl",
+       "date": "2026-05",
+       "gatheredAt": "2026-07-20T18:00:30Z"
+      }
      },
      {
       "title": "Currency exposure",
@@ -505,7 +553,13 @@
       "confidence": 80,
       "severity": "Medium",
       "trend": "Increasing",
-      "detail": "The shilling traded around TZS 2,616.88 per US dollar in May 2026 while imported-energy costs were elevated."
+      "detail": "The shilling traded around TZS 2,616.88 per US dollar in May 2026 while imported-energy costs were elevated.",
+      "evidence": {
+       "url": "https://www.tanzaniainvest.com/economy/bot-monetary-policy-statement-2026-2027",
+       "publisher": "Tanzaniainvest",
+       "date": "2026-06",
+       "gatheredAt": "2026-07-20T18:00:30Z"
+      }
      },
      {
       "title": "Fiscal pressure from fuel subsidies and revenue losses",
@@ -513,7 +567,13 @@
       "confidence": 82,
       "severity": "High",
       "trend": "Increasing",
-      "detail": "A rapid assessment flagged a potential TZS 153.7 billion monthly customs-revenue shortfall and subsidy requirements potentially reaching TZS 1.384 trillion by July."
+      "detail": "A rapid assessment flagged a potential TZS 153.7 billion monthly customs-revenue shortfall and subsidy requirements potentially reaching TZS 1.384 trillion by July.",
+      "evidence": {
+       "url": "https://ticgl.com/tanzanias-economy-in-june-2026-inflation-rises-to-4-2-a-middle-east-oil-shock-and-a-tzs-62-33-trillion-budget/",
+       "publisher": "Ticgl",
+       "date": "2026-05",
+       "gatheredAt": "2026-07-20T18:00:30Z"
+      }
      },
      {
       "title": "Potential international accountability measures",
@@ -521,7 +581,13 @@
       "confidence": 70,
       "severity": "Medium",
       "trend": "Stable",
-      "detail": "Tanzania stated in June 2026 that it was not under sanctions, but calls for accountability and possible targeted measures remain relevant."
+      "detail": "Tanzania stated in June 2026 that it was not under sanctions, but calls for accountability and possible targeted measures remain relevant.",
+      "evidence": {
+       "url": "https://www.thenationalnews.com/news/uae/2026/02/04/sheikh-mohammed-bin-rashid-meets-president-of-tanzania-at-dubai-summit/",
+       "publisher": "The National (UAE)",
+       "date": "2026-02",
+       "gatheredAt": "2026-07-20T18:00:30Z"
+      }
      },
      {
       "title": "Food-price transmission from fuel costs",
@@ -529,7 +595,13 @@
       "confidence": 74,
       "severity": "Medium",
       "trend": "Increasing",
-      "detail": "Tanzania reportedly retains a 124% food self-sufficiency ratio, but fuel and transport costs threaten domestic food affordability."
+      "detail": "Tanzania reportedly retains a 124% food self-sufficiency ratio, but fuel and transport costs threaten domestic food affordability.",
+      "evidence": {
+       "url": "https://ticgl.com/tanzanias-economy-in-june-2026-inflation-rises-to-4-2-a-middle-east-oil-shock-and-a-tzs-62-33-trillion-budget/",
+       "publisher": "Ticgl",
+       "date": "2026-05",
+       "gatheredAt": "2026-07-20T18:00:30Z"
+      }
      },
      {
       "title": "Internet restrictions and digital disruption",
@@ -537,7 +609,13 @@
       "confidence": 85,
       "severity": "Medium",
       "trend": "Stable",
-      "detail": "Restrictions affecting X, Telegram, Clubhouse, critical websites and nationwide election-period connectivity demonstrate business-continuity and communications risk."
+      "detail": "Restrictions affecting X, Telegram, Clubhouse, critical websites and nationwide election-period connectivity demonstrate business-continuity and communications risk.",
+      "evidence": {
+       "url": "https://www.nbcnews.com/world/africa/tanzania-president-hassan-wins-disputed-election-97-vote-official-resu-rcna241260",
+       "publisher": "Nbcnews",
+       "date": "2025-10-29",
+       "gatheredAt": "2026-07-20T18:00:30Z"
+      }
      }
     ],
     "agreements": [

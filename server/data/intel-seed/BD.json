@@ -421,7 +421,13 @@
       "confidence": 84,
       "severity": "High",
       "trend": "Increasing",
-      "detail": "Bangladesh's planned first free-trade zones could create opportunities in port-linked zones, warehousing, customs digitalisation, re-export logistics, air cargo and industrial clusters. No UAE commitment is confirmed."
+      "detail": "Bangladesh's planned first free-trade zones could create opportunities in port-linked zones, warehousing, customs digitalisation, re-export logistics, air cargo and industrial clusters. No UAE commitment is confirmed.",
+      "evidence": {
+       "url": "https://www.semafor.com/article/07/09/2026/uae-attracts-record-fdi-in-2025",
+       "publisher": "Semafor",
+       "date": "2026-06-18",
+       "gatheredAt": "2026-07-20T18:00:30Z"
+      }
      },
      {
       "title": "Renewable energy and grid support",
@@ -429,7 +435,13 @@
       "confidence": 76,
       "severity": "High",
       "trend": "Increasing",
-      "detail": "Earlier discussions identified Masdar-related interest, and potential areas include solar, wind, storage and grid-support projects. No new transaction was verified."
+      "detail": "Earlier discussions identified Masdar-related interest, and potential areas include solar, wind, storage and grid-support projects. No new transaction was verified.",
+      "evidence": {
+       "url": "https://www.dhakatribune.com/bangladesh/foreign-affairs/362723/bangladesh-calls-on-uae-to-address-visa-issues",
+       "publisher": "Dhakatribune",
+       "date": "2026-07",
+       "gatheredAt": "2026-07-20T18:00:30Z"
+      }
      },
      {
       "title": "Food-security supply chains",
@@ -437,7 +449,13 @@
       "confidence": 89,
       "severity": "High",
       "trend": "Increasing",
-      "detail": "Persistent food insecurity, higher fertilizer prices and potential El Ni\u00f1o exposure support investment in irrigation, storage, cold chains, processing and strategic commodity logistics."
+      "detail": "Persistent food insecurity, higher fertilizer prices and potential El Ni\u00f1o exposure support investment in irrigation, storage, cold chains, processing and strategic commodity logistics.",
+      "evidence": {
+       "url": "https://www.thedailystar.net/opinion/news/bangladeshs-food-insecurity-warning-cannot-be-ignored-4161361",
+       "publisher": "Thedailystar",
+       "date": "2025",
+       "gatheredAt": "2026-07-20T18:00:30Z"
+      }
      },
      {
       "title": "Rohingya humanitarian financing",
@@ -445,7 +463,13 @@
       "confidence": 96,
       "severity": "Critical",
       "trend": "Increasing",
-      "detail": "The 2026 response seeks $710.5 million for 1.6 million people and faces a separately reported 37% funding shortfall, creating an urgent case for predictable UAE financing."
+      "detail": "The 2026 response seeks $710.5 million for 1.6 million people and faces a separately reported 37% funding shortfall, creating an urgent case for predictable UAE financing.",
+      "evidence": {
+       "url": "https://bangladesh.un.org/en/315838-recalibrating-rohingya-response-2025-26-joint-response-plan",
+       "publisher": "United Nations",
+       "date": "2026",
+       "gatheredAt": "2026-07-20T18:00:30Z"
+      }
      },
      {
       "title": "Workforce mobility and skills matching",
@@ -453,7 +477,13 @@
       "confidence": 84,
       "severity": "High",
       "trend": "Stable",
-      "detail": "Visa access, recruitment, worker protection and skills matching remain important bilateral issues after overseas employment rose in 2025 but departures declined sharply in January 2026."
+      "detail": "Visa access, recruitment, worker protection and skills matching remain important bilateral issues after overseas employment rose in 2025 but departures declined sharply in January 2026.",
+      "evidence": {
+       "url": "https://www.dhakatribune.com/bangladesh/foreign-affairs/362723/bangladesh-calls-on-uae-to-address-visa-issues",
+       "publisher": "Dhakatribune",
+       "date": "2026-01",
+       "gatheredAt": "2026-07-20T18:00:30Z"
+      }
      },
      {
       "title": "Aviation ground handling and cargo services",
@@ -461,7 +491,13 @@
       "confidence": 70,
       "severity": "Medium",
       "trend": "Stable",
-      "detail": "Earlier bilateral discussions identified Dnata-related interest in Bangladesh opportunities, but no recent investment or agreement was confirmed."
+      "detail": "Earlier bilateral discussions identified Dnata-related interest in Bangladesh opportunities, but no recent investment or agreement was confirmed.",
+      "evidence": {
+       "url": "https://www.dhakatribune.com/bangladesh/foreign-affairs/362723/bangladesh-calls-on-uae-to-address-visa-issues",
+       "publisher": "Dhakatribune",
+       "date": "2026-07",
+       "gatheredAt": "2026-07-20T18:00:30Z"
+      }
      }
     ],
     "risks": [
@@ -471,7 +507,13 @@
       "confidence": 92,
       "severity": "High",
       "trend": "Improving",
-      "detail": "About 16 million people faced crisis-level food insecurity or worse at the 2025 peak, an improvement of about 7.6 million from 2024. Forward risks include higher fertilizer and rice prices."
+      "detail": "About 16 million people faced crisis-level food insecurity or worse at the 2025 peak, an improvement of about 7.6 million from 2024. Forward risks include higher fertilizer and rice prices.",
+      "evidence": {
+       "url": "https://www.thedailystar.net/opinion/news/bangladeshs-food-insecurity-warning-cannot-be-ignored-4161361",
+       "publisher": "Thedailystar",
+       "date": "2025",
+       "gatheredAt": "2026-07-20T18:00:30Z"
+      }
      },
      {
       "title": "El Ni\u00f1o and rice-production exposure",
@@ -479,7 +521,13 @@
       "confidence": 85,
       "severity": "High",
       "trend": "Increasing",
-      "detail": "The stated probability of El Ni\u00f1o emerging by mid-2026 and persisting into 2027 was 61\u201387%, with South Asian rice production among the exposed areas."
+      "detail": "The stated probability of El Ni\u00f1o emerging by mid-2026 and persisting into 2027 was 61\u201387%, with South Asian rice production among the exposed areas.",
+      "evidence": {
+       "url": "https://www.dhakatribune.com/bangladesh/foreign-affairs/362723/bangladesh-calls-on-uae-to-address-visa-issues",
+       "publisher": "Dhakatribune",
+       "date": "2026-07",
+       "gatheredAt": "2026-07-20T18:00:30Z"
+      }
      },
      {
       "title": "Rohingya response underfunding",
@@ -487,7 +535,13 @@
       "confidence": 95,
       "severity": "Critical",
       "trend": "Increasing",
-      "detail": "The 2026 appeal seeks $710.5 million for 1.6 million people, while separate reporting indicated a 37% funding shortfall affecting essential services and host-community support."
+      "detail": "The 2026 appeal seeks $710.5 million for 1.6 million people, while separate reporting indicated a 37% funding shortfall affecting essential services and host-community support.",
+      "evidence": {
+       "url": "https://bangladesh.un.org/en/315838-recalibrating-rohingya-response-2025-26-joint-response-plan",
+       "publisher": "United Nations",
+       "date": "2026",
+       "gatheredAt": "2026-07-20T18:00:30Z"
+      }
      },
      {
       "title": "Investment execution and governance constraints",
@@ -495,7 +549,13 @@
       "confidence": 75,
       "severity": "Medium",
       "trend": "Stable",
-      "detail": "Bangladesh must offer transparent procurement, reliable foreign-exchange and profit-repatriation arrangements, credible public-private partnerships, and land, utility and customs readiness to attract UAE capital."
+      "detail": "Bangladesh must offer transparent procurement, reliable foreign-exchange and profit-repatriation arrangements, credible public-private partnerships, and land, utility and customs readiness to attract UAE capital.",
+      "evidence": {
+       "url": "https://www.dhakatribune.com/bangladesh/foreign-affairs/362723/bangladesh-calls-on-uae-to-address-visa-issues",
+       "publisher": "Dhakatribune",
+       "date": "2026-02-24",
+       "gatheredAt": "2026-07-20T18:00:30Z"
+      }
      },
      {
       "title": "Labour-mobility slowdown and visa friction",
@@ -503,7 +563,13 @@
       "confidence": 84,
       "severity": "Medium",
       "trend": "Increasing",
-      "detail": "January 2026 overseas departures fell by more than 21% from December, while UAE visa access and employment-visa restrictions remain continuing agenda items."
+      "detail": "January 2026 overseas departures fell by more than 21% from December, while UAE visa access and employment-visa restrictions remain continuing agenda items.",
+      "evidence": {
+       "url": "https://www.dhakatribune.com/bangladesh/foreign-affairs/362723/bangladesh-calls-on-uae-to-address-visa-issues",
+       "publisher": "Dhakatribune",
+       "date": "2026-01",
+       "gatheredAt": "2026-07-20T18:00:30Z"
+      }
      },
      {
       "title": "Food and fertilizer supply-chain pressure",
@@ -511,7 +577,13 @@
       "confidence": 88,
       "severity": "High",
       "trend": "Increasing",
-      "detail": "Fertilizer prices during the first five months of 2026 were reported 35% higher year-on-year, while rice prices had also risen."
+      "detail": "Fertilizer prices during the first five months of 2026 were reported 35% higher year-on-year, while rice prices had also risen.",
+      "evidence": {
+       "url": "https://bangladesh.un.org/en/315838-recalibrating-rohingya-response-2025-26-joint-response-plan",
+       "publisher": "United Nations",
+       "date": "2026",
+       "gatheredAt": "2026-07-20T18:00:30Z"
+      }
      }
     ],
     "agreements": [],

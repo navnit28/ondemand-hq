@@ -268,7 +268,13 @@
       "confidence": null,
       "severity": "High",
       "trend": "Increasing",
-      "detail": "Ethiopia's exclusion from the 2026 food-crisis assessment highlights urgent weaknesses in data authorization, collection, financing, quality and consensus-building. This creates a potential opening for modern monitoring and forecasting systems, but no Ethiopia-UAE AI initiative was documented."
+      "detail": "Ethiopia's exclusion from the 2026 food-crisis assessment highlights urgent weaknesses in data authorization, collection, financing, quality and consensus-building. This creates a potential opening for modern monitoring and forecasting systems, but no Ethiopia-UAE AI initiative was documented.",
+      "evidence": {
+       "url": "https://borkena.com/2026/07/06/ethiopia-excluded-from-2026-global-food-crisis-report-due-to-data-gaps-amid-rising-humanitarian-needs/",
+       "publisher": "Borkena",
+       "date": "2026-07-06",
+       "gatheredAt": "2026-07-20T18:00:30Z"
+      }
      },
      {
       "title": "Health, nutrition and safe-water financing",
@@ -276,7 +282,13 @@
       "confidence": null,
       "severity": "High",
       "trend": "Increasing",
-      "detail": "UNICEF seeks $401.5 million to reach 8.9 million people, with quantified targets including primary healthcare and safe water for 3.6 million people each and severe-wasting treatment for 763,879 children."
+      "detail": "UNICEF seeks $401.5 million to reach 8.9 million people, with quantified targets including primary healthcare and safe water for 3.6 million people each and severe-wasting treatment for 763,879 children.",
+      "evidence": {
+       "url": "https://reliefweb.int/report/ethiopia/humanitarian-action-children-2026-ethiopia",
+       "publisher": "ReliefWeb",
+       "date": "2026",
+       "gatheredAt": "2026-07-20T18:00:30Z"
+      }
      },
      {
       "title": "Climate-resilient food and agricultural supply chains",
@@ -284,7 +296,13 @@
       "confidence": null,
       "severity": "High",
       "trend": "Increasing",
-      "detail": "Erratic rainfall, crop failure, pastoral stress, high staple prices and delivery disruptions indicate potential demand for resilient agriculture, water, storage and logistics, subject to updated local data and regional security assessments."
+      "detail": "Erratic rainfall, crop failure, pastoral stress, high staple prices and delivery disruptions indicate potential demand for resilient agriculture, water, storage and logistics, subject to updated local data and regional security assessments.",
+      "evidence": {
+       "url": "https://borkena.com/2026/07/06/ethiopia-excluded-from-2026-global-food-crisis-report-due-to-data-gaps-amid-rising-humanitarian-needs/",
+       "publisher": "Borkena",
+       "date": "2026-07-06",
+       "gatheredAt": "2026-07-20T18:00:30Z"
+      }
      }
     ],
     "risks": [
@@ -294,7 +312,13 @@
       "confidence": null,
       "severity": "Critical",
       "trend": "Increasing",
-      "detail": "Conflict continued in Amhara and parts of Oromia, instability deepened around Tigray, and Ethiopia-Eritrea relations remained fragile. These conditions threaten civilians, aid access, staffing, transport and project continuity."
+      "detail": "Conflict continued in Amhara and parts of Oromia, instability deepened around Tigray, and Ethiopia-Eritrea relations remained fragile. These conditions threaten civilians, aid access, staffing, transport and project continuity.",
+      "evidence": {
+       "url": "https://www.hrw.org/world-report/2026/country-chapters/ethiopia",
+       "publisher": "Human Rights Watch",
+       "date": "2026",
+       "gatheredAt": "2026-07-20T18:00:30Z"
+      }
      },
      {
       "title": "Large-scale food insecurity with inadequate current data",
@@ -302,7 +326,13 @@
       "confidence": null,
       "severity": "Critical",
       "trend": "Increasing",
-      "detail": "More than 27 million people experienced severe food insecurity in 2024, while acceptable updated figures were unavailable for the 2026 global assessment and needs were projected to remain substantial through mid-2026."
+      "detail": "More than 27 million people experienced severe food insecurity in 2024, while acceptable updated figures were unavailable for the 2026 global assessment and needs were projected to remain substantial through mid-2026.",
+      "evidence": {
+       "url": "https://borkena.com/2026/07/06/ethiopia-excluded-from-2026-global-food-crisis-report-due-to-data-gaps-amid-rising-humanitarian-needs/",
+       "publisher": "Borkena",
+       "date": "2026-07-06",
+       "gatheredAt": "2026-07-20T18:00:30Z"
+      }
      },
      {
       "title": "Rainfall, heat and flooding pressures",
@@ -310,7 +340,13 @@
       "confidence": null,
       "severity": "High",
       "trend": "Increasing",
-      "detail": "Poor and uneven rainfall delayed the meher harvest, crop failures required replanting, hail damaged farmland, extreme heat reduced grazing resources and flooding obstructed humanitarian deliveries."
+      "detail": "Poor and uneven rainfall delayed the meher harvest, crop failures required replanting, hail damaged farmland, extreme heat reduced grazing resources and flooding obstructed humanitarian deliveries.",
+      "evidence": {
+       "url": "https://www.facebook.com/EthiopianBusinessReview/posts/food-insecurity-to-worsen-in-ethiopia-through-2026-report-warnsebr_news-oct-7-20/1711020286400963/",
+       "publisher": "Facebook",
+       "date": "2026-07",
+       "gatheredAt": "2026-07-20T18:00:30Z"
+      }
      },
      {
       "title": "Safe-water and basic-service pressure",
@@ -318,7 +354,13 @@
       "confidence": null,
       "severity": "High",
       "trend": "Increasing",
-      "detail": "UNICEF aims to provide sufficient safe water to 3.6 million people, illustrating the scale of unmet demand amid displacement, climate shocks and conflict-related access constraints."
+      "detail": "UNICEF aims to provide sufficient safe water to 3.6 million people, illustrating the scale of unmet demand amid displacement, climate shocks and conflict-related access constraints.",
+      "evidence": {
+       "url": "https://www.icrc.org/en/article/ethiopia-january-december-2025-facts-figures",
+       "publisher": "Icrc",
+       "date": "2026",
+       "gatheredAt": "2026-07-20T18:00:30Z"
+      }
      },
      {
       "title": "Humanitarian logistics disruption",
@@ -326,7 +368,13 @@
       "confidence": null,
       "severity": "High",
       "trend": "Increasing",
-      "detail": "Conflict, flooding, fuel shortages, restricted access and attacks on aid personnel are obstructing deliveries and increasing logistics and operating risk."
+      "detail": "Conflict, flooding, fuel shortages, restricted access and attacks on aid personnel are obstructing deliveries and increasing logistics and operating risk.",
+      "evidence": {
+       "url": "https://www.hrw.org/world-report/2026/country-chapters/ethiopia",
+       "publisher": "Human Rights Watch",
+       "date": "2026",
+       "gatheredAt": "2026-07-20T18:00:30Z"
+      }
      },
      {
       "title": "Uneven political and operating environment",
@@ -334,7 +382,13 @@
       "confidence": null,
       "severity": "High",
       "trend": "Increasing",
-      "detail": "Pressure on independent media and civil society, stalled transitional justice, regional instability and elections scheduled for 2026 contribute to political and regulatory uncertainty."
+      "detail": "Pressure on independent media and civil society, stalled transitional justice, regional instability and elections scheduled for 2026 contribute to political and regulatory uncertainty.",
+      "evidence": {
+       "url": "https://www.hrw.org/world-report/2026/country-chapters/ethiopia",
+       "publisher": "Human Rights Watch",
+       "date": "2026",
+       "gatheredAt": "2026-07-20T18:00:30Z"
+      }
      }
     ],
     "agreements": [],

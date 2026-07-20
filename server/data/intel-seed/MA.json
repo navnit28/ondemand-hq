@@ -302,7 +302,13 @@
       "confidence": null,
       "severity": "High",
       "trend": null,
-      "detail": "Agriculture is an economic strength, while water scarcity is a major structural challenge. This creates potential relevance for water-efficient agriculture and water-management infrastructure, but no UAE project was identified."
+      "detail": "Agriculture is an economic strength, while water scarcity is a major structural challenge. This creates potential relevance for water-efficient agriculture and water-management infrastructure, but no UAE project was identified.",
+      "evidence": {
+       "url": "https://futures.issafrica.org/geographic/countries/morocco/",
+       "publisher": "Issafrica",
+       "date": "2026-07",
+       "gatheredAt": "2026-07-20T18:00:30Z"
+      }
      },
      {
       "title": "Manufacturing and trade-platform development",
@@ -310,7 +316,13 @@
       "confidence": null,
       "severity": null,
       "trend": "Increasing",
-      "detail": "Morocco\u2019s diversified economy, geography and Europe-facing role may support manufacturing and trade-platform investment as development continues through 2043."
+      "detail": "Morocco\u2019s diversified economy, geography and Europe-facing role may support manufacturing and trade-platform investment as development continues through 2043.",
+      "evidence": {
+       "url": "https://futures.issafrica.org/geographic/countries/morocco/",
+       "publisher": "Issafrica",
+       "date": "2026-07",
+       "gatheredAt": "2026-07-20T18:00:30Z"
+      }
      },
      {
       "title": "Population-driven digital and education services",
@@ -318,7 +330,13 @@
       "confidence": null,
       "severity": null,
       "trend": "Increasing",
-      "detail": "Population growth from 36.5 million in 2019 to a projected 43.3 million in 2043 may support demand for digital services, education and AI-enabled industries."
+      "detail": "Population growth from 36.5 million in 2019 to a projected 43.3 million in 2043 may support demand for digital services, education and AI-enabled industries.",
+      "evidence": {
+       "url": "https://futures.issafrica.org/geographic/countries/morocco/",
+       "publisher": "Issafrica",
+       "date": "2026-07",
+       "gatheredAt": "2026-07-20T18:00:30Z"
+      }
      },
      {
       "title": "Energy-security infrastructure",
@@ -326,7 +344,13 @@
       "confidence": null,
       "severity": null,
       "trend": null,
-      "detail": "Morocco\u2019s energy dependence may create infrastructure opportunities, although no confirmed recent UAE energy agreement was identified."
+      "detail": "Morocco\u2019s energy dependence may create infrastructure opportunities, although no confirmed recent UAE energy agreement was identified.",
+      "evidence": {
+       "url": "https://futures.issafrica.org/geographic/countries/morocco/",
+       "publisher": "Issafrica",
+       "date": "2026-07",
+       "gatheredAt": "2026-07-20T18:00:30Z"
+      }
      }
     ],
     "risks": [
@@ -336,7 +360,13 @@
       "confidence": null,
       "severity": "High",
       "trend": null,
-      "detail": "Water scarcity is identified as a major structural challenge and may constrain agriculture, food systems and long-term development."
+      "detail": "Water scarcity is identified as a major structural challenge and may constrain agriculture, food systems and long-term development.",
+      "evidence": {
+       "url": "https://futures.issafrica.org/geographic/countries/morocco/",
+       "publisher": "Issafrica",
+       "date": "2026-07",
+       "gatheredAt": "2026-07-20T18:00:30Z"
+      }
      },
      {
       "title": "Energy dependence",
@@ -344,7 +374,13 @@
       "confidence": null,
       "severity": null,
       "trend": null,
-      "detail": "Continued energy dependence may affect economic resilience and increase the importance of energy-security infrastructure."
+      "detail": "Continued energy dependence may affect economic resilience and increase the importance of energy-security infrastructure.",
+      "evidence": {
+       "url": "https://futures.issafrica.org/geographic/countries/morocco/",
+       "publisher": "Issafrica",
+       "date": "2026-07",
+       "gatheredAt": "2026-07-20T18:00:30Z"
+      }
      },
      {
       "title": "Regional conflict exposure",
@@ -352,7 +388,13 @@
       "confidence": null,
       "severity": "High",
       "trend": "Increasing",
-      "detail": "The Middle East and North Africa is characterized as the world\u2019s least peaceful region, with the Ongoing Conflict domain deteriorating by 7.5%. This is a regional indicator and not a Morocco-specific deterioration finding."
+      "detail": "The Middle East and North Africa is characterized as the world\u2019s least peaceful region, with the Ongoing Conflict domain deteriorating by 7.5%. This is a regional indicator and not a Morocco-specific deterioration finding.",
+      "evidence": {
+       "url": "https://www.facebook.com/GlobalPeaceIndex/posts/the-middle-east-and-north-africa-remains-the-least-peaceful-region-in-the-world-/1439304334910474/",
+       "publisher": "Facebook",
+       "date": "2026",
+       "gatheredAt": "2026-07-20T18:00:30Z"
+      }
      },
      {
       "title": "Bilateral intelligence and verification gap",
@@ -360,7 +402,13 @@
       "confidence": null,
       "severity": null,
       "trend": null,
-      "detail": "Insufficient verified material was available to document recent UAE\u2013Morocco trade figures, official visits, transactions or sector-specific agreements."
+      "detail": "Insufficient verified material was available to document recent UAE\u2013Morocco trade figures, official visits, transactions or sector-specific agreements.",
+      "evidence": {
+       "url": "https://futures.issafrica.org/geographic/countries/morocco/",
+       "publisher": "Issafrica",
+       "date": "2026-07-18",
+       "gatheredAt": "2026-07-20T18:00:30Z"
+      }
      }
     ],
     "agreements": [],
