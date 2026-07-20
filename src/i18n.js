@@ -89,8 +89,15 @@ const STRINGS = {
 };
 
 export function t(key) {
-  return (STRINGS[LANG] && STRINGS[LANG][key]) || STRINGS.en[key] || key;
+  const base = (STRINGS[LANG] && STRINGS[LANG][key]) || STRINGS.en[key];
+  if (base) return base;
+  // voice-mode strings live in VOICE_STRINGS as {key: {en, ar}} (additive 2026-07-20)
+  const v = typeof VOICE_STRINGS !== 'undefined' ? VOICE_STRINGS[key] : null;
+  if (v) return v[LANG] || v.en;
+  return key;
 }
+
+export function getLang() { return LANG; }
 
 // Workstream-2 bilingual loader word pool — mission + tech pairs (seeded + extended)
 export const LOADER_WORDS = [
@@ -113,3 +120,28 @@ export const LOADER_WORDS = [
   { en: 'Building', ar: 'بناء' },
   { en: 'Translating', ar: 'ترجمة' },
 ];
+
+// ODA World Intelligence voice mode (additive 2026-07-20)
+export const VOICE_STRINGS = {
+  'voice.speak': { en: 'Speak with ODA', ar: 'تحدث مع المكتب' },
+  'voice.exit': { en: 'Exit voice mode', ar: 'إنهاء الوضع الصوتي' },
+  'voice.captions': { en: 'Captions mode', ar: 'وضع الترجمة النصية' },
+  'voice.interrupt': { en: 'Tap to interrupt', ar: 'اضغط للمقاطعة' },
+  'voice.langOverride': { en: 'Language override', ar: 'تجاوز اللغة' },
+  'voice.langAuto': { en: 'Auto language', ar: 'لغة تلقائية' },
+  'voice.retry': { en: 'Retry', ar: 'إعادة المحاولة' },
+  'voice.fallback': { en: 'fallback model', ar: 'نموذج احتياطي' },
+  'voice.micDenied': { en: 'Microphone unavailable — check browser permission, then try again.', ar: 'الميكروفون غير متاح — تحقق من إذن المتصفح ثم حاول مجددًا.' },
+  'voice.error': { en: 'Voice service unavailable — the world view remains fully usable.', ar: 'الخدمة الصوتية غير متاحة — تظل خريطة العالم قابلة للاستخدام بالكامل.' },
+  'voice.privacy': { en: 'Microphone audio is processed through the configured OnDemand services. Transcript and retention behaviour depends on the active deployment configuration.', ar: 'تتم معالجة صوت الميكروفون عبر خدمات OnDemand المهيأة. يعتمد سلوك النصوص والاحتفاظ بالبيانات على إعدادات النشر الفعالة.' },
+  'voice.state.Idle': { en: 'Idle', ar: 'خامل' },
+  'voice.state.Activating': { en: 'Activating…', ar: 'جارٍ التفعيل…' },
+  'voice.state.Listening': { en: 'Listening', ar: 'يستمع' },
+  'voice.state.Understanding': { en: 'Understanding…', ar: 'جارٍ الفهم…' },
+  'voice.state.Retrieving': { en: 'Retrieving…', ar: 'جارٍ الاسترجاع…' },
+  'voice.state.Responding': { en: 'Responding', ar: 'يجيب' },
+  'voice.state.Interrupted': { en: 'Interrupted', ar: 'تمت المقاطعة' },
+  'voice.state.Reconnecting': { en: 'Reconnecting…', ar: 'جارٍ إعادة الاتصال…' },
+  'voice.state.Error': { en: 'Error', ar: 'خطأ' },
+  'voice.state.Ended': { en: 'Ended', ar: 'انتهى' },
+};

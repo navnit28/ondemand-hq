@@ -17,6 +17,7 @@ import { fetchCountryPack, renderDataBlock, resolveCountry } from './countryData
 import { buildExport } from './exports.js';
 import { extractText } from './extract.js';
 import { registerSpeechRoutes } from './speech.js';
+import { registerVoiceRoutes } from './voice.js';
 import { registerIntelRoutes, COUNTRIES } from './intel.js';
 import { registerCorrelationRoutes } from './correlation.js';
 import { registerFactsRoutes } from './facts.js';
@@ -31,6 +32,7 @@ const upload = multer({ storage: multer.memoryStorage(), limits: { fileSize: 25 
 
 // Voice routes — OnDemand Cloud Services (speech_to_text / text_to_speech) ONLY.
 registerSpeechRoutes(app, upload);
+registerVoiceRoutes(app, upload); // ODA World Intelligence voice routes (additive 2026-07-20)
 
 // ODA Intelligence Dashboard routes (Perplexity + X Search + AI analysis pipeline).
 registerIntelRoutes(app);

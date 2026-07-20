@@ -204,3 +204,25 @@ All notable changes to the Correlation Engine, logged with timestamps (UTC).
   collapse/expand 14→10→14; Relationship Inspector "Likely · conf 0.81" with tier +
   source types; rendered-page purple pixel scan = 0. Vite build PASS (7.35s).
   Screenshots: ce-dense-200pt-graph.png · ce-dense-breakdown.png · ce-dense-inspector.png.
+
+## 2026-07-20 — ODA World Intelligence: voice/globe feature (additive)
+
+- **2026-07-20T03:25Z** — end-to-end voice/globe implementation on the COBE renderer
+  (extended, not replaced): workflow **6a5d90228a845853270b9b53** 'ODA World Intelligence'
+  created + ACTIVATED (webhook → session/language → fast-RAG w/ source-metadata
+  preservation → GLM 4.7 byoi-6e314690-4eaf-4def-a33c-380809acf1f5 structured output →
+  analyzer). Server: `server/ondemand/` typed adapter boundary (zod, timeouts, abort
+  propagation, redacted logs) + `server/voice.js` (SSE turn route w/ ttft + sentence
+  tts_ready markers, barge-in abort, STT/TTS routes, rate limits, metrics, cleanup;
+  fallback ONLY via VOICE_FALLBACK_ENDPOINT and always UI-visible). Client: `src/voice/`
+  (10-state guarded FSM, fence-aware streaming parser, zod command allowlist + typed
+  context, 14-component validated generated UI w/ rAF batching + https-only links,
+  VoiceMode w/ VAD gating, sentence-chunked early TTS, 4 caption modes EN/AR RTL,
+  privacy disclosure, honest activity). Globe: additive interaction layer
+  (drag/inertia/pinch/wheel/keyboard, 5px gesture discrimination, camera limits,
+  reset-view, reduced-motion, idle-pause incl. speaking states, conversational
+  brightness treatments, camera API for validated commands). Tests: node --test 18/18
+  PASS; tsc OK; vite build PASS; dist key-grep 0; purple grep 0.
+  Docs: IMPLEMENTATION_NOTES.md (architecture, workflow, model slug, latency/barge-in,
+  RAG, validation, verified-vs-undocumented privacy, env, testing, limitations,
+  regression checklist).

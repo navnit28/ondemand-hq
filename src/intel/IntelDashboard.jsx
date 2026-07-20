@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Globe from './Globe.jsx';
+import VoiceMode from '../voice/VoiceMode.jsx';
 import CountryPage from './CountryPage.jsx';
 import { getOverview, nlSearch, generateBrief } from './api.js';
 import BilingualLoader from '../components/BilingualLoader.jsx';
@@ -24,6 +25,24 @@ function StatCard({ label, value, tone, delay = 0 }) {
 export default function IntelDashboard({ onExit }) {
   const [ov, setOv] = useState(null);
   const [err, setErr] = useState(null);
+  const [voiceState, setVoiceState] = useState('Idle');
+  const [discussedIso, setDiscussedIso] = useState(null);
+  const cameraApiRef = React.useRef(null);
+  // validated voice commands → world actions (allowlist enforced upstream in commands.js)
+  const onVoiceCommand = React.useCallback((cmd) => {
+    const cam = cameraApiRef.current;
+    switch (cmd.action) {
+      case 'rotateTo': cam?.rotateTo(cmd.args.lat, cmd.args.lng); break;
+      case 'zoom': cam?.zoom(cmd.args.level); break;
+      case 'resetView': cam?.resetView(); break;
+      case 'showCountry': setDiscussedIso(cmd.args.iso); setCountryIso(cmd.args.iso); break;
+      case 'openLayer': setCountryIso(prev => prev); window.dispatchEvent(new CustomEvent('oda:open-layer', { detail: cmd.args.layer })); break;
+      case 'compare': window.dispatchEvent(new CustomEvent('oda:compare', { detail: cmd.args })); break;
+      case 'setTimeline': window.dispatchEvent(new CustomEvent('oda:set-timeline', { detail: cmd.args })); break;
+      case 'openPanel': case 'closePanel': window.dispatchEvent(new CustomEvent('oda:panel', { detail: cmd })); break;
+      default: break; // schema-rejected commands never reach here
+    }
+  }, []);
   const [countryIso, setCountryIso] = useState(() => {
     // deep link: /correlation-engine[?iso=KE] jumps straight to the country page
     try {
@@ -113,7 +132,15 @@ export default function IntelDashboard({ onExit }) {
 
       {/* Globe landing */}
       <ErrorBoundary name="intel-globe">
-        <Globe countries={ov.perCountry} onOpenCountry={setCountryIso} />
+        <>
+        <Globe countries={ov.perCountry} onOpenCountry={setCountryIso}
+          voiceState={voiceState} discussedIso={discussedIso}
+          onCameraApi={(api) => { cameraApiRef.current = api; }} />
+        <VoiceMode
+          worldContext={{ selectedCountry: countryIso, cameraFocus: cameraApiRef.current?.getFocus?.() ?? null }}
+          onCommand={onVoiceCommand}
+          onVoiceStateChange={setVoiceState} />
+        </>
       </ErrorBoundary>
 
       {/* Trending intelligence + risks/opportunities strips */}
