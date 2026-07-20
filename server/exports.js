@@ -140,7 +140,7 @@ export async function buildXlsx(model, dataRows = []) {
   srcWs.columns = [{ header: 'Type', key: 't', width: 16 }, { header: 'Entry', key: 'e', width: 110 }];
   (model.citations.length ? model.citations : ['User-supplied content']).forEach(c => srcWs.addRow({ t: 'Citation', e: c }));
   model.gaps.forEach(g => srcWs.addRow({ t: 'GAP', e: g }));
-  srcWs.addRow({ t: 'QA', e: `Generated ${new Date().toISOString()} · model gpt-5.6-sol-medium · no-invent rule enforced upstream` });
+  srcWs.addRow({ t: 'QA', e: `Generated ${new Date().toISOString()} · model glm-4.7-byoi · no-invent rule enforced upstream` });
   srcWs.getRow(1).font = { bold: true };
 
   return Buffer.from(await wb.xlsx.writeBuffer());

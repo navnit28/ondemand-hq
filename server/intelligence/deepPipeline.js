@@ -12,9 +12,10 @@
 // EMPTY-UPSTREAM RESILIENCE: every stage accepts an empty-but-valid evidence set (the
 // 2026-07-19 live fetches returned 0 articles / timeouts) and still emits a valid,
 // versioned, diffable run snapshot; the scheduled workflow populates data on later runs.
-// Model policy: ALL model calls = gpt-5.6-sol-medium (predefined-gpt-5.6-sol + medium),
+// Model policy (2026-07-20 GLM switch): ALL model calls = GLM 4.7 Cerebras BYOI + validated reasoningEffort,
 // streamed where the platform supports it (streamQuery), sync JSON extraction otherwise.
 
+import { GLM_BYOI_ENDPOINT_ID, validEffort } from '../env.js';
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -28,12 +29,12 @@ import { assignVerification, buildInferencePrompt, deterministicInference, VERIF
 import { buildPredictionPrompt, normalisePredictions, PREDICTION_CATEGORIES } from './prediction.js';
 import { buildImpactPrompt, normaliseImpactScores, structuralImpactScores } from './impact.js';
 
-import { validEffort } from '../env.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
-// gpt-5.6-sol-medium everywhere (decomposed form — suffixed id returns HTTP 400; Phase-1 verified).
-export const DEEP_ENDPOINT_ID = process.env.DEEP_ENDPOINT_ID || 'predefined-gpt-5.6-sol';
+// GLM 4.7 BYOI everywhere (decomposed form — suffixed id returns HTTP 400; Phase-1 verified).
+// ONLY the ACTIVE BYOI id — predefined-glm-4.7/-flash are inactive registry entries.
+export const DEEP_ENDPOINT_ID = process.env.DEEP_ENDPOINT_ID || GLM_BYOI_ENDPOINT_ID;
 export const DEEP_REASONING_EFFORT = validEffort(process.env.DEEP_REASONING_EFFORT, 'medium'); // validated low|medium|max — decomposed form only (suffixed ids = HTTP 400)
 
 // Edge styling contract persisted for the frontend (brand tokens).
@@ -58,7 +59,7 @@ const extractJson = (text) => {
   return null;
 };
 
-/** Streamed model call on gpt-5.6-sol-medium; falls back to sync on stream failure. */
+/** Streamed model call on GLM 4.7 BYOI + validated effort; falls back to sync on stream failure. */
 async function modelCall({ session, prompt, systemPrompt, pluginIds = [], onToken }) {
   try {
     let acc = '';

@@ -37,22 +37,28 @@ export const PORT = parseInt(process.env.PORT || '8080', 10);
 // predefined-gpt-5.6-sol: reasoning_efforts ["low","medium","max"] (re-verified
 // live 2026-07-20T20:35Z). Any configured value is validated against this list.
 export const REASONING_EFFORTS = ['low', 'medium', 'max'];
+// THE only ACTIVE GLM 4.7 endpoint (live registry 2026-07-20T20:57:56Z): Cerebras BYOI,
+// model_id zai-glm-4.7, 65k ctx, streaming true. predefined-glm-4.7 and
+// predefined-glm-4.7-flash are INACTIVE registry entries — never ship against them.
+export const GLM_BYOI_ENDPOINT_ID = 'byoi-6e314690-4eaf-4def-a33c-380809acf1f5';
 export function validEffort(effort, fallback) {
   if (REASONING_EFFORTS.includes(effort)) return effort;
   if (effort) console.warn(`[env] invalid reasoningEffort "${effort}" — must be one of ${REASONING_EFFORTS.join('|')}; using "${fallback}"`);
   return fallback;
 }
 
-// MAIN CHAT model policy (2026-07-20 streaming fix): predefined-gpt-5.6-sol with
-// TOP-LEVEL reasoningEffort, DEFAULT 'low' — explicitly NOT medium and NOT max.
-// Live captures (debug/sse-samples/, 2026-07-20T20:37–20:41Z) show gpt-5.6-sol at
-// 'low' streams fulfillment .answer deltas promptly (46-frame token stream), while
-// the previous GLM+max config buried the answer under 300+ thinking frames.
+// MAIN CHAT model policy (2026-07-20 GLM switch): ALL non-workflow completion calls
+// run on the ACTIVE GLM 4.7 Cerebras BYOI endpoint with TOP-LEVEL reasoningEffort,
+// DEFAULT 'low' — explicitly NOT medium and NOT max (validator above enforces the
+// enum; invalid values fall back to 'low'). Decomposed form only — suffixed model
+// ids are a proven HTTP 400 (dead end D2). Workflows stay on their own platform-side
+// model config (gpt-5.6-sol) — workflow defs are NOT touched by this policy.
 // Override via CHAT_ENDPOINT_ID / CHAT_REASONING_EFFORT (validated above).
-export const ENDPOINT_ID = process.env.CHAT_ENDPOINT_ID || 'predefined-gpt-5.6-sol';
+export const ENDPOINT_ID = process.env.CHAT_ENDPOINT_ID || GLM_BYOI_ENDPOINT_ID;
 export const REASONING_EFFORT = validEffort(process.env.CHAT_REASONING_EFFORT, 'low');
-// Data-gathering model (Perplexity/X plugin stages) — UNCHANGED per 2026-07-20 task.
-export const GATHER_ENDPOINT_ID = 'predefined-gpt-5.6-sol';
+// Data-gathering model (Perplexity/X plugin stages) — GLM BYOI (2026-07-20 switch;
+// GLM+agent attachment live-probed 200 "OK" at 20:58:24Z). Env-overridable.
+export const GATHER_ENDPOINT_ID = process.env.GATHER_ENDPOINT_ID || GLM_BYOI_ENDPOINT_ID;
 export const GATHER_REASONING_EFFORT = validEffort(process.env.GATHER_REASONING_EFFORT, 'medium');
 
 // ANALYSIS model policy for the ODA Intelligence pipeline (server/intel.js).
@@ -76,15 +82,15 @@ if (!ONDEMAND_API_KEY) {
 // Plugin/evidence-gathering calls: Claude endpoints REJECT plugin attachment on this
 // platform (HTTP 400 "agents are invalid", live-logged 2026-07-19 in PLUGIN_TESTS.md),
 // so plugins run on the proven fulfillment model. Overridable via env.
-export const CE_PLUGIN_ENDPOINT_ID = process.env.CE_PLUGIN_ENDPOINT_ID || 'predefined-gpt-5.6-sol';
+export const CE_PLUGIN_ENDPOINT_ID = process.env.CE_PLUGIN_ENDPOINT_ID || GLM_BYOI_ENDPOINT_ID; // GLM 4.7 BYOI (2026-07-20 switch; agent attach 200-probed)
 // Analysis/extraction/narrative: PRODUCTION default claude-fable-5 + medium reasoning.
 // Build/test override: CE_ANALYSIS_ENDPOINT_ID=predefined-claude-sonnet-5 (both 200-verified
 // 2026-07-19). Set in config here — never hardcoded at call sites.
-export const CE_ANALYSIS_ENDPOINT_ID = process.env.CE_ANALYSIS_ENDPOINT_ID || 'predefined-claude-fable-5';
+export const CE_ANALYSIS_ENDPOINT_ID = process.env.CE_ANALYSIS_ENDPOINT_ID || GLM_BYOI_ENDPOINT_ID; // GLM 4.7 BYOI (2026-07-20 switch; was claude-fable-5)
 export const CE_ANALYSIS_REASONING_EFFORT = validEffort(process.env.CE_ANALYSIS_REASONING_EFFORT, 'medium');
 // Quick Query: GLM 4.7 Cerebras BYOI only (200-proven 2026-07-19, ~1.28s). No documented
 // max-tokens param → hard stop enforced client-side at QUICK_QUERY_MAX_TOKENS.
-export const GLM_ENDPOINT_ID = 'byoi-6e314690-4eaf-4def-a33c-380809acf1f5';
+export const GLM_ENDPOINT_ID = GLM_BYOI_ENDPOINT_ID;
 // Streamed CE surfaces (quick-query/summarize/story) — validated, env-overridable.
 export const CE_STREAM_REASONING_EFFORT = validEffort(process.env.CE_STREAM_REASONING_EFFORT, 'max');
 export const QUICK_QUERY_MAX_TOKENS = 150;

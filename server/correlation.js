@@ -724,7 +724,7 @@ Produce EXACTLY these sections, grounded ONLY in the record above (no outside fa
     res.end();
   });
 
-  // One-click Story Mode — gpt-5.6-sol-medium, streamed SSE.
+  // One-click Story Mode — GLM 4.7 BYOI, streamed SSE.
   app.get('/api/correlation/story/:iso/:runId/stream', async (req, res) => {
     res.writeHead(200, { 'Content-Type': 'text/event-stream', 'Cache-Control': 'no-cache', Connection: 'keep-alive' });
     try {

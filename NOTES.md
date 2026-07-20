@@ -1,5 +1,24 @@
 # NOTES.md — ODA Productivity Suite engineering log
 
+## 2026-07-20 Model switch — ALL non-workflow calls → GLM 4.7 Cerebras BYOI (default reasoningEffort 'low')
+
+**Registry verification (live, `GET /config/v1/public/endpoints`, fetched 2026-07-20T20:57:56Z UTC):**
+- `byoi-6e314690-4eaf-4def-a33c-380809acf1f5` — endpoint_name `glm-4.7`, model_id **`zai-glm-4.7`**, status **active**, ctx 65,000, streaming_supported true, reasoning_efforts null (top-level `reasoningEffort` still live-accepted). THE only active GLM 4.7.
+- `predefined-glm-4.7` (z-ai/glm-4.7) and `predefined-glm-4.7-flash` — both **inactive** registry entries; NOT shipped against (grep audit: zero `predefined-glm` values anywhere in server/ or src/).
+- GLM + agent attachment probe (sync, agentIds attached): HTTP **200 "OK"** at 2026-07-20T20:58:24Z — clears the old "plugins must run on gpt-5.6-sol" constraint, so GATHER/CE_PLUGIN call sites switch too.
+
+**Changes (all edits in place):**
+- `server/env.js` — NEW shared `GLM_BYOI_ENDPOINT_ID = 'byoi-6e314690-4eaf-4def-a33c-380809acf1f5'`; `ENDPOINT_ID` (main chat) → GLM BYOI with `REASONING_EFFORT = validEffort(env, 'low')` (**default 'low' unchanged**, `REASONING_EFFORTS ['low','medium','max']` validator unchanged); `GATHER_ENDPOINT_ID` → GLM BYOI (env-overridable); `CE_PLUGIN_ENDPOINT_ID` → GLM BYOI; `CE_ANALYSIS_ENDPOINT_ID` → GLM BYOI (was claude-fable-5); `GLM_ENDPOINT_ID` (Quick Query) → aliases the shared constant.
+- `server/intelligence/deepPipeline.js` — `DEEP_ENDPOINT_ID` → `GLM_BYOI_ENDPOINT_ID` (imported from env.js; env.js imports merged into one line); effort stays `validEffort(env,'medium')`.
+- Comment/label sweeps (`server/router.js`, `server/msm.js`, `server/intel.js`, `server/correlation.js`, `server/exports.js`, `server/intelligence/correlationLayer.js`): stale "gpt-5.6-sol-medium" wording → GLM 4.7 BYOI / shared-policy wording. `server/index.js` + `server/msm.js` labels were already dynamic `${ENDPOINT_ID}+${REASONING_EFFORT}` (previous commit) so they now report the GLM id automatically.
+- **Workflows untouched:** platform workflow definitions (evidence-refresh 6a5e5d90…, World Intel 6a5d9022…) keep their own gpt-5.6-sol node config; no workflow create/update calls were made. `server/voice.js` untouched (already GLM BYOI via VOICE_ENDPOINT_ID; its `VOICE_FALLBACK_ENDPOINT` comment example is not a live value).
+
+**E2E proof (local `/api/chat` = browser wire path; raw capture `debug/sse-samples/apichat-glm47byoi-low-20260720T2100Z.sse.log`):**
+- `/api/health` at 2026-07-20T21:00:35Z → `"model":"byoi-6e314690-4eaf-4def-a33c-380809acf1f5+low"`.
+- Capture window 2026-07-20T21:00:51.714Z → 21:01:04.569Z. Frame counts: **fulfillment_thinking 197** (`.thinking.delta` streaming live — GLM emits real fulfillment-phase reasoning deltas), planning_thinking 38, step_thinking 71 (thinking total 306), **fulfillment 18** `.answer` token frames assembling a 573-char answer, statusLog 2, metricsLog 1, heartbeats, and exactly **1 `[DONE]` terminal sentinel**. BOTH channels stream token-by-token through the hardened SSE passthrough to the client.
+- Mode validation re-checked live at 2026-07-20T21:01:17Z: `CHAT_REASONING_EFFORT=high` → warn + fall back to **'low'**; `=max` → accepted. Default remains 'low'.
+
+
 ## 2026-07-20 Chat streaming fix — decomposed gpt-5.6-sol + reasoningEffort, DEFAULT 'low' (main chat)
 
 **Docs verification (all live, fetched this pass):**

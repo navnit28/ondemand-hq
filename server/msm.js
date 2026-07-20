@@ -9,7 +9,7 @@
 //      GET /media/v1/public/file (sort=-createdAt) until the record flips to
 //      completed/failed (5s interval, 300s budget) — the documented actionStatus
 //      polling path from NOTES.md.
-//   2. ANALYSE — per video, gpt-5.6-sol-medium (predefined-gpt-5.6-sol +
+//   2. ANALYSE — per video, GLM 4.7 BYOI (shared ENDPOINT_ID +
 //      reasoningEffort "medium") with responseMode "stream" via streamQuery();
 //      thinking deltas (planning_thinking / step_thinking / fulfillment_thinking)
 //      are captured SEPARATELY from answer tokens and persisted per video.
@@ -18,7 +18,7 @@
 //   3. STORE + DEDUPE — disk-persisted per-day records under server/data/msm/
 //      keyed by videoId; a global index guarantees a videoId is NEVER
 //      re-transcribed once processed (transcripts are reused across runs/days).
-//   4. DIGEST — one extra gpt-5.6-sol-medium streamed call builds the daily
+//   4. DIGEST — one extra streamed call (shared GLM policy) builds the daily
 //      digest strip (top 3 ODA-relevant stories + narrative); sentiment balance
 //      and flag counts are computed deterministically in code (never invented).
 //
@@ -288,7 +288,7 @@ async function transcribeVideo(day, video, mediaSessionId) {
   return { ok: true, mediaId: media.id, chars: text.length };
 }
 
-// ---------- 2) ANALYSE (gpt-5.6-sol-medium, streaming, thinking captured) ----------
+// ---------- 2) ANALYSE (GLM 4.7 BYOI, streaming, thinking captured) ----------
 const MSM_SYSTEM = `You are the media-analysis desk of the UAE Office of Development Affairs (ODA), Abu Dhabi.
 You receive ONE broadcast transcript. Ground EVERY statement strictly in that transcript — never invent facts, names, or numbers that are not in it. If the content is unrelated to ODA themes, say so honestly.
 ODA themes: UAE, Gulf, international development, aid, humanitarian affairs, economic development, Abu Dhabi, regional stability.

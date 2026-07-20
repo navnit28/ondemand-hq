@@ -1,3 +1,9 @@
+## 2026-07-20 — feat(model): all non-workflow calls → GLM 4.7 Cerebras BYOI (byoi-6e314690…, default reasoningEffort 'low')
+
+- Registry re-verified live 20:57:56Z: byoi-6e314690-4eaf-4def-a33c-380809acf1f5 (zai-glm-4.7, 65k ctx, streaming true) is the ONLY active GLM 4.7; predefined-glm-4.7/-flash are inactive and not referenced anywhere. GLM+agent attachment probed 200 "OK" 20:58:24Z.
+- `server/env.js`: new shared `GLM_BYOI_ENDPOINT_ID`; ENDPOINT_ID (main chat, default 'low' + validator kept), GATHER_ENDPOINT_ID, CE_PLUGIN_ENDPOINT_ID, CE_ANALYSIS_ENDPOINT_ID, GLM_ENDPOINT_ID all → GLM BYOI. `server/intelligence/deepPipeline.js`: DEEP_ENDPOINT_ID → GLM BYOI. Comment sweeps in router/msm/intel/correlation/exports/correlationLayer. Workflows keep gpt-5.6-sol (untouched).
+- E2E proof (`debug/sse-samples/apichat-glm47byoi-low-20260720T2100Z.sse.log`, 21:00:51–21:01:04Z): fulfillment_thinking 197 + fulfillment .answer 18 frames (573-char answer) + exactly one [DONE] through local /api/chat; /api/health reports byoi-6e314690…+low; 'high' → falls back to 'low' (21:01:17Z).
+
 ## 2026-07-20 — fix(chat): streaming end-to-end — decomposed gpt-5.6-sol + top-level reasoningEffort, DEFAULT 'low'
 
 - Root cause: main chat ran GLM 4.7 BYOI + reasoningEffort 'max' → 300+ thinking deltas but only ~9 coarse, late `fulfillment` `.answer` frames on the browser wire (pre-fix capture `debug/sse-samples/apichat-prefix-glm47-max-20260720T2039Z.sse.log`). SSE plumbing itself was healthy.

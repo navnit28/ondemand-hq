@@ -1,6 +1,6 @@
 // intel.js — ODA Intelligence Dashboard backend module.
 // Data pipeline: Perplexity (plugin-1722260873) → X Search (plugin-1751872652) →
-// multi-step AI analysis on predefined-gpt-5.6-sol + reasoningEffort "medium"
+// multi-step AI analysis on GLM 4.7 BYOI + validated reasoningEffort
 // (strict JSON schema parsed from the answer), persisted to disk for historical
 // comparison. All models are designed around the REAL payload shape verified in
 // debug/plugin-payloads/*-raw.json (2026-07-17): message.data.answer is grounded
@@ -129,7 +129,7 @@ export function extractMediaFromMarkdown(md) {
   return { images, links, xPosts };
 }
 
-// ---------- strict-JSON model call (predefined-gpt-5.6-sol + reasoningEffort medium) ----------
+// ---------- strict-JSON model call (GLM 4.7 BYOI + validated reasoningEffort) ----------
 function extractJson(text) {
   if (!text) return null;
   const fence = text.match(/```(?:json)?\s*([\s\S]*?)```/);
