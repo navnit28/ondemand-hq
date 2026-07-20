@@ -1,6 +1,23 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useRef } from 'react';
 import ReactECharts from 'echarts-for-react';
 import { PLATFORM_COLORS, evidenceAgeDays } from './adapter.js';
+import Expandable from './Expandable.jsx';
+
+/** One chart with an expand/fullscreen toggle (2026-07-20): after expand or
+ *  restore, the ECharts instance is resized to the new container. */
+function XChart({ title, option, baseHeight, onEvents }) {
+  const ecRef = useRef();
+  const resize = () => { try { ecRef.current?.getEchartsInstance()?.resize(); } catch { /* not mounted */ } };
+  return (
+    <Expandable title={title} className="xp-host--chart" onToggle={resize}>
+      {({ expanded, height }) => (
+        <ReactECharts ref={ecRef} option={option} notMerge
+          style={{ height: expanded ? (height || 560) : baseHeight, width: '100%' }}
+          onEvents={onEvents} />
+      )}
+    </Expandable>
+  );
+}
 
 const FONT = { fontFamily: 'Montserrat, sans-serif' };
 
@@ -74,11 +91,11 @@ export default function EChartsPanels({ run, onPickDate, onPickStance, onPickPla
 
   return (
     <div className="ce-panels">
-      <ReactECharts option={volumeOption} style={{ height: 132 }} notMerge
+      <XChart title="Evidence volume over time" option={volumeOption} baseHeight={132}
         onEvents={{ click: (p) => onPickDate?.(p.name === activeDay ? null : p.name) }} />
-      <ReactECharts option={stanceOption} style={{ height: 74 }} notMerge
+      <XChart title="Stance strip" option={stanceOption} baseHeight={74}
         onEvents={{ click: (p) => onPickStance?.(p.seriesName === activeStance ? null : p.seriesName) }} />
-      <ReactECharts option={platformOption} style={{ height: 168 }} notMerge
+      <XChart title="Platform split" option={platformOption} baseHeight={168}
         onEvents={{ click: (p) => onPickPlatform?.(p.name === activePlatform ? null : p.name) }} />
     </div>
   );

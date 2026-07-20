@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import * as d3 from 'd3';
 import { REL_TYPE_COLORS, REL_TYPES, PLATFORM_COLORS, evidenceAgeDays } from './adapter.js';
 
@@ -15,13 +15,15 @@ import { REL_TYPE_COLORS, REL_TYPES, PLATFORM_COLORS, evidenceAgeDays } from './
  */
 export default function SignalLoom({ run, onPickEvidence }) {
   const ref = useRef();
+  // expand/fullscreen (2026-07-20): bump forces a D3 re-render at the new size
+  const [xp, setXp] = useState({ expanded: false, bump: 0 });
 
   useEffect(() => {
     const el = ref.current;
     if (!el || !run) return;
     const evById = new Map(run.evidence.map(e => [e.id, e]));
     const platforms = [...new Set(run.evidence.map(e => e.platform))];
-    const W = Math.max(640, el.clientWidth || 640), H = 300;
+    const W = Math.max(640, el.clientWidth || 640), H = xp.expanded ? Math.max(420, window.innerHeight - 140) : 300;
     const padL = 86, padR = 16, padT = 34, padB = 18;
 
     const svg = d3.select(el).attr('viewBox', `0 0 ${W} ${H}`);
@@ -100,11 +102,41 @@ export default function SignalLoom({ run, onPickEvidence }) {
     const lg = svg.append('g').attr('transform', `translate(${padL},${H - 8})`);
     lg.append('text').attr('font-size', 8.5).attr('fill', '#9ca3af').attr('font-family', 'Montserrat, sans-serif')
       .text(`Signal Loom — ${threads.length} woven threads (edge × evidence) · thickness = confidence · opacity = recency · dashes = contradiction · click a thread for evidence`);
-  }, [run, onPickEvidence]);
+  }, [run, onPickEvidence, xp]);
 
-  return (
-    <div className="ce-loom">
+  // ESC restores from fullscreen (2026-07-20)
+  useEffect(() => {
+    if (!xp.expanded) return undefined;
+    const onKey = (e) => { if (e.key === 'Escape') setXp(s => ({ expanded: false, bump: s.bump + 1 })); };
+    window.addEventListener('keydown', onKey);
+    document.body.style.overflow = 'hidden';
+    return () => { window.removeEventListener('keydown', onKey); document.body.style.overflow = ''; };
+  }, [xp.expanded]);
+
+  const toggle = (next) => setXp(s => ({ expanded: next, bump: s.bump + 1 }));
+
+  const inner = (
+    <div className="ce-loom" style={xp.expanded ? { height: '100%' } : undefined}>
       <svg ref={ref} role="img" aria-label="Signal Loom — platform to relationship-type weave" />
+    </div>
+  );
+
+  if (!xp.expanded) {
+    return (
+      <div className="xp-host xp-host--loom">
+        <button type="button" className="xp-btn" onClick={() => toggle(true)} aria-label="Expand Signal Loom to fullscreen" title="Expand">⤢</button>
+        {inner}
+      </div>
+    );
+  }
+  return (
+    <div className="xp-overlay" role="dialog" aria-modal="true" aria-label="Signal Loom — fullscreen">
+      <div className="xp-overlay__bar">
+        <b>Signal Loom</b>
+        <span style={{ flex: 1 }} />
+        <button type="button" className="xp-btn xp-btn--close" onClick={() => toggle(false)} aria-label="Close fullscreen" title="Close (Esc)">✕</button>
+      </div>
+      <div className="xp-overlay__body">{inner}</div>
     </div>
   );
 }

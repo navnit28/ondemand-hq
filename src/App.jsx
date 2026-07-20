@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import Sidebar from './components/Sidebar.jsx';
+import LightboxHost from './components/Lightbox.jsx';
 import Composer from './components/Composer.jsx';
 import PreviewPane from './components/PreviewPane.jsx';
 import { AssistantMessage, UserMessage } from './components/Messages.jsx';
@@ -313,6 +314,7 @@ export default function App() {
 
   return (
     <div className="app">
+      <LightboxHost />
       <Sidebar conversations={convs} activeId={activeId}
         onSelect={(id) => { setIntelOpen(false); setMsmOpen(false); loadConversation(id); }}
         onNew={() => { setIntelOpen(false); setMsmOpen(false); newChat('chat'); }}

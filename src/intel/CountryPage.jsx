@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { getCountry, refreshCountry, refreshStatus, getFacts } from './api.js';
 import BilingualLoader from '../components/BilingualLoader.jsx';
 import Flag from './Flag.jsx';
+import { openLightbox } from '../components/Lightbox.jsx';
 import XPostCard from './XPostCard.jsx';
 import { VERIFIED_TWEETS, VERIFIED_SOURCES } from './tweets.js';
 import { ArrowLeft, AlertTriangle, TrendingUp, TrendingDown, ArrowRight, User, Users, BadgeCheck, ExternalLink, RefreshCw } from 'lucide-react';
@@ -38,7 +39,7 @@ function IntelCard({ item, images }) {
   return (
     <motion.article layout className={`ig-card${img ? ' ig-card--hero' : ''}`}
       initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={spring}>
-      {img && <div className="ig-card__img"><img src={img.url} alt={img.alt || item.headline} loading="lazy" onError={(e) => { e.target.parentElement.style.display = 'none'; }} /></div>}
+      {img && <div className="ig-card__img"><img src={img.url} alt={img.alt || item.headline} loading="lazy" onError={(e) => { e.target.parentElement.style.display = 'none'; }} onClick={() => openLightbox(img.url, img.alt || item.headline)} /></div>}
       <div className="ig-card__body">
         <div className="ig-card__meta">
           <span className={`ig-cat ig-cat--${item.category}`}>{item.category}</span>

@@ -93,7 +93,9 @@ export default function CorrelationGraph({ graph, width, height, showLabels, phy
       if (++tries > 40) clearInterval(timer);
     }, 250);
     return () => clearInterval(timer);
-  }, [graph]);
+    // width/height in deps (2026-07-20): re-fit after expand→fullscreen AND on
+    // restore to normal size — same bbox-polling pattern (onEngineStop unreliable).
+  }, [graph, width, height]);
 
   // search → zoom to node
   useEffect(() => {
