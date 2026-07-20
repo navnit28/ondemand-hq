@@ -22,7 +22,7 @@ import crypto from 'node:crypto';
 import { fileURLToPath } from 'node:url';
 import { createOdSession, syncQuery, streamQuery } from './ondemand.js';
 import {
-  CE_PLUGIN_ENDPOINT_ID, CE_ANALYSIS_ENDPOINT_ID, CE_ANALYSIS_REASONING_EFFORT,
+  CE_PLUGIN_ENDPOINT_ID, CE_ANALYSIS_ENDPOINT_ID, CE_ANALYSIS_REASONING_EFFORT, CE_STREAM_REASONING_EFFORT,
   GLM_ENDPOINT_ID, QUICK_QUERY_MAX_TOKENS,
 } from './env.js';
 import * as log from './log.js';
@@ -534,7 +534,7 @@ export async function quickQuery({ context, question }, res) {
   try {
     await streamQuery({
       odSessionId: sid, query: q, pluginIds: [], systemPrompt,
-      endpointId: GLM_ENDPOINT_ID, reasoningEffort: 'max', fulfillmentOnly: true, // (2026-07-20) top-level max
+      endpointId: GLM_ENDPOINT_ID, reasoningEffort: CE_STREAM_REASONING_EFFORT, fulfillmentOnly: true, // validated low|medium|max (2026-07-20 mode audit)
       signal: controller.signal,
       onRaw: (event, data) => {
         if (event === 'message' || event === 'thinking') res.write(`event: ${event}\ndata: ${data}\n\n`);
@@ -699,7 +699,7 @@ export function registerCorrelationRoutes(app, { countries }) {
       const sid = await createOdSession(`ce-sum-${iso}-${evidenceId}`, []);
       await streamQuery({
         odSessionId: sid,
-        endpointId: GLM_ENDPOINT_ID, reasoningEffort: 'max', // (2026-07-20 model switch) GLM 4.7 BYOI + top-level max
+        endpointId: GLM_ENDPOINT_ID, reasoningEffort: CE_STREAM_REASONING_EFFORT, // validated low|medium|max (2026-07-20 mode audit)
         query: `Evidence record from the ODA Correlation Engine run on ${run.country} (${run.generated_at}):
 CLAIM: ${ev.claim}
 SOURCE: ${ev.source} (${ev.platform || ev.source_type || 'unknown'})${ev.publish_date ? ' · ' + ev.publish_date : ''}${ev.url ? '\nURL: ' + ev.url : ''}
@@ -736,7 +736,7 @@ Produce EXACTLY these sections, grounded ONLY in the record above (no outside fa
       const sid = await createOdSession(`ce-story-${iso}-${run.runId}`, []);
       await streamQuery({
         odSessionId: sid,
-        endpointId: GLM_ENDPOINT_ID, reasoningEffort: 'max', // (2026-07-20 model switch) GLM 4.7 BYOI + top-level max
+        endpointId: GLM_ENDPOINT_ID, reasoningEffort: CE_STREAM_REASONING_EFFORT, // validated low|medium|max (2026-07-20 mode audit)
         query: `ODA Correlation Engine intelligence picture for UAE ↔ ${run.country} (run ${run.runId}).
 EVIDENCE:
 ${evList}

@@ -42,9 +42,9 @@ export async function streamQuery({ sessionId, query, endpointId, reasoningEffor
   const anySignal = signal ? AbortSignal.any([signal, t.signal]) : t.signal;
   try {
     const body = { query, endpointId, responseMode: 'stream', fulfillmentOnly };
-    if (reasoningEffort || fulfillmentPrompt) body.modelConfigs = {
-      ...(fulfillmentPrompt ? { fulfillmentPrompt } : {}),
-    };
+    if (fulfillmentPrompt) body.modelConfigs = { fulfillmentPrompt };
+    // reasoningEffort is a TOP-LEVEL body key (live-accepted; NOT inside modelConfigs,
+    // NEVER a suffixed model id — decomposed form only, 2026-07-20 mode audit).
     if (reasoningEffort) body.reasoningEffort = reasoningEffort;
     const r = await fetch(`${ONDEMAND_BASE_URL}/chat/v1/sessions/${sessionId}/query`, {
       method: 'POST', headers: H(), signal: anySignal, body: JSON.stringify(body),

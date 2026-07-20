@@ -1,0 +1,164 @@
+# LIVE SSE CAPTURE — raw, unmodified
+# request: POST https://gateway.on-demand.io/chat/v1/sessions/{sid}/query
+# body: endpointId=predefined-gpt-5.6-sol reasoningEffort=low responseMode=stream
+# captureStartUtc=2026-07-20T20:37:30.310419+00:00
+# captureEndUtc=2026-07-20T20:37:38.450355+00:00
+# eventType counts: {"statusLog": 2, "heartbeat": 2, "fulfillment": 46, "metricsLog": 1, "[DONE]": 1}
+# assembled fulfillment answer (207 chars): A solar eclipse occurs when the Moon passes between Earth and the Sun, blocking some or all of the Sun’s light. It can be partial, total, or annular, depending on the alignment and apparent size of the Moon.
+#
+event:message
+data:{"sessionId":"6a5e870a193b04e98c3af4d9","messageId":"6a5e870aa398b277a6b5702f","eventIndex":1,"eventType":"statusLog","status":"processing","currentStatusLog":{"statusType":"fulfilling","statusMessage":"Fulfilling the prompt...","time":"2026-07-20T20:37:30Z"}}
+
+event:heartbeat
+data:{"sessionId":"6a5e870a193b04e98c3af4d9","messageId":"6a5e870aa398b277a6b5702f","time":"2026-07-20T20:37:33Z"}
+
+event:message
+data:{"sessionId": "6a5e870a193b04e98c3af4d9", "messageId": "6a5e870aa398b277a6b5702f", "answer": "A", "status": "processing", "eventIndex":2, "eventType": "fulfillment"}
+
+event:message
+data:{"sessionId": "6a5e870a193b04e98c3af4d9", "messageId": "6a5e870aa398b277a6b5702f", "answer": " solar", "status": "processing", "eventIndex":3, "eventType": "fulfillment"}
+
+event:message
+data:{"sessionId": "6a5e870a193b04e98c3af4d9", "messageId": "6a5e870aa398b277a6b5702f", "answer": " eclipse", "status": "processing", "eventIndex":4, "eventType": "fulfillment"}
+
+event:message
+data:{"sessionId": "6a5e870a193b04e98c3af4d9", "messageId": "6a5e870aa398b277a6b5702f", "answer": " occurs", "status": "processing", "eventIndex":5, "eventType": "fulfillment"}
+
+event:message
+data:{"sessionId": "6a5e870a193b04e98c3af4d9", "messageId": "6a5e870aa398b277a6b5702f", "answer": " when", "status": "processing", "eventIndex":6, "eventType": "fulfillment"}
+
+event:message
+data:{"sessionId": "6a5e870a193b04e98c3af4d9", "messageId": "6a5e870aa398b277a6b5702f", "answer": " the", "status": "processing", "eventIndex":7, "eventType": "fulfillment"}
+
+event:message
+data:{"sessionId": "6a5e870a193b04e98c3af4d9", "messageId": "6a5e870aa398b277a6b5702f", "answer": " Moon", "status": "processing", "eventIndex":8, "eventType": "fulfillment"}
+
+event:message
+data:{"sessionId": "6a5e870a193b04e98c3af4d9", "messageId": "6a5e870aa398b277a6b5702f", "answer": " passes", "status": "processing", "eventIndex":9, "eventType": "fulfillment"}
+
+event:message
+data:{"sessionId": "6a5e870a193b04e98c3af4d9", "messageId": "6a5e870aa398b277a6b5702f", "answer": " between", "status": "processing", "eventIndex":10, "eventType": "fulfillment"}
+
+event:message
+data:{"sessionId": "6a5e870a193b04e98c3af4d9", "messageId": "6a5e870aa398b277a6b5702f", "answer": " Earth", "status": "processing", "eventIndex":11, "eventType": "fulfillment"}
+
+event:message
+data:{"sessionId": "6a5e870a193b04e98c3af4d9", "messageId": "6a5e870aa398b277a6b5702f", "answer": " and", "status": "processing", "eventIndex":12, "eventType": "fulfillment"}
+
+event:message
+data:{"sessionId": "6a5e870a193b04e98c3af4d9", "messageId": "6a5e870aa398b277a6b5702f", "answer": " the", "status": "processing", "eventIndex":13, "eventType": "fulfillment"}
+
+event:message
+data:{"sessionId": "6a5e870a193b04e98c3af4d9", "messageId": "6a5e870aa398b277a6b5702f", "answer": " Sun", "status": "processing", "eventIndex":14, "eventType": "fulfillment"}
+
+event:message
+data:{"sessionId": "6a5e870a193b04e98c3af4d9", "messageId": "6a5e870aa398b277a6b5702f", "answer": ",", "status": "processing", "eventIndex":15, "eventType": "fulfillment"}
+
+event:message
+data:{"sessionId": "6a5e870a193b04e98c3af4d9", "messageId": "6a5e870aa398b277a6b5702f", "answer": " blocking", "status": "processing", "eventIndex":16, "eventType": "fulfillment"}
+
+event:message
+data:{"sessionId": "6a5e870a193b04e98c3af4d9", "messageId": "6a5e870aa398b277a6b5702f", "answer": " some", "status": "processing", "eventIndex":17, "eventType": "fulfillment"}
+
+event:message
+data:{"sessionId": "6a5e870a193b04e98c3af4d9", "messageId": "6a5e870aa398b277a6b5702f", "answer": " or", "status": "processing", "eventIndex":18, "eventType": "fulfillment"}
+
+event:message
+data:{"sessionId": "6a5e870a193b04e98c3af4d9", "messageId": "6a5e870aa398b277a6b5702f", "answer": " all", "status": "processing", "eventIndex":19, "eventType": "fulfillment"}
+
+event:message
+data:{"sessionId": "6a5e870a193b04e98c3af4d9", "messageId": "6a5e870aa398b277a6b5702f", "answer": " of", "status": "processing", "eventIndex":20, "eventType": "fulfillment"}
+
+event:message
+data:{"sessionId": "6a5e870a193b04e98c3af4d9", "messageId": "6a5e870aa398b277a6b5702f", "answer": " the", "status": "processing", "eventIndex":21, "eventType": "fulfillment"}
+
+event:message
+data:{"sessionId": "6a5e870a193b04e98c3af4d9", "messageId": "6a5e870aa398b277a6b5702f", "answer": " Sun", "status": "processing", "eventIndex":22, "eventType": "fulfillment"}
+
+event:message
+data:{"sessionId": "6a5e870a193b04e98c3af4d9", "messageId": "6a5e870aa398b277a6b5702f", "answer": "\u2019s", "status": "processing", "eventIndex":23, "eventType": "fulfillment"}
+
+event:message
+data:{"sessionId": "6a5e870a193b04e98c3af4d9", "messageId": "6a5e870aa398b277a6b5702f", "answer": " light", "status": "processing", "eventIndex":24, "eventType": "fulfillment"}
+
+event:message
+data:{"sessionId": "6a5e870a193b04e98c3af4d9", "messageId": "6a5e870aa398b277a6b5702f", "answer": ".", "status": "processing", "eventIndex":25, "eventType": "fulfillment"}
+
+event:message
+data:{"sessionId": "6a5e870a193b04e98c3af4d9", "messageId": "6a5e870aa398b277a6b5702f", "answer": " It", "status": "processing", "eventIndex":26, "eventType": "fulfillment"}
+
+event:message
+data:{"sessionId": "6a5e870a193b04e98c3af4d9", "messageId": "6a5e870aa398b277a6b5702f", "answer": " can", "status": "processing", "eventIndex":27, "eventType": "fulfillment"}
+
+event:message
+data:{"sessionId": "6a5e870a193b04e98c3af4d9", "messageId": "6a5e870aa398b277a6b5702f", "answer": " be", "status": "processing", "eventIndex":28, "eventType": "fulfillment"}
+
+event:message
+data:{"sessionId": "6a5e870a193b04e98c3af4d9", "messageId": "6a5e870aa398b277a6b5702f", "answer": " partial", "status": "processing", "eventIndex":29, "eventType": "fulfillment"}
+
+event:message
+data:{"sessionId": "6a5e870a193b04e98c3af4d9", "messageId": "6a5e870aa398b277a6b5702f", "answer": ",", "status": "processing", "eventIndex":30, "eventType": "fulfillment"}
+
+event:message
+data:{"sessionId": "6a5e870a193b04e98c3af4d9", "messageId": "6a5e870aa398b277a6b5702f", "answer": " total", "status": "processing", "eventIndex":31, "eventType": "fulfillment"}
+
+event:message
+data:{"sessionId": "6a5e870a193b04e98c3af4d9", "messageId": "6a5e870aa398b277a6b5702f", "answer": ",", "status": "processing", "eventIndex":32, "eventType": "fulfillment"}
+
+event:message
+data:{"sessionId": "6a5e870a193b04e98c3af4d9", "messageId": "6a5e870aa398b277a6b5702f", "answer": " or", "status": "processing", "eventIndex":33, "eventType": "fulfillment"}
+
+event:message
+data:{"sessionId": "6a5e870a193b04e98c3af4d9", "messageId": "6a5e870aa398b277a6b5702f", "answer": " ann", "status": "processing", "eventIndex":34, "eventType": "fulfillment"}
+
+event:message
+data:{"sessionId": "6a5e870a193b04e98c3af4d9", "messageId": "6a5e870aa398b277a6b5702f", "answer": "ular", "status": "processing", "eventIndex":35, "eventType": "fulfillment"}
+
+event:message
+data:{"sessionId": "6a5e870a193b04e98c3af4d9", "messageId": "6a5e870aa398b277a6b5702f", "answer": ",", "status": "processing", "eventIndex":36, "eventType": "fulfillment"}
+
+event:message
+data:{"sessionId": "6a5e870a193b04e98c3af4d9", "messageId": "6a5e870aa398b277a6b5702f", "answer": " depending", "status": "processing", "eventIndex":37, "eventType": "fulfillment"}
+
+event:message
+data:{"sessionId": "6a5e870a193b04e98c3af4d9", "messageId": "6a5e870aa398b277a6b5702f", "answer": " on", "status": "processing", "eventIndex":38, "eventType": "fulfillment"}
+
+event:message
+data:{"sessionId": "6a5e870a193b04e98c3af4d9", "messageId": "6a5e870aa398b277a6b5702f", "answer": " the", "status": "processing", "eventIndex":39, "eventType": "fulfillment"}
+
+event:message
+data:{"sessionId": "6a5e870a193b04e98c3af4d9", "messageId": "6a5e870aa398b277a6b5702f", "answer": " alignment", "status": "processing", "eventIndex":40, "eventType": "fulfillment"}
+
+event:message
+data:{"sessionId": "6a5e870a193b04e98c3af4d9", "messageId": "6a5e870aa398b277a6b5702f", "answer": " and", "status": "processing", "eventIndex":41, "eventType": "fulfillment"}
+
+event:message
+data:{"sessionId": "6a5e870a193b04e98c3af4d9", "messageId": "6a5e870aa398b277a6b5702f", "answer": " apparent", "status": "processing", "eventIndex":42, "eventType": "fulfillment"}
+
+event:message
+data:{"sessionId": "6a5e870a193b04e98c3af4d9", "messageId": "6a5e870aa398b277a6b5702f", "answer": " size", "status": "processing", "eventIndex":43, "eventType": "fulfillment"}
+
+event:message
+data:{"sessionId": "6a5e870a193b04e98c3af4d9", "messageId": "6a5e870aa398b277a6b5702f", "answer": " of", "status": "processing", "eventIndex":44, "eventType": "fulfillment"}
+
+event:message
+data:{"sessionId": "6a5e870a193b04e98c3af4d9", "messageId": "6a5e870aa398b277a6b5702f", "answer": " the", "status": "processing", "eventIndex":45, "eventType": "fulfillment"}
+
+event:message
+data:{"sessionId": "6a5e870a193b04e98c3af4d9", "messageId": "6a5e870aa398b277a6b5702f", "answer": " Moon", "status": "processing", "eventIndex":46, "eventType": "fulfillment"}
+
+event:message
+data:{"sessionId": "6a5e870a193b04e98c3af4d9", "messageId": "6a5e870aa398b277a6b5702f", "answer": ".", "status": "processing", "eventIndex":47, "eventType": "fulfillment"}
+
+event:message
+data:{"sessionId":"6a5e870a193b04e98c3af4d9","messageId":"6a5e870aa398b277a6b5702f","eventIndex":48,"eventType":"statusLog","status":"processing","currentStatusLog":{"statusType":"fulfillment_completed","statusMessage":"Fulfillment completed","answer":"A solar eclipse occurs when the Moon passes between Earth and the Sun, blocking some or all of the Sun’s light. It can be partial, total, or annular, depending on the alignment and apparent size of the Moon.","time":"2026-07-20T20:37:36Z"}}
+
+event:message
+data:{"sessionId":"6a5e870a193b04e98c3af4d9","messageId":"6a5e870aa398b277a6b5702f","eventIndex":49,"eventType":"metricsLog","status":"processing","publicMetrics":{"inputTokens":1012,"outputTokens":49,"totalTokens":1061,"ragTimeSec":0,"fulfillmentTimeSec":5.55,"totalTimeSec":5.55}}
+
+event:heartbeat
+data:{"sessionId":"6a5e870a193b04e98c3af4d9","messageId":"6a5e870aa398b277a6b5702f","time":"2026-07-20T20:37:36Z"}
+
+event:message
+data:[DONE]
+

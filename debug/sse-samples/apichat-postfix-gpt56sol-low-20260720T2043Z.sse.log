@@ -1,0 +1,323 @@
+# LIVE SSE CAPTURE via local server /api/chat (browser wire path) — POST-FIX config predefined-gpt-5.6-sol+low (default)
+# captureStartUtc=2026-07-20T20:42:57.778282+00:00
+# captureEndUtc=2026-07-20T20:43:18.713565+00:00
+# eventType counts: {"status": 2, "routing": 1, "plugin_status": 1, "planning_thinking": 14, "heartbeat": 5, "planning_output": 10, "step_output": 12, "step_thinking": 1, "statusLog": 2, "fulfillment": 82, "metricsLog": 1, "[DONE]": 1, "done": 1}
+# thinking frames total: 15
+# assembled fulfillment .answer (400 chars): Ocean tides are caused mainly by the Moon’s gravitational pull on Earth’s oceans, with the Sun’s gravity also contributing. As Earth rotates through the resulting ocean bulges, most coastlines experience alternating high and low tides.
+
+```trace
+Mode: FAST — concise factual explanation
+Worker: One-p
+#
+data:{"type":"status","ts":"2026-07-20T20:42:57.797Z","message":"Routing your request…"}
+
+data:{"type":"routing","ts":"2026-07-20T20:43:02.638Z","feature":"chat","mode":"FAST","reason":"Simple factual science question requiring a concise two-sentence answer","source":"llm-router","analysisFirst":false,"outOfScope":false,"plugins":["Internet Search"],"model":"predefined-gpt-5.6-sol+low"}
+
+data:{"type":"status","ts":"2026-07-20T20:43:02.639Z","message":"Opening a verified session…"}
+
+data:{"type":"plugin_status","ts":"2026-07-20T20:43:02.804Z","plugin":"Internet Search","message":"Working with Internet Search…"}
+
+event:thinking
+data:{"sessionId":"6a5e8856ef7d1848e9c38154","messageId":"6a5e88562c89ec49adfe6327","eventIndex":1,"eventType":"planning_thinking","status":"processing","thinking":{"delta":"**Evaluating plugin use**\n\nI’m"}}
+
+event:thinking
+data:{"sessionId":"6a5e8856ef7d1848e9c38154","messageId":"6a5e88562c89ec49adfe6327","eventIndex":2,"eventType":"planning_thinking","status":"processing","thinking":{"delta":" working on planning a JSON, but"}}
+
+event:thinking
+data:{"sessionId":"6a5e8856ef7d1848e9c38154","messageId":"6a5e88562c89ec49adfe6327","eventIndex":3,"eventType":"planning_thinking","status":"processing","thinking":{"delta":" I’m wondering if the web plugin"}}
+
+event:thinking
+data:{"sessionId":"6a5e8856ef7d1848e9c38154","messageId":"6a5e88562c89ec49adfe6327","eventIndex":4,"eventType":"planning_thinking","status":"processing","thinking":{"delta":" is actually needed here. The system"}}
+
+event:thinking
+data:{"sessionId":"6a5e8856ef7d1848e9c38154","messageId":"6a5e88562c89ec49adfe6327","eventIndex":5,"eventType":"planning_thinking","status":"processing","thinking":{"delta":" seems to require a focus on using"}}
+
+event:thinking
+data:{"sessionId":"6a5e8856ef7d1848e9c38154","messageId":"6a5e88562c89ec49adfe6327","eventIndex":6,"eventType":"planning_thinking","status":"processing","thinking":{"delta":" the plugin for each step, even"}}
+
+event:thinking
+data:{"sessionId":"6a5e8856ef7d1848e9c38154","messageId":"6a5e88562c89ec49adfe6327","eventIndex":7,"eventType":"planning_thinking","status":"processing","thinking":{"delta":" if I might only be querying general"}}
+
+event:thinking
+data:{"sessionId":"6a5e8856ef7d1848e9c38154","messageId":"6a5e88562c89ec49adfe6327","eventIndex":8,"eventType":"planning_thinking","status":"processing","thinking":{"delta":" knowledge. It feels a bit like"}}
+
+event:thinking
+data:{"sessionId":"6a5e8856ef7d1848e9c38154","messageId":"6a5e88562c89ec49adfe6327","eventIndex":9,"eventType":"planning_thinking","status":"processing","thinking":{"delta":" an unnecessary focus, but perhaps"}}
+
+event:thinking
+data:{"sessionId":"6a5e8856ef7d1848e9c38154","messageId":"6a5e88562c89ec49adfe6327","eventIndex":10,"eventType":"planning_thinking","status":"processing","thinking":{"delta":" I need to follow the system’s"}}
+
+event:thinking
+data:{"sessionId":"6a5e8856ef7d1848e9c38154","messageId":"6a5e88562c89ec49adfe6327","eventIndex":11,"eventType":"planning_thinking","status":"processing","thinking":{"delta":" requirements for each individual"}}
+
+event:thinking
+data:{"sessionId":"6a5e8856ef7d1848e9c38154","messageId":"6a5e88562c89ec49adfe6327","eventIndex":12,"eventType":"planning_thinking","status":"processing","thinking":{"delta":" step. I want to ensure I’m doing"}}
+
+event:heartbeat
+data:{"sessionId":"6a5e8856ef7d1848e9c38154","messageId":"6a5e88562c89ec49adfe6327","time":"2026-07-20T20:43:06Z"}
+
+event:thinking
+data:{"sessionId":"6a5e8856ef7d1848e9c38154","messageId":"6a5e88562c89ec49adfe6327","eventIndex":13,"eventType":"planning_output","status":"processing","output":{"delta":"{\"objective\":\"Explain in exactly"}}
+
+event:thinking
+data:{"sessionId":"6a5e8856ef7d1848e9c38154","messageId":"6a5e88562c89ec49adfe6327","eventIndex":14,"eventType":"planning_output","status":"processing","output":{"delta":" two sentences what causes ocean"}}
+
+event:thinking
+data:{"sessionId":"6a5e8856ef7d1848e9c38154","messageId":"6a5e88562c89ec49adfe6327","eventIndex":15,"eventType":"planning_output","status":"processing","output":{"delta":" tides.\",\"steps\":[{\"user_query"}}
+
+event:thinking
+data:{"sessionId":"6a5e8856ef7d1848e9c38154","messageId":"6a5e88562c89ec49adfe6327","eventIndex":16,"eventType":"planning_output","status":"processing","output":{"delta":"\":\"Retrieve reliable information"}}
+
+event:thinking
+data:{"sessionId":"6a5e8856ef7d1848e9c38154","messageId":"6a5e88562c89ec49adfe6327","eventIndex":17,"eventType":"planning_output","status":"processing","output":{"delta":" on the causes of ocean tides to"}}
+
+event:thinking
+data:{"sessionId":"6a5e8856ef7d1848e9c38154","messageId":"6a5e88562c89ec49adfe6327","eventIndex":18,"eventType":"planning_output","status":"processing","output":{"delta":" support an exactly two-sentence"}}
+
+event:thinking
+data:{"sessionId":"6a5e8856ef7d1848e9c38154","messageId":"6a5e88562c89ec49adfe6327","eventIndex":19,"eventType":"planning_output","status":"processing","output":{"delta":" answer.\",\"assistant_query\":\"\",\""}}
+
+event:thinking
+data:{"sessionId":"6a5e8856ef7d1848e9c38154","messageId":"6a5e88562c89ec49adfe6327","eventIndex":20,"eventType":"planning_output","status":"processing","output":{"delta":"depends\":[],\"plugins\":[\"fetchInternet"}}
+
+event:thinking
+data:{"sessionId":"6a5e8856ef7d1848e9c38154","messageId":"6a5e88562c89ec49adfe6327","eventIndex":21,"eventType":"planning_thinking","status":"processing","thinking":{"delta":" this correctly!"}}
+
+event:thinking
+data:{"sessionId":"6a5e8856ef7d1848e9c38154","messageId":"6a5e88562c89ec49adfe6327","eventIndex":22,"eventType":"planning_output","status":"processing","output":{"delta":"Data\"]}]}"}}
+
+event:thinking
+data:{"sessionId":"6a5e8856ef7d1848e9c38154","messageId":"6a5e88562c89ec49adfe6327","eventIndex":23,"eventType":"planning_thinking","status":"processing","thinking":{"delta":""}}
+
+event:thinking
+data:{"sessionId":"6a5e8856ef7d1848e9c38154","messageId":"6a5e88562c89ec49adfe6327","eventIndex":24,"eventType":"planning_output","status":"processing","output":{"delta":""}}
+
+: keepalive
+
+event:heartbeat
+data:{"sessionId":"6a5e8856ef7d1848e9c38154","messageId":"6a5e88562c89ec49adfe6327","time":"2026-07-20T20:43:09Z"}
+
+event:thinking
+data:{"sessionId":"6a5e8856ef7d1848e9c38154","messageId":"6a5e88562c89ec49adfe6327","eventIndex":25,"eventType":"step_output","status":"processing","output":{"delta":"{\"plugins\":[{\"pluginId\":\"plugin"}}
+
+event:thinking
+data:{"sessionId":"6a5e8856ef7d1848e9c38154","messageId":"6a5e88562c89ec49adfe6327","eventIndex":26,"eventType":"step_output","status":"processing","output":{"delta":"-1713924030\",\"name\":\"fetchInternet"}}
+
+event:thinking
+data:{"sessionId":"6a5e8856ef7d1848e9c38154","messageId":"6a5e88562c89ec49adfe6327","eventIndex":27,"eventType":"step_output","status":"processing","output":{"delta":"Data\",\"description\":\"Retrieves"}}
+
+event:thinking
+data:{"sessionId":"6a5e8856ef7d1848e9c38154","messageId":"6a5e88562c89ec49adfe6327","eventIndex":28,"eventType":"step_output","status":"processing","output":{"delta":" reliable, up-to-date web information"}}
+
+event:thinking
+data:{"sessionId":"6a5e8856ef7d1848e9c38154","messageId":"6a5e88562c89ec49adfe6327","eventIndex":29,"eventType":"step_output","status":"processing","output":{"delta":" on the causes of ocean tides.\",\""}}
+
+event:thinking
+data:{"sessionId":"6a5e8856ef7d1848e9c38154","messageId":"6a5e88562c89ec49adfe6327","eventIndex":30,"eventType":"step_output","status":"processing","output":{"delta":"api_request_parameters\":{\"query"}}
+
+event:thinking
+data:{"sessionId":"6a5e8856ef7d1848e9c38154","messageId":"6a5e88562c89ec49adfe6327","eventIndex":31,"eventType":"step_output","status":"processing","output":{"delta":"\":\"reliable sources causes of ocean"}}
+
+event:thinking
+data:{"sessionId":"6a5e8856ef7d1848e9c38154","messageId":"6a5e88562c89ec49adfe6327","eventIndex":32,"eventType":"step_output","status":"processing","output":{"delta":" tides Moon Sun gravity Earth rotation"}}
+
+event:thinking
+data:{"sessionId":"6a5e8856ef7d1848e9c38154","messageId":"6a5e88562c89ec49adfe6327","eventIndex":33,"eventType":"step_output","status":"processing","output":{"delta":" NOAA\"},\"all_parameters_hydrated"}}
+
+event:thinking
+data:{"sessionId":"6a5e8856ef7d1848e9c38154","messageId":"6a5e88562c89ec49adfe6327","eventIndex":34,"eventType":"step_output","status":"processing","output":{"delta":"\":true,\"dependencies\":[],\"identifier"}}
+
+event:thinking
+data:{"sessionId":"6a5e8856ef7d1848e9c38154","messageId":"6a5e88562c89ec49adfe6327","eventIndex":35,"eventType":"step_output","status":"processing","output":{"delta":"\":\"rest_api\"}]}"}}
+
+event:thinking
+data:{"sessionId":"6a5e8856ef7d1848e9c38154","messageId":"6a5e88562c89ec49adfe6327","eventIndex":36,"eventType":"step_thinking","status":"processing","thinking":{"delta":""}}
+
+event:thinking
+data:{"sessionId":"6a5e8856ef7d1848e9c38154","messageId":"6a5e88562c89ec49adfe6327","eventIndex":37,"eventType":"step_output","status":"processing","output":{"delta":""}}
+
+data:{"sessionId":"6a5e8856ef7d1848e9c38154","messageId":"6a5e88562c89ec49adfe6327","eventIndex":1,"eventType":"statusLog","status":"processing","currentStatusLog":{"statusType":"fulfilling","statusMessage":"Fulfilling the prompt...","time":"2026-07-20T20:43:10Z"}}
+
+event:heartbeat
+data:{"sessionId":"6a5e8856ef7d1848e9c38154","messageId":"6a5e88562c89ec49adfe6327","time":"2026-07-20T20:43:12Z"}
+
+data:{"sessionId": "6a5e8856ef7d1848e9c38154", "messageId": "6a5e88562c89ec49adfe6327", "answer": "Ocean", "status": "processing", "eventIndex":2, "eventType": "fulfillment"}
+
+data:{"sessionId": "6a5e8856ef7d1848e9c38154", "messageId": "6a5e88562c89ec49adfe6327", "answer": " tides", "status": "processing", "eventIndex":3, "eventType": "fulfillment"}
+
+data:{"sessionId": "6a5e8856ef7d1848e9c38154", "messageId": "6a5e88562c89ec49adfe6327", "answer": " are", "status": "processing", "eventIndex":4, "eventType": "fulfillment"}
+
+data:{"sessionId": "6a5e8856ef7d1848e9c38154", "messageId": "6a5e88562c89ec49adfe6327", "answer": " caused", "status": "processing", "eventIndex":5, "eventType": "fulfillment"}
+
+data:{"sessionId": "6a5e8856ef7d1848e9c38154", "messageId": "6a5e88562c89ec49adfe6327", "answer": " mainly", "status": "processing", "eventIndex":6, "eventType": "fulfillment"}
+
+data:{"sessionId": "6a5e8856ef7d1848e9c38154", "messageId": "6a5e88562c89ec49adfe6327", "answer": " by", "status": "processing", "eventIndex":7, "eventType": "fulfillment"}
+
+data:{"sessionId": "6a5e8856ef7d1848e9c38154", "messageId": "6a5e88562c89ec49adfe6327", "answer": " the", "status": "processing", "eventIndex":8, "eventType": "fulfillment"}
+
+data:{"sessionId": "6a5e8856ef7d1848e9c38154", "messageId": "6a5e88562c89ec49adfe6327", "answer": " Moon", "status": "processing", "eventIndex":9, "eventType": "fulfillment"}
+
+data:{"sessionId": "6a5e8856ef7d1848e9c38154", "messageId": "6a5e88562c89ec49adfe6327", "answer": "\u2019s", "status": "processing", "eventIndex":10, "eventType": "fulfillment"}
+
+data:{"sessionId": "6a5e8856ef7d1848e9c38154", "messageId": "6a5e88562c89ec49adfe6327", "answer": " gravitational", "status": "processing", "eventIndex":11, "eventType": "fulfillment"}
+
+data:{"sessionId": "6a5e8856ef7d1848e9c38154", "messageId": "6a5e88562c89ec49adfe6327", "answer": " pull", "status": "processing", "eventIndex":12, "eventType": "fulfillment"}
+
+data:{"sessionId": "6a5e8856ef7d1848e9c38154", "messageId": "6a5e88562c89ec49adfe6327", "answer": " on", "status": "processing", "eventIndex":13, "eventType": "fulfillment"}
+
+data:{"sessionId": "6a5e8856ef7d1848e9c38154", "messageId": "6a5e88562c89ec49adfe6327", "answer": " Earth", "status": "processing", "eventIndex":14, "eventType": "fulfillment"}
+
+data:{"sessionId": "6a5e8856ef7d1848e9c38154", "messageId": "6a5e88562c89ec49adfe6327", "answer": "\u2019s", "status": "processing", "eventIndex":15, "eventType": "fulfillment"}
+
+data:{"sessionId": "6a5e8856ef7d1848e9c38154", "messageId": "6a5e88562c89ec49adfe6327", "answer": " oceans", "status": "processing", "eventIndex":16, "eventType": "fulfillment"}
+
+data:{"sessionId": "6a5e8856ef7d1848e9c38154", "messageId": "6a5e88562c89ec49adfe6327", "answer": ",", "status": "processing", "eventIndex":17, "eventType": "fulfillment"}
+
+data:{"sessionId": "6a5e8856ef7d1848e9c38154", "messageId": "6a5e88562c89ec49adfe6327", "answer": " with", "status": "processing", "eventIndex":18, "eventType": "fulfillment"}
+
+data:{"sessionId": "6a5e8856ef7d1848e9c38154", "messageId": "6a5e88562c89ec49adfe6327", "answer": " the", "status": "processing", "eventIndex":19, "eventType": "fulfillment"}
+
+data:{"sessionId": "6a5e8856ef7d1848e9c38154", "messageId": "6a5e88562c89ec49adfe6327", "answer": " Sun", "status": "processing", "eventIndex":20, "eventType": "fulfillment"}
+
+data:{"sessionId": "6a5e8856ef7d1848e9c38154", "messageId": "6a5e88562c89ec49adfe6327", "answer": "\u2019s", "status": "processing", "eventIndex":21, "eventType": "fulfillment"}
+
+data:{"sessionId": "6a5e8856ef7d1848e9c38154", "messageId": "6a5e88562c89ec49adfe6327", "answer": " gravity", "status": "processing", "eventIndex":22, "eventType": "fulfillment"}
+
+data:{"sessionId": "6a5e8856ef7d1848e9c38154", "messageId": "6a5e88562c89ec49adfe6327", "answer": " also", "status": "processing", "eventIndex":23, "eventType": "fulfillment"}
+
+data:{"sessionId": "6a5e8856ef7d1848e9c38154", "messageId": "6a5e88562c89ec49adfe6327", "answer": " contributing", "status": "processing", "eventIndex":24, "eventType": "fulfillment"}
+
+data:{"sessionId": "6a5e8856ef7d1848e9c38154", "messageId": "6a5e88562c89ec49adfe6327", "answer": ".", "status": "processing", "eventIndex":25, "eventType": "fulfillment"}
+
+data:{"sessionId": "6a5e8856ef7d1848e9c38154", "messageId": "6a5e88562c89ec49adfe6327", "answer": " As", "status": "processing", "eventIndex":26, "eventType": "fulfillment"}
+
+data:{"sessionId": "6a5e8856ef7d1848e9c38154", "messageId": "6a5e88562c89ec49adfe6327", "answer": " Earth", "status": "processing", "eventIndex":27, "eventType": "fulfillment"}
+
+data:{"sessionId": "6a5e8856ef7d1848e9c38154", "messageId": "6a5e88562c89ec49adfe6327", "answer": " rotates", "status": "processing", "eventIndex":28, "eventType": "fulfillment"}
+
+data:{"sessionId": "6a5e8856ef7d1848e9c38154", "messageId": "6a5e88562c89ec49adfe6327", "answer": " through", "status": "processing", "eventIndex":29, "eventType": "fulfillment"}
+
+data:{"sessionId": "6a5e8856ef7d1848e9c38154", "messageId": "6a5e88562c89ec49adfe6327", "answer": " the", "status": "processing", "eventIndex":30, "eventType": "fulfillment"}
+
+data:{"sessionId": "6a5e8856ef7d1848e9c38154", "messageId": "6a5e88562c89ec49adfe6327", "answer": " resulting", "status": "processing", "eventIndex":31, "eventType": "fulfillment"}
+
+data:{"sessionId": "6a5e8856ef7d1848e9c38154", "messageId": "6a5e88562c89ec49adfe6327", "answer": " ocean", "status": "processing", "eventIndex":32, "eventType": "fulfillment"}
+
+data:{"sessionId": "6a5e8856ef7d1848e9c38154", "messageId": "6a5e88562c89ec49adfe6327", "answer": " bul", "status": "processing", "eventIndex":33, "eventType": "fulfillment"}
+
+data:{"sessionId": "6a5e8856ef7d1848e9c38154", "messageId": "6a5e88562c89ec49adfe6327", "answer": "ges", "status": "processing", "eventIndex":34, "eventType": "fulfillment"}
+
+data:{"sessionId": "6a5e8856ef7d1848e9c38154", "messageId": "6a5e88562c89ec49adfe6327", "answer": ",", "status": "processing", "eventIndex":35, "eventType": "fulfillment"}
+
+data:{"sessionId": "6a5e8856ef7d1848e9c38154", "messageId": "6a5e88562c89ec49adfe6327", "answer": " most", "status": "processing", "eventIndex":36, "eventType": "fulfillment"}
+
+event:heartbeat
+data:{"sessionId":"6a5e8856ef7d1848e9c38154","messageId":"6a5e88562c89ec49adfe6327","time":"2026-07-20T20:43:15Z"}
+
+data:{"sessionId": "6a5e8856ef7d1848e9c38154", "messageId": "6a5e88562c89ec49adfe6327", "answer": " coast", "status": "processing", "eventIndex":37, "eventType": "fulfillment"}
+
+data:{"sessionId": "6a5e8856ef7d1848e9c38154", "messageId": "6a5e88562c89ec49adfe6327", "answer": "lines", "status": "processing", "eventIndex":38, "eventType": "fulfillment"}
+
+data:{"sessionId": "6a5e8856ef7d1848e9c38154", "messageId": "6a5e88562c89ec49adfe6327", "answer": " experience", "status": "processing", "eventIndex":39, "eventType": "fulfillment"}
+
+data:{"sessionId": "6a5e8856ef7d1848e9c38154", "messageId": "6a5e88562c89ec49adfe6327", "answer": " alternating", "status": "processing", "eventIndex":40, "eventType": "fulfillment"}
+
+data:{"sessionId": "6a5e8856ef7d1848e9c38154", "messageId": "6a5e88562c89ec49adfe6327", "answer": " high", "status": "processing", "eventIndex":41, "eventType": "fulfillment"}
+
+data:{"sessionId": "6a5e8856ef7d1848e9c38154", "messageId": "6a5e88562c89ec49adfe6327", "answer": " and", "status": "processing", "eventIndex":42, "eventType": "fulfillment"}
+
+data:{"sessionId": "6a5e8856ef7d1848e9c38154", "messageId": "6a5e88562c89ec49adfe6327", "answer": " low", "status": "processing", "eventIndex":43, "eventType": "fulfillment"}
+
+data:{"sessionId": "6a5e8856ef7d1848e9c38154", "messageId": "6a5e88562c89ec49adfe6327", "answer": " tides", "status": "processing", "eventIndex":44, "eventType": "fulfillment"}
+
+data:{"sessionId": "6a5e8856ef7d1848e9c38154", "messageId": "6a5e88562c89ec49adfe6327", "answer": ".\n\n", "status": "processing", "eventIndex":45, "eventType": "fulfillment"}
+
+data:{"sessionId": "6a5e8856ef7d1848e9c38154", "messageId": "6a5e88562c89ec49adfe6327", "answer": "```", "status": "processing", "eventIndex":46, "eventType": "fulfillment"}
+
+data:{"sessionId": "6a5e8856ef7d1848e9c38154", "messageId": "6a5e88562c89ec49adfe6327", "answer": "trace", "status": "processing", "eventIndex":47, "eventType": "fulfillment"}
+
+data:{"sessionId": "6a5e8856ef7d1848e9c38154", "messageId": "6a5e88562c89ec49adfe6327", "answer": "\n", "status": "processing", "eventIndex":48, "eventType": "fulfillment"}
+
+data:{"sessionId": "6a5e8856ef7d1848e9c38154", "messageId": "6a5e88562c89ec49adfe6327", "answer": "Mode", "status": "processing", "eventIndex":49, "eventType": "fulfillment"}
+
+data:{"sessionId": "6a5e8856ef7d1848e9c38154", "messageId": "6a5e88562c89ec49adfe6327", "answer": ":", "status": "processing", "eventIndex":50, "eventType": "fulfillment"}
+
+data:{"sessionId": "6a5e8856ef7d1848e9c38154", "messageId": "6a5e88562c89ec49adfe6327", "answer": " FAST", "status": "processing", "eventIndex":51, "eventType": "fulfillment"}
+
+data:{"sessionId": "6a5e8856ef7d1848e9c38154", "messageId": "6a5e88562c89ec49adfe6327", "answer": " \u2014", "status": "processing", "eventIndex":52, "eventType": "fulfillment"}
+
+data:{"sessionId": "6a5e8856ef7d1848e9c38154", "messageId": "6a5e88562c89ec49adfe6327", "answer": " concise", "status": "processing", "eventIndex":53, "eventType": "fulfillment"}
+
+data:{"sessionId": "6a5e8856ef7d1848e9c38154", "messageId": "6a5e88562c89ec49adfe6327", "answer": " factual", "status": "processing", "eventIndex":54, "eventType": "fulfillment"}
+
+data:{"sessionId": "6a5e8856ef7d1848e9c38154", "messageId": "6a5e88562c89ec49adfe6327", "answer": " explanation", "status": "processing", "eventIndex":55, "eventType": "fulfillment"}
+
+data:{"sessionId": "6a5e8856ef7d1848e9c38154", "messageId": "6a5e88562c89ec49adfe6327", "answer": "\n", "status": "processing", "eventIndex":56, "eventType": "fulfillment"}
+
+data:{"sessionId": "6a5e8856ef7d1848e9c38154", "messageId": "6a5e88562c89ec49adfe6327", "answer": "Worker", "status": "processing", "eventIndex":57, "eventType": "fulfillment"}
+
+data:{"sessionId": "6a5e8856ef7d1848e9c38154", "messageId": "6a5e88562c89ec49adfe6327", "answer": ":", "status": "processing", "eventIndex":58, "eventType": "fulfillment"}
+
+data:{"sessionId": "6a5e8856ef7d1848e9c38154", "messageId": "6a5e88562c89ec49adfe6327", "answer": " One", "status": "processing", "eventIndex":59, "eventType": "fulfillment"}
+
+data:{"sessionId": "6a5e8856ef7d1848e9c38154", "messageId": "6a5e88562c89ec49adfe6327", "answer": "-p", "status": "processing", "eventIndex":60, "eventType": "fulfillment"}
+
+data:{"sessionId": "6a5e8856ef7d1848e9c38154", "messageId": "6a5e88562c89ec49adfe6327", "answer": "ager", "status": "processing", "eventIndex":61, "eventType": "fulfillment"}
+
+data:{"sessionId": "6a5e8856ef7d1848e9c38154", "messageId": "6a5e88562c89ec49adfe6327", "answer": " summary", "status": "processing", "eventIndex":62, "eventType": "fulfillment"}
+
+data:{"sessionId": "6a5e8856ef7d1848e9c38154", "messageId": "6a5e88562c89ec49adfe6327", "answer": "\n", "status": "processing", "eventIndex":63, "eventType": "fulfillment"}
+
+data:{"sessionId": "6a5e8856ef7d1848e9c38154", "messageId": "6a5e88562c89ec49adfe6327", "answer": "QA", "status": "processing", "eventIndex":64, "eventType": "fulfillment"}
+
+data:{"sessionId": "6a5e8856ef7d1848e9c38154", "messageId": "6a5e88562c89ec49adfe6327", "answer": ":", "status": "processing", "eventIndex":65, "eventType": "fulfillment"}
+
+data:{"sessionId": "6a5e8856ef7d1848e9c38154", "messageId": "6a5e88562c89ec49adfe6327", "answer": " checked", "status": "processing", "eventIndex":66, "eventType": "fulfillment"}
+
+data:{"sessionId": "6a5e8856ef7d1848e9c38154", "messageId": "6a5e88562c89ec49adfe6327", "answer": " two", "status": "processing", "eventIndex":67, "eventType": "fulfillment"}
+
+data:{"sessionId": "6a5e8856ef7d1848e9c38154", "messageId": "6a5e88562c89ec49adfe6327", "answer": "-s", "status": "processing", "eventIndex":68, "eventType": "fulfillment"}
+
+data:{"sessionId": "6a5e8856ef7d1848e9c38154", "messageId": "6a5e88562c89ec49adfe6327", "answer": "entence", "status": "processing", "eventIndex":69, "eventType": "fulfillment"}
+
+data:{"sessionId": "6a5e8856ef7d1848e9c38154", "messageId": "6a5e88562c89ec49adfe6327", "answer": " requirement", "status": "processing", "eventIndex":70, "eventType": "fulfillment"}
+
+data:{"sessionId": "6a5e8856ef7d1848e9c38154", "messageId": "6a5e88562c89ec49adfe6327", "answer": ",", "status": "processing", "eventIndex":71, "eventType": "fulfillment"}
+
+data:{"sessionId": "6a5e8856ef7d1848e9c38154", "messageId": "6a5e88562c89ec49adfe6327", "answer": " accuracy", "status": "processing", "eventIndex":72, "eventType": "fulfillment"}
+
+data:{"sessionId": "6a5e8856ef7d1848e9c38154", "messageId": "6a5e88562c89ec49adfe6327", "answer": " and", "status": "processing", "eventIndex":73, "eventType": "fulfillment"}
+
+data:{"sessionId": "6a5e8856ef7d1848e9c38154", "messageId": "6a5e88562c89ec49adfe6327", "answer": " no", "status": "processing", "eventIndex":74, "eventType": "fulfillment"}
+
+data:{"sessionId": "6a5e8856ef7d1848e9c38154", "messageId": "6a5e88562c89ec49adfe6327", "answer": "-in", "status": "processing", "eventIndex":75, "eventType": "fulfillment"}
+
+data:{"sessionId": "6a5e8856ef7d1848e9c38154", "messageId": "6a5e88562c89ec49adfe6327", "answer": "vent", "status": "processing", "eventIndex":76, "eventType": "fulfillment"}
+
+data:{"sessionId": "6a5e8856ef7d1848e9c38154", "messageId": "6a5e88562c89ec49adfe6327", "answer": " compliance", "status": "processing", "eventIndex":77, "eventType": "fulfillment"}
+
+data:{"sessionId": "6a5e8856ef7d1848e9c38154", "messageId": "6a5e88562c89ec49adfe6327", "answer": "\n", "status": "processing", "eventIndex":78, "eventType": "fulfillment"}
+
+data:{"sessionId": "6a5e8856ef7d1848e9c38154", "messageId": "6a5e88562c89ec49adfe6327", "answer": "Flags", "status": "processing", "eventIndex":79, "eventType": "fulfillment"}
+
+data:{"sessionId": "6a5e8856ef7d1848e9c38154", "messageId": "6a5e88562c89ec49adfe6327", "answer": ":", "status": "processing", "eventIndex":80, "eventType": "fulfillment"}
+
+data:{"sessionId": "6a5e8856ef7d1848e9c38154", "messageId": "6a5e88562c89ec49adfe6327", "answer": " none", "status": "processing", "eventIndex":81, "eventType": "fulfillment"}
+
+data:{"sessionId": "6a5e8856ef7d1848e9c38154", "messageId": "6a5e88562c89ec49adfe6327", "answer": "\n", "status": "processing", "eventIndex":82, "eventType": "fulfillment"}
+
+data:{"sessionId": "6a5e8856ef7d1848e9c38154", "messageId": "6a5e88562c89ec49adfe6327", "answer": "```", "status": "processing", "eventIndex":83, "eventType": "fulfillment"}
+
+data:{"sessionId":"6a5e8856ef7d1848e9c38154","messageId":"6a5e88562c89ec49adfe6327","eventIndex":84,"eventType":"statusLog","status":"processing","currentStatusLog":{"statusType":"fulfillment_completed","statusMessage":"Fulfillment completed","answer":"Ocean tides are caused mainly by the Moon’s gravitational pull on Earth’s oceans, with the Sun’s gravity also contributing. As Earth rotates through the resulting ocean bulges, most coastlines experience alternating high and low tides.\n\n```trace\nMode: FAST — concise factual explanation\nWorker: One-pager summary\nQA: checked two-sentence requirement, accuracy and no-invent compliance\nFlags: none\n```","time":"2026-07-20T20:43:16Z"}}
+
+data:{"sessionId":"6a5e8856ef7d1848e9c38154","messageId":"6a5e88562c89ec49adfe6327","eventIndex":85,"eventType":"metricsLog","status":"processing","publicMetrics":{"inputTokens":1477,"outputTokens":138,"totalTokens":1615,"ragTimeSec":7.74,"fulfillmentTimeSec":5.89,"totalTimeSec":13.63}}
+
+: keepalive
+
+event:heartbeat
+data:{"sessionId":"6a5e8856ef7d1848e9c38154","messageId":"6a5e88562c89ec49adfe6327","time":"2026-07-20T20:43:18Z"}
+
+data:[DONE]
+
+data:{"type":"done","ts":"2026-07-20T20:43:18.713Z","messageId":"da19c211-3d7a-45cd-b59f-641383d10225","fullAnswerPresent":true,"sawAnswer":true}
+

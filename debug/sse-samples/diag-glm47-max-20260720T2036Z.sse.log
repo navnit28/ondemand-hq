@@ -1,0 +1,182 @@
+# LIVE SSE CAPTURE — raw, unmodified
+# request: POST https://gateway.on-demand.io/chat/v1/sessions/{sid}/query
+# body: endpointId=byoi-6e314690-4eaf-4def-a33c-380809acf1f5 reasoningEffort=max responseMode=stream
+# captureStartUtc=2026-07-20T20:37:16.294097+00:00
+# captureEndUtc=2026-07-20T20:37:20.445918+00:00
+# eventType counts: {"statusLog": 2, "fulfillment_thinking": 43, "fulfillment": 10, "metricsLog": 1, "heartbeat": 1, "[DONE]": 1}
+# assembled fulfillment answer (226 chars): A solar eclipse occurs when the Moon passes between the Earth and the Sun, temporarily blocking the Sun's light. This alignment casts a shadow on the Earth and causes the Sun to appear darkened or completely covered from view.
+#
+event:message
+data:{"sessionId":"6a5e86fcef7d1848e9c38150","messageId":"6a5e86fc193b04e98c3af4d8","eventIndex":1,"eventType":"statusLog","status":"processing","currentStatusLog":{"statusType":"fulfilling","statusMessage":"Fulfilling the prompt...","time":"2026-07-20T20:37:17Z"}}
+
+event:thinking
+data:{"sessionId":"6a5e86fcef7d1848e9c38150","messageId":"6a5e86fc193b04e98c3af4d8","eventIndex":1,"eventType":"fulfillment_thinking","status":"processing","thinking":{"delta":"1.  **Analyze the user's request:** The user wants an explanation of a solar"}}
+
+event:thinking
+data:{"sessionId":"6a5e86fcef7d1848e9c38150","messageId":"6a5e86fc193b04e98c3af4d8","eventIndex":2,"eventType":"fulfillment_thinking","status":"processing","thinking":{"delta":" eclipse in exactly two sentences.\n\n2.  **Analyze the"}}
+
+event:thinking
+data:{"sessionId":"6a5e86fcef7d1848e9c38150","messageId":"6a5e86fc193b04e98c3af4d8","eventIndex":3,"eventType":"fulfillment_thinking","status":"processing","thinking":{"delta":" system prompt constraints:**\n   "}}
+
+event:thinking
+data:{"sessionId":"6a5e86fcef7d1848e9c38150","messageId":"6a5e86fc193b04e98c3af4d8","eventIndex":4,"eventType":"fulfillment_thinking","status":"processing","thinking":{"delta":" *   Primary goal: Fulfill the user's query.\n    *   Context"}}
+
+event:thinking
+data:{"sessionId":"6a5e86fcef7d1848e9c38150","messageId":"6a5e86fc193b04e98c3af4d8","eventIndex":5,"eventType":"fulfillment_thinking","status":"processing","thinking":{"delta":" usage: Use provided chat history"}}
+
+event:thinking
+data:{"sessionId":"6a5e86fcef7d1848e9c38150","messageId":"6a5e86fc193b04e98c3af4d8","eventIndex":6,"eventType":"fulfillment_thinking","status":"processing","thinking":{"delta":"/plugin responses if available."}}
+
+event:thinking
+data:{"sessionId":"6a5e86fcef7d1848e9c38150","messageId":"6a5e86fc193b04e98c3af4d8","eventIndex":7,"eventType":"fulfillment_thinking","status":"processing","thinking":{"delta":" If not, use own knowledge.\n    *  "}}
+
+event:thinking
+data:{"sessionId":"6a5e86fcef7d1848e9c38150","messageId":"6a5e86fc193b04e98c3af4d8","eventIndex":8,"eventType":"fulfillment_thinking","status":"processing","thinking":{"delta":" Constraint: Do not use words like \""}}
+
+event:thinking
+data:{"sessionId":"6a5e86fcef7d1848e9c38150","messageId":"6a5e86fc193b04e98c3af4d8","eventIndex":9,"eventType":"fulfillment_thinking","status":"processing","thinking":{"delta":"previous chat history\", \"context\", \""}}
+
+event:thinking
+data:{"sessionId":"6a5e86fcef7d1848e9c38150","messageId":"6a5e86fc193b04e98c3af4d8","eventIndex":10,"eventType":"fulfillment_thinking","status":"processing","thinking":{"delta":"plugin responses\".\n    *   Constraint: Do"}}
+
+event:thinking
+data:{"sessionId":"6a5e86fcef7d1848e9c38150","messageId":"6a5e86fc193b04e98c3af4d8","eventIndex":11,"eventType":"fulfillment_thinking","status":"processing","thinking":{"delta":" not say \"I can't answer real-time queries\".\n    *   Constraint:"}}
+
+event:thinking
+data:{"sessionId":"6a5e86fcef7d1848e9c38150","messageId":"6a5e86fc193b04e98c3af4d8","eventIndex":12,"eventType":"fulfillment_thinking","status":"processing","thinking":{"delta":" Strictly adhere to provided info if given"}}
+
+event:thinking
+data:{"sessionId":"6a5e86fcef7d1848e9c38150","messageId":"6a5e86fc193b04e98c3af4d8","eventIndex":13,"eventType":"fulfillment_thinking","status":"processing","thinking":{"delta":"; otherwise, use own knowledge.\n    *  "}}
+
+event:thinking
+data:{"sessionId":"6a5e86fcef7d1848e9c38150","messageId":"6a5e86fc193b04e98c3af4d8","eventIndex":14,"eventType":"fulfillment_thinking","status":"processing","thinking":{"delta":" Constraint: Do not repeat the"}}
+
+event:thinking
+data:{"sessionId":"6a5e86fcef7d1848e9c38150","messageId":"6a5e86fc193b04e98c3af4d8","eventIndex":15,"eventType":"fulfillment_thinking","status":"processing","thinking":{"delta":" input query.\n    *   Constraint:"}}
+
+event:thinking
+data:{"sessionId":"6a5e86fcef7d1848e9c38150","messageId":"6a5e86fc193b04e98c3af4d8","eventIndex":16,"eventType":"fulfillment_thinking","status":"processing","thinking":{"delta":" \"In exactly two sentences\".\n\n"}}
+
+event:thinking
+data:{"sessionId":"6a5e86fcef7d1848e9c38150","messageId":"6a5e86fc193b04e98c3af4d8","eventIndex":17,"eventType":"fulfillment_thinking","status":"processing","thinking":{"delta":"3.  **Check for context:** The"}}
+
+event:thinking
+data:{"sessionId":"6a5e86fcef7d1848e9c38150","messageId":"6a5e86fc193b04e98c3af4d8","eventIndex":18,"eventType":"fulfillment_thinking","status":"processing","thinking":{"delta":" prompt includes specific instructions about"}}
+
+event:thinking
+data:{"sessionId":"6a5e86fcef7d1848e9c38150","messageId":"6a5e86fc193b04e98c3af4d8","eventIndex":19,"eventType":"fulfillment_thinking","status":"processing","thinking":{"delta":" context (\"The chat history and plugin responses are provided only as context"}}
+
+event:thinking
+data:{"sessionId":"6a5e86fcef7d1848e9c38150","messageId":"6a5e86fc193b04e98c3af4d8","eventIndex":20,"eventType":"fulfillment_thinking","status":"processing","thinking":{"delta":"...\"), but in this specific interaction,"}}
+
+event:thinking
+data:{"sessionId":"6a5e86fcef7d1848e9c38150","messageId":"6a5e86fc193b04e98c3af4d8","eventIndex":21,"eventType":"fulfillment_thinking","status":"processing","thinking":{"delta":" there is *no* chat history or plugin"}}
+
+event:thinking
+data:{"sessionId":"6a5e86fcef7d1848e9c38150","messageId":"6a5e86fc193b04e98c3af4d8","eventIndex":22,"eventType":"fulfillment_thinking","status":"processing","thinking":{"delta":" response provided in the input."}}
+
+event:thinking
+data:{"sessionId":"6a5e86fcef7d1848e9c38150","messageId":"6a5e86fc193b04e98c3af4d8","eventIndex":23,"eventType":"fulfillment_thinking","status":"processing","thinking":{"delta":" The input is just the user's query and the system"}}
+
+event:thinking
+data:{"sessionId":"6a5e86fcef7d1848e9c38150","messageId":"6a5e86fc193b04e98c3af4d8","eventIndex":24,"eventType":"fulfillment_thinking","status":"processing","thinking":{"delta":" prompt.\n\n4.  **Formulate the answer:** Since"}}
+
+event:thinking
+data:{"sessionId":"6a5e86fcef7d1848e9c38150","messageId":"6a5e86fc193b04e98c3af4d8","eventIndex":25,"eventType":"fulfillment_thinking","status":"processing","thinking":{"delta":" no context is provided, I must"}}
+
+event:thinking
+data:{"sessionId":"6a5e86fcef7d1848e9c38150","messageId":"6a5e86fc193b04e98c3af4d8","eventIndex":26,"eventType":"fulfillment_thinking","status":"processing","thinking":{"delta":" answer from my own knowledge.\n\n   "}}
+
+event:thinking
+data:{"sessionId":"6a5e86fcef7d1848e9c38150","messageId":"6a5e86fc193b04e98c3af4d8","eventIndex":27,"eventType":"fulfillment_thinking","status":"processing","thinking":{"delta":" *   *Draft 1:* A solar eclipse"}}
+
+event:thinking
+data:{"sessionId":"6a5e86fcef7d1848e9c38150","messageId":"6a5e86fc193b04e98c3af4d8","eventIndex":28,"eventType":"fulfillment_thinking","status":"processing","thinking":{"delta":" occurs when the moon passes between the Earth and the sun, blocking the"}}
+
+event:thinking
+data:{"sessionId":"6a5e86fcef7d1848e9c38150","messageId":"6a5e86fc193b04e98c3af4d8","eventIndex":29,"eventType":"fulfillment_thinking","status":"processing","thinking":{"delta":" sun's light. This casts a shadow on the Earth"}}
+
+event:thinking
+data:{"sessionId":"6a5e86fcef7d1848e9c38150","messageId":"6a5e86fc193b04e98c3af4d8","eventIndex":30,"eventType":"fulfillment_thinking","status":"processing","thinking":{"delta":" and can make the sun look like"}}
+
+event:thinking
+data:{"sessionId":"6a5e86fcef7d1848e9c38150","messageId":"6a5e86fc193b04e98c3af4d8","eventIndex":31,"eventType":"fulfillment_thinking","status":"processing","thinking":{"delta":" a dark disk.\n    *   *Check constraints:* Is"}}
+
+event:thinking
+data:{"sessionId":"6a5e86fcef7d1848e9c38150","messageId":"6a5e86fc193b04e98c3af4d8","eventIndex":32,"eventType":"fulfillment_thinking","status":"processing","thinking":{"delta":" it exactly two sentences? Yes. Does it explain what a solar eclipse is"}}
+
+event:thinking
+data:{"sessionId":"6a5e86fcef7d1848e9c38150","messageId":"6a5e86fc193b04e98c3af4d8","eventIndex":33,"eventType":"fulfillment_thinking","status":"processing","thinking":{"delta":"? Yes. Does it repeat the input? No.\n\n5.  **"}}
+
+event:thinking
+data:{"sessionId":"6a5e86fcef7d1848e9c38150","messageId":"6a5e86fc193b04e98c3af4d8","eventIndex":34,"eventType":"fulfillment_thinking","status":"processing","thinking":{"delta":"Final Polish:**\n    A solar eclipse"}}
+
+event:thinking
+data:{"sessionId":"6a5e86fcef7d1848e9c38150","messageId":"6a5e86fc193b04e98c3af4d8","eventIndex":35,"eventType":"fulfillment_thinking","status":"processing","thinking":{"delta":" happens when the Moon moves between the Earth and the Sun, temporarily"}}
+
+event:thinking
+data:{"sessionId":"6a5e86fcef7d1848e9c38150","messageId":"6a5e86fc193b04e98c3af4d8","eventIndex":36,"eventType":"fulfillment_thinking","status":"processing","thinking":{"delta":" blocking the Sun's light. This"}}
+
+event:thinking
+data:{"sessionId":"6a5e86fcef7d1848e9c38150","messageId":"6a5e86fc193b04e98c3af4d8","eventIndex":37,"eventType":"fulfillment_thinking","status":"processing","thinking":{"delta":" alignment casts a shadow on the Earth"}}
+
+event:thinking
+data:{"sessionId":"6a5e86fcef7d1848e9c38150","messageId":"6a5e86fc193b04e98c3af4d8","eventIndex":38,"eventType":"fulfillment_thinking","status":"processing","thinking":{"delta":" and causes the Sun to appear darkened"}}
+
+event:thinking
+data:{"sessionId":"6a5e86fcef7d1848e9c38150","messageId":"6a5e86fc193b04e98c3af4d8","eventIndex":39,"eventType":"fulfillment_thinking","status":"processing","thinking":{"delta":" or obscured from view.\n\n    *   *"}}
+
+event:thinking
+data:{"sessionId":"6a5e86fcef7d1848e9c38150","messageId":"6a5e86fc193b04e98c3af4d8","eventIndex":40,"eventType":"fulfillment_thinking","status":"processing","thinking":{"delta":"Sentence count:* 2.\n    *   *Content:* Acc"}}
+
+event:thinking
+data:{"sessionId":"6a5e86fcef7d1848e9c38150","messageId":"6a5e86fc193b04e98c3af4d8","eventIndex":41,"eventType":"fulfillment_thinking","status":"processing","thinking":{"delta":"urate.\n\n6.  **Final Output Generation"}}
+
+event:message
+data:{"sessionId": "6a5e86fcef7d1848e9c38150", "messageId": "6a5e86fc193b04e98c3af4d8", "answer": "A", "status": "processing", "eventIndex":2, "eventType": "fulfillment"}
+
+event:message
+data:{"sessionId": "6a5e86fcef7d1848e9c38150", "messageId": "6a5e86fc193b04e98c3af4d8", "answer": " solar", "status": "processing", "eventIndex":3, "eventType": "fulfillment"}
+
+event:message
+data:{"sessionId": "6a5e86fcef7d1848e9c38150", "messageId": "6a5e86fc193b04e98c3af4d8", "answer": " eclipse", "status": "processing", "eventIndex":4, "eventType": "fulfillment"}
+
+event:message
+data:{"sessionId": "6a5e86fcef7d1848e9c38150", "messageId": "6a5e86fc193b04e98c3af4d8", "answer": " occurs when the Moon", "status": "processing", "eventIndex":5, "eventType": "fulfillment"}
+
+event:message
+data:{"sessionId": "6a5e86fcef7d1848e9c38150", "messageId": "6a5e86fc193b04e98c3af4d8", "answer": " passes between the Earth", "status": "processing", "eventIndex":6, "eventType": "fulfillment"}
+
+event:message
+data:{"sessionId": "6a5e86fcef7d1848e9c38150", "messageId": "6a5e86fc193b04e98c3af4d8", "answer": " and the Sun, temporarily", "status": "processing", "eventIndex":7, "eventType": "fulfillment"}
+
+event:message
+data:{"sessionId": "6a5e86fcef7d1848e9c38150", "messageId": "6a5e86fc193b04e98c3af4d8", "answer": " blocking the Sun's light. This alignment casts a shadow", "status": "processing", "eventIndex":8, "eventType": "fulfillment"}
+
+event:message
+data:{"sessionId": "6a5e86fcef7d1848e9c38150", "messageId": "6a5e86fc193b04e98c3af4d8", "answer": " on the Earth and causes the Sun to appear darkened or completely", "status": "processing", "eventIndex":9, "eventType": "fulfillment"}
+
+event:message
+data:{"sessionId": "6a5e86fcef7d1848e9c38150", "messageId": "6a5e86fc193b04e98c3af4d8", "answer": " covered", "status": "processing", "eventIndex":10, "eventType": "fulfillment"}
+
+event:message
+data:{"sessionId": "6a5e86fcef7d1848e9c38150", "messageId": "6a5e86fc193b04e98c3af4d8", "answer": " from view.", "status": "processing", "eventIndex":11, "eventType": "fulfillment"}
+
+event:thinking
+data:{"sessionId":"6a5e86fcef7d1848e9c38150","messageId":"6a5e86fc193b04e98c3af4d8","eventIndex":42,"eventType":"fulfillment_thinking","status":"processing","thinking":{"delta":":** (Just the answer)."}}
+
+event:thinking
+data:{"sessionId":"6a5e86fcef7d1848e9c38150","messageId":"6a5e86fc193b04e98c3af4d8","eventIndex":43,"eventType":"fulfillment_thinking","status":"processing","thinking":{"delta":""}}
+
+event:message
+data:{"sessionId":"6a5e86fcef7d1848e9c38150","messageId":"6a5e86fc193b04e98c3af4d8","eventIndex":12,"eventType":"statusLog","status":"processing","currentStatusLog":{"statusType":"fulfillment_completed","statusMessage":"Fulfillment completed","answer":"A solar eclipse occurs when the Moon passes between the Earth and the Sun, temporarily blocking the Sun's light. This alignment casts a shadow on the Earth and causes the Sun to appear darkened or completely covered from view.","time":"2026-07-20T20:37:18Z"}}
+
+event:message
+data:{"sessionId":"6a5e86fcef7d1848e9c38150","messageId":"6a5e86fc193b04e98c3af4d8","eventIndex":13,"eventType":"metricsLog","status":"processing","publicMetrics":{"inputTokens":539,"outputTokens":451,"totalTokens":990,"ragTimeSec":0,"fulfillmentTimeSec":1.24,"totalTimeSec":1.24}}
+
+event:heartbeat
+data:{"sessionId":"6a5e86fcef7d1848e9c38150","messageId":"6a5e86fc193b04e98c3af4d8","time":"2026-07-20T20:37:19Z"}
+
+event:message
+data:[DONE]
+

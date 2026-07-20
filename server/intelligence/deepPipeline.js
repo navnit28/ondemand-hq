@@ -28,11 +28,13 @@ import { assignVerification, buildInferencePrompt, deterministicInference, VERIF
 import { buildPredictionPrompt, normalisePredictions, PREDICTION_CATEGORIES } from './prediction.js';
 import { buildImpactPrompt, normaliseImpactScores, structuralImpactScores } from './impact.js';
 
+import { validEffort } from '../env.js';
+
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 // gpt-5.6-sol-medium everywhere (decomposed form — suffixed id returns HTTP 400; Phase-1 verified).
 export const DEEP_ENDPOINT_ID = process.env.DEEP_ENDPOINT_ID || 'predefined-gpt-5.6-sol';
-export const DEEP_REASONING_EFFORT = process.env.DEEP_REASONING_EFFORT || 'medium';
+export const DEEP_REASONING_EFFORT = validEffort(process.env.DEEP_REASONING_EFFORT, 'medium'); // validated low|medium|max — decomposed form only (suffixed ids = HTTP 400)
 
 // Edge styling contract persisted for the frontend (brand tokens).
 export const EDGE_STYLE = {

@@ -1,5 +1,39 @@
 # NOTES.md — ODA Productivity Suite engineering log
 
+## 2026-07-20 Chat streaming fix — decomposed gpt-5.6-sol + reasoningEffort, DEFAULT 'low' (main chat)
+
+**Docs verification (all live, fetched this pass):**
+- `GET /config/v1/public/docs/categories` — 2026-07-20T20:35:45Z UTC: 8 services, 26 slugs, `submitquery` present.
+- `GET /config/v1/public/docs/reference/api/submitquery` — same pass: path `POST /chat/v1/sessions/{sessionId}/query`, server `https://api.on-demand.io`, required `["query","endpointId","responseMode"]`, `responseMode` enum exactly `["sync","stream","webhook"]`. `reasoningEffort` is NOT in the documented body properties (still a live-accepted extension); `modelConfigs` IS documented.
+- `https://docs.on-demand.io/docs/chat-api.md` (28,341 chars, 20:35:58Z) — contains the canonical stream sample: `eventType: "fulfillment"` frames carrying incremental `.answer` deltas ("The", " city", " based", …) with monotonic `eventIndex`. `https://docs.on-demand.io/reference/submitquery.md` (10,772 chars) fetched too; neither page documents `reasoningEffort`.
+- Endpoint registry (live, same pass): `predefined-gpt-5.6-sol` → `reasoning_efforts ["low","medium","max"]`, `streaming_supported: true`, `status: active`.
+
+**Symptom reproduction (raw captures under `debug/sse-samples/`, UTC):**
+| Capture | Config | Result |
+|---|---|---|
+| `diag-glm47-max-20260720T2036Z.sse.log` (20:37:16–20:37:20Z) | direct API, GLM 4.7 BYOI + max | 43 `fulfillment_thinking` vs 10 `fulfillment` frames |
+| `diag-gpt56sol-low-20260720T2037Z.sse.log` (20:37:30–20:37:38Z) | direct API, gpt-5.6-sol + low | 46 `fulfillment` `.answer` frames, 0 thinking — clean token stream |
+| `apichat-prefix-glm47-max-20260720T2039Z.sse.log` (20:39:00–20:39:13Z) | local `/api/chat`, PRE-FIX (GLM+max) | **321 thinking frames vs only 9 `fulfillment` `.answer` frames** — the browser wire was dominated by thinking; the final answer arrived as a burst of 9 coarse frames at the very end. This is the reported "thinking streams, answer doesn't" symptom: not a dropped-frame bug in the SSE plumbing, but a model/effort configuration that produces almost no incremental `.answer` deltas. |
+
+**Root cause:** the main chat path ran the GLM 4.7 BYOI endpoint at `reasoningEffort: "max"`, which emits hundreds of thinking deltas and only a handful of late, coarse `fulfillment` frames — so the UI showed live "thinking" but no token-by-token answer. The previously documented (PRIOR_KNOWLEDGE.md) but unimplemented fix — decomposed `endpointId: "predefined-gpt-5.6-sol"` + TOP-LEVEL `reasoningEffort`, default **low** — was never applied to `server/env.js`. The SSE passthrough itself (`server/ondemand.js` → `/api/chat` `sendRaw`) was verified byte-identical and needed no change: pre-fix capture shows all frame families passing through.
+
+**Fix applied (files/lines):**
+- `server/env.js` — `ENDPOINT_ID` default → `'predefined-gpt-5.6-sol'`; `REASONING_EFFORT` → `validEffort(process.env.CHAT_REASONING_EFFORT, 'low')` (**default 'low'**, explicitly not medium/max); NEW `REASONING_EFFORTS = ['low','medium','max']` + `validEffort()` validator (warns + falls back on invalid values, e.g. "high"→low, verified live); `GATHER_/ANALYSIS_/CE_ANALYSIS_REASONING_EFFORT` now validated; NEW `CE_STREAM_REASONING_EFFORT` (validated, default max, env-overridable).
+- `server/correlation.js` — three hardcoded `reasoningEffort: 'max'` literals (quick-query L537, summarize L702, story L739) → `CE_STREAM_REASONING_EFFORT`.
+- `server/intelligence/deepPipeline.js` — `DEEP_REASONING_EFFORT` now `validEffort(env,'medium')` (decomposed form retained).
+- `server/index.js` — stale hardcoded `model: 'glm-4.7-cerebras-max'` labels (L161/L248) → dynamic `${ENDPOINT_ID}+${REASONING_EFFORT}`.
+- `server/msm.js` — stale `'gpt-5.6-sol-medium'` label strings → dynamic `${ENDPOINT_ID}+${REASONING_EFFORT}`.
+- `server/ondemand/adapters.js` — removed empty `modelConfigs` emission when only `reasoningEffort` set; `reasoningEffort` confirmed TOP-LEVEL body key.
+- `server/ondemand.js` — comment corrected; **streamQuery passthrough logic untouched** (headers, no-transform, X-Accel-Buffering, flushHeaders/flush, TextDecoder(stream:true)+tail flush, AbortController, closed guard, 90s watchdog all preserved).
+- Codebase audit: zero suffixed model IDs used as request values anywhere (`grep` for `sol-medium|sol-low|sol-max|fable-5-|sonnet-5-` in endpointId positions → no hits); every `reasoningEffort:` call site now sources a validated constant or explicit low/medium literal within the valid enum.
+
+**Post-fix E2E proof (`apichat-postfix-gpt56sol-low-20260720T2043Z.sse.log`, 20:42:57–20:43:18Z, local `/api/chat` = browser wire path):**
+- `/api/health` → `"model":"predefined-gpt-5.6-sol+low"`.
+- Frame counts: **82 `fulfillment` `.answer` token frames** ("Ocean" → " tides" → " are" …, eventIndex 2,3,4,… assembling a 400-char answer) **plus 15 thinking frames** (14 planning_thinking + 1 step_thinking) + statusLog/metricsLog/heartbeat + `[DONE]` — BOTH channels stream token-by-token to the client.
+- Mode validation live-tested: `CHAT_REASONING_EFFORT=high` → warn + fall back to `low`; `=medium` → accepted.
+- Note (model-dependent, unchanged from prior passes): gpt-5.6-sol emits thinking in the planning/step phase, not as `fulfillment_thinking`; GLM 4.7 emits `fulfillment_thinking`. The client parser handles both families.
+
+
 ## 2026-07-17 — Streaming reference (Workstream 1)
 
 **Read at 2026-07-17 ~16:29–16:33 UTC. Sources actually read (live, not memory):**

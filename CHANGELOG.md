@@ -1,3 +1,10 @@
+## 2026-07-20 — fix(chat): streaming end-to-end — decomposed gpt-5.6-sol + top-level reasoningEffort, DEFAULT 'low'
+
+- Root cause: main chat ran GLM 4.7 BYOI + reasoningEffort 'max' → 300+ thinking deltas but only ~9 coarse, late `fulfillment` `.answer` frames on the browser wire (pre-fix capture `debug/sse-samples/apichat-prefix-glm47-max-20260720T2039Z.sse.log`). SSE plumbing itself was healthy.
+- `server/env.js`: main chat → `endpointId 'predefined-gpt-5.6-sol'` + TOP-LEVEL `reasoningEffort` default **'low'**; new `REASONING_EFFORTS ['low','medium','max']` + `validEffort()` validation on every effort export; new `CE_STREAM_REASONING_EFFORT`.
+- `server/correlation.js`: hardcoded `'max'` literals → validated `CE_STREAM_REASONING_EFFORT`. `server/intelligence/deepPipeline.js`: `DEEP_REASONING_EFFORT` validated. `server/index.js` + `server/msm.js`: stale model label strings → dynamic `${ENDPOINT_ID}+${REASONING_EFFORT}`. `server/ondemand/adapters.js`: no empty `modelConfigs`; reasoningEffort top-level. No suffixed model IDs anywhere (D2 dead end).
+- E2E proof at 'low' (post-fix capture `apichat-postfix-gpt56sol-low-20260720T2043Z.sse.log`, 20:42:57–20:43:18Z): 82 `fulfillment` `.answer` token frames + 15 thinking frames + `[DONE]` through local `/api/chat`; `/api/health` reports `predefined-gpt-5.6-sol+low`; invalid mode 'high' rejected → falls back to 'low'.
+
 # CHANGELOG — Correlation Engine
 
 All notable changes to the Correlation Engine, logged with timestamps (UTC).

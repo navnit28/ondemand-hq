@@ -41,7 +41,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { Document, Packer, Paragraph, TextRun, HeadingLevel } from 'docx';
-import { ONDEMAND_API_KEY, ONDEMAND_BASE_URL } from './env.js';
+import { ONDEMAND_API_KEY, ONDEMAND_BASE_URL, ENDPOINT_ID, REASONING_EFFORT } from './env.js';
 import { createOdSession, streamQuery } from './ondemand.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -394,7 +394,7 @@ async function analyseVideo(day, video, transcript) {
     return { ok: false, reason: 'Model output was not parseable JSON' };
   }
   parsed.thinking = thinking.slice(0, 20000);
-  parsed.model = 'gpt-5.6-sol-medium';
+  parsed.model = `${ENDPOINT_ID}+${REASONING_EFFORT}`; // dynamic — mirrors the live decomposed model policy (2026-07-20 mode audit)
   parsed.streamed = true;
   parsed.analysedAt = nowIso();
   parsed.transcriptTruncatedForAnalysis = truncated;
@@ -456,7 +456,7 @@ async function buildDigest(day, emit) {
     sentimentBalance: balance,
     flagCounts: flags,
     analysedCount: done.length,
-    model: 'gpt-5.6-sol-medium', streamed: true,
+    model: `${ENDPOINT_ID}+${REASONING_EFFORT}`, streamed: true,
     thinking: thinking.slice(0, 8000),
     builtAt: nowIso(),
     latencyMs: Date.now() - t0,
@@ -621,7 +621,7 @@ async function transcriptDocx(video, text) {
 export function registerMsmRoutes(app) {
   app.get('/api/msm/config', (req, res) => res.json({
     outlets: OUTLETS, schedule: SCHEDULE,
-    transcription: { api: 'POST /media/v1/public/file (OnDemand Media API, YouTube URL, actionStatus polling)', analysisModel: 'gpt-5.6-sol-medium (streamed, thinking captured)' },
+    transcription: { api: 'POST /media/v1/public/file (OnDemand Media API, YouTube URL, actionStatus polling)', analysisModel: `${ENDPOINT_ID}+${REASONING_EFFORT} (streamed, thinking captured)` },
   }));
 
   app.get('/api/msm/dates', (req, res) => res.json({ dates: listDates() }));
