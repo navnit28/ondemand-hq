@@ -29,12 +29,13 @@ import * as log from './log.js';
 // DEEP PIPELINE v2 (2026-07-19 rewrite): windows / weighting / 16-source retrieval /
 // 10 specialists / AI correlation layer / prediction mode / UAE impact engine.
 import { runDeepPipeline, RESEARCH_WINDOWS, DEFAULT_WINDOW } from './intelligence/deepPipeline.js';
+import { DATA_DIR as DATA_BASE } from './paths.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const DATA_ROOT = path.join(__dirname, 'data', 'correlation');
-const SEED_ROOT = path.join(__dirname, 'data', 'correlation-seed');
-const MEDIA_ROOT = path.join(__dirname, 'data', 'correlation-media');
-for (const d of [DATA_ROOT, MEDIA_ROOT]) fs.mkdirSync(d, { recursive: true });
+const DATA_ROOT = path.join(DATA_BASE, 'correlation');
+const SEED_ROOT = path.join(DATA_BASE, 'correlation-seed');
+const MEDIA_ROOT = path.join(DATA_BASE, 'correlation-media');
+try { for (const d of [DATA_ROOT, MEDIA_ROOT]) fs.mkdirSync(d, { recursive: true }); } catch (e) { console.error('[correlation] mkdir failed:', e.message); }
 
 export const PLUGINS = {
   perplexity: 'plugin-1722260873',

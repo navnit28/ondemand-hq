@@ -43,11 +43,12 @@ import { fileURLToPath } from 'node:url';
 import { Document, Packer, Paragraph, TextRun, HeadingLevel } from 'docx';
 import { ONDEMAND_API_KEY, ONDEMAND_BASE_URL } from './env.js';
 import { createOdSession, streamQuery } from './ondemand.js';
+import { DATA_DIR as DATA_BASE } from './paths.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const MSM_DIR = path.join(__dirname, 'data', 'msm');
+const MSM_DIR = path.join(DATA_BASE, 'msm');
 const TX_DIR = path.join(MSM_DIR, 'transcripts');
-fs.mkdirSync(TX_DIR, { recursive: true });
+try { fs.mkdirSync(TX_DIR, { recursive: true }); } catch (e) { console.error('[msm] mkdir failed:', e.message); }
 
 const H = { apikey: ONDEMAND_API_KEY, 'Content-Type': 'application/json' };
 // The docs' own YouTube media sample attaches this plugin id; live-verified working 2026-07-18.

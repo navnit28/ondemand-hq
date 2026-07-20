@@ -325,6 +325,14 @@ if (fs.existsSync(DIST)) {
   app.get(/^(?!\/api\/).*/, (req, res) => res.sendFile(path.join(DIST, 'index.html')));
 }
 
-app.listen(PORT, '0.0.0.0', () => {
-  console.log(`[oda-suite] listening on 0.0.0.0:${PORT} · model ${ENDPOINT_ID}+${REASONING_EFFORT} · plugins: ${Object.keys(ADOPTED).length} adopted`);
-});
+// Serverless platforms (Vercel/Lambda) invoke the exported handler per request and
+// forbid binding a port — only bind when running as a standalone long-lived server.
+const ON_SERVERLESS = Boolean(process.env.VERCEL || process.env.AWS_LAMBDA_FUNCTION_NAME);
+if (!ON_SERVERLESS) {
+  app.listen(PORT, '0.0.0.0', () => {
+    console.log(`[oda-suite] listening on 0.0.0.0:${PORT} · model ${ENDPOINT_ID}+${REASONING_EFFORT} · plugins: ${Object.keys(ADOPTED).length} adopted`);
+  });
+}
+
+// Vercel's @vercel/node runtime uses the default export as the request handler.
+export default app;

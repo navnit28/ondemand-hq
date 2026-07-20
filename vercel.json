@@ -1,11 +1,14 @@
 {
-  "version": 2,
-  "builds": [
-    { "src": "server/index.js", "use": "@vercel/node" },
-    { "src": "package.json", "use": "@vercel/static-build", "config": { "distDir": "dist" } }
-  ],
-  "routes": [
-    { "src": "/api/(.*)", "dest": "server/index.js" },
-    { "src": "/(.*)", "dest": "/$1" }
+  "buildCommand": "vite build",
+  "outputDirectory": "dist",
+  "functions": {
+    "api/index.js": {
+      "includeFiles": "server/data/**",
+      "maxDuration": 60
+    }
+  },
+  "rewrites": [
+    { "source": "/api/(.*)", "destination": "/api/index.js" },
+    { "source": "/(.*)", "destination": "/index.html" }
   ]
 }

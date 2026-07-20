@@ -15,9 +15,10 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { COUNTRIES } from './intel.js';
 import * as log from './log.js';
+import { DATA_DIR as DATA_BASE } from './paths.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const DATA_DIR = path.join(__dirname, 'data');
+const DATA_DIR = DATA_BASE;
 const FALLBACK_FILE = path.join(DATA_DIR, 'facts-fallback.json');
 const CACHE_FILE = path.join(DATA_DIR, 'facts-cache.json');
 const CACHE_TTL_MS = 24 * 60 * 60 * 1000; // 24h
