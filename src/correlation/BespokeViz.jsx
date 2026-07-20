@@ -55,11 +55,15 @@ export default function SignalLoom({ run, onPickEvidence }) {
       });
 
     // threads: edge × evidence
+    // (fix 2026-07-20) skip edges whose relationship_type is outside the 9-column
+    // scale domain (e.g. deep-v2 emits "Influence-network") — x() returns undefined
+    // for them, producing NaN path coordinates and console SVG errors.
     const threads = [];
     for (const e of run.edges) {
+      if (x(e.relationship_type) == null) continue;
       for (const evId of e.evidence_record_ids) {
         const ev = evById.get(evId);
-        if (!ev) continue;
+        if (!ev || y(ev.platform) == null) continue;
         threads.push({ edge: e, ev, age: evidenceAgeDays(ev, run) });
       }
     }

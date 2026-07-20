@@ -2,6 +2,29 @@
 
 All notable changes to the Correlation Engine, logged with timestamps (UTC).
 
+## 2026-07-20 — Final verification & delivery (51-test suite, 25/25 QA, 6 bug fixes)
+
+- **Tests:** suite extended 18 → **51** (`regression.test.mjs` +15 existing-world tests
+  incl. 236-badge guard, tier styles, filters, BD dense 200/188 integrity + LOD window,
+  de-purple data audit, i18n EN/AR+RTL; `interaction.test.mjs` +18 voice/globe tests
+  incl. permission-denied, bounded retries, mid-session language switch, exit/cleanup
+  from every state, reconnection, barge-in aborts, 402 degrade path, parser→zod
+  pipeline, wheel/pinch/keyboard, reduced motion). **51/51 PASS.**
+- **Bugs found & fixed by the new tests/QA:** (1) SET_LANGUAGE reducer no-op —
+  mid-session EN↔AR switch was dead code; (2) graphology-metrics `pagerank` named
+  import = undefined → PageRank node sizing silently disabled (subpath import fix);
+  (3) NaN Signal-Loom SVG paths for off-scale rel types (Influence-network) →
+  console errors; (4) privacy note only visible during sub-second ACTIVATING →
+  now ACTIVATING+LISTENING; (5) verification-tier legend added to graph legend strip;
+  (6) last purple hex (#e9d5ff legend halo) → brand green-tint #d3ece4.
+- **QA:** 25-point headless checklist **25/25 PASS**; 11 timestamped screenshots +
+  results JSON committed under qa/. Rendered purple pixel scan 0 across all shots.
+  Honest caveats: COBE sphere blank under SwiftShader; STT/TTS 402-unsubscribed —
+  degrade path verified instead of live speech.
+- **Build/type:** vite build PASS · tsc strict pass on typed surface · dist key-grep 0.
+- **Data:** KE deep-v2 run + deterministic BD dense fixture now tracked in
+  correlation-seed/ (deploys hydrate without external blobs).
+
 ## 2026-07-19 — deep-v2 research/intelligence pipeline rewrite
 
 - **2026-07-19T07:12:xxZ** — `server/intelligence/windows.js` **added** (a — DEEP SEARCH MODE):

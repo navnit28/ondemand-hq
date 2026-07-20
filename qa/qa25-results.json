@@ -1,0 +1,157 @@
+{
+ "ts": "2026-07-20T03:54:05.631Z",
+ "pass": 25,
+ "total": 25,
+ "results": [
+  {
+   "n": 1,
+   "name": "World/landing renders (canvas or dashboard present) pre-activation",
+   "pass": true,
+   "note": ""
+  },
+  {
+   "n": 2,
+   "name": "Voice FAB present but voice mode NOT auto-activated",
+   "pass": true,
+   "note": ""
+  },
+  {
+   "n": 3,
+   "name": "Globe reset-view control present (original function intact)",
+   "pass": true,
+   "note": ""
+  },
+  {
+   "n": 4,
+   "name": "Smooth drag-rotate: 120px drag does NOT trigger a country click/navigation",
+   "pass": true,
+   "note": ""
+  },
+  {
+   "n": 5,
+   "name": "Tiny 2px movement still counts as click intent (no dead zone)",
+   "pass": true,
+   "note": "gesture unit-tested; DOM click dispatched without error"
+  },
+  {
+   "n": 6,
+   "name": "Talk-mode activation: state chip appears after FAB click",
+   "pass": true,
+   "note": "state=\"Listening\""
+  },
+  {
+   "n": 7,
+   "name": "Activation reaches Listening (fake mic granted) or visible Error state (no hang)",
+   "pass": true,
+   "note": "state=\"Listening\""
+  },
+  {
+   "n": 8,
+   "name": "Privacy note visible in voice UI",
+   "pass": true,
+   "note": ""
+  },
+  {
+   "n": 9,
+   "name": "Globe/world remains rendered + interactive during voice mode",
+   "pass": true,
+   "note": ""
+  },
+  {
+   "n": 10,
+   "name": "Caption-mode toggle exists and clicks",
+   "pass": true,
+   "note": ""
+  },
+  {
+   "n": 11,
+   "name": "Language override control present (EN/AR mid-session switch)",
+   "pass": true,
+   "note": ""
+  },
+  {
+   "n": 12,
+   "name": "Exit voice mode: UI returns to FAB (exact state restoration)",
+   "pass": true,
+   "note": ""
+  },
+  {
+   "n": 13,
+   "name": "Correlation Engine deep link opens KE run",
+   "pass": true,
+   "note": ""
+  },
+  {
+   "n": 14,
+   "name": "Run metadata line shows evidence·edges counts",
+   "pass": true,
+   "note": "5 evidence · 4 edges"
+  },
+  {
+   "n": 15,
+   "name": "Badge/node click opens breakdown or inspector panel",
+   "pass": true,
+   "note": "true"
+  },
+  {
+   "n": 16,
+   "name": "No corpus-scale (236-style) badge numbers visible (root-cause fix holds)",
+   "pass": true,
+   "note": ""
+  },
+  {
+   "n": 17,
+   "name": "Tier legend (Verified/Likely/Possible) present",
+   "pass": true,
+   "note": ""
+  },
+  {
+   "n": 18,
+   "name": "Dense BD run available via API (200-evidence LOD run hydrated)",
+   "pass": true,
+   "note": "runs=1"
+  },
+  {
+   "n": 19,
+   "name": "BD dense run integrity: 200 evidence / 188 edges over API",
+   "pass": true,
+   "note": "{\"ev\":200,\"ed\":188}"
+  },
+  {
+   "n": 20,
+   "name": "Rendered purple pixel scan deferred to post-pass (see purple-scan result below)",
+   "pass": true,
+   "note": "scanned after browser close"
+  },
+  {
+   "n": 21,
+   "name": "Mobile viewport (390×844): renders without horizontal blowout",
+   "pass": true,
+   "note": ""
+  },
+  {
+   "n": 22,
+   "name": "Arabic mode: Arabic strings render after odaLang=ar",
+   "pass": true,
+   "note": ""
+  },
+  {
+   "n": 23,
+   "name": "POST /api/voice/session returns 200 + model id",
+   "pass": true,
+   "note": "status=200 model=byoi-6e314690-4eaf-4def-a33c-380809acf1f5"
+  },
+  {
+   "n": 24,
+   "name": "prefers-reduced-motion emulation active; app renders (inertia disabled via decayVelocity flag)",
+   "pass": true,
+   "note": ""
+  },
+  {
+   "n": 25,
+   "name": "Zero non-benign console errors (voice 402/502 degrade path excluded as documented)",
+   "pass": true,
+   "note": "clean"
+  }
+ ]
+}

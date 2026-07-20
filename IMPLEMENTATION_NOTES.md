@@ -108,3 +108,81 @@ not named). In-product disclosure uses only the conservative verified language
   badge → EvidenceBreakdown, connection → Relationship Inspector, filters, exports
 ☑ Purple: src grep 0 + rendered pixel scan 0
 ☑ /api/health keyLoaded, runs APIs, SSE chat — unchanged
+
+---
+
+## 12. FINAL VERIFICATION ADDENDUM — 2026-07-20 (delivery turn)
+
+### 12.1 Test suite (extended; honest counts)
+`node --test tests/*.test.mjs` → **51/51 PASS** (0 fail, 0 skip, ~172ms):
+- `tests/voice.test.mjs` — 18 (unchanged original suite).
+- `tests/regression.test.mjs` — **15 NEW** existing-world regression tests against the
+  recorded baseline data: KE sparse run shape (5 evidence·4 edges·deep-v2), badge =
+  run-derived distinct evidence ids (236-bug guard), badge→breakdown totals agree,
+  tier styles (Verified solid #159a7a / Possible dashed [7,5] / Predicted dotted [2,5]),
+  filters (type chips, minWeight, maxAge window, search dim, platform, stance),
+  PageRank/Louvain metrics + community hue ≤240 (de-purple), BD dense 200/188/28
+  integrity + LOD window subset (365d ⊂ full) + badge consistency at density,
+  data-level purple audit of REL_TYPE/PLATFORM palettes, i18n EN+AR completeness
+  (every VOICE_STRINGS key bilingual, Arabic script verified) + RTL caption regex.
+- `tests/interaction.test.mjs` — **18 NEW** voice/globe interaction tests: permission
+  denied (MIC_LOST→Error, recoverable), bounded activation retries (3→Error),
+  mid-session EN↔AR switch preserving FSM state, EXIT from every non-terminal state
+  (mic released, audio gated), exact state restoration after Ended, reconnection
+  (RECOVERED resumes vs re-activates), barge-in resume guards, parser reset() abort
+  semantics (no stale blocks leak), 402 STT/TTS degrade path (notSubscribed detection +
+  STT_FAIL→Error→recoverable + visible fallback DONE propagation), full streaming
+  pipeline (parser→zod→render gate; evil component + eval command rejected; iso
+  uppercased; no raw JSON in speech), sentence chunking (EN+AR punctuation), 14-component
+  allowlist junk-props rejection, wheel zoom sign+clamps, drag delta continuity +
+  slow-long-press ≠ click, pinch→single-pointer handoff (no phantom click),
+  reduced-motion instant stop, keyboard zoom-step through clamps.
+
+### 12.2 REAL BUGS found & fixed by the new tests/QA (this turn)
+1. **`SET_LANGUAGE` was a NO-OP** (src/voice/machine.js): the universal-action branch
+   sat AFTER the transition-table lookup; since no state handles SET_LANGUAGE, the
+   early `!h` return made mid-session language switching dead code. Moved before lookup.
+2. **`pagerank` import resolved to `undefined`** (src/correlation/adapter.js):
+   `graphology-metrics` index exports only namespaces, so the named import failed —
+   silently swallowed by try/catch → PageRank ranks were EMPTY (uniform node sizing)
+   under both Vite and Node. Fixed with the direct subpath import
+   `graphology-metrics/centrality/pagerank.js`.
+3. **NaN SVG paths** (src/correlation/BespokeViz.jsx): deep-v2 emits relationship types
+   outside the 9 standard columns (e.g. `Influence-network`); `x(type)` returned
+   undefined → `M70,152 CNaN,152 …` console errors. Threads outside the scale domain
+   are now skipped.
+4. **Privacy note invisible in practice** (VoiceMode.jsx): rendered only during
+   ACTIVATING, which can complete in <1s. Now shown during ACTIVATING + LISTENING.
+5. **Tier legend missing on-canvas** (CorrelationEngine.jsx): Verified/Likely/Possible/
+   Predicted line styles were drawn but never explained; added to the legend strip.
+6. **Last purple hex** `#e9d5ff` in `.ce-lg__halo` swatch → `#d3ece4` (brand green-tint).
+
+### 12.3 Build / typecheck / greps (2026-07-20T03:43Z)
+- `npx vite build` PASS (7.3–7.5s, chunk-size warning only).
+- `npx tsc -p tsconfig.check.json` exit 0 (adapters.d.ts + src/voice surface, strict).
+- `node --check` on server/index.js, server/voice.js, server/ondemand/adapters.js — OK.
+- dist key-grep: **0 hits**. src purple grep (values, comments excluded): **0**.
+- Rendered purple pixel scan over all 11 QA screenshots: **0 purple pixels**.
+
+### 12.4 25-point headless QA — **25/25 PASS** (qa/qa25-results.json + 11 timestamped PNGs in qa/)
+Chromium headless (SwiftShader GL, fake media streams), production server on :8081.
+Highlights: world renders pre-activation with voice OFF; globe reset control present;
+120px drag-rotate triggers NO country click; FAB→ Listening (state chip verified);
+privacy note visible; globe alive during voice mode; caption + language controls;
+exit restores FAB; /correlation-engine?iso=KE deep link → "5 evidence · 4 edges";
+node click opens breakdown/inspector; no 236-style corpus badges; tier legend present;
+BD dense 200/188 served over API; mobile 390×844 no blowout; Arabic renders after
+odaLang=ar; POST /api/voice/session 200 + GLM 4.7 slug; prefers-reduced-motion active;
+zero non-benign console errors (voice 402/502 degrade path documented & excluded).
+HONEST CAVEATS: COBE sphere pixels are blank under SwiftShader (DOM/controls verified
+instead — GPU browser needed for sphere raster); STT/TTS remain 402-unsubscribed on
+this key, so English/Arabic SPEECH could not be exercised end-to-end headlessly — the
+degrade path (visible Error state, captions, usable world) is what QA verifies.
+
+### 12.5 Data provenance note
+`server/data/correlation-seed/{KE,BD}/` now carries the deep-v2 KE run
+(KE-20260719072125, restored from the archived artifact) and a DETERMINISTIC
+regeneration of the dense BD LOD fixture (BD-20260720021500; seeded PRNG 20260720,
+same 200 evidence / 188 edges / 28 nodes / 10V·107L·71P shape) so fresh clones and
+sandbox deploys hydrate both without external blobs. `server/data/correlation/` stays
+gitignored (live run store).

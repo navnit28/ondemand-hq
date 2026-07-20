@@ -310,8 +310,10 @@ export default function VoiceMode({ worldContext = {}, onCommand, onVoiceStateCh
         </div>
       )}
 
-      {/* privacy disclosure (verified conservative language only) */}
-      {vs.state === S.ACTIVATING && (
+      {/* privacy disclosure (verified conservative language only) — shown while
+          activating AND during the first Listening state so it is actually readable
+          (QA fix 2026-07-20: activation can complete in <1s, making the note invisible) */}
+      {(vs.state === S.ACTIVATING || vs.state === S.LISTENING) && (
         <div className="vmode__privacy" data-testid="voice-privacy">{t('voice.privacy') || 'Microphone audio is processed through the configured OnDemand services. Transcript and retention behaviour depends on the active deployment configuration.'}</div>
       )}
       {vs.state === S.ERROR && (

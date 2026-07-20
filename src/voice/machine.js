@@ -69,11 +69,13 @@ const T = {
 };
 
 export function voiceReducer(prev, action) {
+  // universal payload updates that never change state — MUST be checked BEFORE the
+  // transition-table lookup (SET_LANGUAGE appears in no state's handler map, so the
+  // early `!h` return made this unreachable → mid-session language switch was a no-op).
+  if (action.type === 'SET_LANGUAGE') return { ...prev, language: action.language ?? null };
   const handlers = T[prev.state];
   const h = handlers?.[action.type];
   if (!h) return prev;                       // unknown/misplaced event → rejected (no-op)
-  // universal payload updates that never change state
-  if (action.type === 'SET_LANGUAGE') return { ...prev, language: action.language ?? null };
   const patch = h(action.payload, prev);
   if (!patch) return prev;                   // guard rejected
   return { ...prev, ...patch };

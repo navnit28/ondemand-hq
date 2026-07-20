@@ -369,3 +369,19 @@ OnDemand session `6a5d4a0ef400726bb9845c6f` created via POST /chat/v1/sessions (
 deployed backend); SSE stream delivered **73 fulfillment token frames** — first tokens
 `"The"`, `" UAE"`, `"–"` … — plus planning/step thinking frames; terminal frame
 `{"type":"done","sawAnswer":true}`. Session-create HTTP 500 is FIXED.
+
+## 2026-07-20 — Final-verification turn (local production server :8081, pre-deploy)
+
+Per the 200-test rule: every plugin/API call logged with id, query, status, latency, verdict.
+
+| # | id / endpoint | query | status | latency | verdict |
+|---|---|---|---|---|---|
+| FV-1 | GET / | landing HTML | 200 | <0.3s | PASS |
+| FV-2 | GET /api/correlation/runs/KE | list runs | 200 | <0.1s | PASS — run KE-20260719072125 hydrated from seed |
+| FV-3 | GET /api/correlation/run/KE/KE-20260719072125 | full run | 200 | <0.1s | PASS — 5 evidence · 4 edges · ED1 Verified |
+| FV-4 | GET /api/correlation/runs/BD | list runs | 200 | <0.1s | PASS — dense run present |
+| FV-5 | GET /api/correlation/run/BD/BD-20260720021500 | full run | 200 | <0.2s | PASS — 200 evidence · 188 edges verified in-browser |
+| FV-6 | POST /api/voice/session | activation | 200 | <0.5s | PASS — model byoi-6e314690-4eaf-4def-a33c-380809acf1f5 returned (QA check 23, 2026-07-20T03:53Z) |
+| FV-7 | STT/TTS upstream (speech_to_text / text_to_speech) | degrade probe | 402 upstream → 402 surfaced | — | EXPECTED — "Please subscribe" on this key; graceful degrade verified (documented, not a failure) |
+
+Deployment-time verification (sandbox) appended below after deploy.

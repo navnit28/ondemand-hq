@@ -2,7 +2,11 @@
 // graphology pre-render metrics (PageRank → node size, Louvain → community tints).
 // No React, no side effects — fully unit-testable in isolation.
 import Graph from 'graphology';
-import { pagerank } from 'graphology-metrics';
+// CJS subpath import: graphology-metrics' index exposes only namespaces
+// (centrality/edge/graph/…), so the old `import { pagerank } from 'graphology-metrics'`
+// resolved to undefined under BOTH Vite interop and bare Node ESM (silently caught by
+// the try/catch → empty ranks). The direct subpath is the real function under both.
+import pagerank from 'graphology-metrics/centrality/pagerank.js';
 import louvain from 'graphology-communities-louvain';
 
 // Obsidian-futuristic on white ODA design language — one hue per relationship type.

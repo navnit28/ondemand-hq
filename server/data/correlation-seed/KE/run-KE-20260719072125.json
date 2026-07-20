@@ -1,0 +1,1859 @@
+{
+ "runId": "KE-20260719072125",
+ "iso": "KE",
+ "country": "Kenya",
+ "generated_at": "2026-07-19T07:21:25.404Z",
+ "pipeline": "deep-v2",
+ "window": {
+  "id": "2y",
+  "label": "Last 2 years (30-day boost)",
+  "days": 730,
+  "boostRecentDays": 30,
+  "boostFactor": 1.5,
+  "phrase": "last 2 years (30-day boost) (2024-07-19 \u2192 2026-07-19)"
+ },
+ "model": {
+  "all": "predefined-gpt-5.6-sol+medium",
+  "streaming": true
+ },
+ "specialists": {},
+ "evidence": [
+  {
+   "id": "E1",
+   "claim": "UAE Ministry of Foreign Affairs officially announced a food security partnership with Kenya Ministry of Agriculture, per official statement.",
+   "source_type": "government_release",
+   "source": "WAM \u2014 Emirates News Agency",
+   "url": "https://wam.ae/en/article/sample-1",
+   "publish_date": "2026-07-17",
+   "snippet": "MOFA officially announced the UAE-Kenya food security corridor",
+   "entities": [
+    "mofa",
+    "kenya-ministry-of-agriculture"
+   ],
+   "media": [],
+   "confidence": 0.9,
+   "corroborations": 1,
+   "weighting": {
+    "temporalClass": "breaking",
+    "baseWeight": 1,
+    "multipliers": {
+     "uaeRelevance": 2,
+     "governmentSource": 2,
+     "officialStatement": 3
+    },
+    "windowBoost": 1.5,
+    "finalWeight": 18
+   }
+  },
+  {
+   "id": "E2",
+   "claim": "ADQ committed AED 500m to Kenyan agri-processing ventures in an investor presentation.",
+   "source_type": "investor_presentation",
+   "source": "ADQ Capital Markets Day",
+   "url": "https://adq.ae/investors/sample-2",
+   "publish_date": "2026-06-28",
+   "snippet": "ADQ earmarks AED 500m for East African agri-processing",
+   "entities": [
+    "adq",
+    "kenya-agri-processors"
+   ],
+   "media": [],
+   "confidence": 0.8,
+   "corroborations": 1,
+   "weighting": {
+    "temporalClass": "recent",
+    "baseWeight": 0.6,
+    "multipliers": {
+     "uaeRelevance": 2
+    },
+    "windowBoost": 1.5,
+    "finalWeight": 1.8
+   }
+  },
+  {
+   "id": "E3",
+   "claim": "UAE MOFA and Kenya agriculture ministry signed the food security corridor MoU, government PDF published.",
+   "source_type": "government_pdf",
+   "source": "Kenya Ministry of Agriculture",
+   "url": "https://kilimo.go.ke/mou-sample-3.pdf",
+   "publish_date": "2026-07-16",
+   "snippet": "MoU signed on food security corridor",
+   "entities": [
+    "mofa",
+    "kenya-ministry-of-agriculture"
+   ],
+   "media": [],
+   "confidence": 0.85,
+   "corroborations": 1,
+   "weighting": {
+    "temporalClass": "recent",
+    "baseWeight": 0.6,
+    "multipliers": {
+     "uaeRelevance": 2,
+     "governmentSource": 2,
+     "officialStatement": 3
+    },
+    "windowBoost": 1.5,
+    "finalWeight": 10.8
+   }
+  },
+  {
+   "id": "E4",
+   "claim": "DP World expanded Mombasa port logistics capacity in 2024 under an earlier concession.",
+   "source_type": "press_release",
+   "source": "DP World",
+   "url": "https://dpworld.com/news/sample-4",
+   "publish_date": "2024-09-10",
+   "snippet": "Mombasa logistics expansion completed",
+   "entities": [
+    "dpworld",
+    "mombasa-port"
+   ],
+   "media": [],
+   "confidence": 0.75,
+   "corroborations": 1,
+   "weighting": {
+    "temporalClass": "historical",
+    "baseWeight": 0.2,
+    "multipliers": {
+     "uaeRelevance": 2,
+     "officialStatement": 3
+    },
+    "windowBoost": 1,
+    "finalWeight": 1.2
+   }
+  },
+  {
+   "id": "E5",
+   "claim": "A think-tank report says Masdar is evaluating geothermal projects in the Kenyan Rift Valley.",
+   "source_type": "think_tank_report",
+   "source": "TRENDS Research",
+   "url": "https://trendsresearch.org/sample-5",
+   "publish_date": "2026-05-02",
+   "snippet": "Masdar evaluating Rift Valley geothermal",
+   "entities": [
+    "masdar",
+    "kengen"
+   ],
+   "media": [],
+   "confidence": 0.6,
+   "corroborations": 1,
+   "weighting": {
+    "temporalClass": "historical",
+    "baseWeight": 0.2,
+    "multipliers": {
+     "uaeRelevance": 2
+    },
+    "windowBoost": 1,
+    "finalWeight": 0.4
+   }
+  }
+ ],
+ "edges": [
+  {
+   "id": "ED1",
+   "entity_a": "mofa",
+   "entity_b": "kenya-ministry-of-agriculture",
+   "relationship_type": "Aid-Humanitarian",
+   "dimension": null,
+   "direction": "both",
+   "claim": "UAE MOFA and Kenya Ministry of Agriculture signed a food security corridor MoU (officially announced).",
+   "evidence_record_ids": [
+    "E1",
+    "E3"
+   ],
+   "inference": false,
+   "confidence": 0.9,
+   "verification": "Verified",
+   "style": {
+    "color": "#159a7a",
+    "line": "solid",
+    "pulse": false
+   },
+   "weight": 0.7572,
+   "rawWeight": 14.4,
+   "stance": "cooperation",
+   "sourceTypes": [
+    "government_release",
+    "government_pdf"
+   ],
+   "contradiction": false
+  },
+  {
+   "id": "ED2",
+   "entity_a": "adq",
+   "entity_b": "kenya-agri-processors",
+   "relationship_type": "Investment",
+   "dimension": null,
+   "direction": "a->b",
+   "claim": "ADQ committed AED 500m to Kenyan agri-processing ventures.",
+   "evidence_record_ids": [
+    "E2"
+   ],
+   "inference": false,
+   "confidence": 0.7,
+   "verification": "Likely",
+   "style": {
+    "color": "#1dac89",
+    "line": "solid",
+    "pulse": false
+   },
+   "weight": 0.2851,
+   "rawWeight": 1.8,
+   "stance": "cooperation",
+   "sourceTypes": [
+    "investor_presentation"
+   ],
+   "contradiction": false
+  },
+  {
+   "id": "ED3",
+   "entity_a": "masdar",
+   "entity_b": "kengen",
+   "relationship_type": "Energy",
+   "dimension": null,
+   "direction": "a->b",
+   "claim": "Masdar evaluating Rift Valley geothermal projects with KenGen.",
+   "evidence_record_ids": [
+    "E5"
+   ],
+   "inference": false,
+   "confidence": 0.45,
+   "verification": "Possible",
+   "style": {
+    "color": "#1dac89",
+    "line": "dashed",
+    "pulse": false
+   },
+   "weight": 0.0932,
+   "rawWeight": 0.4,
+   "stance": "neutral",
+   "sourceTypes": [
+    "think_tank_report"
+   ],
+   "contradiction": false
+  },
+  {
+   "id": "ED4",
+   "entity_a": "dpworld",
+   "entity_b": "mombasa-port",
+   "relationship_type": "Influence-network",
+   "dimension": "influence_networks",
+   "direction": "a->b",
+   "claim": "Co-mentioned in the same evidence record (E4) \u2014 plausible unstated relationship.",
+   "evidence_record_ids": [
+    "E4"
+   ],
+   "inference": true,
+   "confidence": 0.35,
+   "verification": "Possible",
+   "style": {
+    "color": "#1dac89",
+    "line": "dashed",
+    "pulse": false
+   },
+   "weight": 0.2184,
+   "rawWeight": 1.2,
+   "stance": "neutral",
+   "sourceTypes": [
+    "press_release"
+   ],
+   "contradiction": false
+  }
+ ],
+ "nodes": [
+  {
+   "id": "uae",
+   "label": "UAE",
+   "fullName": "United Arab Emirates",
+   "kind": "country"
+  },
+  {
+   "id": "oda",
+   "label": "ODA",
+   "fullName": "Office of Development Affairs",
+   "kind": "entity",
+   "aliases": [
+    "office of development affairs"
+   ]
+  },
+  {
+   "id": "mofa",
+   "label": "MOFA",
+   "fullName": "Ministry of Foreign Affairs",
+   "kind": "entity",
+   "aliases": [
+    "ministry of foreign affairs",
+    "mofaic",
+    "uae foreign ministry"
+   ]
+  },
+  {
+   "id": "adq",
+   "label": "ADQ",
+   "fullName": "ADQ (Abu Dhabi sovereign holding)",
+   "kind": "entity",
+   "aliases": [
+    "adq"
+   ]
+  },
+  {
+   "id": "mubadala",
+   "label": "Mubadala",
+   "fullName": "Mubadala Investment Company",
+   "kind": "entity",
+   "aliases": [
+    "mubadala"
+   ]
+  },
+  {
+   "id": "g42",
+   "label": "G42",
+   "fullName": "G42 (Group 42)",
+   "kind": "entity",
+   "aliases": [
+    "g42",
+    "group 42"
+   ]
+  },
+  {
+   "id": "core42",
+   "label": "Core42",
+   "fullName": "Core42 (G42 cloud/AI)",
+   "kind": "entity",
+   "aliases": [
+    "core42"
+   ]
+  },
+  {
+   "id": "adnoc",
+   "label": "ADNOC",
+   "fullName": "Abu Dhabi National Oil Company",
+   "kind": "entity",
+   "aliases": [
+    "adnoc",
+    "adnoc distribution",
+    "adnoc gas"
+   ]
+  },
+  {
+   "id": "adports",
+   "label": "AD Ports",
+   "fullName": "AD Ports Group",
+   "kind": "entity",
+   "aliases": [
+    "ad ports",
+    "ad ports group",
+    "abu dhabi ports"
+   ]
+  },
+  {
+   "id": "presight",
+   "label": "Presight",
+   "fullName": "Presight AI (G42)",
+   "kind": "entity",
+   "aliases": [
+    "presight"
+   ]
+  },
+  {
+   "id": "adfd",
+   "label": "ADFD",
+   "fullName": "Abu Dhabi Fund for Development",
+   "kind": "entity",
+   "aliases": [
+    "adfd",
+    "abu dhabi fund"
+   ]
+  },
+  {
+   "id": "masdar",
+   "label": "Masdar",
+   "fullName": "Masdar (clean energy)",
+   "kind": "entity",
+   "aliases": [
+    "masdar"
+   ]
+  },
+  {
+   "id": "etihad",
+   "label": "Etihad",
+   "fullName": "Etihad Airways",
+   "kind": "entity",
+   "aliases": [
+    "etihad",
+    "etihad airways"
+   ]
+  },
+  {
+   "id": "dpworld",
+   "label": "DP World",
+   "fullName": "DP World",
+   "kind": "entity",
+   "aliases": [
+    "dp world"
+   ]
+  },
+  {
+   "id": "edge",
+   "label": "EDGE",
+   "fullName": "EDGE Group (defence)",
+   "kind": "entity",
+   "aliases": [
+    "edge group",
+    "edge"
+   ]
+  },
+  {
+   "id": "ke",
+   "label": "Kenya",
+   "fullName": "Kenya",
+   "kind": "country"
+  },
+  {
+   "id": "kenya-ministry-of-agriculture",
+   "label": "Kenya Ministry Of Agriculture",
+   "fullName": "kenya-ministry-of-agriculture",
+   "kind": "country-side"
+  },
+  {
+   "id": "kenya-agri-processors",
+   "label": "Kenya Agri Processors",
+   "fullName": "kenya-agri-processors",
+   "kind": "country-side"
+  },
+  {
+   "id": "kengen",
+   "label": "Kengen",
+   "fullName": "kengen",
+   "kind": "country-side"
+  },
+  {
+   "id": "mombasa-port",
+   "label": "Mombasa Port",
+   "fullName": "mombasa-port",
+   "kind": "country-side"
+  }
+ ],
+ "predictions": {
+  "likely_announcements": [],
+  "likely_partnerships": [],
+  "potential_risks": [],
+  "potential_opportunities": [],
+  "emerging_conflicts": [],
+  "economic_effects": [],
+  "technology_adoption": [],
+  "investment_likelihood": [],
+  "policy_changes": []
+ },
+ "impact": [
+  {
+   "entity_id": "uae",
+   "overall": "Medium",
+   "overall_reasoning": "Bilateral partner country \u2014 impact potential exists but no evidence retrieved this run; structural prior only.",
+   "dimensions": {
+    "trade": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    },
+    "diplomacy": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    },
+    "investment": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    },
+    "technology": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    },
+    "food_security": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    },
+    "energy": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    },
+    "defence": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    },
+    "climate": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    },
+    "education": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    },
+    "healthcare": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    },
+    "humanitarian_impact": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    },
+    "national_ai_strategy": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    },
+    "economic_diversification": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    },
+    "foreign_policy": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    }
+   },
+   "evidence_based": false
+  },
+  {
+   "entity_id": "oda",
+   "overall": "Low",
+   "overall_reasoning": "UAE state-linked entity present in registry; no run evidence links it to activity this window; structural prior only.",
+   "dimensions": {
+    "trade": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    },
+    "diplomacy": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    },
+    "investment": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    },
+    "technology": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    },
+    "food_security": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    },
+    "energy": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    },
+    "defence": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    },
+    "climate": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    },
+    "education": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    },
+    "healthcare": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    },
+    "humanitarian_impact": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    },
+    "national_ai_strategy": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    },
+    "economic_diversification": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    },
+    "foreign_policy": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    }
+   },
+   "evidence_based": false
+  },
+  {
+   "entity_id": "mofa",
+   "overall": "Low",
+   "overall_reasoning": "UAE state-linked entity present in registry; no run evidence links it to activity this window; structural prior only.",
+   "dimensions": {
+    "trade": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    },
+    "diplomacy": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    },
+    "investment": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    },
+    "technology": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    },
+    "food_security": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    },
+    "energy": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    },
+    "defence": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    },
+    "climate": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    },
+    "education": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    },
+    "healthcare": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    },
+    "humanitarian_impact": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    },
+    "national_ai_strategy": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    },
+    "economic_diversification": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    },
+    "foreign_policy": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    }
+   },
+   "evidence_based": false
+  },
+  {
+   "entity_id": "adq",
+   "overall": "Low",
+   "overall_reasoning": "UAE state-linked entity present in registry; no run evidence links it to activity this window; structural prior only.",
+   "dimensions": {
+    "trade": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    },
+    "diplomacy": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    },
+    "investment": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    },
+    "technology": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    },
+    "food_security": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    },
+    "energy": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    },
+    "defence": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    },
+    "climate": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    },
+    "education": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    },
+    "healthcare": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    },
+    "humanitarian_impact": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    },
+    "national_ai_strategy": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    },
+    "economic_diversification": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    },
+    "foreign_policy": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    }
+   },
+   "evidence_based": false
+  },
+  {
+   "entity_id": "mubadala",
+   "overall": "Low",
+   "overall_reasoning": "UAE state-linked entity present in registry; no run evidence links it to activity this window; structural prior only.",
+   "dimensions": {
+    "trade": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    },
+    "diplomacy": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    },
+    "investment": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    },
+    "technology": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    },
+    "food_security": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    },
+    "energy": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    },
+    "defence": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    },
+    "climate": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    },
+    "education": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    },
+    "healthcare": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    },
+    "humanitarian_impact": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    },
+    "national_ai_strategy": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    },
+    "economic_diversification": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    },
+    "foreign_policy": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    }
+   },
+   "evidence_based": false
+  },
+  {
+   "entity_id": "g42",
+   "overall": "Low",
+   "overall_reasoning": "UAE state-linked entity present in registry; no run evidence links it to activity this window; structural prior only.",
+   "dimensions": {
+    "trade": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    },
+    "diplomacy": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    },
+    "investment": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    },
+    "technology": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    },
+    "food_security": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    },
+    "energy": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    },
+    "defence": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    },
+    "climate": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    },
+    "education": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    },
+    "healthcare": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    },
+    "humanitarian_impact": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    },
+    "national_ai_strategy": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    },
+    "economic_diversification": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    },
+    "foreign_policy": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    }
+   },
+   "evidence_based": false
+  },
+  {
+   "entity_id": "core42",
+   "overall": "Low",
+   "overall_reasoning": "UAE state-linked entity present in registry; no run evidence links it to activity this window; structural prior only.",
+   "dimensions": {
+    "trade": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    },
+    "diplomacy": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    },
+    "investment": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    },
+    "technology": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    },
+    "food_security": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    },
+    "energy": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    },
+    "defence": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    },
+    "climate": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    },
+    "education": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    },
+    "healthcare": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    },
+    "humanitarian_impact": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    },
+    "national_ai_strategy": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    },
+    "economic_diversification": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    },
+    "foreign_policy": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    }
+   },
+   "evidence_based": false
+  },
+  {
+   "entity_id": "adnoc",
+   "overall": "Low",
+   "overall_reasoning": "UAE state-linked entity present in registry; no run evidence links it to activity this window; structural prior only.",
+   "dimensions": {
+    "trade": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    },
+    "diplomacy": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    },
+    "investment": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    },
+    "technology": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    },
+    "food_security": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    },
+    "energy": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    },
+    "defence": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    },
+    "climate": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    },
+    "education": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    },
+    "healthcare": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    },
+    "humanitarian_impact": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    },
+    "national_ai_strategy": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    },
+    "economic_diversification": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    },
+    "foreign_policy": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    }
+   },
+   "evidence_based": false
+  },
+  {
+   "entity_id": "adports",
+   "overall": "Low",
+   "overall_reasoning": "UAE state-linked entity present in registry; no run evidence links it to activity this window; structural prior only.",
+   "dimensions": {
+    "trade": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    },
+    "diplomacy": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    },
+    "investment": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    },
+    "technology": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    },
+    "food_security": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    },
+    "energy": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    },
+    "defence": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    },
+    "climate": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    },
+    "education": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    },
+    "healthcare": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    },
+    "humanitarian_impact": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    },
+    "national_ai_strategy": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    },
+    "economic_diversification": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    },
+    "foreign_policy": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    }
+   },
+   "evidence_based": false
+  },
+  {
+   "entity_id": "presight",
+   "overall": "Low",
+   "overall_reasoning": "UAE state-linked entity present in registry; no run evidence links it to activity this window; structural prior only.",
+   "dimensions": {
+    "trade": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    },
+    "diplomacy": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    },
+    "investment": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    },
+    "technology": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    },
+    "food_security": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    },
+    "energy": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    },
+    "defence": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    },
+    "climate": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    },
+    "education": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    },
+    "healthcare": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    },
+    "humanitarian_impact": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    },
+    "national_ai_strategy": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    },
+    "economic_diversification": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    },
+    "foreign_policy": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    }
+   },
+   "evidence_based": false
+  },
+  {
+   "entity_id": "adfd",
+   "overall": "Low",
+   "overall_reasoning": "UAE state-linked entity present in registry; no run evidence links it to activity this window; structural prior only.",
+   "dimensions": {
+    "trade": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    },
+    "diplomacy": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    },
+    "investment": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    },
+    "technology": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    },
+    "food_security": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    },
+    "energy": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    },
+    "defence": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    },
+    "climate": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    },
+    "education": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    },
+    "healthcare": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    },
+    "humanitarian_impact": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    },
+    "national_ai_strategy": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    },
+    "economic_diversification": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    },
+    "foreign_policy": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    }
+   },
+   "evidence_based": false
+  },
+  {
+   "entity_id": "masdar",
+   "overall": "Low",
+   "overall_reasoning": "UAE state-linked entity present in registry; no run evidence links it to activity this window; structural prior only.",
+   "dimensions": {
+    "trade": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    },
+    "diplomacy": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    },
+    "investment": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    },
+    "technology": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    },
+    "food_security": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    },
+    "energy": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    },
+    "defence": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    },
+    "climate": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    },
+    "education": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    },
+    "healthcare": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    },
+    "humanitarian_impact": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    },
+    "national_ai_strategy": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    },
+    "economic_diversification": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    },
+    "foreign_policy": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    }
+   },
+   "evidence_based": false
+  },
+  {
+   "entity_id": "etihad",
+   "overall": "Low",
+   "overall_reasoning": "UAE state-linked entity present in registry; no run evidence links it to activity this window; structural prior only.",
+   "dimensions": {
+    "trade": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    },
+    "diplomacy": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    },
+    "investment": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    },
+    "technology": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    },
+    "food_security": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    },
+    "energy": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    },
+    "defence": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    },
+    "climate": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    },
+    "education": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    },
+    "healthcare": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    },
+    "humanitarian_impact": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    },
+    "national_ai_strategy": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    },
+    "economic_diversification": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    },
+    "foreign_policy": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    }
+   },
+   "evidence_based": false
+  },
+  {
+   "entity_id": "dpworld",
+   "overall": "Low",
+   "overall_reasoning": "UAE state-linked entity present in registry; no run evidence links it to activity this window; structural prior only.",
+   "dimensions": {
+    "trade": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    },
+    "diplomacy": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    },
+    "investment": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    },
+    "technology": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    },
+    "food_security": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    },
+    "energy": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    },
+    "defence": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    },
+    "climate": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    },
+    "education": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    },
+    "healthcare": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    },
+    "humanitarian_impact": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    },
+    "national_ai_strategy": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    },
+    "economic_diversification": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    },
+    "foreign_policy": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    }
+   },
+   "evidence_based": false
+  },
+  {
+   "entity_id": "edge",
+   "overall": "Low",
+   "overall_reasoning": "UAE state-linked entity present in registry; no run evidence links it to activity this window; structural prior only.",
+   "dimensions": {
+    "trade": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    },
+    "diplomacy": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    },
+    "investment": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    },
+    "technology": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    },
+    "food_security": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    },
+    "energy": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    },
+    "defence": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    },
+    "climate": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    },
+    "education": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    },
+    "healthcare": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    },
+    "humanitarian_impact": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    },
+    "national_ai_strategy": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    },
+    "economic_diversification": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    },
+    "foreign_policy": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    }
+   },
+   "evidence_based": false
+  },
+  {
+   "entity_id": "ke",
+   "overall": "Medium",
+   "overall_reasoning": "Bilateral partner country \u2014 impact potential exists but no evidence retrieved this run; structural prior only.",
+   "dimensions": {
+    "trade": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    },
+    "diplomacy": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    },
+    "investment": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    },
+    "technology": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    },
+    "food_security": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    },
+    "energy": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    },
+    "defence": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    },
+    "climate": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    },
+    "education": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    },
+    "healthcare": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    },
+    "humanitarian_impact": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    },
+    "national_ai_strategy": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    },
+    "economic_diversification": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    },
+    "foreign_policy": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    }
+   },
+   "evidence_based": false
+  },
+  {
+   "entity_id": "kenya-ministry-of-agriculture",
+   "overall": "Low",
+   "overall_reasoning": "Counterparty organisation with no evidenced activity this run; structural prior only.",
+   "dimensions": {
+    "trade": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    },
+    "diplomacy": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    },
+    "investment": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    },
+    "technology": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    },
+    "food_security": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    },
+    "energy": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    },
+    "defence": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    },
+    "climate": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    },
+    "education": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    },
+    "healthcare": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    },
+    "humanitarian_impact": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    },
+    "national_ai_strategy": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    },
+    "economic_diversification": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    },
+    "foreign_policy": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    }
+   },
+   "evidence_based": false
+  },
+  {
+   "entity_id": "kenya-agri-processors",
+   "overall": "Low",
+   "overall_reasoning": "Counterparty organisation with no evidenced activity this run; structural prior only.",
+   "dimensions": {
+    "trade": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    },
+    "diplomacy": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    },
+    "investment": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    },
+    "technology": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    },
+    "food_security": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    },
+    "energy": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    },
+    "defence": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    },
+    "climate": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    },
+    "education": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    },
+    "healthcare": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    },
+    "humanitarian_impact": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    },
+    "national_ai_strategy": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    },
+    "economic_diversification": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    },
+    "foreign_policy": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    }
+   },
+   "evidence_based": false
+  },
+  {
+   "entity_id": "kengen",
+   "overall": "Low",
+   "overall_reasoning": "Counterparty organisation with no evidenced activity this run; structural prior only.",
+   "dimensions": {
+    "trade": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    },
+    "diplomacy": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    },
+    "investment": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    },
+    "technology": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    },
+    "food_security": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    },
+    "energy": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    },
+    "defence": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    },
+    "climate": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    },
+    "education": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    },
+    "healthcare": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    },
+    "humanitarian_impact": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    },
+    "national_ai_strategy": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    },
+    "economic_diversification": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    },
+    "foreign_policy": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    }
+   },
+   "evidence_based": false
+  },
+  {
+   "entity_id": "mombasa-port",
+   "overall": "Low",
+   "overall_reasoning": "Counterparty organisation with no evidenced activity this run; structural prior only.",
+   "dimensions": {
+    "trade": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    },
+    "diplomacy": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    },
+    "investment": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    },
+    "technology": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    },
+    "food_security": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    },
+    "energy": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    },
+    "defence": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    },
+    "climate": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    },
+    "education": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    },
+    "healthcare": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    },
+    "humanitarian_impact": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    },
+    "national_ai_strategy": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    },
+    "economic_diversification": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    },
+    "foreign_policy": {
+     "level": "None",
+     "reasoning": "No evidence retrieved for this dimension in this run (structural prior)."
+    }
+   },
+   "evidence_based": false
+  }
+ ],
+ "weighting_model": {
+  "base": {
+   "historical": 0.2,
+   "recent": 0.6,
+   "breaking": 1
+  },
+  "multipliers": {
+   "uaeRelevance": 2,
+   "governmentSource": 2,
+   "officialStatement": 3,
+   "multiSource": 2
+  },
+  "windowBoost": 1.5
+ },
+ "stats": {
+  "evidenceCount": 5,
+  "edgeCount": 4,
+  "statedEdges": 3,
+  "inferredEdges": 1,
+  "byVerification": {
+   "Verified": 1,
+   "Likely": 1,
+   "Possible": 2,
+   "Predicted": 0
+  },
+  "contradictions": 0,
+  "predictionItems": 0,
+  "emptyUpstream": false,
+  "durationMs": 3
+ },
+ "stageLog": [
+  {
+   "stage": "retrieval:start",
+   "at": "2026-07-19T07:21:25.404Z",
+   "window": "2y",
+   "phrase": "last 2 years (30-day boost) (2024-07-19 \u2192 2026-07-19)",
+   "sourceClasses": 16
+  },
+  {
+   "stage": "retrieval:skipped",
+   "at": "2026-07-19T07:21:25.404Z",
+   "reason": "offline mode"
+  },
+  {
+   "stage": "normalize:start",
+   "at": "2026-07-19T07:21:25.404Z"
+  },
+  {
+   "stage": "normalize:done",
+   "at": "2026-07-19T07:21:25.405Z",
+   "evidenceCount": 5,
+   "emptyUpstream": false
+  },
+  {
+   "stage": "edges:start",
+   "at": "2026-07-19T07:21:25.405Z"
+  },
+  {
+   "stage": "edges:done",
+   "at": "2026-07-19T07:21:25.406Z",
+   "stated": 3,
+   "droppedNoEvidence": 1
+  },
+  {
+   "stage": "correlation-layer:start",
+   "at": "2026-07-19T07:21:25.406Z"
+  },
+  {
+   "stage": "correlation-layer:done",
+   "at": "2026-07-19T07:21:25.406Z",
+   "inferred": 1
+  },
+  {
+   "stage": "prediction:start",
+   "at": "2026-07-19T07:21:25.406Z"
+  },
+  {
+   "stage": "prediction:done",
+   "at": "2026-07-19T07:21:25.406Z",
+   "categories": 9,
+   "items": 0
+  },
+  {
+   "stage": "impact:start",
+   "at": "2026-07-19T07:21:25.406Z"
+  },
+  {
+   "stage": "impact:done",
+   "at": "2026-07-19T07:21:25.407Z",
+   "scored": 20
+  },
+  {
+   "stage": "complete",
+   "at": "2026-07-19T07:21:25.407Z",
+   "edges": 4,
+   "evidence": 5
+  }
+ ],
+ "diffFromPrevious": {
+  "addedEdges": [
+   "kenya-ministry-of-agriculture~mofa|Aid-Humanitarian",
+   "adq~kenya-agri-processors|Investment",
+   "kengen~masdar|Energy",
+   "dpworld~mombasa-port|Influence-network"
+  ],
+  "removedEdges": [
+   "qatar~uae|Diplomatic",
+   "iran~uae|Diplomatic",
+   "eu~uae|Diplomatic",
+   "relief-beneficiaries~uae|Aid-Humanitarian",
+   "ke~unnamed-investors|Investment",
+   "ke~uae|Media-narrative"
+  ],
+  "addedEvidence": [
+   "E1",
+   "E2",
+   "E3",
+   "E4",
+   "E5"
+  ],
+  "weightChanges": [],
+  "newEdgeIds": [
+   "ED1",
+   "ED2",
+   "ED3",
+   "ED4"
+  ]
+ }
+}

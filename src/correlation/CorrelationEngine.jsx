@@ -479,6 +479,13 @@ export default function CorrelationEngine({ iso, countryName }) {
                 <span className="ce-lg"><i className="ce-lg__badge">2</i>badge = distinct evidence records on this node's edges (click for breakdown)</span>
                 <span className="ce-lg"><i className="ce-lg__dot" style={{ background: '#111827' }} />dark disc = country node</span>
                 <span className="ce-lg">size = weight · width = strength · color = type</span>
+                {/* verification-tier legend (QA fix 2026-07-20): edge tiers were styled
+                    but never explained on-canvas — Verified solid / Likely solid /
+                    Possible dashed / Predicted dotted */}
+                <span className="ce-lg"><i className="ce-lg__tier" style={{ borderTop: '2.5px solid #159a7a' }} />Verified — solid</span>
+                <span className="ce-lg"><i className="ce-lg__tier" style={{ borderTop: '2.5px solid #1dac89' }} />Likely — solid</span>
+                <span className="ce-lg"><i className="ce-lg__tier" style={{ borderTop: '2.5px dashed #1dac89' }} />Possible — dashed</span>
+                <span className="ce-lg"><i className="ce-lg__tier" style={{ borderTop: '2.5px dotted #8aa8a0' }} />Predicted — dotted</span>
               </div>
               <AnimatePresence>
                 {(pinPop || pop) && (

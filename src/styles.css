@@ -1333,7 +1333,7 @@ a.xpost:focus-visible { outline: 2px solid #1d9bf0; outline-offset: -2px; border
 /* CE legend strip + density badges (2026-07-19 consolidated build) */
 .ce-lgstrip { position: absolute; left: 10px; bottom: 8px; z-index: 5; display: flex; gap: 12px; flex-wrap: wrap; align-items: center; background: rgba(255,255,255,0.92); border: 1px solid #eef1f6; border-radius: 8px; padding: 4px 10px; font-size: 9.5px; color: #4b5563; }
 .ce-lgstrip .ce-lg { display: inline-flex; align-items: center; gap: 5px; }
-.ce-lg__halo { width: 12px; height: 12px; border-radius: 50%; background: radial-gradient(circle, #fff 35%, #e9d5ff 36%, #e9d5ff 100%); border: 1px solid #a7d9cb; display: inline-block; }
+.ce-lg__halo { width: 12px; height: 12px; border-radius: 50%; background: radial-gradient(circle, #fff 35%, #d3ece4 36%, #d3ece4 100%); border: 1px solid #a7d9cb; display: inline-block; }
 .ce-lg__badge { background: #fff; color: #0f766e; border: 1px solid #159a7a; font-weight: 700; font-size: 7.5px; border-radius: 999px; padding: 1px 6px; font-style: normal; }
 .ce-lg__dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
 /* ===================== Correlation Engine V2 (2026-07-19) ===================== */
@@ -1567,3 +1567,6 @@ a.xpost:focus-visible { outline: 2px solid #1d9bf0; outline-offset: -2px; border
 .ig-resetview { display: inline-flex; align-items: center; gap: 5px; border: 1px solid #e5e7eb; background: #fff;
   color: #374151; border-radius: 8px; padding: 4px 9px; font: 600 10.5px Montserrat, sans-serif; cursor: pointer; }
 .ig-resetview:hover { border-color: #a7d9cb; color: #159a7a; }
+
+/* verification-tier legend swatches (QA fix 2026-07-20) */
+.ce-lg__tier { width: 18px; height: 0; display: inline-block; vertical-align: middle; margin-right: 4px; }

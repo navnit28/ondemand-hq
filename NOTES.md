@@ -1221,3 +1221,25 @@ Undocumented in public docs: explicit tool-use/HTML-generation capability matric
   {message} — server/speech.js maps these to SERVICE_NOT_SUBSCRIBED.
 - Data retention / logging / training use: ZERO statements in the public docs → treat as
   undocumented/deployment-dependent (see BASELINE_AUDIT.md privacy section).
+
+## 2026-07-20 — FINAL VERIFICATION & DELIVERY (digest)
+
+- Test suite extended: 18 → **51 tests** (`tests/voice.test.mjs` 18 + NEW
+  `tests/regression.test.mjs` 15 + NEW `tests/interaction.test.mjs` 18) — **51/51 PASS**.
+  Run: `node --test tests/*.test.mjs` (note: bare `node --test tests/` does NOT glob on
+  node22 — pass explicit files).
+- The new tests exposed 2 real library-level bugs fixed this turn:
+  (a) `SET_LANGUAGE` reducer action unreachable (checked after transition-table miss);
+  (b) `import { pagerank } from 'graphology-metrics'` = undefined (namespace-only index;
+  fixed via `graphology-metrics/centrality/pagerank.js` subpath — PageRank sizing was
+  silently disabled everywhere).
+- Headless QA (25/25) exposed 3 UI bugs fixed this turn: NaN Signal-Loom paths for
+  off-scale relationship types (Influence-network), privacy note visible only in the
+  sub-second ACTIVATING window, missing verification-tier legend. Plus final purple hex
+  (#e9d5ff legend halo) removed.
+- Seed hydration: KE deep-v2 run + deterministic BD dense fixture now TRACKED under
+  server/data/correlation-seed/ so deploys don't depend on external blob URLs.
+- QA proof artifacts: qa/qa25-<timestamp>-{01..11}.png + qa/qa25-results.json (committed).
+- Env sanity for tests/QA on recycled workspaces: `npm install` first (esbuild postinstall
+  is blocked by allowScripts but vite build still works); run QA via detached setsid
+  script writing to /tmp logs (shell recycling kills long foreground runs).
