@@ -1,0 +1,78 @@
+event:message
+data:{"sessionId":"6a5da6341b012f29069a0488","messageId":"6a5da6361b012f29069a048a","eventIndex":1,"eventType":"statusLog","status":"processing","currentStatusLog":{"statusType":"fulfilling","statusMessage":"Fulfilling the prompt...","time":"2026-07-20T04:38:14Z"}}
+
+event:thinking
+data:{"sessionId":"6a5da6341b012f29069a0488","messageId":"6a5da6361b012f29069a048a","eventIndex":1,"eventType":"fulfillment_thinking","status":"processing","thinking":{"delta":"The user is asking for a short sentence"}}
+
+event:thinking
+data:{"sessionId":"6a5da6341b012f29069a0488","messageId":"6a5da6361b012f29069a048a","eventIndex":2,"eventType":"fulfillment_thinking","status":"processing","thinking":{"delta":" describing Abu Dhabi.\nThe system prompt"}}
+
+event:thinking
+data:{"sessionId":"6a5da6341b012f29069a0488","messageId":"6a5da6361b012f29069a048a","eventIndex":3,"eventType":"fulfillment_thinking","status":"processing","thinking":{"delta":" emphasizes using provided context ("}}
+
+event:thinking
+data:{"sessionId":"6a5da6341b012f29069a0488","messageId":"6a5da6361b012f29069a048a","eventIndex":4,"eventType":"fulfillment_thinking","status":"processing","thinking":{"delta":"chat history/plugin responses)"}}
+
+event:thinking
+data:{"sessionId":"6a5da6341b012f29069a0488","messageId":"6a5da6361b012f29069a048a","eventIndex":5,"eventType":"fulfillment_thinking","status":"processing","thinking":{"delta":" if available. However, looking at"}}
+
+event:thinking
+data:{"sessionId":"6a5da6341b012f29069a0488","messageId":"6a5da6361b012f29069a048a","eventIndex":6,"eventType":"fulfillment_thinking","status":"processing","thinking":{"delta":" the current turn, there is no chat history or"}}
+
+event:thinking
+data:{"sessionId":"6a5da6341b012f29069a0488","messageId":"6a5da6361b012f29069a048a","eventIndex":7,"eventType":"fulfillment_thinking","status":"processing","thinking":{"delta":" plugin responses provided in the `\u003c"}}
+
+event:thinking
+data:{"sessionId":"6a5da6341b012f29069a0488","messageId":"6a5da6361b012f29069a048a","eventIndex":8,"eventType":"fulfillment_thinking","status":"processing","thinking":{"delta":"user\u003e` block or any preceding blocks"}}
+
+event:thinking
+data:{"sessionId":"6a5da6341b012f29069a0488","messageId":"6a5da6361b012f29069a048a","eventIndex":9,"eventType":"fulfillment_thinking","status":"processing","thinking":{"delta":" (other than the system prompt itself).\nThe"}}
+
+event:thinking
+data:{"sessionId":"6a5da6341b012f29069a0488","messageId":"6a5da6361b012f29069a048a","eventIndex":10,"eventType":"fulfillment_thinking","status":"processing","thinking":{"delta":" instruction says: \"If the answer and its relevant context can be derived"}}
+
+event:thinking
+data:{"sessionId":"6a5da6341b012f29069a0488","messageId":"6a5da6361b012f29069a048a","eventIndex":11,"eventType":"fulfillment_thinking","status":"processing","thinking":{"delta":" from the chat history or plugin responses, provide the answer from that information; otherwise,"}}
+
+event:thinking
+data:{"sessionId":"6a5da6341b012f29069a0488","messageId":"6a5da6361b012f29069a048a","eventIndex":12,"eventType":"fulfillment_thinking","status":"processing","thinking":{"delta":" answer from your knowledge.\"\nSince there is no context"}}
+
+event:thinking
+data:{"sessionId":"6a5da6341b012f29069a0488","messageId":"6a5da6361b012f29069a048a","eventIndex":13,"eventType":"fulfillment_thinking","status":"processing","thinking":{"delta":" provided, I must answer from my knowledge"}}
+
+event:thinking
+data:{"sessionId":"6a5da6341b012f29069a0488","messageId":"6a5da6361b012f29069a048a","eventIndex":14,"eventType":"fulfillment_thinking","status":"processing","thinking":{"delta":".\nAbu Dhabi is the capital of the United Arab Emirates"}}
+
+event:thinking
+data:{"sessionId":"6a5da6341b012f29069a0488","messageId":"6a5da6361b012f29069a048a","eventIndex":15,"eventType":"fulfillment_thinking","status":"processing","thinking":{"delta":".\nIt is also known for its modern"}}
+
+event:thinking
+data:{"sessionId":"6a5da6341b012f29069a0488","messageId":"6a5da6361b012f29069a048a","eventIndex":16,"eventType":"fulfillment_thinking","status":"processing","thinking":{"delta":" architecture and oil exports.\nThe"}}
+
+event:thinking
+data:{"sessionId":"6a5da6341b012f29069a0488","messageId":"6a5da6361b012f29069a048a","eventIndex":17,"eventType":"fulfillment_thinking","status":"processing","thinking":{"delta":" user requested \"one short sentence\".\n\n"}}
+
+event:thinking
+data:{"sessionId":"6a5da6341b012f29069a0488","messageId":"6a5da6361b012f29069a048a","eventIndex":18,"eventType":"fulfillment_thinking","status":"processing","thinking":{"delta":"Draft answer: Abu Dhabi is the capital"}}
+
+event:thinking
+data:{"sessionId":"6a5da6341b012f29069a0488","messageId":"6a5da6361b012f29069a048a","eventIndex":19,"eventType":"fulfillment_thinking","status":"processing","thinking":{"delta":" city of the United Arab Emirates."}}
+
+event:message
+data:{"sessionId": "6a5da6341b012f29069a0488", "messageId": "6a5da6361b012f29069a048a", "answer": "Abu Dhabi is the capital city of the United", "status": "processing", "eventIndex":2, "eventType": "fulfillment"}
+
+event:message
+data:{"sessionId": "6a5da6341b012f29069a0488", "messageId": "6a5da6361b012f29069a048a", "answer": " Arab Emirates.", "status": "processing", "eventIndex":3, "eventType": "fulfillment"}
+
+event:thinking
+data:{"sessionId":"6a5da6341b012f29069a0488","messageId":"6a5da6361b012f29069a048a","eventIndex":20,"eventType":"fulfillment_thinking","status":"processing","thinking":{"delta":""}}
+
+event:message
+data:{"sessionId":"6a5da6341b012f29069a0488","messageId":"6a5da6361b012f29069a048a","eventIndex":4,"eventType":"statusLog","status":"processing","currentStatusLog":{"statusType":"fulfillment_completed","statusMessage":"Fulfillment completed","answer":"Abu Dhabi is the capital city of the United Arab Emirates.","time":"2026-07-20T04:38:14Z"}}
+
+event:message
+data:{"sessionId":"6a5da6341b012f29069a0488","messageId":"6a5da6361b012f29069a048a","eventIndex":5,"eventType":"metricsLog","status":"processing","publicMetrics":{"inputTokens":554,"outputTokens":176,"totalTokens":730,"ragTimeSec":0,"fulfillmentTimeSec":0.44,"totalTimeSec":0.44}}
+
+event:message
+data:[DONE]
+

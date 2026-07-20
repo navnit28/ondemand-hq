@@ -65,23 +65,41 @@ async function parseUpstreamError(r) {
 }
 
 export async function createOdSession(externalUserId, pluginIds = []) {
-  const r = await odFetch(`${ONDEMAND_BASE_URL}/chat/v1/sessions`, {
-    method: 'POST', headers: H,
-    body: JSON.stringify({ externalUserId, agentIds: toAgentIds(pluginIds) }),
-  });
-  // Docs label success 200; the live API returns 201 Created — r.ok covers the whole 200-299
-  // range, so any 2xx (200 or 201) is treated as success here.
-  if (!r.ok) {
+  // (2026-07-20 streaming-bug fix) The gateway INTERMITTENTLY answers session-create
+  // with 404 "no Route matched with those values" (observed live: first typed-prompt
+  // call 404s, immediate identical retry 201s). odFetch only retries network/5xx, so
+  // this transient 404 previously killed the whole first turn of every NEW
+  // conversation right after thinking had streamed — the "typed prompt stops after
+  // Thought process" bug. Conversation starters worked because their conversations
+  // already held an odSessionId. Fix: up to 2 extra attempts on 404 with a short
+  // backoff — bounded, logged, and only for this specific route-miss signature.
+  let lastErr = null;
+  for (let attempt = 0; attempt < 3; attempt++) {
+    if (attempt > 0) await new Promise(res => setTimeout(res, 400 * attempt));
+    const r = await odFetch(`${ONDEMAND_BASE_URL}/chat/v1/sessions`, {
+      method: 'POST', headers: H,
+      body: JSON.stringify({ externalUserId, agentIds: toAgentIds(pluginIds) }),
+    });
+    // Docs label success 200; the live API returns 201 Created — r.ok covers the whole 200-299
+    // range, so any 2xx (200 or 201) is treated as success here.
+    if (r.ok) {
+      const j = await r.json();
+      return j?.data?.id;
+    }
     const { message, upstreamErrorCode } = await parseUpstreamError(r);
-    console.error(`[FAIL] [HARD-FAIL] OnDemand session create HTTP ${r.status}: ${message}`);
     const err = new Error(`OnDemand session create failed (HTTP ${r.status}): ${message}`);
     err.status = r.status;
     err.errorCode = `UPSTREAM_HTTP_${r.status}`;
     err.upstreamErrorCode = upstreamErrorCode;
+    lastErr = err;
+    if (r.status === 404 && attempt < 2) {
+      console.error(`[WARN] OnDemand session create transient HTTP 404 (attempt ${attempt + 1}/3) — retrying: ${message}`);
+      continue;
+    }
+    console.error(`[FAIL] [HARD-FAIL] OnDemand session create HTTP ${r.status}: ${message}`);
     throw err;
   }
-  const j = await r.json();
-  return j?.data?.id;
+  throw lastErr;
 }
 
 /**
