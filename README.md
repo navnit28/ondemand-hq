@@ -1,4 +1,4 @@
-# OnDemand HQ — Digital Twin (Vercel-ready)
+# OnDemand HQ — Digital Twin (Vercel)
 
 A self-contained, **zero-build** static site: an interactive WebGL walkthrough of the OnDemand HQ
 digital twin (the 18,067-object "MAX" build, ~17k procedural props) plus a render gallery of the
