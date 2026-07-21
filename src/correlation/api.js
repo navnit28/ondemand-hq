@@ -8,6 +8,10 @@ export const runDownloadUrl = (iso, runId) => `/api/correlation/run/${iso}/${run
 export const regenerate = (iso) => fetch(`/api/correlation/regenerate/${iso}`, { method: 'POST' }).then(j);
 export const pipelineStatus = (iso) => fetch(`/api/correlation/status/${iso}`).then(j);
 
+// ---- Start Correlation Engine + latest-result (2026-07-20) ----
+export const startEngine = (iso, opts = {}) => fetch(`/api/correlation/deep/${iso}`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(opts) }).then(j);
+export const getLatest = (iso) => fetch(`/api/correlation/latest/${iso}`).then(j);
+
 /** Stream the Connected Dots narrative (real SSE from the analysis model).
  *  onToken(text) per fulfillment delta; returns final full text. */
 export function streamNarrative(iso, runId, { onToken, onError } = {}) {

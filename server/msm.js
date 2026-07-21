@@ -9,7 +9,7 @@
 //      GET /media/v1/public/file (sort=-createdAt) until the record flips to
 //      completed/failed (5s interval, 300s budget) — the documented actionStatus
 //      polling path from NOTES.md.
-//   2. ANALYSE — per video, gpt-5.6-sol-medium (predefined-gpt-5.6-sol +
+//   2. ANALYSE — per video, GLM 4.7 BYOI (shared ENDPOINT_ID +
 //      reasoningEffort "medium") with responseMode "stream" via streamQuery();
 //      thinking deltas (planning_thinking / step_thinking / fulfillment_thinking)
 //      are captured SEPARATELY from answer tokens and persisted per video.
@@ -18,7 +18,7 @@
 //   3. STORE + DEDUPE — disk-persisted per-day records under server/data/msm/
 //      keyed by videoId; a global index guarantees a videoId is NEVER
 //      re-transcribed once processed (transcripts are reused across runs/days).
-//   4. DIGEST — one extra gpt-5.6-sol-medium streamed call builds the daily
+//   4. DIGEST — one extra streamed call (shared GLM policy) builds the daily
 //      digest strip (top 3 ODA-relevant stories + narrative); sentiment balance
 //      and flag counts are computed deterministically in code (never invented).
 //
@@ -41,7 +41,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { Document, Packer, Paragraph, TextRun, HeadingLevel } from 'docx';
-import { ONDEMAND_API_KEY, ONDEMAND_BASE_URL } from './env.js';
+import { ONDEMAND_API_KEY, ONDEMAND_BASE_URL, ENDPOINT_ID, REASONING_EFFORT } from './env.js';
 import { createOdSession, streamQuery } from './ondemand.js';
 import { DATA_DIR as DATA_BASE } from './paths.js';
 
@@ -289,7 +289,7 @@ async function transcribeVideo(day, video, mediaSessionId) {
   return { ok: true, mediaId: media.id, chars: text.length };
 }
 
-// ---------- 2) ANALYSE (gpt-5.6-sol-medium, streaming, thinking captured) ----------
+// ---------- 2) ANALYSE (GLM 4.7 BYOI, streaming, thinking captured) ----------
 const MSM_SYSTEM = `You are the media-analysis desk of the UAE Office of Development Affairs (ODA), Abu Dhabi.
 You receive ONE broadcast transcript. Ground EVERY statement strictly in that transcript — never invent facts, names, or numbers that are not in it. If the content is unrelated to ODA themes, say so honestly.
 ODA themes: UAE, Gulf, international development, aid, humanitarian affairs, economic development, Abu Dhabi, regional stability.
@@ -395,7 +395,7 @@ async function analyseVideo(day, video, transcript) {
     return { ok: false, reason: 'Model output was not parseable JSON' };
   }
   parsed.thinking = thinking.slice(0, 20000);
-  parsed.model = 'gpt-5.6-sol-medium';
+  parsed.model = `${ENDPOINT_ID}+${REASONING_EFFORT}`; // dynamic — mirrors the live decomposed model policy (2026-07-20 mode audit)
   parsed.streamed = true;
   parsed.analysedAt = nowIso();
   parsed.transcriptTruncatedForAnalysis = truncated;
@@ -457,7 +457,7 @@ async function buildDigest(day, emit) {
     sentimentBalance: balance,
     flagCounts: flags,
     analysedCount: done.length,
-    model: 'gpt-5.6-sol-medium', streamed: true,
+    model: `${ENDPOINT_ID}+${REASONING_EFFORT}`, streamed: true,
     thinking: thinking.slice(0, 8000),
     builtAt: nowIso(),
     latencyMs: Date.now() - t0,
@@ -622,7 +622,7 @@ async function transcriptDocx(video, text) {
 export function registerMsmRoutes(app) {
   app.get('/api/msm/config', (req, res) => res.json({
     outlets: OUTLETS, schedule: SCHEDULE,
-    transcription: { api: 'POST /media/v1/public/file (OnDemand Media API, YouTube URL, actionStatus polling)', analysisModel: 'gpt-5.6-sol-medium (streamed, thinking captured)' },
+    transcription: { api: 'POST /media/v1/public/file (OnDemand Media API, YouTube URL, actionStatus polling)', analysisModel: `${ENDPOINT_ID}+${REASONING_EFFORT} (streamed, thinking captured)` },
   }));
 
   app.get('/api/msm/dates', (req, res) => res.json({ dates: listDates() }));

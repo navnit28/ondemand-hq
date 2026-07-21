@@ -2,7 +2,7 @@
 // Replaces the round-1 gather→normalize→edges flow with the full 7-part pipeline:
 //   (a) DEEP SEARCH MODE research windows        → ./windows.js
 //   (b) CONTEXT WEIGHTING on every fact/edge     → ./weighting.js
-//   (c) 16-class maximum-evidence retrieval      → ./sources.js
+//   (c) 16-class maximum-evidence retrieval + HARD-FORCE 100+ min data-fetch → ./sources.js, ./dataFetch.js
 //   (d) 10-specialist Perplexity orchestration   → ./specialists.js
 //   (e) AI CORRELATION LAYER (inferred edges)    → ./correlationLayer.js
 //   (f) PREDICTION MODE                          → ./prediction.js
@@ -12,9 +12,10 @@
 // EMPTY-UPSTREAM RESILIENCE: every stage accepts an empty-but-valid evidence set (the
 // 2026-07-19 live fetches returned 0 articles / timeouts) and still emits a valid,
 // versioned, diffable run snapshot; the scheduled workflow populates data on later runs.
-// Model policy: ALL model calls = gpt-5.6-sol-medium (predefined-gpt-5.6-sol + medium),
+// Model policy (2026-07-20 GLM switch): ALL model calls = GLM 4.7 Cerebras BYOI + validated reasoningEffort,
 // streamed where the platform supports it (streamQuery), sync JSON extraction otherwise.
 
+import { KIMI_K3_ENDPOINT_ID, KIMI_K3_REASONING_EFFORT, validEffort } from '../env.js';
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -23,16 +24,19 @@ import * as log from '../log.js';
 import { resolveWindow, windowPhrase, inWindow, RESEARCH_WINDOWS, DEFAULT_WINDOW } from './windows.js';
 import { weighFact, edgeWeightFromEvidence, markCorroborations } from './weighting.js';
 import { buildRetrievalPlan, SOURCE_TYPES } from './sources.js';
+import { hardForceDataPoints, buildExtractionMaterial, MIN_DATA_POINTS } from './dataFetch.js';
 import { buildSpecialistPrompts, SPECIALISTS, SPECIALIST_SYSTEM } from './specialists.js';
 import { assignVerification, buildInferencePrompt, deterministicInference, VERIFICATION_TIERS } from './correlationLayer.js';
 import { buildPredictionPrompt, normalisePredictions, PREDICTION_CATEGORIES } from './prediction.js';
 import { buildImpactPrompt, normaliseImpactScores, structuralImpactScores } from './impact.js';
 
+
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
-// gpt-5.6-sol-medium everywhere (decomposed form — suffixed id returns HTTP 400; Phase-1 verified).
-export const DEEP_ENDPOINT_ID = process.env.DEEP_ENDPOINT_ID || 'predefined-gpt-5.6-sol';
-export const DEEP_REASONING_EFFORT = process.env.DEEP_REASONING_EFFORT || 'medium';
+// GLM 4.7 BYOI everywhere (decomposed form — suffixed id returns HTTP 400; Phase-1 verified).
+// ONLY the ACTIVE BYOI id — predefined-glm-4.7/-flash are inactive registry entries.
+export const DEEP_ENDPOINT_ID = process.env.DEEP_ENDPOINT_ID || KIMI_K3_ENDPOINT_ID; // Kimi K3 — THE correlating model (2026-07-21; GLM removed from correlation)
+export const DEEP_REASONING_EFFORT = validEffort(process.env.DEEP_REASONING_EFFORT, KIMI_K3_REASONING_EFFORT); // MEDIUM — validated low|medium|max, decomposed form only (suffixed ids = HTTP 400)
 
 // Edge styling contract persisted for the frontend (brand tokens).
 export const EDGE_STYLE = {
@@ -56,7 +60,7 @@ const extractJson = (text) => {
   return null;
 };
 
-/** Streamed model call on gpt-5.6-sol-medium; falls back to sync on stream failure. */
+/** Streamed model call on GLM 4.7 BYOI + validated effort; falls back to sync on stream failure. */
 async function modelCall({ session, prompt, systemPrompt, pluginIds = [], onToken }) {
   try {
     let acc = '';
@@ -135,29 +139,32 @@ export async function runDeepPipeline({
     stage('retrieval:skipped', { reason: 'offline mode' });
   }
 
-  // ---------- Stage C: normalize → typed evidence records (empty-safe) ----------
+  // ---------- Stage C: normalize → typed evidence records (HARD-FORCE data-fetch layer, 2026-07-20) ----------
+  // The old single "Up to 60 records, no minimum" extraction is REPLACED by the
+  // hard-force data-fetch layer (./dataFetch.js): strict minimum 100+ validated
+  // data points per run, below-minimum responses rejected and automatically
+  // retried, no odd/partial batches, Cerebras GLM 4.7 first (ultimate speed)
+  // with fable-5-medium automatic fallback.
   stage('normalize:start');
   let evidence = Array.isArray(seedEvidence) ? [...seedEvidence] : [];
-  if (!offline && (rawMaterial.length || Object.keys(specialistOutputs).length)) {
-    const material = [
+  let fetchRes = null;
+  if (!offline) {
+    const liveMaterial = [
       ...rawMaterial.map(m => `=== SOURCE:${m.sourceType} ===\n${(m.text || '').slice(0, 6000)}`),
       ...Object.entries(specialistOutputs).map(([id, s]) => `=== SPECIALIST:${id}(${s.role}) ===\n${(s.text || '').slice(0, 6000)}`),
-    ].join('\n\n');
-    const sidN = await createOdSession(`deep-${iso}-normalize`, []);
-    const raw = await modelCall({
-      session: sidN,
-      systemPrompt: 'You are the ODA Correlation Engine extractor. ONE valid JSON array only — no prose. Ground every field in the material; null when unknown; never invent URLs, dates, or facts.',
-      prompt: `Extract an EVIDENCE ARRAY from the material. Each record:
-{"id":"E1"(sequential),"claim":string,"source_type":one of ${JSON.stringify(SOURCE_TYPES)},
- "source":string,"url":string(verbatim from material or null),"publish_date":"YYYY-MM-DD"|null,
- "snippet":string(≤40 words),"entities":[lowercase entity slugs],"confidence":number 0-1}
-Rules: ONLY claims present in the material. Up to 60 records — maximise evidence density.
-${material}`,
+    ].join('\n\n').slice(0, 80000); // cap live material so combined prompt stays inside GLM's 65k ctx
+    // Live plugin/specialist material ENRICHES the guaranteed real corpus base —
+    // the extraction prompt always has enough real material to clear the floor.
+    const combinedMaterial = [liveMaterial, buildExtractionMaterial({ iso, countryName })]
+      .filter(Boolean).join('\n\n').slice(0, 140000);
+    fetchRes = await hardForceDataPoints({
+      iso, countryName, phrase, material: combinedMaterial,
+      sessionTag: `deep-${iso}-datafetch`,
+      onAttempt: (a) => stage('datafetch:attempt', { attempt: a.attempt, endpoint: a.endpointId, count: a.validCount, accepted: a.accepted }),
     });
-    const parsed = extractJson(raw);
-    if (Array.isArray(parsed)) evidence = evidence.concat(parsed);
+    evidence = evidence.concat(fetchRes.dataPoints);
   }
-  // Validate + window-filter + weight EVERY fact (empty-safe).
+  // Validate + weight EVERY fact (empty-safe).
   evidence = evidence.map((v, i) => ({
     id: v.id || `E${i + 1}`,
     claim: String(v.claim || '').slice(0, 400),
@@ -168,11 +175,39 @@ ${material}`,
     snippet: String(v.snippet || '').slice(0, 400),
     entities: Array.isArray(v.entities) ? v.entities.map(e => String(e).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '')).filter(Boolean) : [],
     media: v.media || [],
+    origin: v.origin || 'model',
     confidence: Math.max(0, Math.min(1, Number(v.confidence) || 0.5)),
-  })).filter(v => v.claim.length > 8 && inWindow(v.publish_date, win, nowTs));
+  })).filter(v => v.claim.length > 8);
+  if (offline || !fetchRes) {
+    // legacy semantics for offline/seeded runs: strict window filter, original ids kept
+    evidence = evidence.filter(v => inWindow(v.publish_date, win, nowTs));
+  } else {
+    // HARD FLOOR PRESERVATION: window filtering must never break the ≥MIN_DATA_POINTS
+    // guarantee. In-window records are preferred; out-of-window records are retained
+    // (highest confidence first) only when dropping them would fall below the floor.
+    const inWin = evidence.filter(v => inWindow(v.publish_date, win, nowTs));
+    if (inWin.length >= MIN_DATA_POINTS) {
+      evidence = inWin;
+    } else {
+      const outWin = evidence.filter(v => !inWindow(v.publish_date, win, nowTs))
+        .sort((a, b) => (b.confidence ?? 0) - (a.confidence ?? 0));
+      evidence = inWin.concat(outWin.slice(0, Math.max(0, MIN_DATA_POINTS - inWin.length)));
+    }
+    // No odd batches: drop the single lowest-confidence record if the count is odd.
+    if (evidence.length % 2 === 1) {
+      let minIdx = 0;
+      for (let i = 1; i < evidence.length; i++) if ((evidence[i].confidence ?? 0) < (evidence[minIdx].confidence ?? 0)) minIdx = i;
+      evidence.splice(minIdx, 1);
+    }
+    // Re-id sequentially so downstream edge gating has unique, collision-free ids.
+    evidence = evidence.map((v, i) => ({ ...v, id: `E${i + 1}` }));
+  }
   markCorroborations(evidence);
   for (const v of evidence) v.weighting = weighFact(v, { nowTs, win });   // (b) persisted per-fact weight
-  stage('normalize:done', { evidenceCount: evidence.length, emptyUpstream: evidence.length === 0 });
+  stage('normalize:done', {
+    evidenceCount: evidence.length, emptyUpstream: evidence.length === 0,
+    hardForce: fetchRes ? { endpointUsed: fetchRes.endpointUsed, fallbackUsed: fetchRes.fallbackUsed, attempts: fetchRes.attempts.length, corpusBackfilled: fetchRes.corpusBackfilled } : null,
+  });
 
   // ---------- Stage D: stated-edge extraction (evidence-gated; empty-safe) ----------
   stage('edges:start');
@@ -307,7 +342,11 @@ Extract RELATIONSHIP EDGES — JSON array of:
     generated_at: startedAt.toISOString(),
     pipeline: 'deep-v2',
     window: { id: win.id, label: win.label, days: win.days, boostRecentDays: win.boostRecentDays, boostFactor: win.boostFactor, phrase },
-    model: { all: `${DEEP_ENDPOINT_ID}+${DEEP_REASONING_EFFORT}`, streaming: true },
+    model: {
+      all: `${DEEP_ENDPOINT_ID}+${DEEP_REASONING_EFFORT}`, streaming: true,
+      // hard-force data-fetch provenance (2026-07-20): which endpoint actually delivered the run
+      dataFetch: fetchRes ? `${fetchRes.endpointUsed}+hardforce-min${MIN_DATA_POINTS}` : 'offline',
+    },
     specialists: Object.fromEntries(Object.entries(specialistOutputs).map(([id, s]) => [id, { role: s.role, chars: s.chars }])),
     evidence, edges, nodes, predictions, impact,
     weighting_model: {
@@ -324,6 +363,20 @@ Extract RELATIONSHIP EDGES — JSON array of:
       contradictions: edges.filter(e => e.contradiction).length,
       predictionItems: Object.values(predictions).reduce((a, c) => a + c.length, 0),
       emptyUpstream: evidence.length === 0,
+      // hard-force data-fetch audit trail (2026-07-20): full attempt log with
+      // per-attempt endpoint, count, accept/reject reason and latency.
+      dataFetch: fetchRes ? {
+        minRequired: MIN_DATA_POINTS,
+        attempts: fetchRes.attempts,
+        endpointUsed: fetchRes.endpointUsed,
+        fallbackUsed: fetchRes.fallbackUsed,
+        corpusBackfilled: fetchRes.corpusBackfilled,
+        // adaptive smart-run audit (2026-07-21): per-pass counts + gate verdicts
+        primaryCount: fetchRes.primaryCount ?? null,
+        deltaAdded: fetchRes.deltaAdded ?? null,
+        mergedCount: fetchRes.mergedCount ?? null,
+        passes: fetchRes.passes ?? [],
+      } : null,
       durationMs: Date.now() - nowTs,
     },
     stageLog,

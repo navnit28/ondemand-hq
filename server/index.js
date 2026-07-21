@@ -158,7 +158,7 @@ app.post('/api/chat', async (req, res) => {
     send('routing', {
       feature, mode, reason: route.reason, source: route.source,
       analysisFirst: Boolean(route.analysisFirst), outOfScope: Boolean(route.outOfScope),
-      plugins: pluginLabels, model: 'gpt-5.6-sol-medium',
+      plugins: pluginLabels, model: `${ENDPOINT_ID}+${REASONING_EFFORT}`,
     });
 
     // 2) Per-conversation OnDemand session (create once, reuse)
@@ -245,7 +245,7 @@ app.post('/api/chat', async (req, res) => {
     // 5) Persist + finish
     const asstMsg = store.addMessage(conv, {
       role: 'assistant', text: fullAnswer,
-      routing: { feature, mode, plugins: pluginLabels, model: 'gpt-5.6-sol-medium', reason: route.reason },
+      routing: { feature, mode, plugins: pluginLabels, model: `${ENDPOINT_ID}+${REASONING_EFFORT}`, reason: route.reason },
     });
     if (conv.title === 'New chat' && text.trim()) {
       conv.title = text.trim().slice(0, 48) + (text.trim().length > 48 ? '…' : '');

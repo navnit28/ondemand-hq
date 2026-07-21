@@ -2,7 +2,38 @@ import React, { useEffect, useRef, useState } from 'react';
 import { Markdown, dissect } from '../markdown.jsx';
 import BilingualLoader from './BilingualLoader.jsx';
 import AudioPlayer from './AudioPlayer.jsx';
-import { Cog, Check, ChevronRight, AlertTriangle, Paperclip } from 'lucide-react';
+import { Cog, Check, ChevronRight, AlertTriangle, Paperclip, Copy, RotateCcw } from 'lucide-react';
+
+/* ---------- copy button (2026-07-20 UX pass) ----------
+ * Copies text to clipboard with a 1.5s icon-swap + 'Copied' feedback.
+ * Clipboard API first; execCommand fallback for non-secure contexts. */
+export function CopyButton({ text, label = 'Copy' }) {
+  const [copied, setCopied] = useState(false);
+  const tRef = useRef(null);
+  useEffect(() => () => clearTimeout(tRef.current), []);
+  const doCopy = async () => {
+    const value = typeof text === 'function' ? text() : text;
+    if (!value) return;
+    try {
+      if (navigator.clipboard?.writeText) await navigator.clipboard.writeText(value);
+      else {
+        const ta = document.createElement('textarea');
+        ta.value = value; ta.style.position = 'fixed'; ta.style.opacity = '0';
+        document.body.appendChild(ta); ta.select(); document.execCommand('copy'); ta.remove();
+      }
+      setCopied(true);
+      clearTimeout(tRef.current);
+      tRef.current = setTimeout(() => setCopied(false), 1500);
+    } catch { /* clipboard denied — no feedback, no crash */ }
+  };
+  return (
+    <button type="button" className={`copybtn${copied ? ' copybtn--ok' : ''}`} onClick={doCopy}
+      aria-label={copied ? 'Copied' : label} title={copied ? 'Copied' : label} aria-live="polite">
+      {copied ? <Check size={13} aria-hidden /> : <Copy size={13} aria-hidden />}
+      <span className="copybtn__t">{copied ? 'Copied' : ''}</span>
+    </button>
+  );
+}
 
 /* ---------- tool-call lines (driven ONLY by real step_output SSE events) ---------- */
 /** Slim inline line per plugin call: '[gear] <name> -> <query>' with spinner-to-check,
@@ -102,7 +133,7 @@ export function ThinkingAccordion({ thinking, live, forceOpenWhileLive }) {
         <span className={`think__dot${live ? '' : ' idle'}`} />
         {live ? 'Thinking…' : 'Thought process'}
         <span style={{ flex: 1 }} />
-        <span className={`chev${effectiveOpen ? ' open' : ''}`}>▶</span>
+        <span className={`chev${effectiveOpen ? ' open' : ''}`}><ChevronRight size={13} strokeWidth={2} aria-hidden /></span>
       </button>
       {effectiveOpen && <div className="think__body" ref={bodyRef}>{thinking}</div>}
     </div>
@@ -117,7 +148,7 @@ export function TraceCard({ routing, traceText }) {
     <div className="trace trace--slim">
       <button className="trace__head" onClick={() => setOpen(!open)}>
         {routing.feature} · {routing.mode} · {routing.plugins?.length ? `${routing.plugins.length} plugin${routing.plugins.length > 1 ? 's' : ''}` : 'LLM-direct'} · {routing.model}
-        <span className={`chev${open ? ' open' : ''}`}>▶</span>
+        <span className={`chev${open ? ' open' : ''}`}><ChevronRight size={13} strokeWidth={2} aria-hidden /></span>
       </button>
       {open && (
         <div className="trace__body">
@@ -170,11 +201,22 @@ export function PluginSkeleton({ label }) {
 }
 
 /* ---------- assistant message ---------- */
-export function AssistantMessage({ msg, live, onOption, onExport, exportBusy, artifacts }) {
+export function AssistantMessage({ msg, live, onOption, onExport, exportBusy, artifacts, onRetry }) {
   const { body, options, trace } = dissect(msg.text || '');
   const showExports = !live && (msg.text || '').length > 120;
   return (
-    <div className="msg-asst">
+    <div className="msg-asst msg--hover">
+      {/* Hover action toolbar (2026-07-20 UX pass): copy full streamed markdown + retry */}
+      {!live && (msg.text || '').length > 0 && (
+        <div className="msg-actions" role="toolbar" aria-label="Message actions">
+          <CopyButton text={msg.text} label="Copy answer" />
+          {onRetry && (
+            <button type="button" className="copybtn" onClick={() => onRetry(msg)} aria-label="Regenerate answer" title="Regenerate">
+              <RotateCcw size={13} aria-hidden />
+            </button>
+          )}
+        </div>
+      )}
       {/* Layer 1 — thinking line (live planning_thinking/step_thinking deltas; auto-collapses on first answer token) */}
       <ThinkingAccordion thinking={msg.thinking} live={Boolean(live && !msg.answerStarted)} forceOpenWhileLive={true} />
       {/* Layer 2 — tool-call lines (real step_output plugin-call events only) */}
@@ -208,11 +250,25 @@ export function AssistantMessage({ msg, live, onOption, onExport, exportBusy, ar
 }
 
 export function UserMessage({ msg }) {
+  // 2026-07-20: long prompts render as a 6-line clamped capsule with a
+  // Read more / Show less toggle (RTL-safe — clamp follows dir="auto").
+  const [expanded, setExpanded] = useState(false);
+  const isLong = (msg.text || '').length > 420 || (msg.text || '').split('\n').length > 6;
   return (
-    <div className="msg-user">
+    <div className="msg-user msg--hover">
       <div>
-        <div className="bubble" dir="auto">{msg.text}</div>
+        <div className={`bubble${isLong && !expanded ? ' bubble--clamped' : ''}`} dir="auto">{msg.text}</div>
+        {isLong && (
+          <button type="button" className="bubble-expander" onClick={() => setExpanded(e => !e)}
+            aria-expanded={expanded}>
+            {expanded ? 'Show less' : 'Read more'}
+          </button>
+        )}
         {msg.fileName && <div className="fileref"><Paperclip size={12} aria-hidden style={{ verticalAlign: '-2px', marginRight: 4 }} /> {msg.fileName}</div>}
+        {/* Copy the sent prompt text (2026-07-20 UX pass) */}
+        <div className="msg-actions msg-actions--user" role="toolbar" aria-label="Prompt actions">
+          <CopyButton text={msg.text} label="Copy prompt" />
+        </div>
       </div>
     </div>
   );

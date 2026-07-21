@@ -1,3 +1,66 @@
+## 2026-07-21 — Kimi K3 correlating model + fable-only population w/ Cerebras background backfill + brand-consistency pass
+
+- **feat(model): Kimi K3 MEDIUM is THE correlating model** — `predefined-kimi-k3`
+  (ACTIVE in live registry 2026-07-21T01:30Z, efforts [low,medium,max], 1M ctx) fully
+  replaces GLM 4.7 (byoi-6e314690) across every correlation surface: deep pipeline
+  (`DEEP_ENDPOINT_ID`), analysis/extraction/narrative (`CE_ANALYSIS_*`), plugin gathering
+  (`CE_PLUGIN_*`), and streamed CE surfaces (quick-query/summarize/story). GLM is no
+  longer a correlation model anywhere; runs now stamp `model.all=predefined-kimi-k3+medium`.
+- **feat(datafetch): fable-5-medium is the ONLY synchronous population model** — the
+  sync ladder is single-rung. A short fable pass KEEPS its artifacts, corpus-backfills
+  to clear the ≥100 floor immediately, and `runDeepJob` fires a SERVER-SIDE Cerebras
+  background job (`cerebrasDeltaFetch`, delta-exclusion prompt) that merges + dedupes
+  real model points into the persisted run; the UI auto-refreshes via a 5s
+  backgroundBackfill poll — no user action. Hard ≥100 gate + expand-mode default ON kept.
+- **Live 3-country verification (2026-07-21, start 01:40:16Z)**: KE **124** pts
+  (PASS, 02:30:22Z) · BD **128** pts (PASS, 02:25:25Z) · EG **126** pts (PASS,
+  02:26:44Z) — fable primary cleared the gate solo in all 3 (0 corpus backfill,
+  no background job needed); run JSON contains 0 GLM/BYOI references.
+- **style(brand): correlation engine fully on-brand** — Inter everywhere including
+  canvas/D3-rendered text (7 Montserrat stragglers removed from CorrelationGraph +
+  SignalLoom), ECharts card text re-tokened for the dark theme, lucide-only icon audit
+  (all CE icons verified lucide), B&W lucide ODA Intelligence mark (Globe2) on the CE
+  header, and reference-screenshot alignment: colored category-pill borders w/ muted
+  interiors, cyan slider accents, green checkbox accents, dark entity-search field,
+  teal-glow Expand Intelligence View button, bordered legend overlay, luminous panel
+  cards. RunOpsPanel gains a BG·CEREBRAS stage chip (running/done/+N) and Kimi K3 label.
+
+## 2026-07-21 — Adaptive smart run + Palantir dark UI overhaul
+
+- **feat(datafetch): adaptive-retry smart run** — `hardForceDataPoints` rewritten from the
+  4-pass verification ladder to ONE quality-gated smart run: Cerebras GLM 4.7 BYOI is the
+  PRIMARY path (single → one chunked retry), a short pass KEEPS its artifacts and falls back
+  to fable-5-medium in DELTA mode (`buildDeltaExclusion` lists every captured claim so only
+  the missing remainder is fetched), passes are merged + deduped (`mergePasses`), and the
+  merged set must satisfy the ≥100 gate. Corpus backfill stays as last resort. Pass audit
+  (`primaryCount`, `deltaAdded`, `mergedCount`, `passes[]`) now recorded on run stats.
+  **Live verification 2026-07-21T01:00–01:05Z (KE)**: primary 60 pts (kept) → fable-Δ +62
+  (0 repeats) → merged **122 ≥ 100 → GATE PASS**, corpusBackfilled 0.
+- **style(ce): Palantir-style dark overhaul** — the Correlation Engine section is now a dark,
+  dense, professional surface (`.ce--dark`, scoped tokens `--pl-*`): #0c1015-class panels,
+  hairline borders, uppercase micro-labels, monospace tabular-numeric KPI readouts, cyan/green
+  accent system. Canvas graph re-colored for dark (nodes, labels, badges, export PNG bg,
+  fullscreen overlay); inspectors, evidence drawer, hovercards, Quick Query, ECharts hosts and
+  SignalLoom hosts all themed.
+- **feat(ce-ui): RunOpsPanel + LiveRunStrip** — new engine-run status strip surfaces the
+  adaptive-run audit per run: PRIMARY / FALLBACK·Δ / MERGE / BACKFILL stages with LED status,
+  per-stage counts, ≥100 gate verdict chip, and a collapsible monospace attempt-log table
+  (endpoint, mode, valid count, verdict, latency). Live runs show a pulsing ENGINE RUN strip
+  with stage + t0 readouts.
+
+## 2026-07-20 — feat(model): all non-workflow calls → GLM 4.7 Cerebras BYOI (byoi-6e314690…, default reasoningEffort 'low')
+
+- Registry re-verified live 20:57:56Z: byoi-6e314690-4eaf-4def-a33c-380809acf1f5 (zai-glm-4.7, 65k ctx, streaming true) is the ONLY active GLM 4.7; predefined-glm-4.7/-flash are inactive and not referenced anywhere. GLM+agent attachment probed 200 "OK" 20:58:24Z.
+- `server/env.js`: new shared `GLM_BYOI_ENDPOINT_ID`; ENDPOINT_ID (main chat, default 'low' + validator kept), GATHER_ENDPOINT_ID, CE_PLUGIN_ENDPOINT_ID, CE_ANALYSIS_ENDPOINT_ID, GLM_ENDPOINT_ID all → GLM BYOI. `server/intelligence/deepPipeline.js`: DEEP_ENDPOINT_ID → GLM BYOI. Comment sweeps in router/msm/intel/correlation/exports/correlationLayer. Workflows keep gpt-5.6-sol (untouched).
+- E2E proof (`debug/sse-samples/apichat-glm47byoi-low-20260720T2100Z.sse.log`, 21:00:51–21:01:04Z): fulfillment_thinking 197 + fulfillment .answer 18 frames (573-char answer) + exactly one [DONE] through local /api/chat; /api/health reports byoi-6e314690…+low; 'high' → falls back to 'low' (21:01:17Z).
+
+## 2026-07-20 — fix(chat): streaming end-to-end — decomposed gpt-5.6-sol + top-level reasoningEffort, DEFAULT 'low'
+
+- Root cause: main chat ran GLM 4.7 BYOI + reasoningEffort 'max' → 300+ thinking deltas but only ~9 coarse, late `fulfillment` `.answer` frames on the browser wire (pre-fix capture `debug/sse-samples/apichat-prefix-glm47-max-20260720T2039Z.sse.log`). SSE plumbing itself was healthy.
+- `server/env.js`: main chat → `endpointId 'predefined-gpt-5.6-sol'` + TOP-LEVEL `reasoningEffort` default **'low'**; new `REASONING_EFFORTS ['low','medium','max']` + `validEffort()` validation on every effort export; new `CE_STREAM_REASONING_EFFORT`.
+- `server/correlation.js`: hardcoded `'max'` literals → validated `CE_STREAM_REASONING_EFFORT`. `server/intelligence/deepPipeline.js`: `DEEP_REASONING_EFFORT` validated. `server/index.js` + `server/msm.js`: stale model label strings → dynamic `${ENDPOINT_ID}+${REASONING_EFFORT}`. `server/ondemand/adapters.js`: no empty `modelConfigs`; reasoningEffort top-level. No suffixed model IDs anywhere (D2 dead end).
+- E2E proof at 'low' (post-fix capture `apichat-postfix-gpt56sol-low-20260720T2043Z.sse.log`, 20:42:57–20:43:18Z): 82 `fulfillment` `.answer` token frames + 15 thinking frames + `[DONE]` through local `/api/chat`; `/api/health` reports `predefined-gpt-5.6-sol+low`; invalid mode 'high' rejected → falls back to 'low'.
+
 # CHANGELOG — Correlation Engine
 
 All notable changes to the Correlation Engine, logged with timestamps (UTC).

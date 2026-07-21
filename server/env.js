@@ -29,22 +29,69 @@ export const ONDEMAND_API_KEY = process.env.ONDEMAND_API_KEY || process.env.ON_D
 export const ONDEMAND_BASE_URL = (process.env.ONDEMAND_BASE_URL || process.env.ON_DEMAND_BASE_URL || 'https://api.on-demand.io').replace(/\/$/, '');
 export const PORT = parseInt(process.env.PORT || '8080', 10);
 
-// The ONE model policy: every call, everywhere, uses gpt-5.6-sol-medium =
-// endpoint predefined-gpt-5.6-sol + reasoningEffort "medium" (verified live in Phase 1:
-// the suffixed id form returns HTTP 400; the decomposition returns 200).
-export const ENDPOINT_ID = 'predefined-gpt-5.6-sol';
-export const REASONING_EFFORT = 'medium';
+// ---------- Reasoning-mode configuration (2026-07-20 streaming fix) ----------
+// The DECOMPOSED model config is the only valid form: endpointId + TOP-LEVEL
+// reasoningEffort. Suffixed model ids (e.g. 'gpt-5.6-sol-medium') are a PROVEN
+// HTTP 400 (dead end D2) and must never appear in a request body.
+// Supported modes come from GET /config/v1/public/endpoints for
+// predefined-gpt-5.6-sol: reasoning_efforts ["low","medium","max"] (re-verified
+// live 2026-07-20T20:35Z). Any configured value is validated against this list.
+export const REASONING_EFFORTS = ['low', 'medium', 'max'];
+// THE only ACTIVE GLM 4.7 endpoint (live registry 2026-07-20T20:57:56Z): Cerebras BYOI,
+// model_id zai-glm-4.7, 65k ctx, streaming true. predefined-glm-4.7 and
+// predefined-glm-4.7-flash are INACTIVE registry entries — never ship against them.
+export const GLM_BYOI_ENDPOINT_ID = 'byoi-6e314690-4eaf-4def-a33c-380809acf1f5';
+export function validEffort(effort, fallback) {
+  if (REASONING_EFFORTS.includes(effort)) return effort;
+  if (effort) console.warn(`[env] invalid reasoningEffort "${effort}" — must be one of ${REASONING_EFFORTS.join('|')}; using "${fallback}"`);
+  return fallback;
+}
+
+// MAIN CHAT model policy (2026-07-20 GLM switch): ALL non-workflow completion calls
+// run on the ACTIVE GLM 4.7 Cerebras BYOI endpoint with TOP-LEVEL reasoningEffort,
+// DEFAULT 'low' — explicitly NOT medium and NOT max (validator above enforces the
+// enum; invalid values fall back to 'low'). Decomposed form only — suffixed model
+// ids are a proven HTTP 400 (dead end D2). Workflows stay on their own platform-side
+// model config (gpt-5.6-sol) — workflow defs are NOT touched by this policy.
+// Override via CHAT_ENDPOINT_ID / CHAT_REASONING_EFFORT (validated above).
+export const ENDPOINT_ID = process.env.CHAT_ENDPOINT_ID || GLM_BYOI_ENDPOINT_ID;
+export const REASONING_EFFORT = validEffort(process.env.CHAT_REASONING_EFFORT, 'low');
+// Data-gathering model (Perplexity/X plugin stages) — GLM BYOI (2026-07-20 switch;
+// GLM+agent attachment live-probed 200 "OK" at 20:58:24Z). Env-overridable.
+export const GATHER_ENDPOINT_ID = process.env.GATHER_ENDPOINT_ID || GLM_BYOI_ENDPOINT_ID;
+export const GATHER_REASONING_EFFORT = validEffort(process.env.GATHER_REASONING_EFFORT, 'medium');
 
 // ANALYSIS model policy for the ODA Intelligence pipeline (server/intel.js).
 // PRODUCTION: predefined-gpt-5.6-sol + medium (same as chat). Overridable via env
 // for controlled test passes — e.g. ANALYSIS_ENDPOINT_ID=predefined-gemini-3.5-flash
 // (id verified live against GET /config/v1/public/endpoints, 2026-07-17).
 export const ANALYSIS_ENDPOINT_ID = process.env.ANALYSIS_ENDPOINT_ID || ENDPOINT_ID;
-export const ANALYSIS_REASONING_EFFORT = process.env.ANALYSIS_REASONING_EFFORT || REASONING_EFFORT;
+export const ANALYSIS_REASONING_EFFORT = validEffort(process.env.ANALYSIS_REASONING_EFFORT, REASONING_EFFORT);
 
 // STREAM_DEBUG: verbose SSE frame logging (upstream + browser side).
 // endpoint. ON by default at start; set STREAM_DEBUG=false to turn off (STREAM_DEBUG=true = explicit-on).
 export const STREAM_DEBUG = String(process.env.STREAM_DEBUG ?? 'true').toLowerCase() !== 'false';
+
+// ---------- Correlating model (2026-07-21 switch): Kimi K3 MEDIUM ----------
+// predefined-kimi-k3 is ACTIVE in the live registry (verified 2026-07-21T01:30Z:
+// status active, reasoning_efforts [low,medium,max], 1M ctx, streaming). It fully
+// REPLACES GLM 4.7 (byoi-6e314690 / zai-glm-4.7) as the correlation model — GLM
+// is NO LONGER a correlation model anywhere in the pipeline (it remains only as
+// the non-correlation main-chat default and the Cerebras BACKGROUND backfill
+// engine for data population shortfalls).
+export const KIMI_K3_ENDPOINT_ID = process.env.CE_CORRELATION_ENDPOINT_ID || 'predefined-kimi-k3';
+export const KIMI_K3_REASONING_EFFORT = validEffort(process.env.CE_CORRELATION_REASONING_EFFORT, 'medium');
+
+// ---------- Hard-force data-fetch policy (2026-07-20; 2026-07-21 fable-only rewrite) ----------
+// fable-5-medium is the ONLY synchronous data-population model (2026-07-21).
+// Cerebras GLM 4.7 no longer sits in the synchronous ladder — it is retained
+// SOLELY as the server-side BACKGROUND backfill engine that tops up a short
+// fable pass (merge+dedupe, UI auto-refresh; see dataFetch.js cerebrasDeltaFetch).
+export const FABLE_FALLBACK_ENDPOINT_ID = process.env.CE_DATAFETCH_ENDPOINT_ID || 'predefined-claude-fable-5';
+export const FABLE_FALLBACK_REASONING_EFFORT = validEffort(process.env.CE_DATAFETCH_REASONING_EFFORT_FABLE, 'medium');
+export const CEREBRAS_ENDPOINT_ID = process.env.CE_BACKFILL_ENDPOINT_ID || GLM_BYOI_ENDPOINT_ID;  // background backfill ONLY — never the primary population path
+export const CE_DATAFETCH_REASONING_EFFORT = validEffort(process.env.CE_BACKFILL_REASONING_EFFORT, 'low');
+export const CE_MIN_DATA_POINTS = Math.max(100, parseInt(process.env.CE_MIN_DATA_POINTS || '100', 10) || 100);  // strict floor — clamped, can never be configured below 100
 
 if (!ONDEMAND_API_KEY) {
   console.error('[FAIL] [FATAL-CONFIG] ONDEMAND_API_KEY is not set. Create .env from .env.example. Refusing to start with a hardcoded or missing key.');
@@ -56,13 +103,15 @@ if (!ONDEMAND_API_KEY) {
 // Plugin/evidence-gathering calls: Claude endpoints REJECT plugin attachment on this
 // platform (HTTP 400 "agents are invalid", live-logged 2026-07-19 in PLUGIN_TESTS.md),
 // so plugins run on the proven fulfillment model. Overridable via env.
-export const CE_PLUGIN_ENDPOINT_ID = process.env.CE_PLUGIN_ENDPOINT_ID || 'predefined-gpt-5.6-sol';
+export const CE_PLUGIN_ENDPOINT_ID = process.env.CE_PLUGIN_ENDPOINT_ID || KIMI_K3_ENDPOINT_ID; // Kimi K3 (2026-07-21 switch — GLM removed from correlation)
 // Analysis/extraction/narrative: PRODUCTION default claude-fable-5 + medium reasoning.
 // Build/test override: CE_ANALYSIS_ENDPOINT_ID=predefined-claude-sonnet-5 (both 200-verified
 // 2026-07-19). Set in config here — never hardcoded at call sites.
-export const CE_ANALYSIS_ENDPOINT_ID = process.env.CE_ANALYSIS_ENDPOINT_ID || 'predefined-claude-fable-5';
-export const CE_ANALYSIS_REASONING_EFFORT = process.env.CE_ANALYSIS_REASONING_EFFORT || 'medium';
-// Quick Query: GLM 4.7 Cerebras BYOI only (200-proven 2026-07-19, ~1.28s). No documented
-// max-tokens param → hard stop enforced client-side at QUICK_QUERY_MAX_TOKENS.
-export const GLM_ENDPOINT_ID = 'byoi-6e314690-4eaf-4def-a33c-380809acf1f5';
+export const CE_ANALYSIS_ENDPOINT_ID = process.env.CE_ANALYSIS_ENDPOINT_ID || KIMI_K3_ENDPOINT_ID; // Kimi K3 MEDIUM — THE correlating model (2026-07-21; GLM removed from correlation)
+export const CE_ANALYSIS_REASONING_EFFORT = validEffort(process.env.CE_ANALYSIS_REASONING_EFFORT, KIMI_K3_REASONING_EFFORT);
+// Quick Query + streamed CE surfaces: Kimi K3 (2026-07-21 — correlation surfaces are
+// GLM-free). Var name kept for low-risk call-site compatibility; value is Kimi K3.
+export const GLM_ENDPOINT_ID = KIMI_K3_ENDPOINT_ID;
+// Streamed CE surfaces (quick-query/summarize/story) — validated, env-overridable.
+export const CE_STREAM_REASONING_EFFORT = validEffort(process.env.CE_STREAM_REASONING_EFFORT, 'max');
 export const QUICK_QUERY_MAX_TOKENS = 150;

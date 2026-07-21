@@ -93,7 +93,9 @@ export default function CorrelationGraph({ graph, width, height, showLabels, phy
       if (++tries > 40) clearInterval(timer);
     }, 250);
     return () => clearInterval(timer);
-  }, [graph]);
+    // width/height in deps (2026-07-20): re-fit after expand→fullscreen AND on
+    // restore to normal size — same bbox-polling pattern (onEngineStop unreliable).
+  }, [graph, width, height]);
 
   // search → zoom to node
   useEffect(() => {
@@ -150,7 +152,7 @@ export default function CorrelationGraph({ graph, width, height, showLabels, phy
       ctx.globalAlpha = alpha * 0.85;
       ctx.beginPath();
       ctx.arc(n.x, n.y, Math.max(r, 2 / globalScale), 0, 2 * Math.PI);
-      ctx.fillStyle = n.tintStroke || '#a7d9cb';
+      ctx.fillStyle = n.tintStroke || '#9a9a9a';
       ctx.fill();
       ctx.restore();
       return;
@@ -162,7 +164,7 @@ export default function CorrelationGraph({ graph, width, height, showLabels, phy
     // community tint halo (legend-mapped: halo hue = Louvain community)
     ctx.beginPath();
     ctx.arc(n.x, n.y, r + 3.5, 0, 2 * Math.PI);
-    ctx.fillStyle = n.tint || '#eef2ff';
+    ctx.fillStyle = n.tint || '#d0d0d0';
     ctx.fill();
 
     // IG proof thumbnail (first media) clipped in a circle above the node body
@@ -173,13 +175,13 @@ export default function CorrelationGraph({ graph, width, height, showLabels, phy
     // body
     ctx.beginPath();
     ctx.arc(n.x, n.y, r, 0, 2 * Math.PI);
-    ctx.fillStyle = n.kind === 'country' ? '#111827' : '#ffffff';
+    ctx.fillStyle = n.kind === 'country' ? '#ededed' : '#1b1b1b';
     ctx.fill();
     ctx.lineWidth = n.kind === 'country' ? 0 : 1.4;
-    ctx.strokeStyle = n.tintStroke || '#a7d9cb';
+    ctx.strokeStyle = n.tintStroke || '#9a9a9a';
     if (n.kind !== 'country') ctx.stroke();
     if (hover?.kind === 'node' && hover.id === n.id) {
-      ctx.lineWidth = 2; ctx.strokeStyle = '#159a7a'; ctx.stroke();
+      ctx.lineWidth = 2; ctx.strokeStyle = '#ffffff'; ctx.stroke();
     }
 
     if (imgReady) {
@@ -191,23 +193,26 @@ export default function CorrelationGraph({ graph, width, height, showLabels, phy
       ctx.restore();
       ctx.beginPath();
       ctx.arc(n.x, n.y - r - 7, 7, 0, 2 * Math.PI);
-      ctx.strokeStyle = '#0f766e'; ctx.lineWidth = 1; ctx.stroke();
+      ctx.strokeStyle = '#c0c0c0'; ctx.lineWidth = 1; ctx.stroke();
     }
 
     // initials
     const label = n.kind === 'country' ? n.label.slice(0, 2).toUpperCase()
       : n.label.split(/\s+/).map(w => w[0]).join('').slice(0, 3).toUpperCase();
-    ctx.fillStyle = n.kind === 'country' ? '#ffffff' : '#1f2937';
-    ctx.font = `600 ${Math.max(4, r * 0.72)}px Montserrat, sans-serif`;
+    ctx.fillStyle = n.kind === 'country' ? '#0d0d0d' : '#e5e7eb';
+    ctx.font = `600 ${Math.max(4, r * 0.72)}px Inter, sans-serif`;
     ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
     ctx.fillText(label, n.x, n.y);
 
     // text label — VIEWPORT-FIT (2026-07-19 Gemini UX fix): labels near the frame
     // edge are re-anchored inward so they never clip (e.g. 'Relief Beneficiaries').
     if (showLabels && (globalScale > 1.05 || n.kind === 'country' || (hover?.kind === 'node' && hover.id === n.id))) {
-      const fpx = 11 / globalScale;
-      ctx.font = `500 ${fpx}px Montserrat, sans-serif`;
-      ctx.fillStyle = dim ? 'rgba(55,65,81,0.35)' : '#374151';
+      // Type hierarchy (TYPOGRAPHY.md): countries PRIMARY (600 · #ffffff · 12.5px),
+      // entities SECONDARY (500 · #e5e7eb · 11px). Differentiation by weight+luminance, not hue.
+      const isCountry = n.kind === 'country';
+      const fpx = (isCountry ? 12.5 : 11) / globalScale;
+      ctx.font = `${isCountry ? 600 : 500} ${fpx}px Inter, sans-serif`;
+      ctx.fillStyle = dim ? 'rgba(180,180,180,0.4)' : (isCountry ? '#ffffff' : '#e5e7eb');
       ctx.textBaseline = 'top';
       const tw = ctx.measureText(n.label).width;
       // canvas viewport bounds in graph coords
@@ -243,7 +248,7 @@ export default function CorrelationGraph({ graph, width, height, showLabels, phy
        n.kind === 'country' || n.alwaysLabel || (n.pagerank ?? 0) > 0.06);
     if (badgeVisible) {
       const txt = String(badgeN);
-      ctx.font = '700 7.5px Montserrat, sans-serif';
+      ctx.font = '700 7.5px Inter, sans-serif';
       const tw2 = ctx.measureText(txt).width;
       const bw = Math.max(13, tw2 + 9), bh = 12;
       // candidate anchors: NE, NW, SE, SW, E — pick first that avoids other nodes
@@ -259,9 +264,9 @@ export default function CorrelationGraph({ graph, width, height, showLabels, phy
       ctx.beginPath();
       if (ctx.roundRect) ctx.roundRect(bx, by, bw, bh, bh / 2);
       else ctx.rect(bx, by, bw, bh);
-      ctx.fillStyle = '#ffffff'; ctx.fill();
-      ctx.lineWidth = 1.2; ctx.strokeStyle = '#159a7a'; ctx.stroke();
-      ctx.fillStyle = '#0f766e';
+      ctx.fillStyle = '#1f1f1f'; ctx.fill();
+      ctx.lineWidth = 1.2; ctx.strokeStyle = '#9ca3af'; ctx.stroke();
+      ctx.fillStyle = '#ffffff';
       ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
       ctx.fillText(txt, bx + bw / 2, by + bh / 2 + 0.5);
       n.__badgeRect = { x: bx, y: by, w: bw, h: bh };
@@ -309,7 +314,7 @@ export default function CorrelationGraph({ graph, width, height, showLabels, phy
     (l.platforms || []).slice(0, 4).forEach((p, i) => {
       ctx.beginPath();
       ctx.arc(mx + (i - ((l.platforms.length - 1) / 2)) * 9, my - 6, 4, 0, 2 * Math.PI);
-      ctx.fillStyle = PLATFORM_COLORS[p] || '#9ca3af';
+      ctx.fillStyle = PLATFORM_COLORS[p] || '#a3a3a3';
       ctx.fill();
     });
     // contradiction marker: drawn triangle-alert (icon audit — no emoji glyphs on canvas)
@@ -318,9 +323,9 @@ export default function CorrelationGraph({ graph, width, height, showLabels, phy
       ctx.beginPath();
       ctx.moveTo(mx, ty - 4); ctx.lineTo(mx + 4.5, ty + 3.5); ctx.lineTo(mx - 4.5, ty + 3.5);
       ctx.closePath();
-      ctx.fillStyle = '#f59e0b'; ctx.fill();
-      ctx.strokeStyle = '#fff'; ctx.lineWidth = 0.8; ctx.stroke();
-      ctx.fillStyle = '#78350f'; ctx.font = '700 5px Montserrat, sans-serif';
+      ctx.fillStyle = '#1f1f1f'; ctx.fill();
+      ctx.strokeStyle = '#0d0d0d'; ctx.lineWidth = 0.8; ctx.stroke();
+      ctx.fillStyle = '#ffffff'; ctx.font = '700 5px Inter, sans-serif';
       ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
       ctx.fillText('!', mx, ty + 1.2);
     }
@@ -375,7 +380,7 @@ export default function CorrelationGraph({ graph, width, height, showLabels, phy
         cooldownTime={physics ? 4000 : 0}
         d3AlphaDecay={0.02}
         d3VelocityDecay={0.32}
-        backgroundColor="#ffffff"
+        backgroundColor="#0d0d0d"
       />
     </div>
   );

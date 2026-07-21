@@ -1,5 +1,58 @@
 # NOTES.md — ODA Productivity Suite engineering log
 
+## 2026-07-20 Model switch — ALL non-workflow calls → GLM 4.7 Cerebras BYOI (default reasoningEffort 'low')
+
+**Registry verification (live, `GET /config/v1/public/endpoints`, fetched 2026-07-20T20:57:56Z UTC):**
+- `byoi-6e314690-4eaf-4def-a33c-380809acf1f5` — endpoint_name `glm-4.7`, model_id **`zai-glm-4.7`**, status **active**, ctx 65,000, streaming_supported true, reasoning_efforts null (top-level `reasoningEffort` still live-accepted). THE only active GLM 4.7.
+- `predefined-glm-4.7` (z-ai/glm-4.7) and `predefined-glm-4.7-flash` — both **inactive** registry entries; NOT shipped against (grep audit: zero `predefined-glm` values anywhere in server/ or src/).
+- GLM + agent attachment probe (sync, agentIds attached): HTTP **200 "OK"** at 2026-07-20T20:58:24Z — clears the old "plugins must run on gpt-5.6-sol" constraint, so GATHER/CE_PLUGIN call sites switch too.
+
+**Changes (all edits in place):**
+- `server/env.js` — NEW shared `GLM_BYOI_ENDPOINT_ID = 'byoi-6e314690-4eaf-4def-a33c-380809acf1f5'`; `ENDPOINT_ID` (main chat) → GLM BYOI with `REASONING_EFFORT = validEffort(env, 'low')` (**default 'low' unchanged**, `REASONING_EFFORTS ['low','medium','max']` validator unchanged); `GATHER_ENDPOINT_ID` → GLM BYOI (env-overridable); `CE_PLUGIN_ENDPOINT_ID` → GLM BYOI; `CE_ANALYSIS_ENDPOINT_ID` → GLM BYOI (was claude-fable-5); `GLM_ENDPOINT_ID` (Quick Query) → aliases the shared constant.
+- `server/intelligence/deepPipeline.js` — `DEEP_ENDPOINT_ID` → `GLM_BYOI_ENDPOINT_ID` (imported from env.js; env.js imports merged into one line); effort stays `validEffort(env,'medium')`.
+- Comment/label sweeps (`server/router.js`, `server/msm.js`, `server/intel.js`, `server/correlation.js`, `server/exports.js`, `server/intelligence/correlationLayer.js`): stale "gpt-5.6-sol-medium" wording → GLM 4.7 BYOI / shared-policy wording. `server/index.js` + `server/msm.js` labels were already dynamic `${ENDPOINT_ID}+${REASONING_EFFORT}` (previous commit) so they now report the GLM id automatically.
+- **Workflows untouched:** platform workflow definitions (evidence-refresh 6a5e5d90…, World Intel 6a5d9022…) keep their own gpt-5.6-sol node config; no workflow create/update calls were made. `server/voice.js` untouched (already GLM BYOI via VOICE_ENDPOINT_ID; its `VOICE_FALLBACK_ENDPOINT` comment example is not a live value).
+
+**E2E proof (local `/api/chat` = browser wire path; raw capture `debug/sse-samples/apichat-glm47byoi-low-20260720T2100Z.sse.log`):**
+- `/api/health` at 2026-07-20T21:00:35Z → `"model":"byoi-6e314690-4eaf-4def-a33c-380809acf1f5+low"`.
+- Capture window 2026-07-20T21:00:51.714Z → 21:01:04.569Z. Frame counts: **fulfillment_thinking 197** (`.thinking.delta` streaming live — GLM emits real fulfillment-phase reasoning deltas), planning_thinking 38, step_thinking 71 (thinking total 306), **fulfillment 18** `.answer` token frames assembling a 573-char answer, statusLog 2, metricsLog 1, heartbeats, and exactly **1 `[DONE]` terminal sentinel**. BOTH channels stream token-by-token through the hardened SSE passthrough to the client.
+- Mode validation re-checked live at 2026-07-20T21:01:17Z: `CHAT_REASONING_EFFORT=high` → warn + fall back to **'low'**; `=max` → accepted. Default remains 'low'.
+
+
+## 2026-07-20 Chat streaming fix — decomposed gpt-5.6-sol + reasoningEffort, DEFAULT 'low' (main chat)
+
+**Docs verification (all live, fetched this pass):**
+- `GET /config/v1/public/docs/categories` — 2026-07-20T20:35:45Z UTC: 8 services, 26 slugs, `submitquery` present.
+- `GET /config/v1/public/docs/reference/api/submitquery` — same pass: path `POST /chat/v1/sessions/{sessionId}/query`, server `https://api.on-demand.io`, required `["query","endpointId","responseMode"]`, `responseMode` enum exactly `["sync","stream","webhook"]`. `reasoningEffort` is NOT in the documented body properties (still a live-accepted extension); `modelConfigs` IS documented.
+- `https://docs.on-demand.io/docs/chat-api.md` (28,341 chars, 20:35:58Z) — contains the canonical stream sample: `eventType: "fulfillment"` frames carrying incremental `.answer` deltas ("The", " city", " based", …) with monotonic `eventIndex`. `https://docs.on-demand.io/reference/submitquery.md` (10,772 chars) fetched too; neither page documents `reasoningEffort`.
+- Endpoint registry (live, same pass): `predefined-gpt-5.6-sol` → `reasoning_efforts ["low","medium","max"]`, `streaming_supported: true`, `status: active`.
+
+**Symptom reproduction (raw captures under `debug/sse-samples/`, UTC):**
+| Capture | Config | Result |
+|---|---|---|
+| `diag-glm47-max-20260720T2036Z.sse.log` (20:37:16–20:37:20Z) | direct API, GLM 4.7 BYOI + max | 43 `fulfillment_thinking` vs 10 `fulfillment` frames |
+| `diag-gpt56sol-low-20260720T2037Z.sse.log` (20:37:30–20:37:38Z) | direct API, gpt-5.6-sol + low | 46 `fulfillment` `.answer` frames, 0 thinking — clean token stream |
+| `apichat-prefix-glm47-max-20260720T2039Z.sse.log` (20:39:00–20:39:13Z) | local `/api/chat`, PRE-FIX (GLM+max) | **321 thinking frames vs only 9 `fulfillment` `.answer` frames** — the browser wire was dominated by thinking; the final answer arrived as a burst of 9 coarse frames at the very end. This is the reported "thinking streams, answer doesn't" symptom: not a dropped-frame bug in the SSE plumbing, but a model/effort configuration that produces almost no incremental `.answer` deltas. |
+
+**Root cause:** the main chat path ran the GLM 4.7 BYOI endpoint at `reasoningEffort: "max"`, which emits hundreds of thinking deltas and only a handful of late, coarse `fulfillment` frames — so the UI showed live "thinking" but no token-by-token answer. The previously documented (PRIOR_KNOWLEDGE.md) but unimplemented fix — decomposed `endpointId: "predefined-gpt-5.6-sol"` + TOP-LEVEL `reasoningEffort`, default **low** — was never applied to `server/env.js`. The SSE passthrough itself (`server/ondemand.js` → `/api/chat` `sendRaw`) was verified byte-identical and needed no change: pre-fix capture shows all frame families passing through.
+
+**Fix applied (files/lines):**
+- `server/env.js` — `ENDPOINT_ID` default → `'predefined-gpt-5.6-sol'`; `REASONING_EFFORT` → `validEffort(process.env.CHAT_REASONING_EFFORT, 'low')` (**default 'low'**, explicitly not medium/max); NEW `REASONING_EFFORTS = ['low','medium','max']` + `validEffort()` validator (warns + falls back on invalid values, e.g. "high"→low, verified live); `GATHER_/ANALYSIS_/CE_ANALYSIS_REASONING_EFFORT` now validated; NEW `CE_STREAM_REASONING_EFFORT` (validated, default max, env-overridable).
+- `server/correlation.js` — three hardcoded `reasoningEffort: 'max'` literals (quick-query L537, summarize L702, story L739) → `CE_STREAM_REASONING_EFFORT`.
+- `server/intelligence/deepPipeline.js` — `DEEP_REASONING_EFFORT` now `validEffort(env,'medium')` (decomposed form retained).
+- `server/index.js` — stale hardcoded `model: 'glm-4.7-cerebras-max'` labels (L161/L248) → dynamic `${ENDPOINT_ID}+${REASONING_EFFORT}`.
+- `server/msm.js` — stale `'gpt-5.6-sol-medium'` label strings → dynamic `${ENDPOINT_ID}+${REASONING_EFFORT}`.
+- `server/ondemand/adapters.js` — removed empty `modelConfigs` emission when only `reasoningEffort` set; `reasoningEffort` confirmed TOP-LEVEL body key.
+- `server/ondemand.js` — comment corrected; **streamQuery passthrough logic untouched** (headers, no-transform, X-Accel-Buffering, flushHeaders/flush, TextDecoder(stream:true)+tail flush, AbortController, closed guard, 90s watchdog all preserved).
+- Codebase audit: zero suffixed model IDs used as request values anywhere (`grep` for `sol-medium|sol-low|sol-max|fable-5-|sonnet-5-` in endpointId positions → no hits); every `reasoningEffort:` call site now sources a validated constant or explicit low/medium literal within the valid enum.
+
+**Post-fix E2E proof (`apichat-postfix-gpt56sol-low-20260720T2043Z.sse.log`, 20:42:57–20:43:18Z, local `/api/chat` = browser wire path):**
+- `/api/health` → `"model":"predefined-gpt-5.6-sol+low"`.
+- Frame counts: **82 `fulfillment` `.answer` token frames** ("Ocean" → " tides" → " are" …, eventIndex 2,3,4,… assembling a 400-char answer) **plus 15 thinking frames** (14 planning_thinking + 1 step_thinking) + statusLog/metricsLog/heartbeat + `[DONE]` — BOTH channels stream token-by-token to the client.
+- Mode validation live-tested: `CHAT_REASONING_EFFORT=high` → warn + fall back to `low`; `=medium` → accepted.
+- Note (model-dependent, unchanged from prior passes): gpt-5.6-sol emits thinking in the planning/step phase, not as `fulfillment_thinking`; GLM 4.7 emits `fulfillment_thinking`. The client parser handles both families.
+
+
 ## 2026-07-17 — Streaming reference (Workstream 1)
 
 **Read at 2026-07-17 ~16:29–16:33 UTC. Sources actually read (live, not memory):**

@@ -9,17 +9,16 @@ import Graph from 'graphology';
 import pagerank from 'graphology-metrics/centrality/pagerank.js';
 import louvain from 'graphology-communities-louvain';
 
-// Obsidian-futuristic on white ODA design language — one hue per relationship type.
-// De-purple brand pass (2026-07-20): ODA green primaries (#159a7a/#1dac89) +
-// neutral/earth secondary encoding. ZERO purple/violet/pink anywhere.
+// STRICT MONOCHROME ODA brand pass (2026-07-21): black/white/grayscale ONLY.
+// One gray step per relationship type — differentiation purely by luminance.
 export const REL_TYPE_COLORS = {
-  Investment: '#159a7a', Trade: '#0e9f6e', 'Aid-Humanitarian': '#f59e0b',
-  Diplomatic: '#2563eb', Infrastructure: '#b45309', Energy: '#dc2626',
-  Technology: '#0891b2', Security: '#475569', 'Media-narrative': '#6b7280',
+  Investment: '#ffffff', Trade: '#e0e0e0', 'Aid-Humanitarian': '#c8c8c8',
+  Diplomatic: '#b0b0b0', Infrastructure: '#989898', Energy: '#808080',
+  Technology: '#686868', Security: '#505050', 'Media-narrative': '#404040',
 };
 export const REL_TYPES = Object.keys(REL_TYPE_COLORS);
 export const PLATFORM_GLYPHS = { perplexity: 'P', x: '𝕏', reddit: 'R', instagram: '◎' };
-export const PLATFORM_COLORS = { perplexity: '#159a7a', x: '#111827', reddit: '#b45309', instagram: '#6b7280' };
+export const PLATFORM_COLORS = { perplexity: '#f0f0f0', x: '#b8b8b8', reddit: '#888888', instagram: '#585858' };
 
 const DAY = 86400000;
 
@@ -82,7 +81,7 @@ export function runToGraph(run, filters = {}) {
   const links = run.edges.filter(keepEdge).map(e => ({
     id: e.id, source: e.entity_a, target: e.entity_b,
     type: e.relationship_type, direction: e.direction,
-    color: REL_TYPE_COLORS[e.relationship_type] || '#64748b',
+    color: REL_TYPE_COLORS[e.relationship_type] || '#6e6e6e',
     width: 0.6 + (e.weight ?? 0) * 5.2,                    // weight → width
     opacity: 0.25 + (e.recency ?? 0.5) * 0.75,             // recency → opacity
     weight: e.weight ?? 0, recency: e.recency ?? 0.5,
@@ -136,7 +135,7 @@ export function runToGraph(run, filters = {}) {
       const edgeEvidence = [...(edgeEvidenceByNode[n.id] || [])];
       return {
         ...n, size, pagerank: pr, community: comm, degree,
-        tint: `hsl(${hue} 55% 88%)`, tintStroke: `hsl(${hue} 45% 62%)`,
+        tint: `hsl(0 0% ${78 + (comm % 4) * 5}%)`, tintStroke: `hsl(0 0% ${48 + (comm % 4) * 8}%)`, // monochrome: community = gray step
         dim: q && !(`${n.label} ${n.fullName}`.toLowerCase().includes(q)),
         evidenceCount: evidence.length, media,
         edgeEvidenceIds: edgeEvidence,
@@ -223,10 +222,10 @@ export function nodeToMiniArtifact(run, node) {
 /** platform-or-source_type accessor (round-1 runs use platform; deep-v2 uses source_type). */
 export const evPlatform = (ev) => ev.platform || ev.source_type || 'other';
 
-/** Verification-tier styling contract — brand tokens #159a7a / #1dac89. */
+/** Verification-tier styling contract — MONOCHROME grayscale tiers. */
 export const VERIFICATION_STYLES = {
-  Verified:  { color: '#159a7a', dash: [],     label: 'Verified — solid' },
-  Likely:    { color: '#1dac89', dash: [],     label: 'Likely — solid (lighter)' },
-  Possible:  { color: '#1dac89', dash: [7, 5], label: 'Possible — dashed' },
-  Predicted: { color: '#8aa8a0', dash: [2, 5], label: 'Predicted — dotted' },
+  Verified:  { color: '#ffffff', dash: [],     label: 'Verified — solid' },
+  Likely:    { color: '#c0c0c0', dash: [],     label: 'Likely — solid (lighter)' },
+  Possible:  { color: '#a0a0a0', dash: [7, 5], label: 'Possible — dashed' },
+  Predicted: { color: '#707070', dash: [2, 5], label: 'Predicted — dotted' },
 };

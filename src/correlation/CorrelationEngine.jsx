@@ -1,15 +1,16 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { RefreshCw, Download, Image as ImageIcon, Search, Zap, X, ExternalLink, BadgeCheck, Send, ChevronDown, Maximize2, Loader2, RotateCw, Sparkles, AlertTriangle } from 'lucide-react';
+import { RefreshCw, Download, Image as ImageIcon, Search, Zap, X, ExternalLink, BadgeCheck, Send, ChevronDown, Maximize2, Loader2, RotateCw, Sparkles, AlertTriangle, Play, Globe2 } from 'lucide-react';
 import CorrelationGraph from './CorrelationGraph.jsx';
 import { EntityInspector, RelationshipInspector, EvidenceBreakdown } from './V2Panels.jsx';
 import EChartsPanels from './EChartsPanels.jsx';
 import SignalLoom from './BespokeViz.jsx';
 import QuickQuery from './QuickQuery.jsx';
+import RunOpsPanel, { LiveRunStrip } from './RunOpsPanel.jsx';
 import BilingualLoader from '../components/BilingualLoader.jsx';
 import {
   getRuns, getRun, regenerate, pipelineStatus, streamNarrative,
-  runDownloadUrl,
+  runDownloadUrl, startEngine, getLatest,
 } from './api.js';
 import {
   runToGraph, edgeToMiniArtifact, nodeToMiniArtifact, nodeEvidenceBreakdown,
@@ -33,7 +34,7 @@ function HoverPopover({ pop, run, onLightbox, onQuickQuery, onClose }) {
       <button className="ce-pop__x" onClick={onClose} aria-label="Close"><X size={11} /></button>
       {pop.kind === 'edge' ? (
         <>
-          <div className="ce-pop__type" style={{ color: pop.link.color }}>{pop.link.type}{pop.link.contradiction ? <AlertTriangle size={10} aria-hidden style={{ verticalAlign: '-1px', marginLeft: 3, color: '#f59e0b' }} /> : null}</div>
+          <div className="ce-pop__type" style={{ color: pop.link.color }}>{pop.link.type}{pop.link.contradiction ? <AlertTriangle size={10} aria-hidden style={{ verticalAlign: '-1px', marginLeft: 3, color: '#c0c0c0' }} /> : null}</div>
           <div className="ce-pop__claim">{pop.link.claim}</div>
           <div className="ce-pop__meta">weight {pop.link.weight} · confidence {pop.link.confidence}</div>
         </>
@@ -149,7 +150,8 @@ export default function CorrelationEngine({ iso, countryName }) {
   const [searchNodeId, setSearchNodeId] = useState(null);
   const [size, setSize] = useState({ w: 860, h: 560 });
   // ---- Expand Intelligence View (full-screen) + inspectors (2026-07-19 fix) ----
-  const [expanded, setExpanded] = useState(false);
+  // expand mode ON by default (2026-07-20) — correlation results open in the full Intelligence View
+  const [expanded, setExpanded] = useState(true);
   const [inspector, setInspector] = useState(null); // {kind:'node'|'edge', node|link}
   const [breakdown, setBreakdown] = useState(null);  // {node, data} — badge click (UX overhaul)
   const graphWrapRef = useRef();
@@ -157,14 +159,17 @@ export default function CorrelationEngine({ iso, countryName }) {
   const graphInstRef = useRef(null);
   const runRef = useRef(null);
 
-  // ESC closes expand mode; lock body scroll while expanded
+  // ESC closes expand mode; lock body scroll while expanded.
+  // Guard (2026-07-20): expanded now starts true BEFORE any run is loaded, and the
+  // overlay itself only renders when `expanded && run` — so bail out (and don't
+  // lock body scroll) until a run actually exists.
   useEffect(() => {
-    if (!expanded) return;
+    if (!expanded || !run) return;
     const kd = (e) => { if (e.key === 'Escape') setExpanded(false); };
     window.addEventListener('keydown', kd);
     document.body.style.overflow = 'hidden';
     return () => { window.removeEventListener('keydown', kd); document.body.style.overflow = ''; };
-  }, [expanded]);
+  }, [expanded, run]);
 
   // SHARED click handlers — identical logic in normal AND expand mode (bug fix:
   // expand mode previously had no inspector wiring; clicks opened nothing).
@@ -209,12 +214,22 @@ export default function CorrelationEngine({ iso, countryName }) {
   useEffect(() => {
     (async () => {
       const list = await loadRuns();
-      if (list.length) await loadRun(list.length - 1, list); // latest run first
+      if (!list.length) return;
+      // prefer the authoritative latest pointer; fall back to last-in-list on 404/failure
+      try {
+        const d = await getLatest(iso);
+        const idx = list.findIndex((r) => r.runId === d.run?.runId);
+        await loadRun(idx >= 0 ? idx : list.length - 1, list);
+      } catch {
+        await loadRun(list.length - 1, list); // fallback: latest run first
+      }
     })();
     return () => clearInterval(pollRef.current);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [iso]);
 
+  // completion logic: once a run finishes, the LATEST correlation result is
+  // always persisted server-side and displayed here by default
   const startPoll = () => {
     clearInterval(pollRef.current);
     pollRef.current = setInterval(async () => {
@@ -230,8 +245,31 @@ export default function CorrelationEngine({ iso, countryName }) {
     }, 4000);
   };
 
-  const onRegenerate = async () => {
-    try { setErr(null); const { job: j } = await regenerate(iso); setJob(j); startPoll(); }
+  // ---------- background-backfill auto-refresh (2026-07-21) ----------
+  // While the loaded run reports dataFetch.backgroundBackfill.status === 'running',
+  // poll the latest pointer every 5s; when the server-side Cerebras job merges its
+  // delta and re-persists, reload the run automatically — NO user action needed.
+  useEffect(() => {
+    const bb = run?.stats?.dataFetch?.backgroundBackfill;
+    if (!bb || bb.status !== 'running') return;
+    const t = setInterval(async () => {
+      try {
+        const d = await getLatest(iso);
+        const nb = d.run?.stats?.dataFetch?.backgroundBackfill;
+        if (d.run?.runId === run.runId && nb && nb.status !== 'running') {
+          const full = await getRun(iso, run.runId);
+          setRun(full);
+          runRef.current = full;
+        }
+      } catch { /* transient */ }
+    }, 5000);
+    return () => clearInterval(t);
+  }, [run, iso]);
+
+  // Start Correlation Engine → deep pipeline with HARD-FORCED ≥100 data points
+  // (server-side reject+retry, Cerebras-first)
+  const onStartEngine = async () => {
+    try { setErr(null); const { job: j } = await startEngine(iso); setJob(j); startPoll(); }
     catch (e) { setErr(e.message); }
   };
 
@@ -315,7 +353,7 @@ export default function CorrelationEngine({ iso, countryName }) {
     const out = document.createElement('canvas');
     out.width = c0.width; out.height = c0.height;
     const ctx = out.getContext('2d');
-    ctx.fillStyle = '#ffffff'; ctx.fillRect(0, 0, out.width, out.height);
+    ctx.fillStyle = '#0d0d0d'; ctx.fillRect(0, 0, out.width, out.height);
     canvases.forEach(c => ctx.drawImage(c, 0, 0));
     const a = document.createElement('a');
     a.href = out.toDataURL('image/png');
@@ -333,15 +371,19 @@ export default function CorrelationEngine({ iso, countryName }) {
   if (err) return <div className="ig-error">{err} <button onClick={loadRuns}>Retry</button></div>;
 
   return (
-    <section className="ce" aria-label="Correlation Engine">
+    <section className="ce ce--dark" aria-label="Correlation Engine">
       {/* header row */}
       <div className="ce-head">
         <div className="ce-head__title">
-          <h2>Correlation Engine</h2>
-          {run && <span className="ce-head__meta">
-            {run.stats.evidenceCount} evidence · {run.stats.edgeCount} edges · {run.stats.igMediaCount} IG proofs
-            · {run.model.analysis} · run {run.runId}
-            {run.stats.droppedNoEvidence > 0 && ` · ${run.stats.droppedNoEvidence} edges dropped (no evidence)`}
+          <h2><span className="ce-mark" aria-hidden><Globe2 size={15} strokeWidth={1.9} /></span>ODA Intelligence — Correlation Engine</h2>
+          {run && <span className="ce-head__meta ce-mono">
+            <span className="ce-kpi"><b>{run.stats.evidenceCount}</b> data points</span>
+            <span className="ce-kpi"><b>{run.stats.edgeCount}</b> edges</span>
+            <span className="ce-kpi"><b>{run.stats.igMediaCount}</b> proofs</span>
+            <span className="ce-kpi">{run.model.analysis}</span>
+            <span className="ce-kpi">run {run.runId}</span>
+            {run.stats.droppedNoEvidence > 0 && <span className="ce-kpi ce-kpi--warn">{run.stats.droppedNoEvidence} dropped</span>}
+            {runIdx === runs.length - 1 && <span className="ce-kpi ce-kpi--latest">LATEST</span>}
           </span>}
         </div>
         <div className="ce-head__actions">
@@ -349,8 +391,8 @@ export default function CorrelationEngine({ iso, countryName }) {
           <button className="ce-btn" onClick={() => setDrawerOpen(true)} disabled={!run}>Evidence</button>
           <button className="ce-btn" onClick={exportPng} disabled={!run}><ImageIcon size={12} /> PNG</button>
           <a className="ce-btn" href={run ? runDownloadUrl(iso, run.runId) : '#'} download disabled={!run}><Download size={12} /> JSON</a>
-          <button className="ce-btn ce-btn--primary" onClick={onRegenerate} disabled={Boolean(job)}>
-            <RefreshCw size={12} className={job ? 'ce-spin' : ''} /> {job ? `Running… ${job.stage}` : 'Regenerate now'}
+          <button className="ce-btn ce-btn--primary" onClick={onStartEngine} disabled={Boolean(job)}>
+            {job ? <RefreshCw size={12} className="ce-spin" /> : <Play size={12} />} {job ? `Running… ${job.stage}` : 'Start Correlation Engine'}
           </button>
         </div>
       </div>
@@ -358,22 +400,17 @@ export default function CorrelationEngine({ iso, countryName }) {
       {/* (3) UX overhaul 2026-07-19: on-brand white/minimal generation banner —
           neutral gray spinner, clean status text, RTL-isolated Arabic 'مصادر' label
           placed at the inline-end. No purple anywhere. */}
-      {job && (
-        <div className="ce-running" role="status" data-testid="ce-running-banner">
-          <span className="ce-running__label">
-            <Loader2 size={15} className="ce-spin-neutral" aria-hidden />
-            Regenerating {countryName} correlations — stage: {job.stage} · started {new Date(job.startedAt).toLocaleTimeString('en-GB')}
-          </span>
-          <span className="ce-sourcing-ar" dir="rtl" lang="ar">مصادر</span>
-        </div>
-      )}
+      {job && <LiveRunStrip job={job} countryName={countryName} />}
 
       {!run && !job && (
-        <div className="ig-empty">No correlation runs for {countryName} yet. <button className="ce-btn ce-btn--primary" onClick={onRegenerate}>Run the first correlation</button></div>
+        <div className="ig-empty">No correlation runs for {countryName} yet. <button className="ce-btn ce-btn--primary" onClick={onStartEngine}>Start Correlation Engine</button></div>
       )}
 
       {run && (
         <>
+          {/* Engine run ops strip — adaptive smart-run audit (primary / fallback-Δ / merge) */}
+          <RunOpsPanel run={run} />
+
           {/* Connected Dots narrative — every sentence evidence-traced, streamed */}
           <div className="ce-dots" dir="auto">
             <div className="ce-dots__head">
@@ -477,15 +514,15 @@ export default function CorrelationEngine({ iso, countryName }) {
               <div className="ce-lgstrip" aria-label="Graph legend">
                 <span className="ce-lg"><i className="ce-lg__halo" />halo tint = community cluster</span>
                 <span className="ce-lg"><i className="ce-lg__badge">2</i>badge = distinct evidence records on this node's edges (click for breakdown)</span>
-                <span className="ce-lg"><i className="ce-lg__dot" style={{ background: '#111827' }} />dark disc = country node</span>
+                <span className="ce-lg"><i className="ce-lg__dot" style={{ background: '#141414' }} />dark disc = country node</span>
                 <span className="ce-lg">size = weight · width = strength · color = type</span>
                 {/* verification-tier legend (QA fix 2026-07-20): edge tiers were styled
                     but never explained on-canvas — Verified solid / Likely solid /
                     Possible dashed / Predicted dotted */}
-                <span className="ce-lg"><i className="ce-lg__tier" style={{ borderTop: '2.5px solid #159a7a' }} />Verified — solid</span>
-                <span className="ce-lg"><i className="ce-lg__tier" style={{ borderTop: '2.5px solid #1dac89' }} />Likely — solid</span>
-                <span className="ce-lg"><i className="ce-lg__tier" style={{ borderTop: '2.5px dashed #1dac89' }} />Possible — dashed</span>
-                <span className="ce-lg"><i className="ce-lg__tier" style={{ borderTop: '2.5px dotted #8aa8a0' }} />Predicted — dotted</span>
+                <span className="ce-lg"><i className="ce-lg__tier" style={{ borderTop: '2.5px solid #ffffff' }} />Verified — solid</span>
+                <span className="ce-lg"><i className="ce-lg__tier" style={{ borderTop: '2.5px solid #c0c0c0' }} />Likely — solid</span>
+                <span className="ce-lg"><i className="ce-lg__tier" style={{ borderTop: '2.5px dashed #a0a0a0' }} />Possible — dashed</span>
+                <span className="ce-lg"><i className="ce-lg__tier" style={{ borderTop: '2.5px dotted #707070' }} />Predicted — dotted</span>
               </div>
               <AnimatePresence>
                 {(pinPop || pop) && (

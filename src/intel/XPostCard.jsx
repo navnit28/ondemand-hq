@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { openLightbox } from '../components/Lightbox.jsx';
 import { MessageCircle, Repeat2, Heart, BadgeCheck, Play } from 'lucide-react';
 import { xRelTime } from './tweets.js';
 
@@ -47,7 +48,8 @@ export default function XPostCard({ tweet }) {
         {tweet.media && !mediaFailed && (
           <div className="xpost__media">
             <img src={tweet.media} alt={tweet.mediaAlt || `Media from @${tweet.handle} post`}
-              loading="lazy" onError={() => setMediaFailed(true)} />
+              loading="lazy" onError={() => setMediaFailed(true)}
+              onClick={(e) => { e.preventDefault(); e.stopPropagation(); openLightbox(tweet.media, tweet.mediaAlt || `Media from @${tweet.handle} post`); }} />
             {tweet.isVideo && <span className="xpost__playbtn" aria-hidden><Play size={20} strokeWidth={2.4} fill="currentColor" /></span>}
           </div>
         )}

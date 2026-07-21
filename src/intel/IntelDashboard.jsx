@@ -56,6 +56,7 @@ export default function IntelDashboard({ onExit }) {
   const [searching, setSearching] = useState(false);
   const [searchResult, setSearchResult] = useState(null);
   const [briefBusy, setBriefBusy] = useState(false);
+  const [evidencePop, setEvidencePop] = useState(null); // {kind:'risk'|'opp', row} — evidence popover
 
   const load = async () => {
     try { setErr(null); setOv(await getOverview()); }
@@ -91,7 +92,7 @@ export default function IntelDashboard({ onExit }) {
   return (
     <motion.div className="ig-root" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.3 }}>
       <div className="ig-head">
-        <h1><Globe2 size={22} aria-hidden style={{ verticalAlign: '-3px', marginRight: 8, color: 'var(--gold, #b08d3c)' }} />ODA Intelligence</h1>
+        <h1><span className="ig-mark" aria-hidden><Globe2 size={19} strokeWidth={1.9} /></span>ODA Intelligence</h1>
         <span className="ig-head__sub">{ov.countriesWithData}/{ov.countriesMonitored} countries with live intelligence{ov.workflow?.id ? ` · 12-hour workflow ${ov.workflow.active ? 'active' : 'configured'}` : ''}</span>
         <span style={{ flex: 1 }} />
         <button className="ig-briefbtn" onClick={onBrief} disabled={briefBusy || !ov.countriesWithData}>{briefBusy ? 'Generating…' : 'Generate Executive Brief'}</button>
@@ -165,7 +166,13 @@ export default function IntelDashboard({ onExit }) {
           <div>
             <h2>Risk Engine</h2>
             {ov.risks.map((r, i) => (
-              <div key={i} className="ig-minirow ig-minirow--risk">
+              <div key={i}
+                className={`ig-minirow ig-minirow--risk${r.evidence?.url ? ' ig-minirow--linked' : ''}`}
+                role={r.evidence?.url ? 'button' : undefined}
+                tabIndex={r.evidence?.url ? 0 : undefined}
+                onClick={() => r.evidence?.url && setEvidencePop({ kind: 'risk', row: r })}
+                onKeyDown={(e) => { if (e.key === 'Enter' && r.evidence?.url) setEvidencePop({ kind: 'risk', row: r }); }}
+                title={r.evidence?.url ? `Evidence: ${r.evidence.publisher}` : undefined}>
                 <span className={`ig-impact ig-impact--${(r.severity || 'low').toLowerCase()}`}>{r.severity}</span>
                 <span className="ig-minirow__t">{r.title}</span>
                 <span className="ig-minirow__c">{r.country}</span>
@@ -175,7 +182,13 @@ export default function IntelDashboard({ onExit }) {
           <div>
             <h2>Opportunity Engine</h2>
             {ov.opportunities.map((o, i) => (
-              <div key={i} className="ig-minirow ig-minirow--opp">
+              <div key={i}
+                className={`ig-minirow ig-minirow--opp${o.evidence?.url ? ' ig-minirow--linked' : ''}`}
+                role={o.evidence?.url ? 'button' : undefined}
+                tabIndex={o.evidence?.url ? 0 : undefined}
+                onClick={() => o.evidence?.url && setEvidencePop({ kind: 'opp', row: o })}
+                onKeyDown={(e) => { if (e.key === 'Enter' && o.evidence?.url) setEvidencePop({ kind: 'opp', row: o }); }}
+                title={o.evidence?.url ? `Evidence: ${o.evidence.publisher}` : undefined}>
                 <span className="ig-conf">{o.confidence}</span>
                 <span className="ig-minirow__t">{o.title}</span>
                 <span className="ig-minirow__c">{o.country}</span>
@@ -183,6 +196,35 @@ export default function IntelDashboard({ onExit }) {
             ))}
           </div>
         </section>
+      )}
+
+      {/* Evidence popover (2026-07-20): lightbox-style overlay showing the cited
+          source for a Risk/Opportunity row — publisher + date + link out. */}
+      {evidencePop && (
+        <div className="lightbox" role="dialog" aria-modal="true" aria-label="Evidence source"
+          onClick={() => setEvidencePop(null)}>
+          <div className="ig-evpop" onClick={(e) => e.stopPropagation()}>
+            <button type="button" className="lightbox__close ig-evpop__close" aria-label="Close evidence"
+              onClick={() => setEvidencePop(null)}><X size={16} aria-hidden /></button>
+            <span className={evidencePop.kind === 'risk'
+              ? `ig-impact ig-impact--${(evidencePop.row.severity || 'low').toLowerCase()}`
+              : 'ig-conf'}>
+              {evidencePop.kind === 'risk' ? evidencePop.row.severity : evidencePop.row.confidence}
+            </span>
+            <h3 className="ig-evpop__title">{evidencePop.row.title}</h3>
+            <p className="ig-evpop__meta">
+              <b>{evidencePop.row.evidence.publisher}</b>
+              {evidencePop.row.evidence.date ? ` · ${evidencePop.row.evidence.date}` : ''}
+              {evidencePop.row.country ? ` · ${evidencePop.row.country}` : ''}
+            </p>
+            {evidencePop.row.detail && <p className="ig-evpop__detail">{evidencePop.row.detail}</p>}
+            <a className="ig-evpop__link" href={evidencePop.row.evidence.url}
+              target="_blank" rel="noopener noreferrer">
+              Open original article ↗
+            </a>
+            <p className="ig-evpop__cycle">Evidence gathered {evidencePop.row.evidence.gatheredAt?.slice(0, 16).replace('T', ' ')} UTC · refreshed each 24h enrichment cycle</p>
+          </div>
+        </div>
       )}
 
       {/* Latest Executive Brief */}

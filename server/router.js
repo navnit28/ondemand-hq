@@ -1,5 +1,5 @@
 // router.js — oda:oda THINK step: classify feature lane + FAST/FULL mode.
-// Primary: LLM classification on gpt-5.6-sol-medium. Fallback: deterministic keyword rules
+// Primary: LLM classification on the shared GLM 4.7 BYOI policy (ENDPOINT_ID+REASONING_EFFORT). Fallback: deterministic keyword rules
 // (loudly logged) so routing never hard-fails the request.
 import { ROUTER_PROMPT } from './prompts.js';
 import { createOdSession, syncQuery } from './ondemand.js';

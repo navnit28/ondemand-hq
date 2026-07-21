@@ -1,6 +1,6 @@
 // intel.js — ODA Intelligence Dashboard backend module.
 // Data pipeline: Perplexity (plugin-1722260873) → X Search (plugin-1751872652) →
-// multi-step AI analysis on predefined-gpt-5.6-sol + reasoningEffort "medium"
+// multi-step AI analysis on GLM 4.7 BYOI + validated reasoningEffort
 // (strict JSON schema parsed from the answer), persisted to disk for historical
 // comparison. All models are designed around the REAL payload shape verified in
 // debug/plugin-payloads/*-raw.json (2026-07-17): message.data.answer is grounded
@@ -12,7 +12,7 @@ import path from 'node:path';
 import crypto from 'node:crypto';
 import { fileURLToPath } from 'node:url';
 import { createOdSession, syncQuery } from './ondemand.js';
-import { ANALYSIS_ENDPOINT_ID, ANALYSIS_REASONING_EFFORT } from './env.js';
+import { ANALYSIS_ENDPOINT_ID, ANALYSIS_REASONING_EFFORT, GATHER_ENDPOINT_ID, GATHER_REASONING_EFFORT } from './env.js';
 import { buildExport } from './exports.js';
 import * as log from './log.js';
 import { DATA_DIR as DATA_BASE } from './paths.js';
@@ -130,7 +130,7 @@ export function extractMediaFromMarkdown(md) {
   return { images, links, xPosts };
 }
 
-// ---------- strict-JSON model call (predefined-gpt-5.6-sol + reasoningEffort medium) ----------
+// ---------- strict-JSON model call (GLM 4.7 BYOI + validated reasoningEffort) ----------
 function extractJson(text) {
   if (!text) return null;
   const fence = text.match(/```(?:json)?\s*([\s\S]*?)```/);
@@ -176,6 +176,7 @@ export async function refreshCountry(iso) {
         odSessionId: sid1,
         query: `Latest political, economic, humanitarian and development developments in ${c.name} over the recent period, with emphasis on anything relevant to the United Arab Emirates (investment, trade, food security, diplomacy, AI, humanitarian, infrastructure, energy). Include source links and images where available.`,
         pluginIds: [PLUGINS.perplexity],
+        endpointId: GATHER_ENDPOINT_ID, reasoningEffort: GATHER_REASONING_EFFORT, // data-gathering model pinned (unchanged)
       });
       const pplxMedia = extractMediaFromMarkdown(pplxAnswer);
       job.stage = 'xsearch';
@@ -188,6 +189,7 @@ export async function refreshCountry(iso) {
           odSessionId: sid2,
           query: `Latest X posts about ${c.name} and the UAE (investment, aid, diplomacy, development). Prioritize verified/authoritative accounts: government officials, ministers, embassies, journalists, NGOs, think tanks, international organisations. Include the x.com URL, author affiliation, date, and any engagement figures actually available for each post.`,
           pluginIds: [PLUGINS.xsearch],
+          endpointId: GATHER_ENDPOINT_ID, reasoningEffort: GATHER_REASONING_EFFORT, // data-gathering model pinned (unchanged)
         });
       } catch (e) { log.error('intel.xsearch_failed', { iso, error: e.message }); }
       const xMedia = extractMediaFromMarkdown(xAnswer);

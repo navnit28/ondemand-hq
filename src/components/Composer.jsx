@@ -12,17 +12,26 @@ export default function Composer({ onSend, busy, onError, placeholder, prefill }
     // focus + place cursor at end for immediate editing
     requestAnimationFrame(() => { try { const el = taRef.current; el?.focus(); el?.setSelectionRange(el.value.length, el.value.length); } catch { /* noop */ } });
   }, [prefill?.ts]);
-  const [text, setText] = useState('');
+  // UX fix (j): draft persists across in-session navigation / accidental blur
+  const [text, setText] = useState(() => { try { return sessionStorage.getItem('oda-draft') || ''; } catch { return ''; } });
+  useEffect(() => { try { sessionStorage.setItem('oda-draft', text); } catch { /* quota/private mode */ } }, [text]);
   const [attached, setAttached] = useState(null); // {id,name,size}
   const [uploading, setUploading] = useState(false);
   const taRef = useRef(null);
   const fileRef = useRef(null);
+  // UX fix (f): refocus the input when a stream finishes
+  const prevBusy = useRef(busy);
+  useEffect(() => {
+    if (prevBusy.current && !busy) requestAnimationFrame(() => taRef.current?.focus());
+    prevBusy.current = busy;
+  }, [busy]);
 
   const submit = () => {
     const t = text.trim();
     if ((!t && !attached) || busy || uploading) return;
     onSend(t || `Please process the attached file ${attached?.name || ''}`.trim(), attached?.id || null, attached?.name || null);
     setText('');
+    try { sessionStorage.removeItem('oda-draft'); } catch { /* noop */ }
     setAttached(null);
     if (taRef.current) taRef.current.style.height = 'auto';
   };

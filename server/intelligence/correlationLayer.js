@@ -33,7 +33,7 @@ export function assignVerification(edge, evidenceRecords) {
   return 'Predicted';
 }
 
-/** Prompt for the model-driven inference pass (streamed on gpt-5.6-sol-medium). */
+/** Prompt for the model-driven inference pass (streamed on GLM 4.7 BYOI). */
 export function buildInferencePrompt(countryName, evList, edgeList) {
   return `You are the ODA Correlation Engine second-stage AI CORRELATION LAYER.
 Evidence records:

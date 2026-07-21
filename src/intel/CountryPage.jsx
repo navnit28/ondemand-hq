@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { getCountry, refreshCountry, refreshStatus, getFacts } from './api.js';
 import BilingualLoader from '../components/BilingualLoader.jsx';
 import Flag from './Flag.jsx';
+import { openLightbox } from '../components/Lightbox.jsx';
 import XPostCard from './XPostCard.jsx';
 import { VERIFIED_TWEETS, VERIFIED_SOURCES } from './tweets.js';
 import { ArrowLeft, AlertTriangle, TrendingUp, TrendingDown, ArrowRight, User, Users, BadgeCheck, ExternalLink, RefreshCw } from 'lucide-react';
@@ -12,10 +13,18 @@ const spring = { type: 'spring', stiffness: 360, damping: 30 };
 const IMPACT_ORDER = { Critical: 0, High: 1, Medium: 2, Low: 3 };
 
 function Score({ label, value }) {
+  // 2026-07-20 QA fix: null values rendered stray dashes above the labels.
+  // Real numbers render value + filled bar; genuinely missing data shows an
+  // explicit 'No data' state with a muted empty bar (never a bare dash).
+  const has = typeof value === 'number' && Number.isFinite(value);
   return (
     <div className="ig-score">
-      <div className="ig-score__val">{value ?? '—'}</div>
-      <div className="ig-score__bar"><motion.span initial={{ width: 0 }} animate={{ width: `${value ?? 0}%` }} transition={spring} /></div>
+      {has
+        ? <div className="ig-score__val">{value}</div>
+        : <div className="ig-score__val ig-score__val--nodata">No data</div>}
+      <div className={`ig-score__bar${has ? '' : ' ig-score__bar--empty'}`}>
+        {has && <motion.span initial={{ width: 0 }} animate={{ width: `${value}%` }} transition={spring} />}
+      </div>
       <div className="ig-score__label">{label}</div>
     </div>
   );
@@ -38,7 +47,7 @@ function IntelCard({ item, images }) {
   return (
     <motion.article layout className={`ig-card${img ? ' ig-card--hero' : ''}`}
       initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={spring}>
-      {img && <div className="ig-card__img"><img src={img.url} alt={img.alt || item.headline} loading="lazy" onError={(e) => { e.target.parentElement.style.display = 'none'; }} /></div>}
+      {img && <div className="ig-card__img"><img src={img.url} alt={img.alt || item.headline} loading="lazy" onError={(e) => { e.target.parentElement.style.display = 'none'; }} onClick={() => openLightbox(img.url, img.alt || item.headline)} /></div>}
       <div className="ig-card__body">
         <div className="ig-card__meta">
           <span className={`ig-cat ig-cat--${item.category}`}>{item.category}</span>

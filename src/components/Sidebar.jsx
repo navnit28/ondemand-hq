@@ -50,6 +50,7 @@ export default function Sidebar({ conversations, activeId, onSelect, onNew, onTo
         <MonitorPlay size={15} strokeWidth={2} aria-hidden /> {LANG === 'ar' ? 'تحليل الإعلام' : 'MSM Analysis'}
       </button>
       <div className="sidebar__history">
+        <div className="sidebar__sessions-label">Sessions</div>
         {groups.length === 0 && <div className="sidebar__empty">No conversations yet — start one on the right.</div>}
         {groups.map(g => (
           <div className="sidebar__group" key={g.label}>
