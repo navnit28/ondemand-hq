@@ -39,26 +39,28 @@ export default function EChartsPanels({ run, onPickDate, onPickStance, onPickPla
     const days = [...byDay.keys()].sort();
     const volumeOption = {
       grid: { left: 30, right: 8, top: 22, bottom: 20 },
-      title: { text: 'Evidence volume over time', textStyle: { ...FONT, fontSize: 11, fontWeight: 600, color: '#9db0c4', textTransform: 'uppercase' } },
+      title: { text: 'EVIDENCE VOLUME OVER TIME', left: 4, top: 2, textStyle: { ...FONT, fontSize: 10.5, fontWeight: 600, color: '#a0a0a0' } },
+      grid: { top: 30, left: 34, right: 8, bottom: 44 },
       tooltip: { trigger: 'axis', textStyle: FONT },
       xAxis: { type: 'category', data: days, axisLabel: { ...FONT, fontSize: 9, rotate: 38, color: '#8b98a9' } },
       yAxis: { type: 'value', minInterval: 1, axisLabel: { ...FONT, fontSize: 9, color: '#8b98a9' }, splitLine: { lineStyle: { color: 'rgba(139,152,169,0.15)' } } },
       series: [{
         type: 'bar', data: days.map(d => ({
           value: byDay.get(d),
-          itemStyle: { color: d === activeDay ? '#159a7a' : '#a7d9cb', borderRadius: [3, 3, 0, 0] },
+          itemStyle: { color: d === activeDay ? '#ffffff' : '#a0a0a0', borderRadius: [3, 3, 0, 0] },
         })), barMaxWidth: 26,
       }],
     };
 
     // ---- stance strip (edge stances, weighted) ----
     const stances = ['cooperation', 'neutral', 'tension'];
-    const stanceColors = { cooperation: '#0e9f6e', neutral: '#94a3b8', tension: '#dc2626' };
+    const stanceColors = { cooperation: '#d0d0d0', neutral: '#909090', tension: '#606060' }; // monochrome
     const byStance = Object.fromEntries(stances.map(s => [s, 0]));
     for (const e of run.edges) byStance[e.stance || 'neutral'] = (byStance[e.stance || 'neutral'] || 0) + 1;
     const stanceOption = {
       grid: { left: 8, right: 8, top: 24, bottom: 4 },
-      title: { text: 'Stance strip (edges)', textStyle: { ...FONT, fontSize: 11, fontWeight: 600, color: '#9db0c4', textTransform: 'uppercase' } },
+      title: { text: 'STANCE STRIP (EDGES)', left: 4, top: 2, textStyle: { ...FONT, fontSize: 10.5, fontWeight: 600, color: '#a0a0a0' } },
+      grid: { top: 26, left: 8, right: 8, bottom: 8 },
       tooltip: { textStyle: FONT },
       xAxis: { type: 'value', show: false, max: Math.max(1, run.edges.length) },
       yAxis: { type: 'category', data: [''], show: false },
@@ -66,7 +68,7 @@ export default function EChartsPanels({ run, onPickDate, onPickStance, onPickPla
         name: s, type: 'bar', stack: 's', barWidth: 16,
         data: [byStance[s] || 0],
         itemStyle: { color: stanceColors[s], opacity: !activeStance || activeStance === s ? 1 : 0.25 },
-        label: { show: Boolean(byStance[s]), formatter: `${s} ${byStance[s] || 0}`, ...FONT, fontSize: 9, color: '#fff' },
+        label: { show: Boolean(byStance[s]), formatter: `${s} ${byStance[s] || 0}`, ...FONT, fontSize: 9, color: '#0c0c0c' },
       })),
     };
 
@@ -74,7 +76,7 @@ export default function EChartsPanels({ run, onPickDate, onPickStance, onPickPla
     const byPlatform = new Map();
     for (const ev of run.evidence) byPlatform.set(ev.platform, (byPlatform.get(ev.platform) || 0) + 1);
     const platformOption = {
-      title: { text: 'Platform split', textStyle: { ...FONT, fontSize: 11, fontWeight: 600, color: '#9db0c4', textTransform: 'uppercase' } },
+      title: { text: 'PLATFORM SPLIT', left: 4, top: 2, textStyle: { ...FONT, fontSize: 10.5, fontWeight: 600, color: '#a0a0a0' } },
       tooltip: { textStyle: FONT },
       legend: { bottom: 0, textStyle: { ...FONT, fontSize: 9, color: '#8b98a9' }, itemWidth: 10, itemHeight: 10 },
       series: [{

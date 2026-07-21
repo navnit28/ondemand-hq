@@ -34,7 +34,7 @@ function HoverPopover({ pop, run, onLightbox, onQuickQuery, onClose }) {
       <button className="ce-pop__x" onClick={onClose} aria-label="Close"><X size={11} /></button>
       {pop.kind === 'edge' ? (
         <>
-          <div className="ce-pop__type" style={{ color: pop.link.color }}>{pop.link.type}{pop.link.contradiction ? <AlertTriangle size={10} aria-hidden style={{ verticalAlign: '-1px', marginLeft: 3, color: '#f59e0b' }} /> : null}</div>
+          <div className="ce-pop__type" style={{ color: pop.link.color }}>{pop.link.type}{pop.link.contradiction ? <AlertTriangle size={10} aria-hidden style={{ verticalAlign: '-1px', marginLeft: 3, color: '#c0c0c0' }} /> : null}</div>
           <div className="ce-pop__claim">{pop.link.claim}</div>
           <div className="ce-pop__meta">weight {pop.link.weight} · confidence {pop.link.confidence}</div>
         </>
@@ -519,10 +519,10 @@ export default function CorrelationEngine({ iso, countryName }) {
                 {/* verification-tier legend (QA fix 2026-07-20): edge tiers were styled
                     but never explained on-canvas — Verified solid / Likely solid /
                     Possible dashed / Predicted dotted */}
-                <span className="ce-lg"><i className="ce-lg__tier" style={{ borderTop: '2.5px solid #159a7a' }} />Verified — solid</span>
-                <span className="ce-lg"><i className="ce-lg__tier" style={{ borderTop: '2.5px solid #1dac89' }} />Likely — solid</span>
-                <span className="ce-lg"><i className="ce-lg__tier" style={{ borderTop: '2.5px dashed #1dac89' }} />Possible — dashed</span>
-                <span className="ce-lg"><i className="ce-lg__tier" style={{ borderTop: '2.5px dotted #8aa8a0' }} />Predicted — dotted</span>
+                <span className="ce-lg"><i className="ce-lg__tier" style={{ borderTop: '2.5px solid #ffffff' }} />Verified — solid</span>
+                <span className="ce-lg"><i className="ce-lg__tier" style={{ borderTop: '2.5px solid #c0c0c0' }} />Likely — solid</span>
+                <span className="ce-lg"><i className="ce-lg__tier" style={{ borderTop: '2.5px dashed #a0a0a0' }} />Possible — dashed</span>
+                <span className="ce-lg"><i className="ce-lg__tier" style={{ borderTop: '2.5px dotted #707070' }} />Predicted — dotted</span>
               </div>
               <AnimatePresence>
                 {(pinPop || pop) && (

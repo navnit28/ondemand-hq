@@ -152,7 +152,7 @@ export default function CorrelationGraph({ graph, width, height, showLabels, phy
       ctx.globalAlpha = alpha * 0.85;
       ctx.beginPath();
       ctx.arc(n.x, n.y, Math.max(r, 2 / globalScale), 0, 2 * Math.PI);
-      ctx.fillStyle = n.tintStroke || '#a7d9cb';
+      ctx.fillStyle = n.tintStroke || '#9a9a9a';
       ctx.fill();
       ctx.restore();
       return;
@@ -164,7 +164,7 @@ export default function CorrelationGraph({ graph, width, height, showLabels, phy
     // community tint halo (legend-mapped: halo hue = Louvain community)
     ctx.beginPath();
     ctx.arc(n.x, n.y, r + 3.5, 0, 2 * Math.PI);
-    ctx.fillStyle = n.tint || '#eef2ff';
+    ctx.fillStyle = n.tint || '#d0d0d0';
     ctx.fill();
 
     // IG proof thumbnail (first media) clipped in a circle above the node body
@@ -178,10 +178,10 @@ export default function CorrelationGraph({ graph, width, height, showLabels, phy
     ctx.fillStyle = n.kind === 'country' ? '#e6ecf4' : '#161d26';
     ctx.fill();
     ctx.lineWidth = n.kind === 'country' ? 0 : 1.4;
-    ctx.strokeStyle = n.tintStroke || '#a7d9cb';
+    ctx.strokeStyle = n.tintStroke || '#9a9a9a';
     if (n.kind !== 'country') ctx.stroke();
     if (hover?.kind === 'node' && hover.id === n.id) {
-      ctx.lineWidth = 2; ctx.strokeStyle = '#159a7a'; ctx.stroke();
+      ctx.lineWidth = 2; ctx.strokeStyle = '#ffffff'; ctx.stroke();
     }
 
     if (imgReady) {
@@ -193,7 +193,7 @@ export default function CorrelationGraph({ graph, width, height, showLabels, phy
       ctx.restore();
       ctx.beginPath();
       ctx.arc(n.x, n.y - r - 7, 7, 0, 2 * Math.PI);
-      ctx.strokeStyle = '#0f766e'; ctx.lineWidth = 1; ctx.stroke();
+      ctx.strokeStyle = '#c0c0c0'; ctx.lineWidth = 1; ctx.stroke();
     }
 
     // initials
@@ -262,8 +262,8 @@ export default function CorrelationGraph({ graph, width, height, showLabels, phy
       if (ctx.roundRect) ctx.roundRect(bx, by, bw, bh, bh / 2);
       else ctx.rect(bx, by, bw, bh);
       ctx.fillStyle = '#11161d'; ctx.fill();
-      ctx.lineWidth = 1.2; ctx.strokeStyle = '#3fd68f'; ctx.stroke();
-      ctx.fillStyle = '#3fd68f';
+      ctx.lineWidth = 1.2; ctx.strokeStyle = '#e8e8e8'; ctx.stroke();
+      ctx.fillStyle = '#e8e8e8';
       ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
       ctx.fillText(txt, bx + bw / 2, by + bh / 2 + 0.5);
       n.__badgeRect = { x: bx, y: by, w: bw, h: bh };
@@ -320,9 +320,9 @@ export default function CorrelationGraph({ graph, width, height, showLabels, phy
       ctx.beginPath();
       ctx.moveTo(mx, ty - 4); ctx.lineTo(mx + 4.5, ty + 3.5); ctx.lineTo(mx - 4.5, ty + 3.5);
       ctx.closePath();
-      ctx.fillStyle = '#f59e0b'; ctx.fill();
+      ctx.fillStyle = '#d8d8d8'; ctx.fill();
       ctx.strokeStyle = '#0c1015'; ctx.lineWidth = 0.8; ctx.stroke();
-      ctx.fillStyle = '#78350f'; ctx.font = '700 5px Inter, sans-serif';
+      ctx.fillStyle = '#1a1a1a'; ctx.font = '700 5px Inter, sans-serif';
       ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
       ctx.fillText('!', mx, ty + 1.2);
     }

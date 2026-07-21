@@ -51,7 +51,7 @@ export default function SignalLoom({ run, onPickEvidence }) {
       .attr('transform', d => `translate(0,${y(d)})`)
       .each(function (p) {
         const g = d3.select(this);
-        g.append('circle').attr('cx', padL - 22).attr('r', 5).attr('fill', PLATFORM_COLORS[p] || '#9ca3af');
+        g.append('circle').attr('cx', padL - 22).attr('r', 5).attr('fill', PLATFORM_COLORS[p] || '#909090');
         g.append('text').attr('x', padL - 34).attr('text-anchor', 'end').attr('dy', '0.35em')
           .attr('font-size', 10).attr('font-weight', 600).attr('font-family', 'Inter, sans-serif')
           .attr('fill', '#9db0c4').text(p);
