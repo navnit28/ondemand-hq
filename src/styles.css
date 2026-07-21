@@ -1836,8 +1836,16 @@ a.xpost:focus-visible { outline: 2px solid #1d9bf0; outline-offset: -2px; border
   --pl-border: #262626;      /* hairline */
   --pl-border-2: #333333;
   --pl-ink: #ffffff;         /* primary text */
-  --pl-ink-dim: #9ca3af;     /* secondary text */
-  --pl-ink-faint: #9ca3af;   /* tertiary */
+  --pl-ink-dim: #e5e7eb;     /* secondary text */
+  --pl-ink-faint: #9ca3af;   /* muted/tertiary */
+  /* CE monochrome type scale — see src/correlation/TYPOGRAPHY.md.
+     Hierarchy = luminance + weight (400/500/600/700) + case/tracking. No color, no thin weights. */
+  --ce-t-display: 700 17px/1.25 var(--font);
+  --ce-t-title-size: 12px;   --ce-t-title-weight: 600; --ce-t-title-track: 0.08em;
+  --ce-t-body: 400 12.5px/1.55 var(--font);
+  --ce-t-label-size: 11px;   --ce-t-label-weight: 500;
+  --ce-t-meta-size: 10px;    --ce-t-meta-weight: 600;  --ce-t-meta-track: 0.08em;
+  --ce-t-badge-size: 9px;    --ce-t-badge-weight: 700; --ce-t-badge-track: 0.06em;
   --pl-accent: #ffffff;      /* MONOCHROME: white accent */
   --pl-ok: #d0d0d0;          /* MONOCHROME pass */
   --pl-warn: #a0a0a0;        /* MONOCHROME warn */
@@ -1852,6 +1860,11 @@ a.xpost:focus-visible { outline: 2px solid #1d9bf0; outline-offset: -2px; border
 }
 .ce--dark h2 { color: #f6f6f6; font-size: 15px; text-transform: uppercase; letter-spacing: 0.08em; font-weight: 700; }
 .ce--dark .ce-head__title h2::before { content: none; }
+.ce--dark .ce-head__title h2 { font: var(--ce-t-display); letter-spacing: -0.01em; color: var(--pl-ink); }
+.ce--dark .ce-head__meta { font-size: var(--ce-t-meta-size); font-weight: var(--ce-t-meta-weight); letter-spacing: var(--ce-t-meta-track); text-transform: uppercase; color: var(--pl-ink-faint); }
+.ce--dark .ce-dots__head b { font-size: var(--ce-t-title-size); font-weight: var(--ce-t-title-weight); letter-spacing: var(--ce-t-title-track); color: var(--pl-ink); }
+.ce--dark .ce2-story__body, .ce--dark .ce-dots__text { font: var(--ce-t-body); color: var(--pl-ink-dim); }
+.ce--dark .rop-stage b, .ce--dark .rop-title { letter-spacing: var(--ce-t-meta-track); }
 
 /* --- monospace KPI readout row --- */
 .ce--dark .ce-mono { font-family: var(--pl-mono); display: flex; flex-wrap: wrap; gap: 6px; margin-top: 5px; }
