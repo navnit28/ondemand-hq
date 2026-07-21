@@ -209,7 +209,7 @@ export default function CorrelationGraph({ graph, width, height, showLabels, phy
     if (showLabels && (globalScale > 1.05 || n.kind === 'country' || (hover?.kind === 'node' && hover.id === n.id))) {
       const fpx = 11 / globalScale;
       ctx.font = `500 ${fpx}px Inter, sans-serif`;
-      ctx.fillStyle = dim ? 'rgba(150,150,150,0.35)' : '#a8a8a8';
+      ctx.fillStyle = dim ? 'rgba(180,180,180,0.4)' : '#e5e7eb';
       ctx.textBaseline = 'top';
       const tw = ctx.measureText(n.label).width;
       // canvas viewport bounds in graph coords
@@ -320,9 +320,9 @@ export default function CorrelationGraph({ graph, width, height, showLabels, phy
       ctx.beginPath();
       ctx.moveTo(mx, ty - 4); ctx.lineTo(mx + 4.5, ty + 3.5); ctx.lineTo(mx - 4.5, ty + 3.5);
       ctx.closePath();
-      ctx.fillStyle = '#d8d8d8'; ctx.fill();
+      ctx.fillStyle = '#1f1f1f'; ctx.fill();
       ctx.strokeStyle = '#0d0d0d'; ctx.lineWidth = 0.8; ctx.stroke();
-      ctx.fillStyle = '#1a1a1a'; ctx.font = '700 5px Inter, sans-serif';
+      ctx.fillStyle = '#ffffff'; ctx.font = '700 5px Inter, sans-serif';
       ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
       ctx.fillText('!', mx, ty + 1.2);
     }

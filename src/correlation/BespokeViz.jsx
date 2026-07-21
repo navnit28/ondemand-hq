@@ -54,7 +54,7 @@ export default function SignalLoom({ run, onPickEvidence }) {
         g.append('circle').attr('cx', padL - 22).attr('r', 5).attr('fill', PLATFORM_COLORS[p] || '#909090');
         g.append('text').attr('x', padL - 34).attr('text-anchor', 'end').attr('dy', '0.35em')
           .attr('font-size', 10).attr('font-weight', 600).attr('font-family', 'Inter, sans-serif')
-          .attr('fill', '#a8a8a8').text(p);
+          .attr('fill', '#e5e7eb').text(p);
       });
 
     // threads: edge × evidence
@@ -101,7 +101,7 @@ export default function SignalLoom({ run, onPickEvidence }) {
 
     // legend
     const lg = svg.append('g').attr('transform', `translate(${padL},${H - 8})`);
-    lg.append('text').attr('font-size', 8.5).attr('fill', '#a3a3a3').attr('font-family', 'Inter, sans-serif')
+    lg.append('text').attr('font-size', 8.5).attr('fill', '#9ca3af').attr('font-family', 'Inter, sans-serif')
       .text(`Signal Loom — ${threads.length} woven threads (edge × evidence) · thickness = confidence · opacity = recency · dashes = contradiction · click a thread for evidence`);
   }, [run, onPickEvidence, xp]);
 

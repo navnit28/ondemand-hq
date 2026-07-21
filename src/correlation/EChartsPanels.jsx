@@ -39,7 +39,7 @@ export default function EChartsPanels({ run, onPickDate, onPickStance, onPickPla
     const days = [...byDay.keys()].sort();
     const volumeOption = {
       grid: { left: 30, right: 8, top: 22, bottom: 20 },
-      title: { text: 'EVIDENCE VOLUME OVER TIME', left: 4, top: 2, textStyle: { ...FONT, fontSize: 10.5, fontWeight: 600, color: '#a0a0a0' } },
+      title: { text: 'EVIDENCE VOLUME OVER TIME', left: 4, top: 2, textStyle: { ...FONT, fontSize: 10.5, fontWeight: 600, color: '#e5e7eb' } },
       grid: { top: 30, left: 34, right: 8, bottom: 44 },
       tooltip: { trigger: 'axis', textStyle: FONT },
       xAxis: { type: 'category', data: days, axisLabel: { ...FONT, fontSize: 9, rotate: 38, color: '#909090' } },
@@ -54,12 +54,12 @@ export default function EChartsPanels({ run, onPickDate, onPickStance, onPickPla
 
     // ---- stance strip (edge stances, weighted) ----
     const stances = ['cooperation', 'neutral', 'tension'];
-    const stanceColors = { cooperation: '#d0d0d0', neutral: '#909090', tension: '#606060' }; // monochrome
+    const stanceColors = { cooperation: '#6b6b6b', neutral: '#4a4a4a', tension: '#2e2e2e' }; // monochrome, dark segments for white labels
     const byStance = Object.fromEntries(stances.map(s => [s, 0]));
     for (const e of run.edges) byStance[e.stance || 'neutral'] = (byStance[e.stance || 'neutral'] || 0) + 1;
     const stanceOption = {
       grid: { left: 8, right: 8, top: 24, bottom: 4 },
-      title: { text: 'STANCE STRIP (EDGES)', left: 4, top: 2, textStyle: { ...FONT, fontSize: 10.5, fontWeight: 600, color: '#a0a0a0' } },
+      title: { text: 'STANCE STRIP (EDGES)', left: 4, top: 2, textStyle: { ...FONT, fontSize: 10.5, fontWeight: 600, color: '#e5e7eb' } },
       grid: { top: 26, left: 8, right: 8, bottom: 8 },
       tooltip: { textStyle: FONT },
       xAxis: { type: 'value', show: false, max: Math.max(1, run.edges.length) },
@@ -68,7 +68,7 @@ export default function EChartsPanels({ run, onPickDate, onPickStance, onPickPla
         name: s, type: 'bar', stack: 's', barWidth: 16,
         data: [byStance[s] || 0],
         itemStyle: { color: stanceColors[s], opacity: !activeStance || activeStance === s ? 1 : 0.25 },
-        label: { show: Boolean(byStance[s]), formatter: `${s} ${byStance[s] || 0}`, ...FONT, fontSize: 9, color: '#0c0c0c' },
+        label: { show: Boolean(byStance[s]), formatter: `${s} ${byStance[s] || 0}`, ...FONT, fontSize: 9, color: '#ffffff' },
       })),
     };
 
@@ -76,7 +76,7 @@ export default function EChartsPanels({ run, onPickDate, onPickStance, onPickPla
     const byPlatform = new Map();
     for (const ev of run.evidence) byPlatform.set(ev.platform, (byPlatform.get(ev.platform) || 0) + 1);
     const platformOption = {
-      title: { text: 'PLATFORM SPLIT', left: 4, top: 2, textStyle: { ...FONT, fontSize: 10.5, fontWeight: 600, color: '#a0a0a0' } },
+      title: { text: 'PLATFORM SPLIT', left: 4, top: 2, textStyle: { ...FONT, fontSize: 10.5, fontWeight: 600, color: '#e5e7eb' } },
       tooltip: { textStyle: FONT },
       legend: { bottom: 0, textStyle: { ...FONT, fontSize: 9, color: '#909090' }, itemWidth: 10, itemHeight: 10 },
       series: [{
