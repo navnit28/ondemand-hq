@@ -6,6 +6,7 @@ import { EntityInspector, RelationshipInspector, EvidenceBreakdown } from './V2P
 import EChartsPanels from './EChartsPanels.jsx';
 import SignalLoom from './BespokeViz.jsx';
 import QuickQuery from './QuickQuery.jsx';
+import RunOpsPanel, { LiveRunStrip } from './RunOpsPanel.jsx';
 import BilingualLoader from '../components/BilingualLoader.jsx';
 import {
   getRuns, getRun, regenerate, pipelineStatus, streamNarrative,
@@ -331,7 +332,7 @@ export default function CorrelationEngine({ iso, countryName }) {
     const out = document.createElement('canvas');
     out.width = c0.width; out.height = c0.height;
     const ctx = out.getContext('2d');
-    ctx.fillStyle = '#ffffff'; ctx.fillRect(0, 0, out.width, out.height);
+    ctx.fillStyle = '#0c1015'; ctx.fillRect(0, 0, out.width, out.height);
     canvases.forEach(c => ctx.drawImage(c, 0, 0));
     const a = document.createElement('a');
     a.href = out.toDataURL('image/png');
@@ -349,16 +350,19 @@ export default function CorrelationEngine({ iso, countryName }) {
   if (err) return <div className="ig-error">{err} <button onClick={loadRuns}>Retry</button></div>;
 
   return (
-    <section className="ce" aria-label="Correlation Engine">
+    <section className="ce ce--dark" aria-label="Correlation Engine">
       {/* header row */}
       <div className="ce-head">
         <div className="ce-head__title">
           <h2>Correlation Engine</h2>
-          {run && <span className="ce-head__meta">
-            {run.stats.evidenceCount} evidence · {run.stats.edgeCount} edges · {run.stats.igMediaCount} IG proofs
-            · {run.model.analysis} · run {run.runId}
-            {run.stats.droppedNoEvidence > 0 && ` · ${run.stats.droppedNoEvidence} edges dropped (no evidence)`}
-            {runIdx === runs.length - 1 && <span className="ce-head__latest"> · latest</span>}
+          {run && <span className="ce-head__meta ce-mono">
+            <span className="ce-kpi"><b>{run.stats.evidenceCount}</b> data points</span>
+            <span className="ce-kpi"><b>{run.stats.edgeCount}</b> edges</span>
+            <span className="ce-kpi"><b>{run.stats.igMediaCount}</b> proofs</span>
+            <span className="ce-kpi">{run.model.analysis}</span>
+            <span className="ce-kpi">run {run.runId}</span>
+            {run.stats.droppedNoEvidence > 0 && <span className="ce-kpi ce-kpi--warn">{run.stats.droppedNoEvidence} dropped</span>}
+            {runIdx === runs.length - 1 && <span className="ce-kpi ce-kpi--latest">LATEST</span>}
           </span>}
         </div>
         <div className="ce-head__actions">
@@ -375,15 +379,7 @@ export default function CorrelationEngine({ iso, countryName }) {
       {/* (3) UX overhaul 2026-07-19: on-brand white/minimal generation banner —
           neutral gray spinner, clean status text, RTL-isolated Arabic 'مصادر' label
           placed at the inline-end. No purple anywhere. */}
-      {job && (
-        <div className="ce-running" role="status" data-testid="ce-running-banner">
-          <span className="ce-running__label">
-            <Loader2 size={15} className="ce-spin-neutral" aria-hidden />
-            Regenerating {countryName} correlations — stage: {job.stage} · started {new Date(job.startedAt).toLocaleTimeString('en-GB')}
-          </span>
-          <span className="ce-sourcing-ar" dir="rtl" lang="ar">مصادر</span>
-        </div>
-      )}
+      {job && <LiveRunStrip job={job} countryName={countryName} />}
 
       {!run && !job && (
         <div className="ig-empty">No correlation runs for {countryName} yet. <button className="ce-btn ce-btn--primary" onClick={onStartEngine}>Start Correlation Engine</button></div>
@@ -391,6 +387,9 @@ export default function CorrelationEngine({ iso, countryName }) {
 
       {run && (
         <>
+          {/* Engine run ops strip — adaptive smart-run audit (primary / fallback-Δ / merge) */}
+          <RunOpsPanel run={run} />
+
           {/* Connected Dots narrative — every sentence evidence-traced, streamed */}
           <div className="ce-dots" dir="auto">
             <div className="ce-dots__head">

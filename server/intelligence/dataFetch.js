@@ -1,18 +1,18 @@
-// dataFetch.js — HARD-FORCE DATA-FETCH LAYER (rewrite, 2026-07-20).
-// Replaces the old "Up to 60 records, no minimum" Stage C extraction with a
-// strict-floor guarantee: every Correlation Engine run MUST come back with a
-// MINIMUM of 100+ clean, deduped, validated evidence/data-point records —
-// no odd counts, no partial batches. Any model response short of the floor is
-// REJECTED and automatically RETRIED (reject+retry mandate); chunked
-// sub-batches that return short of their requested size are treated as
-// PARTIAL and re-requested before being merged. Cerebras (GLM 4.7 BYOI) was
-// wired first for ultimate speed, but the 2026-07-21 4-run verification
-// checkpoint (CORRELATION_TESTS.md) failed it (1/4 runs ≥100 model points);
-// per the fallback policy the VERIFIED PRIMARY is now fable-5-medium
-// (predefined-claude-fable-5 + reasoningEffort 'medium', 4/4 runs passed),
-// with Cerebras retained as the automatic second rung. As an absolute
-// last-resort guarantee (so the pipeline NEVER blocks the user), the shortfall
-// is backfilled from the real, on-disk evidence corpus — never simulated data.
+// dataFetch.js — ADAPTIVE-RETRY DATA-FETCH LAYER (smart-run rewrite, 2026-07-21).
+// ONE smart run per correlation request — NOT 4 verification passes.
+// PRIMARY PATH: Cerebras GLM 4.7 BYOI (ultimate speed) with a strict quality
+// gate: the run must yield >= MIN_DATA_POINTS (100+) clean, deduped, validated
+// data points. If the GLM 4.7 primary pass fails or comes back short, its
+// artifacts are KEPT (never discarded) and the engine falls back to
+// fable-5-medium with a DELTA PROMPT that excludes every already-captured
+// claim — only the missing remainder is fetched. Both passes are then MERGED
+// (validated + deduped across passes) so the latest correlation is always
+// present in the final dataset, and the merged set must satisfy the 100+
+// gate. As an absolute last-resort guarantee (so the pipeline NEVER blocks
+// the user), any residual shortfall is backfilled from the real, on-disk
+// evidence corpus — never simulated data. The full pass/merge audit trail
+// (primaryCount, deltaAdded, mergedCount, per-attempt log) is recorded on the
+// run stats for UI display.
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -187,29 +187,56 @@ function sliceMaterialIntoParts(material, parts) {
 const claimKey = (v) => String(v?.claim || '').toLowerCase().replace(/[^a-z0-9]/g, '').slice(0, 120);
 
 /**
- * THE hard-force loop. Guarantees a return of ≥ MIN_DATA_POINTS, EVEN-count,
- * validated + deduped evidence records — reject+retry below-minimum model
- * responses, escalate single→chunked extraction, fall back Cerebras→fable-5,
- * and (only if every rung is exhausted) backfill the shortfall from the real
- * on-disk corpus. Throws only if even backfill cannot reach the floor.
+ * Build the "already captured" exclusion block for a DELTA rerun. The fallback
+ * prompt must NOT refetch claims the primary pass already delivered — only the
+ * missing remainder. Claims are truncated to keep the exclusion list compact.
+ */
+export function buildDeltaExclusion(captured) {
+  const lines = (captured || []).map((p, i) => `${i + 1}. ${String(p.claim || '').slice(0, 140)}`);
+  if (!lines.length) return '';
+  return `\nALREADY CAPTURED (DELTA MODE — DO NOT REPEAT ANY OF THESE ${lines.length} CLAIMS; return ONLY NEW records not semantically covered below):\n${lines.join('\n')}\n`;
+}
+
+/** Merge passes: earlier-pass points win on duplicate claim keys; order preserved. */
+export function mergePasses(...passes) {
+  const seen = new Set();
+  const out = [];
+  for (const pass of passes) {
+    for (const p of pass || []) {
+      const key = claimKey(p);
+      if (!key || seen.has(key)) continue;
+      seen.add(key);
+      out.push(p);
+    }
+  }
+  return out;
+}
+
+/**
+ * THE adaptive smart run. ONE run, quality-gated:
+ *   PASS 1 (primary):  Cerebras GLM 4.7, single extraction (fast path).
+ *   PASS 1b:           if short, ONE chunked retry on the SAME rung (still the same run).
+ *   PASS 2 (fallback): if still short, KEEP pass-1 artifacts and delta-fetch the
+ *                      remainder on fable-5-medium (prompt excludes captured claims).
+ *   PASS 2b:           one chunked delta retry on the fallback rung if needed.
+ *   MERGE:             all passes merged + deduped; gate re-evaluated on the merge.
+ *   BACKFILL:          last-resort corpus top-up (real data only) so the pipeline
+ *                      never blocks. Throws only if even backfill cannot reach the floor.
  */
 export async function hardForceDataPoints({
   iso, countryName, phrase, material, sessionTag,
-  // VERIFIED LADDER ORDER (2026-07-21 4-run checkpoint, CORRELATION_TESTS.md):
-  // Cerebras GLM 4.7 was wired first for ultimate speed but FAILED verification —
-  // only 1/4 runs delivered ≥100 model points (134, then 72/60/27 despite full
-  // reject+retry: single + chunked modes). Per policy it fell back to
-  // fable-5-medium, which PASSED 4/4 (122/140/122/146 pts, all even, zero
-  // backfill, single attempt each) → fable-5-medium is the VERIFIED PRIMARY.
-  // Cerebras is retained as the second rung (env-overridable speed path via
-  // CE_DATAFETCH_ENDPOINT_ID) and can be re-promoted once it re-verifies.
+  // ADAPTIVE-RETRY LADDER (2026-07-21 smart-run policy): Cerebras GLM 4.7 is the
+  // PRIMARY path (speed-first, env-overridable via CE_DATAFETCH_ENDPOINT_ID);
+  // fable-5-medium is the verified FALLBACK rung, invoked in DELTA mode only
+  // when the primary pass misses the 100+ quality gate.
   endpointLadder = [
-    { endpointId: FABLE_FALLBACK_ENDPOINT_ID, effort: FABLE_FALLBACK_REASONING_EFFORT, label: 'fable-5-medium' },
     { endpointId: CEREBRAS_ENDPOINT_ID, effort: CE_DATAFETCH_REASONING_EFFORT, label: 'cerebras-glm-4.7' },
+    { endpointId: FABLE_FALLBACK_ENDPOINT_ID, effort: FABLE_FALLBACK_REASONING_EFFORT, label: 'fable-5-medium' },
   ],
   onAttempt = () => {},
 } = {}) {
   const attempts = [];
+  const passLog = [];
   let globalAttemptN = 0;
   const recordAttempt = (rec) => {
     globalAttemptN += 1;
@@ -220,80 +247,113 @@ export async function hardForceDataPoints({
     return full;
   };
 
-  const finalize = (points, endpointUsed, fallbackUsed, corpusBackfilled = 0) => {
+  // captured = artifacts KEPT across passes (never discarded on a short pass)
+  let captured = [];
+  let primaryCount = 0;
+  let deltaAdded = 0;
+  let fallbackUsed = false;
+  let endpointUsed = endpointLadder[0]?.endpointId ?? null;
+
+  const finalize = (points, corpusBackfilled = 0) => {
     const even = enforceEvenBatch(points);
     const dataPoints = even.map((p, i) => ({ ...p, id: `E${i + 1}`, origin: p.origin || 'model' }));
-    return { dataPoints, attempts, endpointUsed, fallbackUsed, corpusBackfilled };
+    return {
+      dataPoints, attempts, endpointUsed, fallbackUsed, corpusBackfilled,
+      primaryCount, deltaAdded, mergedCount: dataPoints.length, passes: passLog,
+    };
   };
 
-  let fallbackUsed = false;
-  let bestRejected = { points: [], validCount: -1 };
-
-  for (let rungIdx = 0; rungIdx < endpointLadder.length; rungIdx++) {
-    const rung = endpointLadder[rungIdx];
-    if (rungIdx > 0) fallbackUsed = true;
-
-    for (let n = 1; n <= MAX_FETCH_ATTEMPTS; n++) {
-      const startedAt = new Date().toISOString();
-      const t0 = Date.now();
-      const mode = n <= 2 ? 'single' : 'chunked';
-      try {
-        if (mode === 'single') {
-          const target = n === 1 ? TARGET_DATA_POINTS : 140;
-          const sid = await createOdSession(`${sessionTag}-a${n}`, []);
-          const prompt = buildExtractionPrompt({ countryName, phrase, material, min: MIN_DATA_POINTS, target });
-          const raw = await syncQuery({ odSessionId: sid, query: prompt, systemPrompt: EXTRACTION_SYSTEM, endpointId: rung.endpointId, reasoningEffort: rung.effort });
-          const parsed = extractJson(raw);
-          const batch = validateBatch(Array.isArray(parsed) ? parsed : []);
-          const latencyMs = Date.now() - t0;
-          if (batch.count > bestRejected.validCount) bestRejected = { points: batch.points, validCount: batch.count };
-          if (batch.ok) {
-            recordAttempt({ endpointId: rung.endpointId, effort: rung.effort, mode, requested: target, returnedRaw: Array.isArray(parsed) ? parsed.length : 0, validCount: batch.count, accepted: true, rejectedReason: null, latencyMs, startedAt, error: null });
-            return finalize(batch.points, rung.endpointId, fallbackUsed, 0);
-          }
-          recordAttempt({ endpointId: rung.endpointId, effort: rung.effort, mode, requested: target, returnedRaw: Array.isArray(parsed) ? parsed.length : 0, validCount: batch.count, accepted: false, rejectedReason: `below_minimum:${batch.count}<${MIN_DATA_POINTS}`, latencyMs, startedAt, error: null });
-        } else {
-          const CHUNKS = 4, CHUNK_MIN = 26, CHUNK_TARGET = 34;
-          const slices = sliceMaterialIntoParts(material, CHUNKS);
-          const runChunk = async (k, mat, suffix = '') => {
-            const sid = await createOdSession(`${sessionTag}-a${n}c${k}${suffix}`, []);
-            const prompt = buildExtractionPrompt({ countryName, phrase, material: mat, min: CHUNK_MIN, target: CHUNK_TARGET });
-            const rawText = await syncQuery({ odSessionId: sid, query: prompt, systemPrompt: EXTRACTION_SYSTEM, endpointId: rung.endpointId, reasoningEffort: rung.effort });
-            const parsed = extractJson(rawText);
-            return Array.isArray(parsed) ? parsed : [];
-          };
-          const results = await Promise.allSettled(slices.map((mat, k) => runChunk(k, mat)));
-          const chunkArrays = results.map(r => (r.status === 'fulfilled' ? r.value : []));
-          // A chunk short of its requested size is PARTIAL → re-request that chunk ONCE.
-          const shortIdx = chunkArrays.map((arr, k) => (validateBatch(arr).count < CHUNK_MIN ? k : -1)).filter(k => k >= 0);
-          if (shortIdx.length) {
-            const retryResults = await Promise.allSettled(shortIdx.map(k => runChunk(k, slices[k], '-retry')));
-            shortIdx.forEach((k, j) => { if (retryResults[j].status === 'fulfilled') chunkArrays[k] = retryResults[j].value; });
-          }
-          const merged = [].concat(...chunkArrays);
-          const batch = validateBatch(merged);
-          const latencyMs = Date.now() - t0;
-          if (batch.count > bestRejected.validCount) bestRejected = { points: batch.points, validCount: batch.count };
-          if (batch.ok) {
-            recordAttempt({ endpointId: rung.endpointId, effort: rung.effort, mode, requested: CHUNKS * CHUNK_TARGET, returnedRaw: merged.length, validCount: batch.count, accepted: true, rejectedReason: null, latencyMs, startedAt, error: null });
-            return finalize(batch.points, rung.endpointId, fallbackUsed, 0);
-          }
-          recordAttempt({ endpointId: rung.endpointId, effort: rung.effort, mode, requested: CHUNKS * CHUNK_TARGET, returnedRaw: merged.length, validCount: batch.count, accepted: false, rejectedReason: `below_minimum:${batch.count}<${MIN_DATA_POINTS}`, latencyMs, startedAt, error: null });
-        }
-      } catch (e) {
-        const latencyMs = Date.now() - t0;
-        recordAttempt({ endpointId: rung.endpointId, effort: rung.effort, mode, requested: mode === 'single' ? (n === 1 ? TARGET_DATA_POINTS : 140) : 4 * 34, returnedRaw: 0, validCount: 0, accepted: false, rejectedReason: null, latencyMs, startedAt, error: String(e?.message || e).slice(0, 300) });
-      }
+  const runSingle = async (rung, { deltaOf = null, tagSuffix, target }) => {
+    const startedAt = new Date().toISOString();
+    const t0 = Date.now();
+    const need = Math.max(2, MIN_DATA_POINTS - (deltaOf ? deltaOf.length : 0));
+    try {
+      const sid = await createOdSession(`${sessionTag}-${tagSuffix}`, []);
+      const prompt = buildExtractionPrompt({ countryName, phrase, material, min: need, target })
+        + (deltaOf ? buildDeltaExclusion(deltaOf) : '');
+      const raw = await syncQuery({ odSessionId: sid, query: prompt, systemPrompt: EXTRACTION_SYSTEM, endpointId: rung.endpointId, reasoningEffort: rung.effort });
+      const parsed = extractJson(raw);
+      const batch = validateBatch(Array.isArray(parsed) ? parsed : []);
+      const latencyMs = Date.now() - t0;
+      recordAttempt({ endpointId: rung.endpointId, effort: rung.effort, mode: deltaOf ? 'delta-single' : 'single', requested: target, returnedRaw: Array.isArray(parsed) ? parsed.length : 0, validCount: batch.count, accepted: batch.count >= need, rejectedReason: batch.count >= need ? null : `below_needed:${batch.count}<${need}`, latencyMs, startedAt, error: null });
+      return batch.points;
+    } catch (e) {
+      const latencyMs = Date.now() - t0;
+      recordAttempt({ endpointId: rung.endpointId, effort: rung.effort, mode: deltaOf ? 'delta-single' : 'single', requested: target, returnedRaw: 0, validCount: 0, accepted: false, rejectedReason: null, latencyMs, startedAt, error: String(e?.message || e).slice(0, 300) });
+      return [];
     }
+  };
 
-    if (rungIdx === 0) {
-      log.error('datafetch.cerebras_exhausted', { sessionTag, attemptsSoFar: attempts.length, bestValidCount: bestRejected.validCount });
+  const runChunked = async (rung, { deltaOf = null, tagSuffix }) => {
+    const startedAt = new Date().toISOString();
+    const t0 = Date.now();
+    const CHUNKS = 4, CHUNK_MIN = 26, CHUNK_TARGET = 34;
+    try {
+      const slices = sliceMaterialIntoParts(material, CHUNKS);
+      const excl = deltaOf ? buildDeltaExclusion(deltaOf) : '';
+      const runChunk = async (k, mat, suffix = '') => {
+        const sid = await createOdSession(`${sessionTag}-${tagSuffix}c${k}${suffix}`, []);
+        const prompt = buildExtractionPrompt({ countryName, phrase, material: mat, min: CHUNK_MIN, target: CHUNK_TARGET }) + excl;
+        const rawText = await syncQuery({ odSessionId: sid, query: prompt, systemPrompt: EXTRACTION_SYSTEM, endpointId: rung.endpointId, reasoningEffort: rung.effort });
+        const parsed = extractJson(rawText);
+        return Array.isArray(parsed) ? parsed : [];
+      };
+      const results = await Promise.allSettled(slices.map((mat, k) => runChunk(k, mat)));
+      const chunkArrays = results.map(r => (r.status === 'fulfilled' ? r.value : []));
+      const shortIdx = chunkArrays.map((arr, k) => (validateBatch(arr).count < CHUNK_MIN ? k : -1)).filter(k => k >= 0);
+      if (shortIdx.length) {
+        const retryResults = await Promise.allSettled(shortIdx.map(k => runChunk(k, slices[k], '-retry')));
+        shortIdx.forEach((k, j) => { if (retryResults[j].status === 'fulfilled') chunkArrays[k] = retryResults[j].value; });
+      }
+      const merged = [].concat(...chunkArrays);
+      const batch = validateBatch(merged);
+      const latencyMs = Date.now() - t0;
+      recordAttempt({ endpointId: rung.endpointId, effort: rung.effort, mode: deltaOf ? 'delta-chunked' : 'chunked', requested: CHUNKS * CHUNK_TARGET, returnedRaw: merged.length, validCount: batch.count, accepted: batch.ok, rejectedReason: batch.ok ? null : `below_minimum:${batch.count}<${MIN_DATA_POINTS}`, latencyMs, startedAt, error: null });
+      return batch.points;
+    } catch (e) {
+      const latencyMs = Date.now() - t0;
+      recordAttempt({ endpointId: rung.endpointId, effort: rung.effort, mode: deltaOf ? 'delta-chunked' : 'chunked', requested: 4 * 34, returnedRaw: 0, validCount: 0, accepted: false, rejectedReason: null, latencyMs, startedAt, error: String(e?.message || e).slice(0, 300) });
+      return [];
+    }
+  };
+
+  const primary = endpointLadder[0];
+  const fallback = endpointLadder[1] || null;
+
+  // ---- PASS 1: PRIMARY (Cerebras GLM 4.7) — fast single extraction ----
+  captured = mergePasses(await runSingle(primary, { tagSuffix: 'p1', target: TARGET_DATA_POINTS }));
+  // ---- PASS 1b: one chunked retry on the SAME rung if short (same run) ----
+  if (captured.length < MIN_DATA_POINTS) {
+    captured = mergePasses(captured, await runChunked(primary, { tagSuffix: 'p1b' }));
+  }
+  primaryCount = captured.length;
+  passLog.push({ pass: 'primary', label: primary.label, endpointId: primary.endpointId, count: primaryCount, gate: primaryCount >= MIN_DATA_POINTS ? 'pass' : 'short' });
+
+  if (captured.length >= MIN_DATA_POINTS) {
+    endpointUsed = primary.endpointId;
+    return finalize(captured, 0);
+  }
+
+  // ---- PASS 2: FALLBACK (fable-5-medium) in DELTA mode — keep pass-1 artifacts ----
+  if (fallback) {
+    fallbackUsed = true;
+    endpointUsed = fallback.endpointId;
+    log.error('datafetch.primary_short', { sessionTag, primaryCount, needed: MIN_DATA_POINTS, fallingBackTo: fallback.label });
+    const beforeDelta = captured.length;
+    const deltaPts = await runSingle(fallback, { deltaOf: captured, tagSuffix: 'p2', target: Math.max(TARGET_DATA_POINTS - captured.length, MIN_DATA_POINTS - captured.length + 20) });
+    captured = mergePasses(captured, deltaPts);
+    if (captured.length < MIN_DATA_POINTS) {
+      captured = mergePasses(captured, await runChunked(fallback, { deltaOf: captured, tagSuffix: 'p2b' }));
+    }
+    deltaAdded = captured.length - beforeDelta;
+    passLog.push({ pass: 'fallback-delta', label: fallback.label, endpointId: fallback.endpointId, count: deltaAdded, gate: captured.length >= MIN_DATA_POINTS ? 'pass' : 'short' });
+    if (captured.length >= MIN_DATA_POINTS) {
+      return finalize(captured, 0);
     }
   }
 
   // ---- LAST-RESORT GUARANTEE: backfill the shortfall from the real corpus ----
-  const have = bestRejected.points || [];
-  const haveKeys = new Set(have.map(claimKey));
+  const haveKeys = new Set(captured.map(claimKey));
   const validatedCorpus = loadMainCorpusRecords()
     .map(validateDataPoint)
     .filter(Boolean)
@@ -301,16 +361,17 @@ export async function hardForceDataPoints({
 
   const backfilled = [];
   for (const rec of validatedCorpus) {
-    if (have.length + backfilled.length >= TARGET_DATA_POINTS) break;
+    if (captured.length + backfilled.length >= TARGET_DATA_POINTS) break;
     const key = claimKey(rec);
     if (haveKeys.has(key)) continue;
     haveKeys.add(key);
     backfilled.push({ ...rec, origin: 'corpus-backfill' });
   }
-  const combined = have.concat(backfilled);
+  const combined = captured.concat(backfilled);
   if (combined.length < MIN_DATA_POINTS) {
     throw new Error(`hardForceDataPoints: corpus backfill insufficient (${combined.length} < ${MIN_DATA_POINTS})`);
   }
+  passLog.push({ pass: 'corpus-backfill', label: 'corpus', endpointId: null, count: backfilled.length, gate: 'pass' });
   log.error('datafetch.corpus_backfill', { n: backfilled.length, total: combined.length });
-  return finalize(combined, endpointLadder[endpointLadder.length - 1]?.endpointId ?? null, fallbackUsed, backfilled.length);
+  return finalize(combined, backfilled.length);
 }

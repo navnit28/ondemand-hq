@@ -175,7 +175,7 @@ export default function CorrelationGraph({ graph, width, height, showLabels, phy
     // body
     ctx.beginPath();
     ctx.arc(n.x, n.y, r, 0, 2 * Math.PI);
-    ctx.fillStyle = n.kind === 'country' ? '#111827' : '#ffffff';
+    ctx.fillStyle = n.kind === 'country' ? '#e6ecf4' : '#161d26';
     ctx.fill();
     ctx.lineWidth = n.kind === 'country' ? 0 : 1.4;
     ctx.strokeStyle = n.tintStroke || '#a7d9cb';
@@ -199,7 +199,7 @@ export default function CorrelationGraph({ graph, width, height, showLabels, phy
     // initials
     const label = n.kind === 'country' ? n.label.slice(0, 2).toUpperCase()
       : n.label.split(/\s+/).map(w => w[0]).join('').slice(0, 3).toUpperCase();
-    ctx.fillStyle = n.kind === 'country' ? '#ffffff' : '#1f2937';
+    ctx.fillStyle = n.kind === 'country' ? '#0c1015' : '#d7dee8';
     ctx.font = `600 ${Math.max(4, r * 0.72)}px Montserrat, sans-serif`;
     ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
     ctx.fillText(label, n.x, n.y);
@@ -209,7 +209,7 @@ export default function CorrelationGraph({ graph, width, height, showLabels, phy
     if (showLabels && (globalScale > 1.05 || n.kind === 'country' || (hover?.kind === 'node' && hover.id === n.id))) {
       const fpx = 11 / globalScale;
       ctx.font = `500 ${fpx}px Montserrat, sans-serif`;
-      ctx.fillStyle = dim ? 'rgba(55,65,81,0.35)' : '#374151';
+      ctx.fillStyle = dim ? 'rgba(139,152,169,0.35)' : '#9db0c4';
       ctx.textBaseline = 'top';
       const tw = ctx.measureText(n.label).width;
       // canvas viewport bounds in graph coords
@@ -261,9 +261,9 @@ export default function CorrelationGraph({ graph, width, height, showLabels, phy
       ctx.beginPath();
       if (ctx.roundRect) ctx.roundRect(bx, by, bw, bh, bh / 2);
       else ctx.rect(bx, by, bw, bh);
-      ctx.fillStyle = '#ffffff'; ctx.fill();
-      ctx.lineWidth = 1.2; ctx.strokeStyle = '#159a7a'; ctx.stroke();
-      ctx.fillStyle = '#0f766e';
+      ctx.fillStyle = '#11161d'; ctx.fill();
+      ctx.lineWidth = 1.2; ctx.strokeStyle = '#3fd68f'; ctx.stroke();
+      ctx.fillStyle = '#3fd68f';
       ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
       ctx.fillText(txt, bx + bw / 2, by + bh / 2 + 0.5);
       n.__badgeRect = { x: bx, y: by, w: bw, h: bh };
@@ -321,7 +321,7 @@ export default function CorrelationGraph({ graph, width, height, showLabels, phy
       ctx.moveTo(mx, ty - 4); ctx.lineTo(mx + 4.5, ty + 3.5); ctx.lineTo(mx - 4.5, ty + 3.5);
       ctx.closePath();
       ctx.fillStyle = '#f59e0b'; ctx.fill();
-      ctx.strokeStyle = '#fff'; ctx.lineWidth = 0.8; ctx.stroke();
+      ctx.strokeStyle = '#0c1015'; ctx.lineWidth = 0.8; ctx.stroke();
       ctx.fillStyle = '#78350f'; ctx.font = '700 5px Montserrat, sans-serif';
       ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
       ctx.fillText('!', mx, ty + 1.2);
@@ -377,7 +377,7 @@ export default function CorrelationGraph({ graph, width, height, showLabels, phy
         cooldownTime={physics ? 4000 : 0}
         d3AlphaDecay={0.02}
         d3VelocityDecay={0.32}
-        backgroundColor="#ffffff"
+        backgroundColor="#0c1015"
       />
     </div>
   );

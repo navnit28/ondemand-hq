@@ -1,3 +1,26 @@
+## 2026-07-21 — Adaptive smart run + Palantir dark UI overhaul
+
+- **feat(datafetch): adaptive-retry smart run** — `hardForceDataPoints` rewritten from the
+  4-pass verification ladder to ONE quality-gated smart run: Cerebras GLM 4.7 BYOI is the
+  PRIMARY path (single → one chunked retry), a short pass KEEPS its artifacts and falls back
+  to fable-5-medium in DELTA mode (`buildDeltaExclusion` lists every captured claim so only
+  the missing remainder is fetched), passes are merged + deduped (`mergePasses`), and the
+  merged set must satisfy the ≥100 gate. Corpus backfill stays as last resort. Pass audit
+  (`primaryCount`, `deltaAdded`, `mergedCount`, `passes[]`) now recorded on run stats.
+  **Live verification 2026-07-21T01:00–01:05Z (KE)**: primary 60 pts (kept) → fable-Δ +62
+  (0 repeats) → merged **122 ≥ 100 → GATE PASS**, corpusBackfilled 0.
+- **style(ce): Palantir-style dark overhaul** — the Correlation Engine section is now a dark,
+  dense, professional surface (`.ce--dark`, scoped tokens `--pl-*`): #0c1015-class panels,
+  hairline borders, uppercase micro-labels, monospace tabular-numeric KPI readouts, cyan/green
+  accent system. Canvas graph re-colored for dark (nodes, labels, badges, export PNG bg,
+  fullscreen overlay); inspectors, evidence drawer, hovercards, Quick Query, ECharts hosts and
+  SignalLoom hosts all themed.
+- **feat(ce-ui): RunOpsPanel + LiveRunStrip** — new engine-run status strip surfaces the
+  adaptive-run audit per run: PRIMARY / FALLBACK·Δ / MERGE / BACKFILL stages with LED status,
+  per-stage counts, ≥100 gate verdict chip, and a collapsible monospace attempt-log table
+  (endpoint, mode, valid count, verdict, latency). Live runs show a pulsing ENGINE RUN strip
+  with stage + t0 readouts.
+
 ## 2026-07-20 — feat(model): all non-workflow calls → GLM 4.7 Cerebras BYOI (byoi-6e314690…, default reasoningEffort 'low')
 
 - Registry re-verified live 20:57:56Z: byoi-6e314690-4eaf-4def-a33c-380809acf1f5 (zai-glm-4.7, 65k ctx, streaming true) is the ONLY active GLM 4.7; predefined-glm-4.7/-flash are inactive and not referenced anywhere. GLM+agent attachment probed 200 "OK" 20:58:24Z.

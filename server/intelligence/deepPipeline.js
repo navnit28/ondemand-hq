@@ -371,6 +371,11 @@ Extract RELATIONSHIP EDGES — JSON array of:
         endpointUsed: fetchRes.endpointUsed,
         fallbackUsed: fetchRes.fallbackUsed,
         corpusBackfilled: fetchRes.corpusBackfilled,
+        // adaptive smart-run audit (2026-07-21): per-pass counts + gate verdicts
+        primaryCount: fetchRes.primaryCount ?? null,
+        deltaAdded: fetchRes.deltaAdded ?? null,
+        mergedCount: fetchRes.mergedCount ?? null,
+        passes: fetchRes.passes ?? [],
       } : null,
       durationMs: Date.now() - nowTs,
     },
