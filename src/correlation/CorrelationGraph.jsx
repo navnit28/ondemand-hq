@@ -199,7 +199,7 @@ export default function CorrelationGraph({ graph, width, height, showLabels, phy
     // initials
     const label = n.kind === 'country' ? n.label.slice(0, 2).toUpperCase()
       : n.label.split(/\s+/).map(w => w[0]).join('').slice(0, 3).toUpperCase();
-    ctx.fillStyle = n.kind === 'country' ? '#0d0d0d' : '#d8d8d8';
+    ctx.fillStyle = n.kind === 'country' ? '#0d0d0d' : '#e5e7eb';
     ctx.font = `600 ${Math.max(4, r * 0.72)}px Inter, sans-serif`;
     ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
     ctx.fillText(label, n.x, n.y);
@@ -207,9 +207,12 @@ export default function CorrelationGraph({ graph, width, height, showLabels, phy
     // text label — VIEWPORT-FIT (2026-07-19 Gemini UX fix): labels near the frame
     // edge are re-anchored inward so they never clip (e.g. 'Relief Beneficiaries').
     if (showLabels && (globalScale > 1.05 || n.kind === 'country' || (hover?.kind === 'node' && hover.id === n.id))) {
-      const fpx = 11 / globalScale;
-      ctx.font = `500 ${fpx}px Inter, sans-serif`;
-      ctx.fillStyle = dim ? 'rgba(180,180,180,0.4)' : '#e5e7eb';
+      // Type hierarchy (TYPOGRAPHY.md): countries PRIMARY (600 · #ffffff · 12.5px),
+      // entities SECONDARY (500 · #e5e7eb · 11px). Differentiation by weight+luminance, not hue.
+      const isCountry = n.kind === 'country';
+      const fpx = (isCountry ? 12.5 : 11) / globalScale;
+      ctx.font = `${isCountry ? 600 : 500} ${fpx}px Inter, sans-serif`;
+      ctx.fillStyle = dim ? 'rgba(180,180,180,0.4)' : (isCountry ? '#ffffff' : '#e5e7eb');
       ctx.textBaseline = 'top';
       const tw = ctx.measureText(n.label).width;
       // canvas viewport bounds in graph coords
@@ -261,9 +264,9 @@ export default function CorrelationGraph({ graph, width, height, showLabels, phy
       ctx.beginPath();
       if (ctx.roundRect) ctx.roundRect(bx, by, bw, bh, bh / 2);
       else ctx.rect(bx, by, bw, bh);
-      ctx.fillStyle = '#141414'; ctx.fill();
-      ctx.lineWidth = 1.2; ctx.strokeStyle = '#e8e8e8'; ctx.stroke();
-      ctx.fillStyle = '#e8e8e8';
+      ctx.fillStyle = '#1f1f1f'; ctx.fill();
+      ctx.lineWidth = 1.2; ctx.strokeStyle = '#9ca3af'; ctx.stroke();
+      ctx.fillStyle = '#ffffff';
       ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
       ctx.fillText(txt, bx + bw / 2, by + bh / 2 + 0.5);
       n.__badgeRect = { x: bx, y: by, w: bw, h: bh };
