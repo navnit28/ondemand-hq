@@ -18,6 +18,7 @@ import { buildExport } from './exports.js';
 import { extractText } from './extract.js';
 import { registerSpeechRoutes } from './speech.js';
 import { registerVoiceRoutes } from './voice.js';
+import { registerRealtimeVoiceRoutes } from './realtimeVoice.js';
 import { registerIntelRoutes, COUNTRIES } from './intel.js';
 import { registerCorrelationRoutes } from './correlation.js';
 import { registerFactsRoutes } from './facts.js';
@@ -28,11 +29,17 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const app = express();
 app.use(express.json({ limit: '4mb' }));
 
+// Max chars of an MSM broadcast transcript to inject into the analysis prompt.
+// Verified live: ~200k chars fit GLM 4.7's context, ~300k exceeds it; 150k keeps
+// headroom for the system prompt, reasoning, and the generated answer. Override via env.
+const MSM_TRANSCRIPT_CAP = parseInt(process.env.MSM_TRANSCRIPT_CAP || '150000', 10);
+
 const upload = multer({ storage: multer.memoryStorage(), limits: { fileSize: 25 * 1024 * 1024 } });
 
 // Voice routes — OnDemand Cloud Services (speech_to_text / text_to_speech) ONLY.
 registerSpeechRoutes(app, upload);
 registerVoiceRoutes(app, upload); // ODA World Intelligence voice routes (additive 2026-07-20)
+registerRealtimeVoiceRoutes(app); // OpenAI Realtime API voice (WebRTC ephemeral token) — low-latency speech-to-speech (2026-07-21)
 
 // ODA Intelligence Dashboard routes (Perplexity + X Search + AI analysis pipeline).
 registerIntelRoutes(app);
@@ -95,10 +102,15 @@ app.get('/api/country-data/:query', async (req, res) => {
 // POST /api/chat  {conversationId, text, feature?, fileId?, wizard?:{active,step}, editTarget?}
 // Streams SSE frames: routing, plugin_status, thinking, answer, artifact_hint, error, done
 app.post('/api/chat', async (req, res) => {
-  const { conversationId, text = '', feature: forcedFeature, fileId, wizard, editTarget, msmVideoId } = req.body || {};
-  const conv = store.getConversation(conversationId);
-  if (!conv) return res.status(404).json({ error: 'Conversation not found' });
+  const { conversationId, text = '', feature: forcedFeature, mode: forcedMode, fileId, wizard, editTarget, msmVideoId } = req.body || {};
   if (!text.trim() && !fileId) return res.status(400).json({ error: 'Empty message' });
+  // The conversation store is in-memory, so a server restart (locally) or a fresh serverless
+  // instance (every Vercel cold start) drops all conversations. A client still holding a valid
+  // id would previously get "Conversation not found" and the SSE reconnect would loop on the
+  // dead id and give up. Instead, recreate the conversation from the client's id and continue —
+  // history is lost (it already was), but the current turn succeeds transparently.
+  let conv = store.getConversation(conversationId);
+  if (!conv) conv = store.createConversation({ id: conversationId || undefined, feature: forcedFeature || 'chat' });
 
   res.writeHead(200, {
     'Content-Type': 'text/event-stream; charset=utf-8',
@@ -152,6 +164,9 @@ app.post('/api/chat', async (req, res) => {
     const route = await classify(text, { hasFile: Boolean(file), forcedFeature: forcedFeature || (conv.feature !== 'chat' ? conv.feature : null) });
     let { feature, mode } = route;
     if (wizard?.active) mode = 'FULL'; // guided document creation is a FULL-mode flow
+    // Explicit client override (e.g. MSM 'Analyse deeper' forces a one-shot FAST analysis
+    // instead of the interactive stepwise FULL flow). Wizard flows keep FULL above.
+    if (!wizard?.active && (forcedMode === 'FAST' || forcedMode === 'FULL')) mode = forcedMode;
 
     const pluginIds = pluginIdsFor(feature);
     const pluginLabels = pluginLabelsFor(feature);
@@ -187,8 +202,20 @@ app.post('/api/chat', async (req, res) => {
       const tx = getMsmTranscript(String(msmVideoId));
       if (tx) {
         send('plugin_status', { plugin: 'MSM Analysis', message: `Attaching broadcast transcript ${msmVideoId} (${tx.length} chars)…` });
-        const cap = 24000;
-        const body = tx.length > cap ? `${tx.slice(0, cap)}\n[transcript truncated at ${cap} of ${tx.length} chars]` : tx;
+        // Pass the WHOLE transcript when it fits the model context. The old 24k cap dropped
+        // most of it; the real ceiling is ~200k chars (verified live: 300k → context_length_exceeded).
+        // MSM_TRANSCRIPT_CAP (default 150k) leaves headroom for the system prompt + reasoning + output.
+        // When a transcript is larger than the cap (rare, only livestream-length dumps), keep the
+        // START and the END (news segments carry conclusions at the end) rather than only the head.
+        let body;
+        if (tx.length <= MSM_TRANSCRIPT_CAP) {
+          body = tx;
+        } else {
+          const head = Math.floor(MSM_TRANSCRIPT_CAP * 0.7);
+          const tail = MSM_TRANSCRIPT_CAP - head;
+          body = `${tx.slice(0, head)}\n\n[…${tx.length - MSM_TRANSCRIPT_CAP} of ${tx.length} chars omitted from the middle to fit the model context; the opening and closing of the broadcast are both included…]\n\n${tx.slice(tx.length - tail)}`;
+          send('plugin_status', { plugin: 'MSM Analysis', message: `Transcript is ${tx.length} chars — sent the first ${head} + last ${tail} (middle trimmed to fit context).` });
+        }
         queryParts.push(`ATTACHED BROADCAST TRANSCRIPT (MSM Analysis, YouTube ${msmVideoId}) — ground every claim in it.\n<<<TRANSCRIPT\n${body}\nTRANSCRIPT>>>`);
       } else {
         send('plugin_status', { plugin: 'MSM Analysis', message: `No stored transcript for ${msmVideoId} — continuing without it.` });
@@ -315,8 +342,10 @@ app.post('/api/export', async (req, res) => {
 app.get('/api/export/:id/download', (req, res) => {
   const exp = store.getExport(req.params.id);
   if (!exp) return res.status(404).json({ error: 'Artifact expired (in-memory store resets on restart)' });
+  // disposition=inline → render in the browser (PDF preview) instead of forcing a download.
+  const inline = req.query.disposition === 'inline';
   res.setHeader('Content-Type', exp.mime);
-  res.setHeader('Content-Disposition', `attachment; filename="${exp.name}"`);
+  res.setHeader('Content-Disposition', `${inline ? 'inline' : 'attachment'}; filename="${exp.name}"`);
   res.send(exp.buffer);
 });
 

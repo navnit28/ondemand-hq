@@ -163,6 +163,7 @@ export default function App() {
       text,
       fileId,
       feature: extra.feature || pendingTool || undefined,
+      mode: extra.mode || undefined, // explicit FAST/FULL override (e.g. MSM 'Analyse deeper' → one-shot FAST)
       wizard: wizard.active ? { active: true, step: wizard.step } : undefined,
       editTarget: extra.editTarget || undefined,
       msmVideoId: extra.msmVideoId || undefined, // MSM 'Analyse deeper': server injects the stored transcript as context
@@ -363,7 +364,9 @@ export default function App() {
     const title = video.title || `YouTube ${video.videoId}`;
     send(
       `Analyse this broadcast segment in depth for ODA leadership: "${title}" (${video.videoId}). Assess the framing, the implications for UAE/Gulf development narratives, and any follow-up ODA should consider. Ground everything in the attached transcript.`,
-      null, null, { msmVideoId: video.videoId },
+      // Force problem-solve in FAST mode: deliver ONE complete analysis workbook in a single
+      // reply, not the interactive stepwise FULL flow ("shall we proceed to step 2?").
+      null, null, { msmVideoId: video.videoId, feature: 'problem-solve', mode: 'FAST' },
     );
   };
 

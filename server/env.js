@@ -29,6 +29,15 @@ export const ONDEMAND_API_KEY = process.env.ONDEMAND_API_KEY || process.env.ON_D
 export const ONDEMAND_BASE_URL = (process.env.ONDEMAND_BASE_URL || process.env.ON_DEMAND_BASE_URL || 'https://api.on-demand.io').replace(/\/$/, '');
 export const PORT = parseInt(process.env.PORT || '8080', 10);
 
+// ---------- OpenAI Realtime API (voice) — server-side only ----------
+// The voice feature streams speech-to-speech via the OpenAI Realtime API over WebRTC.
+// The REAL key never ships to the browser: the server mints short-lived ephemeral
+// client secrets (POST /v1/realtime/client_secrets); the browser only holds those.
+// Model + voice are env-overridable so a rejected voice/model can be swapped without a redeploy.
+export const OPENAI_API_KEY = process.env.OPENAI_API_KEY || '';
+export const OPENAI_REALTIME_MODEL = process.env.OPENAI_REALTIME_MODEL || 'gpt-realtime-2.1';
+export const OPENAI_REALTIME_VOICE = process.env.OPENAI_REALTIME_VOICE || 'marin';
+
 // ---------- Reasoning-mode configuration (2026-07-20 streaming fix) ----------
 // The DECOMPOSED model config is the only valid form: endpointId + TOP-LEVEL
 // reasoningEffort. Suffixed model ids (e.g. 'gpt-5.6-sol-medium') are a PROVEN
@@ -96,7 +105,7 @@ export const CE_MIN_DATA_POINTS = Math.max(100, parseInt(process.env.CE_MIN_DATA
 if (!ONDEMAND_API_KEY) {
   console.error('[FAIL] [FATAL-CONFIG] ONDEMAND_API_KEY is not set. Create .env from .env.example. Refusing to start with a hardcoded or missing key.');
 } else {
-  console.log(`[env] loaded ${envPath ? envPath : 'process env'} · base=${ONDEMAND_BASE_URL} · endpoint=${ENDPOINT_ID}+${REASONING_EFFORT} · streamDebug=${STREAM_DEBUG} · key=****${ONDEMAND_API_KEY.slice(-4)}`);
+  console.log(`[env] loaded ${envPath ? envPath : 'process env'} · base=${ONDEMAND_BASE_URL} · endpoint=${ENDPOINT_ID}+${REASONING_EFFORT} · streamDebug=${STREAM_DEBUG} · key=****${ONDEMAND_API_KEY.slice(-4)} · openaiRealtime=${OPENAI_API_KEY ? `${OPENAI_REALTIME_MODEL}/${OPENAI_REALTIME_VOICE} (key ****${OPENAI_API_KEY.slice(-4)})` : 'DISABLED (no OPENAI_API_KEY)'}`);
 }
 
 // ---------- Correlation Engine model policy (2026-07-19) ----------
