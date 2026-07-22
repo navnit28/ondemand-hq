@@ -1,4 +1,4 @@
-import React, { useMemo, useRef } from 'react';
+import React, { useMemo, useRef, useCallback } from 'react';
 import ReactECharts from 'echarts-for-react';
 import * as echarts from 'echarts';
 import { PLATFORM_COLORS, evidenceAgeDays } from './adapter.js';
@@ -15,17 +15,87 @@ echarts.registerTheme('oda-mono', {
   valueAxis: { axisLine: { show: false }, splitLine: { lineStyle: { color: 'rgba(160,160,160,0.14)' } } },
 });
 
+/* ---------- DRAG-TO-PIN (2026-07-21 v3 chart UX) ----------
+ * When the user drags a specific data point on a chart, it STICKS/pins exactly
+ * at the position where they release it. Implemented with ECharts draggable
+ * graphic handles laid over each data point of the pinnable series:
+ *   • drag  → the handle follows the pointer (live)
+ *   • release → convertFromPixel maps the release pixel to a data value; the
+ *     series datum is updated to that exact value and the pin persists across
+ *     re-renders via the pinsRef override map (keyed by category name).
+ * Pinned points render with a white ring; double-click a handle to unpin. */
+function attachDragToPin(chart, { seriesIndex = 0, pins, onPin }) {
+  const build = () => {
+    let opt;
+    try { opt = chart.getOption(); } catch { return; }
+    const series = opt?.series?.[seriesIndex];
+    if (!series) return;
+    const cats = opt.xAxis?.[0]?.data || [];
+    const data = series.data || [];
+    const els = data.map((d, i) => {
+      const val = typeof d === 'object' ? d.value : d;
+      let px;
+      try { px = chart.convertToPixel({ seriesIndex }, [i, val]); } catch { return null; }
+      if (!px) return null;
+      const name = cats[i] ?? String(i);
+      const pinned = pins.has(name);
+      return {
+        type: 'circle', id: `pin-${i}`, position: px, z: 120,
+        shape: { r: pinned ? 7 : 5 },
+        style: { fill: pinned ? '#ffffff' : 'rgba(255,255,255,0.28)', stroke: pinned ? '#9ca3af' : 'rgba(255,255,255,0.5)', lineWidth: pinned ? 2 : 1 },
+        draggable: true, cursor: 'grab',
+        ondrag() { /* handle follows the pointer natively */ },
+        ondragend() {
+          // stick EXACTLY where released: pixel → data value, clamp ≥0
+          let v;
+          try { v = chart.convertFromPixel({ seriesIndex }, this.position); } catch { return; }
+          const newVal = Math.max(0, Math.round((Array.isArray(v) ? v[1] : v) * 100) / 100);
+          pins.set(name, newVal);
+          onPin?.(name, newVal);
+          const next = data.map((dd, j) => {
+            const base = typeof dd === 'object' ? { ...dd } : { value: dd };
+            if (j === i) base.value = newVal;
+            return base;
+          });
+          chart.setOption({ series: [{ ...(seriesIndex ? {} : {}), data: next }] }, { replaceMerge: [] });
+          build(); // re-anchor handles to the updated data
+        },
+        ondblclick() { pins.delete(name); onPin?.(name, null); build(); },
+      };
+    }).filter(Boolean);
+    try { chart.setOption({ graphic: els }); } catch { /* disposed */ }
+  };
+  build();
+  chart.off('finished.dragpin');
+  // re-anchor on resize/relayout
+  chart.on('finished.dragpin', () => {});
+  return build;
+}
+
 /** One chart with an expand/fullscreen toggle (2026-07-20): after expand or
- *  restore, the ECharts instance is resized to the new container. */
-function XChart({ title, option, baseHeight, onEvents }) {
+ *  restore, the ECharts instance is resized to the new container. Pass
+ *  dragPin={{pins, onPin}} to enable drag-to-pin data-point handles. */
+function XChart({ title, option, baseHeight, onEvents, dragPin }) {
   const ecRef = useRef();
-  const resize = () => { try { ecRef.current?.getEchartsInstance()?.resize(); } catch { /* not mounted */ } };
+  const rebuildRef = useRef(null);
+  const resize = () => {
+    try {
+      const inst = ecRef.current?.getEchartsInstance();
+      inst?.resize();
+      rebuildRef.current?.();
+    } catch { /* not mounted */ }
+  };
+  const onReady = useCallback((chart) => {
+    if (!dragPin) return;
+    // defer so the first layout pass has finished before pixel-anchoring handles
+    setTimeout(() => { rebuildRef.current = attachDragToPin(chart, { seriesIndex: 0, ...dragPin }); }, 60);
+  }, [dragPin]);
   return (
     <Expandable title={title} className="xp-host--chart" onToggle={resize}>
       {({ expanded, height }) => (
         <ReactECharts ref={ecRef} option={option} notMerge theme="oda-mono"
           style={{ height: expanded ? (height || 560) : baseHeight, width: '100%' }}
-          onEvents={onEvents} />
+          onEvents={onEvents} onChartReady={onReady} />
       )}
     </Expandable>
   );
@@ -44,6 +114,9 @@ const TITLE = (text) => ({ text, left: 4, top: 4, textStyle: { ...FONT, fontSize
  *  3) Platform split donut (click → platform filter)
  */
 export default function EChartsPanels({ run, onPickDate, onPickStance, onPickPlatform, activePlatform, activeStance, activeDay }) {
+  // DRAG-TO-PIN state (2026-07-21 v3): user-pinned overrides per day bucket.
+  // Kept in a ref-backed Map so pins survive option rebuilds without re-render loops.
+  const pinsRef = useRef(new Map());
   const { volumeOption, stanceOption, platformOption } = useMemo(() => {
     // ---- evidence volume over time (by publish_date, undated bucketed as 'undated') ----
     const byDay = new Map();
@@ -60,8 +133,13 @@ export default function EChartsPanels({ run, onPickDate, onPickStance, onPickPla
       yAxis: { type: 'value', minInterval: 1, axisLabel: { ...FONT, fontSize: 9, color: '#e5e7eb' }, splitLine: { lineStyle: { color: 'rgba(160,160,160,0.14)' } } },
       series: [{
         type: 'bar', data: days.map(d => ({
-          value: byDay.get(d),
-          itemStyle: { color: d === activeDay ? '#ffffff' : '#a0a0a0', borderRadius: [3, 3, 0, 0] },
+          // pinned override wins: a dragged point sticks exactly where it was released
+          value: pinsRef.current.has(d) ? pinsRef.current.get(d) : byDay.get(d),
+          itemStyle: {
+            color: d === activeDay ? '#ffffff' : (pinsRef.current.has(d) ? '#e5e7eb' : '#a0a0a0'),
+            borderRadius: [3, 3, 0, 0],
+            ...(pinsRef.current.has(d) ? { borderColor: '#ffffff', borderWidth: 1 } : {}),
+          },
         })), barMaxWidth: 26,
       }],
     };
@@ -108,6 +186,7 @@ export default function EChartsPanels({ run, onPickDate, onPickStance, onPickPla
   return (
     <div className="ce-panels">
       <XChart title="Evidence volume over time" option={volumeOption} baseHeight={132}
+        dragPin={{ pins: pinsRef.current, onPin: () => {} }}
         onEvents={{ click: (p) => onPickDate?.(p.name === activeDay ? null : p.name) }} />
       <XChart title="Stance strip" option={stanceOption} baseHeight={74}
         onEvents={{ click: (p) => onPickStance?.(p.seriesName === activeStance ? null : p.seriesName) }} />

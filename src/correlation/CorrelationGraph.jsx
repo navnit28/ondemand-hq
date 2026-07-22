@@ -377,6 +377,11 @@ export default function CorrelationGraph({ graph, width, height, showLabels, phy
         onLinkClick={(l) => onClickLink?.(l)}
         onBackgroundClick={() => { onClickNode?.(null); onClickLink?.(null); }}
         enableNodeDrag
+        // DRAG-TO-PIN (2026-07-21 v3): when the user drags a node (data point) and
+        // releases it, it STICKS exactly at the release position — fx/fy freeze the
+        // node against the force simulation. Right-click a pinned node to release it.
+        onNodeDragEnd={(n) => { if (n) { n.fx = n.x; n.fy = n.y; n.__pinned = true; } }}
+        onNodeRightClick={(n) => { if (n?.__pinned) { n.fx = undefined; n.fy = undefined; n.__pinned = false; } }}
         cooldownTime={physics ? 4000 : 0}
         d3AlphaDecay={0.02}
         d3VelocityDecay={0.32}
