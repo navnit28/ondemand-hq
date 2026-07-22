@@ -1,3 +1,25 @@
+## 2026-07-22 — Production bug fixes: OnDemand session-create HTTP 500 + full-country correlation prefill (checkpoint/correlation-engine-fixes)
+
+Master entry for the 2-commit bug-fix series:
+
+1. **fix(ondemand-500)** — session-create 'HTTP 500: An unexpected error occurred'
+   root-caused (live-probed): an EMPTY `apikey` header (deployment missing
+   `ONDEMAND_API_KEY`) makes the upstream return that exact opaque 500; absent
+   header → 401, invalid key → 401. Contract re-verified against the LIVE public
+   docs (`POST /chat/v1/sessions`, `apikey` header, body `externalUserId` +
+   optional `pluginIds[]`/`agentIds[]`). Fix: `assertApiKey()` fail-fast guard on
+   session-create/stream/sync (503 `MISSING_ONDEMAND_API_KEY` with actionable
+   message) + a 500-signature diagnostic hint. Verified with a REAL call: 201 +
+   session id through the repo's own code path.
+2. **feat(ce-prefill)** — correlation engine now loads FULLY PREFILLED for all 16
+   countries on first visit. Root cause: only BD+KE had committed seed runs and
+   the live run dir is gitignored. New `scripts/prefill-correlation-seed.mjs`
+   (parallel workers) executed for every country — real Fable 5 extraction +
+   deterministic deep-v2 assembly, committed under `server/data/correlation-seed/`
+   so `hydrateRuns()` serves data instantly; subsequent runs remain incremental.
+   Both 24h auto-enrichment workflows confirmed ACTIVE (metrics enrichment +
+   CE evidence refresh; refresh assembler re-pointed to fable-5).
+
 ## 2026-07-22 — Correlation Engine v3: Fable 5 MAX prefill, Cerebras-free backend, uncapped incremental preload, drag-to-pin charts (checkpoint/correlation-engine-fixes)
 
 Master entry for the 5-commit checkpoint series on `checkpoint/correlation-engine-fixes`:
