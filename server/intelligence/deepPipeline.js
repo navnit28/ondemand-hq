@@ -30,6 +30,10 @@ import { buildSpecialistPrompts, SPECIALISTS, SPECIALIST_SYSTEM } from './specia
 import { assignVerification, buildInferencePrompt, deterministicInference, VERIFICATION_TIERS } from './correlationLayer.js';
 import { buildPredictionPrompt, normalisePredictions, PREDICTION_CATEGORIES } from './prediction.js';
 import { buildImpactPrompt, normaliseImpactScores, structuralImpactScores } from './impact.js';
+// ODA bilateral correlation core (2026-07-22): mandatory cross-cluster UAE↔country
+// edges typed by the 8 ODA intelligence categories, grounding-evidence injection,
+// and the deterministic ensureCrossClusterEdges backstop (evidence-or-gap, never invent).
+import { buildOdaCorrelationPrompt, injectGroundingEvidence, ensureCrossClusterEdges } from './odaCorrelation.js';
 
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -208,6 +212,14 @@ export async function runDeepPipeline({
     // Re-id sequentially so downstream edge gating has unique, collision-free ids.
     evidence = evidence.map((v, i) => ({ ...v, id: `E${i + 1}` }));
   }
+  // ---------- ODA grounding injection (2026-07-22): citation-backed bilateral
+  // facts (CEPA, ADQ/Mubadala/ADFD, DP World/Masdar/AD Ports, remittances, BITs)
+  // become REAL evidence records so cross-cluster edges are evidence-backed.
+  {
+    const inj = injectGroundingEvidence(iso, evidence);
+    evidence = inj.evidence;
+    if (inj.injected) stage('grounding:injected', { records: inj.injected });
+  }
   markCorroborations(evidence);
   for (const v of evidence) v.weighting = weighFact(v, { nowTs, win });   // (b) persisted per-fact weight
   stage('normalize:done', {
@@ -221,16 +233,14 @@ export async function runDeepPipeline({
   let statedRaw = Array.isArray(seedStatedEdges) ? [...seedStatedEdges] : [];
   if (!offline && evidence.length) {
     const sidE = await createOdSession(`deep-${iso}-edges`, []);
+    // (2026-07-22 rewrite) Bulletproof ODA correlation prompt: MANDATES >=6
+    // cross-cluster UAE↔country edges typed by the 8 ODA categories, hard
+    // evidence-or-gap rule — the fix for the disconnected-clusters defect
+    // (PK/BD country nodes had ZERO incident edges under the old prompt).
     const raw = await modelCall({
       session: sidE,
-      systemPrompt: 'ODA Correlation Engine edge extractor. ONE valid JSON array only. Never create an edge without supporting evidence ids; never use general knowledge.',
-      prompt: `UAE registry: ${registry.map(r => `${r.id} (${r.fullName})`).join('; ')}.
-Country node id "${iso.toLowerCase()}" (${countryName}).
-Evidence:\n${evList}
-Extract RELATIONSHIP EDGES — JSON array of:
-{"entity_a","entity_b","relationship_type":one of ${JSON.stringify(relationshipTypes)},
- "direction":"a->b"|"b->a"|"both","claim":string,
- "evidence_record_ids":[ids from above ONLY],"confidence":0-1,"stance":"cooperation"|"tension"|"neutral"}`,
+      systemPrompt: 'ODA bilateral correlation engine. ONE valid JSON array only. Every edge cites evidence ids from the material or carries gap:true — never invent a number, name, official, or connection. Cross-cluster UAE↔country edges are MANDATORY.',
+      prompt: buildOdaCorrelationPrompt({ countryName, iso, registry, relationshipTypes, evList }),
     });
     const parsed = extractJson(raw);
     if (Array.isArray(parsed)) statedRaw = statedRaw.concat(parsed);
@@ -239,8 +249,14 @@ Extract RELATIONSHIP EDGES — JSON array of:
   const slug = (s) => String(s || '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 40);
   const gate = (arr, isInference) => arr.map(e => {
     const ids = [...new Set((e.evidence_record_ids || e.basis_evidence_ids || []).filter(id => evidenceById.has(id)))];
-    if (!ids.length && !isInference) return null;               // HARD GATE: stated edges need evidence
-    return { ...e, entity_a: slug(e.entity_a), entity_b: slug(e.entity_b), evidence_record_ids: ids, inference: !!isInference || !!e.inference };
+    // HARD GATE: stated edges need evidence — EXCEPT explicit gap-flagged edges
+    // (2026-07-22 ODA contract): gap:true edges carry no evidence by definition,
+    // are capped at confidence 0.2, marked inference, and say "GAP:" in the claim.
+    if (!ids.length && !isInference && !e.gap) return null;
+    return { ...e, entity_a: slug(e.entity_a), entity_b: slug(e.entity_b), evidence_record_ids: ids,
+      inference: !!isInference || !!e.inference || !!e.gap, gap: !!e.gap,
+      confidence: e.gap ? Math.min(0.2, e.confidence ?? 0.1) : e.confidence,
+      oda_category: e.oda_category || null };
   }).filter(e => e && e.entity_a && e.entity_b && e.entity_a !== e.entity_b);
   const stated = gate(statedRaw, false);
   stage('edges:done', { stated: stated.length, droppedNoEvidence: statedRaw.length - stated.length });
@@ -280,7 +296,9 @@ Extract RELATIONSHIP EDGES — JSON array of:
       id: `ED${i + 1}`,
       entity_a: e.entity_a, entity_b: e.entity_b,
       relationship_type: e.relationship_type,
-      dimension: e.dimension || null,
+      oda_category: e.oda_category || null,   // ODA intelligence category (2026-07-22)
+      gap: !!e.gap,                            // explicit evidence-gap flag — never invented facts
+      dimension: e.dimension || e.oda_category || null,
       direction: e.direction || 'a->b',
       claim: e.claim,
       evidence_record_ids: e.evidence_record_ids,
@@ -303,6 +321,16 @@ Extract RELATIONSHIP EDGES — JSON array of:
     const s = stanceSeen.get([e.entity_a, e.entity_b].sort().join('~') + '|' + e.relationship_type);
     e.contradiction = !!(s?.has('cooperation') && s?.has('tension'));
   }
+
+  // ---------- ODA BULLETPROOF BACKSTOP (2026-07-22): cross-cluster guarantee ----------
+  // Runs on EVERY pass (live, seeded, offline ingest). If the model output still
+  // left the country node without UAE↔country edges, synthesize them from the
+  // grounding/evidence records — or emit ONE explicit gap-flagged edge. The
+  // graph is NEVER silently disconnected and facts are NEVER invented.
+  const backstop = ensureCrossClusterEdges({ iso, countryName, edges, evidence, registry });
+  const edgesFinal = backstop.edges.map(e => ({ ...e, style: e.style || EDGE_STYLE[e.verification] || EDGE_STYLE.Possible }));
+  edges.length = 0; edges.push(...edgesFinal);
+  stage('oda-backstop:done', { crossClusterEdges: backstop.crossCount, backstopAdded: backstop.added });
 
   // Node set: registry + country + every edge/evidence entity.
   const nodeIds = new Set([...registry.map(r => r.id), iso.toLowerCase(),
@@ -397,6 +425,8 @@ Extract RELATIONSHIP EDGES — JSON array of:
     stats: {
       evidenceCount: evidence.length,
       edgeCount: edges.length,
+      crossClusterEdges: backstop.crossCount,   // UAE↔country edges (2026-07-22 ODA mandate)
+      backstopAdded: backstop.added,
       statedEdges: edges.filter(e => !e.inference).length,
       inferredEdges: edges.filter(e => e.inference).length,
       byVerification: Object.fromEntries(VERIFICATION_TIERS.map(t => [t, edges.filter(e => e.verification === t).length])),
