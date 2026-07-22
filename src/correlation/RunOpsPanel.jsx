@@ -4,7 +4,7 @@ import { ChevronDown, ChevronRight, Cpu, GitMerge, Database, Zap } from 'lucide-
 /**
  * RunOpsPanel — Palantir-style engine-run operations strip (2026-07-21 overhaul).
  * Surfaces the adaptive smart-run audit trail from run.stats.dataFetch:
- *   • PRIMARY pass (Cerebras GLM 4.7) — count + gate verdict
+ *   • PRIMARY pass (fable-5) — count + gate verdict
  *   • FALLBACK Δ pass (fable-5-medium, delta prompt) — records added
  *   • MERGE — final deduped dataset size vs the ≥100 quality gate
  *   • BACKFILL — corpus top-up count (last resort), if any
@@ -13,7 +13,7 @@ import { ChevronDown, ChevronRight, Cpu, GitMerge, Database, Zap } from 'lucide-
  */
 const EP_LABELS = [
   [/kimi/i, 'KIMI-K3·MED'],
-  [/byoi|cerebras|glm/i, 'CEREBRAS·BG'],
+  [/byoi|cerebras|glm/i, 'QUICK·ONLY'],  // Cerebras never appears in CE runs (2026-07-21 v3) — legacy runs only
   [/fable/i, 'FABLE-5·MED'],
   [/sonnet/i, 'SONNET-5'],
 ];
@@ -46,7 +46,7 @@ export default function RunOpsPanel({ run }) {
       <div className="rop-row">
         <span className="rop-title"><Cpu size={11} aria-hidden /> RUN OPS</span>
 
-        <span className={`rop-stage${primary ? '' : ' rop-stage--na'}`} title="Primary pass — Cerebras GLM 4.7, expand-mode smart run">
+        <span className={`rop-stage${primary ? '' : ' rop-stage--na'}`} title="Primary pass — fable-5 smart run (Cerebras-free backend)">
           <Led state={primary ? (primary.gate === 'pass' ? 'pass' : 'short') : 'skip'} />
           <b>PRIMARY</b>
           <code>{epLabel(primary?.endpointId ?? df.endpointUsed)}</code>
@@ -88,9 +88,9 @@ export default function RunOpsPanel({ run }) {
         {df.backgroundBackfill && (
           <>
             <span className="rop-arrow" aria-hidden>→</span>
-            <span className="rop-stage" title="Server-side Cerebras background backfill — merges automatically, UI refreshes itself">
+            <span className="rop-stage" title="Server-side Fable background delta backfill — merges automatically, UI refreshes itself">
               <Led state={df.backgroundBackfill.status === 'done' ? 'pass' : (df.backgroundBackfill.status === 'running' ? 'live' : 'short')} />
-              <b>BG·CEREBRAS</b>
+              <b>BG·FABLE·Δ</b>
               <code className="rop-n">{df.backgroundBackfill.status === 'done' ? `+${df.backgroundBackfill.added ?? 0}` : df.backgroundBackfill.status}</code>
             </span>
           </>
@@ -140,7 +140,7 @@ export function LiveRunStrip({ job, countryName }) {
         <span className="rop-arrow" aria-hidden>·</span>
         <span className="rop-stage"><code>stage: {job.stage || 'starting'}</code></span>
         {job.startedAt && <span className="rop-stage"><code className="rop-muted">t0 {new Date(job.startedAt).toISOString().slice(11, 19)}Z</code></span>}
-        <span className="rop-stage"><code className="rop-muted">quality gate ≥100 · cerebras-primary · fable-Δ-fallback</code></span>
+        <span className="rop-stage"><code className="rop-muted">fable-primary · fable-Δ-bg · cerebras-free backend</code></span>
       </div>
     </div>
   );

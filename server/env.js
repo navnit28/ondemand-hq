@@ -93,7 +93,13 @@ export const KIMI_K3_REASONING_EFFORT = validEffort(process.env.CE_PLUGIN_GATHER
 // fable pass (merge+dedupe, UI auto-refresh; see dataFetch.js cerebrasDeltaFetch).
 export const FABLE_FALLBACK_ENDPOINT_ID = process.env.CE_DATAFETCH_ENDPOINT_ID || 'predefined-claude-fable-5';
 export const FABLE_FALLBACK_REASONING_EFFORT = validEffort(process.env.CE_DATAFETCH_REASONING_EFFORT_FABLE, 'medium');
-export const CEREBRAS_ENDPOINT_ID = process.env.CE_BACKFILL_ENDPOINT_ID || GLM_BYOI_ENDPOINT_ID;  // background backfill ONLY — never the primary population path
+// ---------- Cerebras policy (2026-07-21 v3 restriction) ----------
+// Cerebras (GLM 4.7 BYOI) is restricted to QUICK SUMMARIES and QUICK QUERIES ONLY.
+// It is fully REMOVED from the correlation engine backend: no data-fetch pass,
+// no background backfill, no analysis/narrative/story call may use it. The
+// background delta backfill now runs on Fable (see dataFetch.js backgroundDeltaFetch).
+export const CEREBRAS_QUICK_ENDPOINT_ID = process.env.CEREBRAS_QUICK_ENDPOINT_ID || GLM_BYOI_ENDPOINT_ID; // quick summaries + quick queries ONLY
+export const CEREBRAS_QUICK_REASONING_EFFORT = validEffort(process.env.CEREBRAS_QUICK_REASONING_EFFORT, 'low');
 export const CE_DATAFETCH_REASONING_EFFORT = validEffort(process.env.CE_BACKFILL_REASONING_EFFORT, 'low');
 export const CE_MIN_DATA_POINTS = Math.max(100, parseInt(process.env.CE_MIN_DATA_POINTS || '100', 10) || 100);  // strict floor — clamped, can never be configured below 100
 

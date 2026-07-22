@@ -15,13 +15,13 @@
 //   analysis/extraction/narrative → CE_ANALYSIS_ENDPOINT_ID + reasoningEffort
 //                                 (prod default claude-fable-5 medium; build/test
 //                                 claude-sonnet-5 via env override)
-//   data-fetch (deep-v2)        → HARD-FORCED ≥100 data points (MIN_DATA_POINTS)
-//                                 per run, even batch counts, on Cerebras GLM 4.7
-//                                 BYOI with claude-fable-5 medium fallback (see
-//                                 intelligence/dataFetch.js); a run-level backstop
-//                                 in this file retries once and rejects the run
-//                                 rather than ever persist below-minimum evidence.
-//   Quick Query                 → GLM 4.7 Cerebras BYOI endpoint only.
+//   data-fetch (deep-v2)        → hard-forced minimum data points per run
+//                                 (see intelligence/dataFetch.js — fable-5 only;
+//                                 CEREBRAS-FREE per the 2026-07-21 v3 policy); a
+//                                 run-level backstop in this file retries once and
+//                                 rejects the run rather than persist below-minimum.
+//   Quick Query / quick summaries → Cerebras (GLM 4.7 BYOI) — the ONLY surfaces
+//                                 where Cerebras is permitted (2026-07-21 v3).
 //
 // Latest-result persistence (2026-07-20): every completed run (round-1 or deep-v2)
 // writes a `latest.json` pointer per country so the UI always has an immediate,
@@ -38,15 +38,16 @@ import { createOdSession, syncQuery, streamQuery } from './ondemand.js';
 import {
   CE_PLUGIN_ENDPOINT_ID, CE_ANALYSIS_ENDPOINT_ID, CE_ANALYSIS_REASONING_EFFORT, CE_STREAM_REASONING_EFFORT,
   GLM_ENDPOINT_ID, QUICK_QUERY_MAX_TOKENS,
+  CEREBRAS_QUICK_ENDPOINT_ID, CEREBRAS_QUICK_REASONING_EFFORT,
 } from './env.js';
 import * as log from './log.js';
 // DEEP PIPELINE v2 (2026-07-19 rewrite): windows / weighting / 16-source retrieval /
 // 10 specialists / AI correlation layer / prediction mode / UAE impact engine.
 import { runDeepPipeline, RESEARCH_WINDOWS, DEFAULT_WINDOW } from './intelligence/deepPipeline.js';
 // Data-fetch layer (2026-07-20): hard-forced minimum evidence data points per run
-// (see intelligence/dataFetch.js — Cerebras GLM 4.7 BYOI with claude-fable-5-medium
-// fallback); enforced again as a run-level backstop in runDeepJob below.
-import { MIN_DATA_POINTS, cerebrasDeltaFetch, buildExtractionMaterial } from './intelligence/dataFetch.js';
+// (see intelligence/dataFetch.js — fable-5 only, Cerebras-free per 2026-07-21 v3);
+// enforced again as a run-level backstop in runDeepJob below.
+import { MIN_DATA_POINTS, backgroundDeltaFetch, buildExtractionMaterial } from './intelligence/dataFetch.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const DATA_ROOT = path.join(__dirname, 'data', 'correlation');
@@ -564,8 +565,9 @@ id(s) it relies on in square brackets, e.g. [E3][E7]. Flowing prose only; nothin
   });
 }
 
-// ---------- Quick Query (GLM 4.7 Cerebras ONLY; hard ~150-token stop; latency stamp) ----------
-// Session pooling: a fresh session costs ~2.3s — reused it drops to the GLM answer's
+// ---------- Quick Query (Cerebras ONLY — one of the two permitted Cerebras
+// surfaces per the 2026-07-21 v3 policy; hard ~150-token stop; latency stamp) ----------
+// Session pooling: a fresh session costs ~2.3s — reused it drops to the answer's
 // own ~1.3s (200-proven 2026-07-19). Recreated once automatically on any session error.
 let qqSessionId = null;
 export async function quickQuery({ context, question }, res) {
@@ -588,7 +590,7 @@ export async function quickQuery({ context, question }, res) {
   try {
     await streamQuery({
       odSessionId: sid, query: q, pluginIds: [], systemPrompt,
-      endpointId: GLM_ENDPOINT_ID, reasoningEffort: CE_STREAM_REASONING_EFFORT, fulfillmentOnly: true, // validated low|medium|max (2026-07-20 mode audit)
+      endpointId: CEREBRAS_QUICK_ENDPOINT_ID, reasoningEffort: CEREBRAS_QUICK_REASONING_EFFORT, fulfillmentOnly: true, // Cerebras — quick-query surface (permitted; 2026-07-21 v3)
       signal: controller.signal,
       onRaw: (event, data) => {
         if (event === 'message' || event === 'thinking') res.write(`event: ${event}\ndata: ${data}\n\n`);
@@ -610,7 +612,7 @@ export async function quickQuery({ context, question }, res) {
     if (m && m[0].length > 40) answer = m[0];
   }
   const latencyMs = Date.now() - t0;
-  return { answer: answer.trim(), latencyMs, ttftMs, approxTokens: Math.ceil(answer.length / 4), stoppedEarly, model: GLM_ENDPOINT_ID };
+  return { answer: answer.trim(), latencyMs, ttftMs, approxTokens: Math.ceil(answer.length / 4), stoppedEarly, model: CEREBRAS_QUICK_ENDPOINT_ID };
 }
 
 // ---------- routes ----------
@@ -659,13 +661,13 @@ export async function runDeepJob(iso, countryName, { window: windowId, offline =
       job.status = 'done'; job.stage = 'complete'; job.finishedAt = new Date().toISOString();
       job.run = { runId: run.runId, evidence: run.stats.evidenceCount, edges: run.stats.edgeCount, emptyUpstream: run.stats.emptyUpstream, dataFetch: run.stats?.dataFetch || null };
       log.info('correlation.deep_run_done', { iso, runId: run.runId, ...run.stats });
-      // ---------- BACKGROUND Cerebras backfill (2026-07-21) ----------
-      // fable-5-medium is the ONLY sync population model. If its pass came back
-      // short (corpusBackfilled > 0 marks the shortfall), the fable artifacts are
-      // KEPT and already persisted above; now a server-side Cerebras job fetches
-      // ONLY the missing delta (exclusion prompt), merges + dedupes into the run,
-      // re-persists, and the UI auto-refreshes via its backfill poll — no user
-      // action needed. Fire-and-forget: never blocks or fails the main job.
+      // ---------- BACKGROUND Fable delta backfill (2026-07-21 v3, Cerebras-free) ----------
+      // fable-5 is the ONLY population model. If its pass came back short
+      // (corpusBackfilled > 0 marks the shortfall), the fable artifacts are
+      // KEPT and already persisted above; now a server-side FABLE delta job
+      // fetches ONLY the missing delta (exclusion prompt), merges + dedupes
+      // into the run, re-persists, and the UI auto-refreshes via its backfill
+      // poll — no user action needed. Fire-and-forget: never blocks the job.
       if (!offline && (run.stats?.dataFetch?.corpusBackfilled ?? 0) > 0) {
         run.stats.dataFetch.backgroundBackfill = { status: 'running', startedAt: new Date().toISOString() };
         writeJson(path.join(countryDir(iso), `run-${run.runId}.json`), run);
@@ -674,7 +676,7 @@ export async function runDeepJob(iso, countryName, { window: windowId, offline =
           try {
             const captured = run.evidence.filter(e => e.origin !== 'corpus-backfill');
             const material = buildExtractionMaterial({ iso, countryName });
-            const fresh = await cerebrasDeltaFetch({
+            const fresh = await backgroundDeltaFetch({
               iso, countryName, phrase: 'the last 2 years', material,
               captured, sessionTag: `bgfill-${iso}-${run.runId}`,
             });
@@ -692,7 +694,7 @@ export async function runDeepJob(iso, countryName, { window: windowId, offline =
             }
             run.stats.dataFetch.backgroundBackfill = {
               status: 'done', added: fresh.length, completedAt: new Date().toISOString(),
-              endpoint: 'cerebras-glm-4.7', mergedTotal: run.evidence.length,
+              endpoint: 'fable-5-delta', mergedTotal: run.evidence.length,
             };
             writeJson(path.join(countryDir(iso), `run-${run.runId}.json`), run);
             persistLatestPointer(iso, run);
@@ -836,7 +838,7 @@ export function registerCorrelationRoutes(app, { countries }) {
       const sid = await createOdSession(`ce-sum-${iso}-${evidenceId}`, []);
       await streamQuery({
         odSessionId: sid,
-        endpointId: GLM_ENDPOINT_ID, reasoningEffort: CE_STREAM_REASONING_EFFORT, // validated low|medium|max (2026-07-20 mode audit)
+        endpointId: CEREBRAS_QUICK_ENDPOINT_ID, reasoningEffort: CEREBRAS_QUICK_REASONING_EFFORT, // Cerebras — quick-summary surface (permitted; 2026-07-21 v3)
         query: `Evidence record from the ODA Correlation Engine run on ${run.country} (${run.generated_at}):
 CLAIM: ${ev.claim}
 SOURCE: ${ev.source} (${ev.platform || ev.source_type || 'unknown'})${ev.publish_date ? ' · ' + ev.publish_date : ''}${ev.url ? '\nURL: ' + ev.url : ''}

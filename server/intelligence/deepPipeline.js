@@ -12,7 +12,8 @@
 // EMPTY-UPSTREAM RESILIENCE: every stage accepts an empty-but-valid evidence set (the
 // 2026-07-19 live fetches returned 0 articles / timeouts) and still emits a valid,
 // versioned, diffable run snapshot; the scheduled workflow populates data on later runs.
-// Model policy (2026-07-20 GLM switch): ALL model calls = GLM 4.7 Cerebras BYOI + validated reasoningEffort,
+// Model policy (2026-07-21 v3): ALL correlation model calls = Fable 5 MAX + validated
+// reasoningEffort — CEREBRAS-FREE backend (Cerebras is quick summaries/queries only) —
 // streamed where the platform supports it (streamQuery), sync JSON extraction otherwise.
 
 import { FABLE_5_MAX_ENDPOINT_ID, FABLE_5_MAX_REASONING_EFFORT, FABLE_5_MAX_LABEL, validEffort } from '../env.js';
@@ -142,10 +143,9 @@ export async function runDeepPipeline({
 
   // ---------- Stage C: normalize → typed evidence records (HARD-FORCE data-fetch layer, 2026-07-20) ----------
   // The old single "Up to 60 records, no minimum" extraction is REPLACED by the
-  // hard-force data-fetch layer (./dataFetch.js): strict minimum 100+ validated
+  // hard-force data-fetch layer (./dataFetch.js): strict minimum validated
   // data points per run, below-minimum responses rejected and automatically
-  // retried, no odd/partial batches, Cerebras GLM 4.7 first (ultimate speed)
-  // with fable-5-medium automatic fallback.
+  // retried, no odd/partial batches — fable-5 only (Cerebras-free, 2026-07-21 v3).
   stage('normalize:start');
   let evidence = Array.isArray(seedEvidence) ? [...seedEvidence] : [];
   let fetchRes = null;

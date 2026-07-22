@@ -245,9 +245,9 @@ export default function CorrelationEngine({ iso, countryName }) {
     }, 4000);
   };
 
-  // ---------- background-backfill auto-refresh (2026-07-21) ----------
+  // ---------- background-backfill auto-refresh (2026-07-21; v3 Cerebras-free) ----------
   // While the loaded run reports dataFetch.backgroundBackfill.status === 'running',
-  // poll the latest pointer every 5s; when the server-side Cerebras job merges its
+  // poll the latest pointer every 5s; when the server-side FABLE delta job merges its
   // delta and re-persists, reload the run automatically — NO user action needed.
   useEffect(() => {
     const bb = run?.stats?.dataFetch?.backgroundBackfill;
@@ -266,8 +266,8 @@ export default function CorrelationEngine({ iso, countryName }) {
     return () => clearInterval(t);
   }, [run, iso]);
 
-  // Start Correlation Engine → deep pipeline with HARD-FORCED ≥100 data points
-  // (server-side reject+retry, Cerebras-first)
+  // Start Correlation Engine → deep pipeline with hard-forced minimum data points
+  // (server-side reject+retry, fable-only — Cerebras-free backend)
   const onStartEngine = async () => {
     try { setErr(null); const { job: j } = await startEngine(iso); setJob(j); startPoll(); }
     catch (e) { setErr(e.message); }
