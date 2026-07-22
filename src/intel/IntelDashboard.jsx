@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Globe from './Globe.jsx';
-import VoiceMode from '../voice/VoiceMode.jsx';
+import RealtimeVoiceMode from '../voice/RealtimeVoiceMode.jsx'; // OpenAI Realtime (WebRTC) — replaces the OnDemand turn-based VoiceMode (2026-07-21)
 import CountryPage from './CountryPage.jsx';
 import { getOverview, nlSearch, generateBrief } from './api.js';
 import BilingualLoader from '../components/BilingualLoader.jsx';
@@ -137,7 +137,7 @@ export default function IntelDashboard({ onExit }) {
         <Globe countries={ov.perCountry} onOpenCountry={setCountryIso}
           voiceState={voiceState} discussedIso={discussedIso}
           onCameraApi={(api) => { cameraApiRef.current = api; }} />
-        <VoiceMode
+        <RealtimeVoiceMode
           worldContext={{ selectedCountry: countryIso, cameraFocus: cameraApiRef.current?.getFocus?.() ?? null }}
           onCommand={onVoiceCommand}
           onVoiceStateChange={setVoiceState} />

@@ -38,13 +38,13 @@ export default function Globe({ countries, onOpenCountry, voiceState = 'Idle', d
     discussedRef.current = c ? { lat: c.lat, lng: c.lng } : null;
   }, [discussedIso, countries]);
 
-  // Keep focus target in sync with toggle + selection: when the toggle is ON and a
-  // country is selected, the globe eases to its real lat/lng; otherwise idle spin
-  // (hover still previews focus transiently while the pointer is over a row).
+  // A selected country keeps the globe centered on its real lat/lng; clearing the
+  // selection (Clear / Reset / Escape) returns the globe to idle spin. Selecting a
+  // country ALWAYS re-centers the globe now — independent of the hover-preview toggle.
   useEffect(() => {
-    if (focusMode && selected) focusRef.current = { lat: selected.lat, lng: selected.lng };
+    if (selected) focusRef.current = { lat: selected.lat, lng: selected.lng };
     else focusRef.current = null;
-  }, [focusMode, selected]);
+  }, [selected]);
 
   useEffect(() => {
     if (!canvasRef.current) return undefined;
@@ -120,7 +120,7 @@ export default function Globe({ countries, onOpenCountry, voiceState = 'Idle', d
   // expose a tiny camera API for validated voice commands (rotateTo/zoom/resetView)
   useEffect(() => {
     onCameraApi?.({
-      rotateTo: (lat, lng) => { focusRef.current = { lat, lng }; const tm = setTimeout(() => { if (!(focusMode && selectedRef.current)) focusRef.current = null; }, 2600); return () => clearTimeout(tm); },
+      rotateTo: (lat, lng) => { focusRef.current = { lat, lng }; const tm = setTimeout(() => { if (!selectedRef.current) focusRef.current = null; }, 2600); return () => clearTimeout(tm); },
       zoom: (level) => { zoomRef.current = clampZoom(level); },
       resetView: () => { zoomRef.current = 1; velRef.current = { phi: 0, theta: 0 }; focusRef.current = null; setSelected(null); },
       getFocus: () => (focusRef.current ? { ...focusRef.current } : null),
@@ -209,11 +209,11 @@ export default function Globe({ countries, onOpenCountry, voiceState = 'Idle', d
           <button
             type="button" role="switch" aria-checked={focusMode}
             className={`ig-focus-toggle${focusMode ? ' on' : ''}`}
-            title="When on, selecting a country rotates the globe to center it"
+            title="When on, hovering a country previews it on the globe. Clicking a country always centers it."
             onClick={() => setFocusMode(f => !f)}
           >
             <Crosshair size={13} aria-hidden />
-            <span>Focus selected country</span>
+            <span>Preview on hover</span>
             <span className={`ig-focus-toggle__knobtrack${focusMode ? ' on' : ''}`}><span className="ig-focus-toggle__knob" /></span>
           </button>
           <button type="button" className="ig-resetview" data-testid="globe-reset"
@@ -235,9 +235,9 @@ export default function Globe({ countries, onOpenCountry, voiceState = 'Idle', d
             className={`ig-globe__row${c.critical ? ' crit' : ''}${selected?.iso === c.iso ? ' sel' : ''}`}
             whileHover={{ scale: 1.015 }} whileTap={{ scale: 0.985 }}
             transition={{ type: 'spring', stiffness: 420, damping: 28 }}
-            onMouseEnter={() => { setHover(c); if (!(focusMode && selected)) focusRef.current = { lat: c.lat, lng: c.lng }; }}
-            onMouseLeave={() => { setHover(h => (h?.iso === c.iso ? null : h)); if (!(focusMode && selected)) focusRef.current = null; }}
-            onClick={() => { setSelected(c); if (!focusMode) onOpenCountry(c.iso); }}
+            onMouseEnter={() => { setHover(c); if (focusMode && !selected) focusRef.current = { lat: c.lat, lng: c.lng }; }}
+            onMouseLeave={() => { setHover(h => (h?.iso === c.iso ? null : h)); if (focusMode && !selected) focusRef.current = null; }}
+            onClick={() => { setSelected(c); focusRef.current = { lat: c.lat, lng: c.lng }; }}
             onDoubleClick={() => onOpenCountry(c.iso)}
           >
             <span className="ig-globe__flag"><Flag iso={c.iso} size="sm" title={c.name} /></span>

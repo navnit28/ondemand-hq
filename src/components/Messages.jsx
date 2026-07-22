@@ -183,7 +183,11 @@ export function ArtifactCard({ artifact }) {
       </div>
       <div className="artifact__btns">
         <a className="primary" href={`/api/export/${artifact.id}/download`} download>Download</a>
-        <a href={`/api/export/${artifact.id}/download`} target="_blank" rel="noopener noreferrer">Open preview</a>
+        {/* Open preview: PDF renders inline in a new tab (disposition=inline). Other formats
+            (PPTX/DOCX/XLSX) can't render in-browser, so preview is offered for PDF only. */}
+        {fmt === 'PDF' && (
+          <a href={`/api/export/${artifact.id}/download?disposition=inline`} target="_blank" rel="noopener noreferrer">Open preview</a>
+        )}
       </div>
     </div>
   );

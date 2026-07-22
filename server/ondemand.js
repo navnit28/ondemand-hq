@@ -149,6 +149,8 @@ export async function streamQuery({ odSessionId, query, pluginIds = [], systemPr
                                           // NOTE: `reasoningEffort` is not in the documented submitquery schema but is
                                           // accepted by the live API — live-accepted extension beyond the documented schema.
     responseMode: 'stream',
+    chatMode: 'standard', // ALWAYS standard — 'plan' is rejected by the public API ("not supported")
+                          // and standard avoids the agentic planning/step decomposition frames.
     agentIds: toAgentIds(pluginIds),
     ...(fulfillmentOnly ? { fulfillmentOnly: true } : {}),
     modelConfigs: systemPrompt ? { fulfillmentPrompt: systemPrompt, temperature: 0.4 } : { temperature: 0.4 },
@@ -295,6 +297,7 @@ export async function syncQuery({ odSessionId, query, systemPrompt, pluginIds = 
       // reasoningEffort: live-accepted extension beyond the documented submitquery schema (see streamQuery note above).
       reasoningEffort: reasoningEffort || REASONING_EFFORT,
       responseMode: 'sync',
+      chatMode: 'standard', // ALWAYS standard (see streamQuery note) — 'plan' is rejected by the public API.
       agentIds: toAgentIds(pluginIds),
       modelConfigs: systemPrompt ? { fulfillmentPrompt: systemPrompt, temperature: 0.2 } : { temperature: 0.2 },
     }),

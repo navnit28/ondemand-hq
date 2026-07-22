@@ -15,11 +15,12 @@ import { createOdSession, syncQuery } from './ondemand.js';
 import { ANALYSIS_ENDPOINT_ID, ANALYSIS_REASONING_EFFORT, GATHER_ENDPOINT_ID, GATHER_REASONING_EFFORT } from './env.js';
 import { buildExport } from './exports.js';
 import * as log from './log.js';
+import { DATA_DIR as DATA_BASE } from './paths.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const DATA_DIR = path.join(__dirname, 'data', 'intel');
-const SEED_DIR = path.join(__dirname, 'data', 'intel-seed');
-fs.mkdirSync(DATA_DIR, { recursive: true });
+const DATA_DIR = path.join(DATA_BASE, 'intel');
+const SEED_DIR = path.join(DATA_BASE, 'intel-seed');
+try { fs.mkdirSync(DATA_DIR, { recursive: true }); } catch (e) { console.error('[intel] mkdir failed:', e.message); }
 
 // ---------- seed hydration (2026-07-18 fix) ----------
 // ROOT CAUSE of the "country information broken" bug: server/data/intel/ is

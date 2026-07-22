@@ -11,10 +11,11 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { weighFact } from './intelligence/weighting.js';
 import { resolveWindow, DEFAULT_WINDOW } from './intelligence/windows.js';
+import { DATA_DIR as DATA_BASE } from './paths.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const CORPUS_PATH = path.join(__dirname, 'data', 'evidence-corpus-v2.json');
-const SNAP_DIR = path.join(__dirname, 'data', 'snapshots');
+const CORPUS_PATH = path.join(DATA_BASE, 'evidence-corpus-v2.json');
+const SNAP_DIR = path.join(DATA_BASE, 'snapshots');
 
 let _corpus = null;
 export function loadCorpus() {

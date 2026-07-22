@@ -3,8 +3,7 @@ import crypto from 'node:crypto';
 
 const conversations = new Map(); // id -> {id, title, createdAt, updatedAt, feature, odSessionId, messages:[], wizard}
 
-export function createConversation({ title = 'New chat', feature = 'chat' } = {}) {
-  const id = crypto.randomUUID();
+export function createConversation({ id = crypto.randomUUID(), title = 'New chat', feature = 'chat' } = {}) {
   const now = new Date().toISOString();
   const conv = { id, title, feature, createdAt: now, updatedAt: now, odSessionId: null, messages: [], wizard: null };
   conversations.set(id, conv);

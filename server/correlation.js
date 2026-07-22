@@ -48,12 +48,14 @@ import { runDeepPipeline, RESEARCH_WINDOWS, DEFAULT_WINDOW } from './intelligenc
 // (see intelligence/dataFetch.js — fable-5 only, Cerebras-free per 2026-07-21 v3);
 // enforced again as a run-level backstop in runDeepJob below.
 import { MIN_DATA_POINTS, backgroundDeltaFetch, buildExtractionMaterial } from './intelligence/dataFetch.js';
+// Serverless-safe data root (main's FUNCTION_INVOCATION_FAILED fix): /tmp on Vercel, bundle dir locally.
+import { DATA_DIR as DATA_BASE } from './paths.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const DATA_ROOT = path.join(__dirname, 'data', 'correlation');
-const SEED_ROOT = path.join(__dirname, 'data', 'correlation-seed');
-const MEDIA_ROOT = path.join(__dirname, 'data', 'correlation-media');
-for (const d of [DATA_ROOT, MEDIA_ROOT]) fs.mkdirSync(d, { recursive: true });
+const DATA_ROOT = path.join(DATA_BASE, 'correlation');
+const SEED_ROOT = path.join(DATA_BASE, 'correlation-seed');
+const MEDIA_ROOT = path.join(DATA_BASE, 'correlation-media');
+try { for (const d of [DATA_ROOT, MEDIA_ROOT]) fs.mkdirSync(d, { recursive: true }); } catch (e) { console.error('[correlation] mkdir failed:', e.message); }
 
 export const PLUGINS = {
   perplexity: 'plugin-1722260873',
