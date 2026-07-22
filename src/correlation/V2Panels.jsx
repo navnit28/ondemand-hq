@@ -41,7 +41,7 @@ export function ArticleSummary({ iso, runId, ev }) {
       )}
       {state !== 'idle' && (
         <div className="ce2-summary__body" dir="auto">
-          {text || 'Streaming from gpt-5.6-sol-medium…'}
+          {text || 'Streaming from Fable 5 MAX…'}
           {state === 'streaming' && <span className="qq-caret">▍</span>}
         </div>
       )}
@@ -345,7 +345,7 @@ export function TimelineReplay({ dates, cutoff, onScrub, run }) {
   );
 }
 
-/** (14) one-click Story Mode (streamed gpt-5.6-sol-medium). */
+/** (14) one-click Story Mode (streamed Fable 5 MAX). */
 export function StoryMode({ iso, run, onClose, onQuickQuery }) {
   const [text, setText] = useState('');
   const [streaming, setStreaming] = useState(true);
@@ -366,7 +366,7 @@ export function StoryMode({ iso, run, onClose, onQuickQuery }) {
         </span>
       </div>
       <div className="ce2-story__body" dir="auto">
-        {text || 'Narrating from evidence (gpt-5.6-sol-medium, streamed)…'}
+        {text || 'Narrating from evidence (Fable 5 MAX, streamed)…'}
         {streaming && <span className="qq-caret">▍</span>}
       </div>
     </motion.div>

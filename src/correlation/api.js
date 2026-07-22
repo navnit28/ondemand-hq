@@ -63,7 +63,7 @@ export function quickQuery({ context, question, onToken, onMetrics, onError }) {
 }
 
 // ---- V2 inspector support (restored 2026-07-19) ----
-/** Stream a structured article summary for one evidence record (gpt-5.6-sol-medium). */
+/** Stream a structured article summary for one evidence record (Fable 5 MAX). */
 export function summarizeEvidence({ iso, runId, evidenceId, onToken, onDone, onError }) {
   const ctrl = new AbortController();
   fetch('/api/correlation/summarize', {
@@ -95,7 +95,7 @@ export function summarizeEvidence({ iso, runId, evidenceId, onToken, onDone, onE
   return ctrl;
 }
 
-/** Stream the one-click Story Mode narration (gpt-5.6-sol-medium). */
+/** Stream the one-click Story Mode narration (Fable 5 MAX). */
 export function streamStory(iso, runId, { onToken, onError } = {}) {
   return new Promise((resolve) => {
     const es = new EventSource(`/api/correlation/story/${iso}/${runId}/stream`);

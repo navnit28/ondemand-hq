@@ -9,7 +9,7 @@
 // evidence ids).
 //
 // Model policy (config, not hardcoded — see env.js):
-//   plugins/evidence-gathering  → CE_PLUGIN_ENDPOINT_ID (gpt-5.6-sol; Claude
+//   plugins/evidence-gathering  → CE_PLUGIN_ENDPOINT_ID (Kimi K3; Claude
 //                                 endpoints reject plugin attachment — live 400s
 //                                 logged 2026-07-19, PLUGIN_TESTS.md)
 //   analysis/extraction/narrative → CE_ANALYSIS_ENDPOINT_ID + reasoningEffort
@@ -825,7 +825,7 @@ export function registerCorrelationRoutes(app, { countries }) {
   });
 
   // ---------- V2 inspector support (restored 2026-07-19, expand-mode fix) ----------
-  // Streamed article summary for one evidence record — gpt-5.6-sol-medium.
+  // Streamed article summary for one evidence record — Fable 5 MAX (prefilled CE model).
   app.post('/api/correlation/summarize', async (req, res) => {
     res.writeHead(200, { 'Content-Type': 'text/event-stream', 'Cache-Control': 'no-cache', Connection: 'keep-alive' });
     try {
