@@ -15,7 +15,7 @@
 // Model policy (2026-07-20 GLM switch): ALL model calls = GLM 4.7 Cerebras BYOI + validated reasoningEffort,
 // streamed where the platform supports it (streamQuery), sync JSON extraction otherwise.
 
-import { KIMI_K3_ENDPOINT_ID, KIMI_K3_REASONING_EFFORT, validEffort } from '../env.js';
+import { FABLE_5_MAX_ENDPOINT_ID, FABLE_5_MAX_REASONING_EFFORT, FABLE_5_MAX_LABEL, validEffort } from '../env.js';
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -33,10 +33,11 @@ import { buildImpactPrompt, normaliseImpactScores, structuralImpactScores } from
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
-// GLM 4.7 BYOI everywhere (decomposed form — suffixed id returns HTTP 400; Phase-1 verified).
-// ONLY the ACTIVE BYOI id — predefined-glm-4.7/-flash are inactive registry entries.
-export const DEEP_ENDPOINT_ID = process.env.DEEP_ENDPOINT_ID || KIMI_K3_ENDPOINT_ID; // Kimi K3 — THE correlating model (2026-07-21; GLM removed from correlation)
-export const DEEP_REASONING_EFFORT = validEffort(process.env.DEEP_REASONING_EFFORT, KIMI_K3_REASONING_EFFORT); // MEDIUM — validated low|medium|max, decomposed form only (suffixed ids = HTTP 400)
+// Fable 5 MAX everywhere in the correlation deep pipeline (2026-07-21 v3 prefill;
+// decomposed form — suffixed id returns HTTP 400; Phase-1 verified).
+export const DEEP_ENDPOINT_ID = process.env.DEEP_ENDPOINT_ID || FABLE_5_MAX_ENDPOINT_ID; // Fable 5 MAX — THE prefilled correlating model (2026-07-21 v3)
+export const DEEP_REASONING_EFFORT = validEffort(process.env.DEEP_REASONING_EFFORT, FABLE_5_MAX_REASONING_EFFORT); // MAX — validated low|medium|max, decomposed form only (suffixed ids = HTTP 400)
+export const DEEP_MODEL_LABEL = FABLE_5_MAX_LABEL; // surfaced to the UI as the prefilled model name
 
 // Edge styling contract persisted for the frontend (brand tokens).
 export const EDGE_STYLE = {
@@ -344,9 +345,43 @@ Extract RELATIONSHIP EDGES — JSON array of:
     window: { id: win.id, label: win.label, days: win.days, boostRecentDays: win.boostRecentDays, boostFactor: win.boostFactor, phrase },
     model: {
       all: `${DEEP_ENDPOINT_ID}+${DEEP_REASONING_EFFORT}`, streaming: true,
+      // Prefilled/selected model (2026-07-21 v3): Fable 5 MAX is the default
+      // correlating model surfaced in the UI header and run metadata.
+      selected: DEEP_MODEL_LABEL,
+      analysis: DEEP_MODEL_LABEL,
       // hard-force data-fetch provenance (2026-07-20): which endpoint actually delivered the run
       dataFetch: fetchRes ? `${fetchRes.endpointUsed}+hardforce-min${MIN_DATA_POINTS}` : 'offline',
     },
+    // ---------- enrichment block (2026-07-21 v3): richer correlation results ----------
+    // Deterministic per-run aggregates so the platform can display enriched
+    // correlation context without extra model calls: per-source-type and
+    // per-entity evidence density, date coverage, confidence distribution.
+    enrichment: (() => {
+      const bySourceType = {};
+      const byEntity = {};
+      let dated = 0, confSum = 0, urls = 0;
+      let minDate = null, maxDate = null;
+      for (const ev of evidence) {
+        bySourceType[ev.source_type] = (bySourceType[ev.source_type] || 0) + 1;
+        for (const en of ev.entities || []) byEntity[en] = (byEntity[en] || 0) + 1;
+        if (ev.publish_date) {
+          dated += 1;
+          if (!minDate || ev.publish_date < minDate) minDate = ev.publish_date;
+          if (!maxDate || ev.publish_date > maxDate) maxDate = ev.publish_date;
+        }
+        if (ev.url) urls += 1;
+        confSum += ev.confidence ?? 0.5;
+      }
+      const topEntities = Object.entries(byEntity).sort((a, b) => b[1] - a[1]).slice(0, 12)
+        .map(([entity, count]) => ({ entity, count }));
+      return {
+        model: DEEP_MODEL_LABEL,
+        bySourceType, topEntities,
+        dateCoverage: { dated, undated: evidence.length - dated, from: minDate, to: maxDate },
+        avgConfidence: evidence.length ? Number((confSum / evidence.length).toFixed(3)) : null,
+        sourcedUrlShare: evidence.length ? Number((urls / evidence.length).toFixed(3)) : null,
+      };
+    })(),
     specialists: Object.fromEntries(Object.entries(specialistOutputs).map(([id, s]) => [id, { role: s.role, chars: s.chars }])),
     evidence, edges, nodes, predictions, impact,
     weighting_model: {

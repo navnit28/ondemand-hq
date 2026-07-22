@@ -380,7 +380,9 @@ export default function CorrelationEngine({ iso, countryName }) {
             <span className="ce-kpi"><b>{run.stats.evidenceCount}</b> data points</span>
             <span className="ce-kpi"><b>{run.stats.edgeCount}</b> edges</span>
             <span className="ce-kpi"><b>{run.stats.igMediaCount}</b> proofs</span>
-            <span className="ce-kpi">{run.model.analysis}</span>
+            <span className="ce-kpi">{run.model?.selected || run.model?.analysis || 'Fable 5 MAX'}</span>
+            {run.enrichment?.avgConfidence != null && <span className="ce-kpi" title="Average evidence confidence (enrichment)"><b>{Math.round(run.enrichment.avgConfidence * 100)}%</b> avg conf</span>}
+            {run.enrichment?.dateCoverage?.from && <span className="ce-kpi" title="Evidence date coverage (enrichment)">{run.enrichment.dateCoverage.from} → {run.enrichment.dateCoverage.to}</span>}
             <span className="ce-kpi">run {run.runId}</span>
             {run.stats.droppedNoEvidence > 0 && <span className="ce-kpi ce-kpi--warn">{run.stats.droppedNoEvidence} dropped</span>}
             {runIdx === runs.length - 1 && <span className="ce-kpi ce-kpi--latest">LATEST</span>}
