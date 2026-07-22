@@ -23,6 +23,7 @@ import { registerCorrelationRoutes } from './correlation.js';
 import { registerFactsRoutes } from './facts.js';
 import { registerMsmRoutes, getTranscriptText as getMsmTranscript } from './msm.js';
 import { registerEvidenceRoutes } from './evidenceCorpus.js';
+import odaRouter from './oda/routes.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const app = express();
@@ -49,6 +50,13 @@ registerMsmRoutes(app);
 // versioned runs + Connected Dots streaming + GLM Quick Query).
 registerCorrelationRoutes(app, { countries: COUNTRIES });
 registerEvidenceRoutes(app);
+
+// ODA application engine (Phase 2 backend port — MIGRATION_MAP.md): skill
+// registry, GLM 4.7 interpretation, Sonnet 5 workers, durable runs, SSE run
+// events, resumable gates, Thinker–Worker–Verifier. Mounted ADDITIVELY under
+// /api/oda — no existing route above or below is touched.
+app.use('/api/oda', odaRouter);
+console.log('[oda] application engine mounted at /api/oda');
 
 // ---------- health ----------
 app.get('/api/health', (req, res) => res.json({
