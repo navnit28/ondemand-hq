@@ -63,7 +63,8 @@ export async function fetchWdi(iso3, indicators = WDI_CORE) {
   const rows = [];
   await Promise.all(indicators.map(async ([code, label, unit]) => {
     try {
-      const j = await getJson(`https://api.worldbank.org/v2/country/${iso3}/indicator/${code}?format=json&per_page=8&date=2015:2026`);
+      // UNCAPPED PRELOAD (2026-07-21 v3): full historical series (was per_page=8, 2015+)
+      const j = await getJson(`https://api.worldbank.org/v2/country/${iso3}/indicator/${code}?format=json&per_page=20000&date=1990:2026`);
       const obs = Array.isArray(j) && Array.isArray(j[1]) ? j[1].filter(o => o.value != null) : [];
       if (obs.length) {
         const latest = obs[0];
@@ -85,7 +86,8 @@ export async function fetchGho(iso3, indicators = GHO_CORE) {
   const rows = [];
   await Promise.all(indicators.map(async ([code, label, unit]) => {
     try {
-      const j = await getJson(`https://ghoapi.azureedge.net/api/${code}?$filter=${encodeURIComponent(`SpatialDim eq '${iso3}'`)}&$top=200`);
+      // UNCAPPED PRELOAD (2026-07-21 v3): was $top=200
+      const j = await getJson(`https://ghoapi.azureedge.net/api/${code}?$filter=${encodeURIComponent(`SpatialDim eq '${iso3}'`)}&$top=10000`);
       const vals = (j?.value || []).filter(v => v.NumericValue != null && (v.Dim1 == null || v.Dim1 === 'BTSX' || v.Dim1 === 'SEX_BTSX'));
       if (vals.length) {
         vals.sort((a, b) => (b.TimeDim || 0) - (a.TimeDim || 0));
@@ -108,7 +110,8 @@ export async function fetchSdg(m49, indicators = SDG_CORE) {
   const rows = [];
   await Promise.all(indicators.map(async ([code, label, unit]) => {
     try {
-      const j = await getJson(`https://unstats.un.org/sdgapi/v1/sdg/Series/Data?seriesCode=${code}&areaCode=${m49}&pageSize=50`);
+      // UNCAPPED PRELOAD (2026-07-21 v3): was pageSize=50
+      const j = await getJson(`https://unstats.un.org/sdgapi/v1/sdg/Series/Data?seriesCode=${code}&areaCode=${m49}&pageSize=10000`);
       const obs = (j?.data || []).filter(o => o.value != null && o.value !== '' && !isNaN(parseFloat(o.value)));
       if (obs.length) {
         obs.sort((a, b) => (parseInt(b.timePeriodStart) || 0) - (parseInt(a.timePeriodStart) || 0));
@@ -121,11 +124,25 @@ export async function fetchSdg(m49, indicators = SDG_CORE) {
   return rows;
 }
 
-/** Fetch the full verified data pack for a country query. */
+// ---------- INCREMENTAL PRELOAD CACHE (2026-07-21 v3) ----------
+// First fetch per country preloads EVERYTHING (uncapped series above) and caches
+// it in-process. Subsequent fetches are INCREMENTAL: sources that already returned
+// rows are served from cache; only sources that previously returned nothing (or
+// errored) are re-fetched — never a full re-fetch of everything.
+const PACK_CACHE = new Map(); // iso3 -> { country, wdi, gho, sdg, fetchedAt }
+
+/** Fetch the full verified data pack for a country query (uncapped + incremental). */
 export async function fetchCountryPack(countryQuery) {
   const c = resolveCountry(countryQuery);
   if (!c) return { country: null, rows: [], gaps: [`Country "${countryQuery}" not recognised`] };
-  const [wdi, gho, sdg] = await Promise.all([fetchWdi(c.iso3), fetchGho(c.iso3), fetchSdg(c.m49)]);
+  const cached = PACK_CACHE.get(c.iso3) || { country: c, wdi: [], gho: [], sdg: [], fetchedAt: 0 };
+  // incremental: only re-fetch the sources that have no cached rows yet
+  const [wdi, gho, sdg] = await Promise.all([
+    cached.wdi.length ? cached.wdi : fetchWdi(c.iso3),
+    cached.gho.length ? cached.gho : fetchGho(c.iso3),
+    cached.sdg.length ? cached.sdg : fetchSdg(c.m49),
+  ]);
+  PACK_CACHE.set(c.iso3, { country: c, wdi, gho, sdg, fetchedAt: Date.now() });
   const rows = [...wdi, ...gho, ...sdg];
   const gaps = [];
   if (!wdi.length) gaps.push('World Bank WDI returned no observations');

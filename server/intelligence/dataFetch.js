@@ -142,7 +142,9 @@ export function buildExtractionMaterial({ iso, countryName } = {}) {
     sections.push(`=== CORPUS SECTION ${sections.length + 1} ===\n${lines.slice(i, i + CHUNK).join('\n')}`);
   }
   const material = sections.join('\n\n');
-  const CAP = 60000;
+  // UNCAPPED PRELOAD (2026-07-21 v3): preload as much country data material as
+  // possible — the previous 60k cap is lifted to the model-context ceiling.
+  const CAP = 400000;
   return material.length > CAP ? material.slice(0, CAP) : material;
 }
 
@@ -224,6 +226,12 @@ export function mergePasses(...passes) {
  */
 export async function hardForceDataPoints({
   iso, countryName, phrase, material, sessionTag,
+  // INCREMENTAL RUNS (2026-07-21 v3): priorCaptured = evidence records already
+  // persisted by earlier runs for this country. When present, every pass runs
+  // in DELTA mode (exclusion prompt) so the engine fetches ONLY new/missing
+  // data instead of re-fetching everything; prior records are merged into the
+  // final dataset unchanged.
+  priorCaptured = null,
   // 2026-07-21 v3 policy (CEREBRAS-FREE): fable-5 is the ONLY population model,
   // synchronous AND background. A short fable pass KEEPS its artifacts,
   // corpus-backfills to clear the floor now, and the caller schedules a FABLE
@@ -246,8 +254,12 @@ export async function hardForceDataPoints({
     return full;
   };
 
-  // captured = artifacts KEPT across passes (never discarded on a short pass)
-  let captured = [];
+  // captured = artifacts KEPT across passes (never discarded on a short pass).
+  // Incremental mode: prior-run records seed the captured set so passes below
+  // exclude them (delta prompts) and only the missing remainder is fetched.
+  const prior = Array.isArray(priorCaptured) ? priorCaptured.map(validateDataPoint).filter(Boolean) : [];
+  let captured = mergePasses(prior.map(p => ({ ...p, origin: p.origin || 'prior-run' })));
+  const incremental = captured.length > 0;
   let primaryCount = 0;
   let deltaAdded = 0;
   let fallbackUsed = false;
@@ -319,11 +331,14 @@ export async function hardForceDataPoints({
   const primary = endpointLadder[0];
   const fallback = endpointLadder[1] || null;
 
-  // ---- PASS 1: PRIMARY (fable-5) — single extraction ----
-  captured = mergePasses(await runSingle(primary, { tagSuffix: 'p1', target: TARGET_DATA_POINTS }));
+  if (incremental) {
+    passLog.push({ pass: 'prior-run', label: 'incremental-seed', endpointId: null, count: captured.length, gate: captured.length >= MIN_DATA_POINTS ? 'pass' : 'short' });
+  }
+  // ---- PASS 1: PRIMARY (fable-5) — single extraction; DELTA mode when incremental ----
+  captured = mergePasses(captured, await runSingle(primary, { deltaOf: incremental ? captured : null, tagSuffix: 'p1', target: TARGET_DATA_POINTS }));
   // ---- PASS 1b: one chunked retry on the SAME rung if short (same run) ----
   if (captured.length < MIN_DATA_POINTS) {
-    captured = mergePasses(captured, await runChunked(primary, { tagSuffix: 'p1b' }));
+    captured = mergePasses(captured, await runChunked(primary, { deltaOf: incremental ? captured : null, tagSuffix: 'p1b' }));
   }
   primaryCount = captured.length;
   passLog.push({ pass: 'primary', label: primary.label, endpointId: primary.endpointId, count: primaryCount, gate: primaryCount >= MIN_DATA_POINTS ? 'pass' : 'short' });

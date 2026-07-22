@@ -101,6 +101,10 @@ export async function runDeepPipeline({
   iso, countryName, window: windowId = DEFAULT_WINDOW,
   plugins = {}, registry = [], relationshipTypes = [],
   offline = false, seedEvidence = null, seedStatedEdges = null, onStage = () => {},
+  // INCREMENTAL RUNS (2026-07-21 v3): priorEvidence = the previous run's evidence
+  // for this country. Passed through to the data-fetch layer so subsequent 'run'
+  // executions fetch ONLY new/missing data (delta prompts) instead of re-fetching.
+  priorEvidence = null,
 }) {
   const nowTs = Date.now();
   const startedAt = new Date(nowTs);
@@ -160,6 +164,7 @@ export async function runDeepPipeline({
       .filter(Boolean).join('\n\n').slice(0, 140000);
     fetchRes = await hardForceDataPoints({
       iso, countryName, phrase, material: combinedMaterial,
+      priorCaptured: priorEvidence, // incremental: exclude already-captured claims
       sessionTag: `deep-${iso}-datafetch`,
       onAttempt: (a) => stage('datafetch:attempt', { attempt: a.attempt, endpoint: a.endpointId, count: a.validCount, accepted: a.accepted }),
     });

@@ -626,10 +626,18 @@ export async function runDeepJob(iso, countryName, { window: windowId, offline =
   if (jobs.get(iso)?.status === 'running') return jobs.get(iso);
   const job = { status: 'running', stage: 'deep:init', runId: null, startedAt: new Date().toISOString(), error: null, pipeline: 'deep-v2', window: windowId || DEFAULT_WINDOW, minDataPoints: MIN_DATA_POINTS };
   jobs.set(iso, job);
+  // INCREMENTAL RUNS (2026-07-21 v3): subsequent 'run' executions only fetch
+  // new/missing data. The previous run's evidence (if any) seeds the data-fetch
+  // delta exclusion so nothing already captured is re-fetched.
+  let priorEvidence = null;
+  try {
+    const prevRun = getLatestRun(iso);
+    if (Array.isArray(prevRun?.evidence) && prevRun.evidence.length) priorEvidence = prevRun.evidence;
+  } catch { /* first run for this country — full preload */ }
   const pipelineArgs = {
     iso, countryName, window: windowId,
     plugins: PLUGINS, registry: UAE_REGISTRY, relationshipTypes: RELATIONSHIP_TYPES,
-    offline, seedEvidence, seedStatedEdges,
+    offline, seedEvidence, seedStatedEdges, priorEvidence,
     onStage: (name) => { job.stage = name; },
   };
   const work = (async () => {
