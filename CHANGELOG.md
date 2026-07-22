@@ -1,3 +1,27 @@
+## 2026-07-22 — Correlation Engine v3: Fable 5 MAX prefill, Cerebras-free backend, uncapped incremental preload, drag-to-pin charts (checkpoint/correlation-engine-fixes)
+
+Master entry for the 5-commit checkpoint series on `checkpoint/correlation-engine-fixes`:
+
+1. **feat(ce-model): Fable 5 MAX prefilled as the default/selected correlation model**
+   (`predefined-claude-fable-5` + MAX effort) across the deep pipeline, analysis/
+   extraction/narrative, and streamed CE surfaces; every run now carries a
+   deterministic `enrichment` block (source-type density, top entities, date
+   coverage, avg confidence, sourced-URL share) surfaced as header KPIs.
+2. **refactor(ce-models): gpt-5.6-sol fully removed from the correlation engine** —
+   zero references, calls, or fallbacks remain in `server/correlation.js`,
+   `server/intelligence/*`, or `src/correlation/*`.
+3. **refactor(ce-cerebras): Cerebras restricted to quick summaries + quick queries
+   ONLY** — scoped `CEREBRAS_QUICK_*` config; the CE backend is Cerebras-free
+   (background backfill now runs a FABLE delta job, `backgroundDeltaFetch`).
+4. **feat(ce-data): uncapped country-data preload + incremental runs** — the
+   100-record default cap is gone (`/v2/evidence` defaults to the full corpus;
+   WDI/GHO/SDG series uncapped; material cap 60k→400k); subsequent 'run'
+   executions seed `priorEvidence` from the latest persisted run and fetch only
+   the new/missing delta.
+5. **feat(ce-charts-ux): drag-to-pin** — dragging a data point (ECharts volume
+   chart handles) or a graph node sticks it exactly at the release position;
+   double-click / right-click to unpin.
+
 ## 2026-07-21 — Kimi K3 correlating model + fable-only population w/ Cerebras background backfill + brand-consistency pass
 
 - **feat(model): Kimi K3 MEDIUM is THE correlating model** — `predefined-kimi-k3`
