@@ -1,3 +1,29 @@
+## 2026-07-22 — ODA bilateral correlation core: cross-cluster UAE↔country mandate (checkpoint/correlation-engine-fixes)
+
+Master entry for the 3-commit ODA intelligence series:
+
+1. **feat(oda-correlation) 492b4ce** — new `server/intelligence/odaCorrelation.js`:
+   8 ODA intelligence categories (bilateral investment; CEPA/trade; development
+   aid & ODA flows; sovereign fund deployments ADQ/Mubadala/ADFD; energy &
+   infrastructure Masdar/DP World/AD Ports; remittances; diplomatic frameworks;
+   multilateral programs); `buildOdaCorrelationPrompt()` mandates ≥6
+   cross-cluster UAE↔{country} edges with a hard evidence-or-gap rule;
+   `ODA_GROUNDING` citation-backed bilateral facts injected as evidence;
+   `ensureCrossClusterEdges()` deterministic backstop on EVERY pipeline pass —
+   the graph is never silently disconnected and facts are never invented.
+   Root cause fixed: the old Stage-D prompt never required the country node in
+   any edge (PK 0/39, BD 0/188 edges touched their country node).
+2. **feat(oda-prompts) a98e61e** — ALL plugin-facing enrichment prompts
+   (16 source-class retrieval queries, 10 specialists, evidence extraction,
+   round-1 perplexity/xsearch/reddit gathers) now demand UAE↔{country}
+   bilateral connections naming both sides — never isolated single-country data.
+3. **feat(oda-recorrelation) f756d71** — `scripts/oda-recorrelate.mjs` re-ran
+   the corrected correlation on Fable 5 MAX via 4 parallel sub-agent workers:
+   16/16 countries, 0 failures, additive versioned runs (prior data preserved).
+   Cross-cluster edges per country all > 0 (PK=9: 4 evidence-backed + 5
+   gap-flagged; EG=11, KE=11, BD=17, …). Both 24h workflows updated & active
+   with the ODA bilateral contract; ingest auto-correlation verified offline.
+
 ## 2026-07-22 — Production bug fixes: OnDemand session-create HTTP 500 + full-country correlation prefill (checkpoint/correlation-engine-fixes)
 
 Master entry for the 2-commit bug-fix series:
