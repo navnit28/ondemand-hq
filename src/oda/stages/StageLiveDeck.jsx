@@ -20,7 +20,7 @@ export function DownloadButton({ runId, style }) {
     setBusy(true); setMsg(null);
     const r = await downloadFinalDoc(runId);
     setBusy(false);
-    setMsg(r.ok ? `Saving ${r.filename} (${r.bytes} bytes) — check your browser's Downloads` : `⚠ ${r.error}`);
+    setMsg(r.ok ? `Saving ${r.filename}${r.bytes > 0 ? ` (${r.bytes} bytes)` : ''} — check your browser's Downloads` : `⚠ ${r.error}`);
   };
   return (
     <div style={{ marginTop: 16, display: 'flex', alignItems: 'center', gap: 10, flexWrap: 'wrap', ...style }}>
