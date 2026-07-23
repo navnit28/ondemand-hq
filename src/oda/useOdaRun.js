@@ -192,10 +192,10 @@ export default function useOdaRun() {
   }, [listen]);
 
   /** Start a new run from the composer. */
-  const start = useCallback(async ({ text, attachments = [] }) => {
+  const start = useCallback(async ({ text, attachments = [], brain = null }) => {
     const r = await fetch('/api/oda/runs', {
       method: 'POST', headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ text, attachments, externalUserId: 'oda-workspace' }),
+      body: JSON.stringify({ text, attachments, externalUserId: 'oda-workspace', ...(brain ? { brain } : {}) }),
     });
     if (!r.ok) throw new Error((await r.json().catch(() => ({}))).error || `HTTP ${r.status}`);
     const { runId } = await r.json();

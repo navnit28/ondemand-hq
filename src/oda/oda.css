@@ -930,3 +930,11 @@
 .oda-ws .oda-widgetcard__tools button:hover:not(:disabled) { border-color: var(--oda-gold); color: var(--oda-ink); }
 .oda-ws .oda-widgetcard__tools button:disabled { opacity: .4; cursor: not-allowed; }
 @media (prefers-reduced-motion: reduce) { .oda-ws .oda-widgetcard__dot { animation: none; } }
+
+/* Brain control policy note (quiet ivory, milestone d) */
+.oda-ws .oda-side__policyline {
+  font: 400 10.5px 'Montserrat', system-ui, sans-serif;
+  color: var(--oda-ink70);
+  margin-top: 6px;
+  padding-left: 2px;
+}

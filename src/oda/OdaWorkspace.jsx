@@ -19,7 +19,7 @@ export default function OdaWorkspace({ onExit }) {
   const [history, setHistory] = useState([]);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState(null);
-  const [controls, setControls] = useState({ lang: 'en', output: 'auto', depth: 'fast' });
+  const [controls, setControls] = useState({ lang: 'en', output: 'auto', depth: 'fast', brain: 'sonnet-5' });
   // ODA Live Widgets: one widget = one card = one task context (new task
   // NEVER reuses an old card — each entry is its own immutable prompt).
   const [widgets, setWidgets] = useState([]);
@@ -49,7 +49,7 @@ export default function OdaWorkspace({ onExit }) {
       if (controls.output !== 'auto') extras.push(`Output: ${controls.output}`);
       if (controls.depth !== 'fast') extras.push('Depth: full engagement with approval gates');
       if (extras.length) finalText += ` — ${extras.join('; ')}`;
-      await start({ text: finalText, attachments: files.map((f) => ({ name: f.name, size: f.size })) });
+      await start({ text: finalText, attachments: files.map((f) => ({ name: f.name, size: f.size })), brain: controls.brain || 'sonnet-5' });
     } catch (e) { setError(e.message); }
     finally { setBusy(false); }
   }, [start, controls]);
