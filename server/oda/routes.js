@@ -277,6 +277,19 @@ router.get('/brains', asyncH(async (req, res) => {
   res.json(describeBrains());
 }));
 
+/**
+ * POST /widgets/stream — ODA Live Widget renderer (universal workspace).
+ * Body { prompt }. Streams widget.meta / widget.chunk / widget.done SSE frames
+ * from the REAL GLM 4.7 stream (contract: server/oda/widgetRenderer.js).
+ */
+router.post('/widgets/stream', asyncH(async (req, res) => {
+  const { prompt } = req.body || {};
+  if (!prompt || typeof prompt !== 'string') return res.status(400).json({ error: 'prompt (string) is required' });
+  const { streamWidget } = await import('./widgetRenderer.js');
+  const sessionId = await createOdSession('oda-widget', []);
+  await streamWidget({ sessionId, prompt, res });
+}));
+
 /** GET /builders — observability: available Phase 4 builders. */
 router.get('/builders', asyncH(async (req, res) => {
   const { listBuilders } = await import('./builders/index.js');

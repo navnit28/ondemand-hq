@@ -10,6 +10,7 @@ import useOdaRun from './useOdaRun.js';
 import OdaSidebar from './OdaSidebar.jsx';
 import ArtifactRail from './ArtifactRail.jsx';
 import Canvas from './Canvas.jsx';
+import WidgetCard from './WidgetCard.jsx';
 import './oda.css';
 
 export default function OdaWorkspace({ onExit }) {
@@ -19,6 +20,9 @@ export default function OdaWorkspace({ onExit }) {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState(null);
   const [controls, setControls] = useState({ lang: 'en', output: 'auto', depth: 'fast' });
+  // ODA Live Widgets: one widget = one card = one task context (new task
+  // NEVER reuses an old card — each entry is its own immutable prompt).
+  const [widgets, setWidgets] = useState([]);
 
   // Run history (durable server list — refresh-safe).
   const loadHistory = useCallback(async () => {
@@ -30,6 +34,13 @@ export default function OdaWorkspace({ onExit }) {
   useEffect(() => { loadHistory(); }, [loadHistory, run.status]);
 
   const onSubmit = useCallback(async ({ text, files = [] }) => {
+    // Widget fast-path: 'widget:' prefix renders a live widget card in-canvas
+    // (GLM 4.7 streamed assembly) instead of a full document run.
+    if (/^widget\s*:/i.test(text)) {
+      const prompt = text.replace(/^widget\s*:/i, '').trim();
+      if (prompt) setWidgets((w) => [{ id: `w${Date.now()}`, prompt }, ...w]);
+      return;
+    }
     setBusy(true); setError(null);
     try {
       let finalText = text;
@@ -69,6 +80,14 @@ export default function OdaWorkspace({ onExit }) {
       />
       <div style={{ position: 'relative', overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
         {error && <div className="oda-wserr">{error}</div>}
+        {widgets.length > 0 && (
+          <div style={{ padding: '18px 34px 0', display: 'grid', gap: 14 }}>
+            {widgets.map((w) => (
+              <WidgetCard key={w.id} prompt={w.prompt}
+                onSendTask={(t) => onSubmit({ text: t })} />
+            ))}
+          </div>
+        )}
         <Canvas run={run} resolveGate={resolveGate} fetchArtifact={fetchArtifact} />
       </div>
       <ArtifactRail

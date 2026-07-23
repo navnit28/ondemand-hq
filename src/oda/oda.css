@@ -907,3 +907,26 @@
   .oda-ws .oda-canvas,
   .oda-ws .oda-topbar { grid-column: 1; }
 }
+
+/* ---- ODA Live Widget renderer card (universal workspace, 2026-07-23) ---- */
+.oda-ws .oda-widgetcard__dot {
+  width: 8px; height: 8px; border-radius: 50%;
+  background: #AD833B; flex: none;
+}
+.oda-ws .oda-widgetcard__dot[data-phase="loading"],
+.oda-ws .oda-widgetcard__dot[data-phase="streaming"] {
+  animation: odaWsPulse 1.2s ease-in-out infinite;
+}
+.oda-ws .oda-widgetcard__dot[data-phase="done"] { background: #3E7C4F; }
+.oda-ws .oda-widgetcard__dot[data-phase="error"] { background: #A33B2E; }
+@keyframes odaWsPulse { 0%,100% { opacity: 1; transform: scale(1); } 50% { opacity: .45; transform: scale(.8); } }
+.oda-ws .oda-widgetcard__tools { display: flex; gap: 4px; opacity: 0; transition: opacity .18s ease; }
+.oda-ws .oda-widgetcard:hover .oda-widgetcard__tools { opacity: 1; }
+.oda-ws .oda-widgetcard__tools button {
+  appearance: none; cursor: pointer; background: transparent;
+  border: 1px solid var(--oda-mist-soft); border-radius: 7px;
+  padding: 4px 7px; color: var(--oda-ink70); line-height: 0;
+}
+.oda-ws .oda-widgetcard__tools button:hover:not(:disabled) { border-color: var(--oda-gold); color: var(--oda-ink); }
+.oda-ws .oda-widgetcard__tools button:disabled { opacity: .4; cursor: not-allowed; }
+@media (prefers-reduced-motion: reduce) { .oda-ws .oda-widgetcard__dot { animation: none; } }
