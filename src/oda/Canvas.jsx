@@ -18,8 +18,10 @@ import StageDocument from './stages/StageDocument.jsx';
 import StageArabic from './stages/StageArabic.jsx';
 import StageGallery from './stages/StageGallery.jsx';
 import StageFailed from './stages/StageFailed.jsx';
+import StageLiveDeck from './stages/StageLiveDeck.jsx';
 
 const RENDERERS = {
+  'live-deck': StageLiveDeck,
   understanding: StageUnderstanding,
   routing: StageRouting,
   'issue-tree': StageIssueTree,

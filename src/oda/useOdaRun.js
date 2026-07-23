@@ -24,6 +24,8 @@ const EMPTY = {
   decisions: [],
   verification: [],
   safeStatus: null,
+  liveDeck: null,
+  downloadUrl: null,
   events: [],
   error: null,
 };
@@ -90,7 +92,22 @@ function reduceEvent(state, ev) {
     case 'skill.completed':
       s.nodeStates = { ...s.nodeStates, [d.nodeId]: { ...(s.nodeStates[d.nodeId] || {}), status: 'completed' } };
       break;
-    case 'run.completed': s.status = 'completed'; break;
+    case 'slide.update': {
+      const slides = (s.liveDeck?.slides || [1, 2, 3, 4].map((no) => ({ no, title: '', bullets: [], status: 'pending', confidence: null })))
+        .map((sl) => (sl.no === d.slideNo ? { ...sl, ...d.patch } : sl));
+      s.liveDeck = { slides };
+      break;
+    }
+    case 'deck.ready':
+      if (s.liveDeck) s.liveDeck = { slides: s.liveDeck.slides.map((sl) => ({ ...sl, status: 'final' })) };
+      break;
+    case 'artifact.download.ready':
+      s.downloadUrl = d.downloadUrl || s.downloadUrl;
+      break;
+    case 'run.completed':
+      s.status = 'completed';
+      if (d.downloadUrl) s.downloadUrl = d.downloadUrl;
+      break;
     case 'run.failed': s.status = 'failed'; s.error = d.error || 'Run failed'; break;
     default: break;
   }
@@ -117,6 +134,8 @@ function hydrate(run) {
     decisions: run.decisions || [],
     verification: run.verification || [],
     safeStatus: run.control?.safe_status || null,
+    liveDeck: run.liveDeck || null,
+    downloadUrl: run.downloadUrl || run.finalArtifact?.downloadUrl || null,
     events: run.events || [],
     error: run.error?.message || null,
   };
@@ -154,6 +173,7 @@ export default function useOdaRun() {
       'skill.progress', 'question.required', 'evidence.added', 'artifact.created',
       'artifact.preview.updated', 'verification.started', 'verification.failed',
       'verification.passed', 'skill.completed', 'run.completed', 'run.failed',
+      'slide.update', 'deck.ready', 'artifact.download.ready',
     ].forEach((t) => es.addEventListener(t, onFrame));
     es.onmessage = onFrame; // unnamed frames
   }, [close]);

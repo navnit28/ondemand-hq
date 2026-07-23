@@ -6,6 +6,7 @@
 /** Stage keys (each has exactly one renderer component). */
 export const STAGES = Object.freeze([
   'idle',            // composer empty state
+  'live-deck',       // native in-canvas live rendering (four pre-cooked slides)
   'understanding',   // interpreting / request-understanding card
   'routing',         // skill-routing map (pipeline.selected)
   'issue-tree',      // problem-solve canvas
@@ -73,7 +74,9 @@ export function activeStage(run) {
   if (run.status === 'interpreting') return 'understanding';
   if (run.status === 'planning') return 'understanding';
 
-  // Executing / verifying / revising: the current node's canvas.
+  // Executing / verifying / revising: the native live deck renders the run in
+  // real time (universal workspace — the removed green screen's replacement).
+  if (run.liveDeck?.slides?.some((sl) => sl.status !== 'pending')) return 'live-deck';
   const cur = run.pipeline.find((n) => n.nodeId === run.currentNodeId);
   if (cur) {
     // Evidence board while a research-heavy node is mid-flight and evidence is arriving.
@@ -89,6 +92,7 @@ export function activeStage(run) {
 /** Human label per stage (canvas header). */
 export const STAGE_LABELS = Object.freeze({
   idle: 'New task',
+  'live-deck': 'Live render',
   understanding: 'Understanding the request',
   routing: 'Skill routing',
   'issue-tree': 'Problem structure',
