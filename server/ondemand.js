@@ -67,6 +67,27 @@ async function odFetch(url, options, { retries = 3, baseDelayMs = 500 } = {}) {
 }
 
 /**
+ * 2026-07-23 (incident 2bc9fe01): the live gateway intermittently returns
+ * HTTP 401/403 "Unauthorized" on a small fraction of calls made with a VALID
+ * apikey — a production run died when the verifier's sync query hit one
+ * (run.failed UPSTREAM_HTTP_403, 0.7s into verification). Same shape as the
+ * empirically-transient 404 on session create: a bounded, logged,
+ * auth-specific retry — deliberately NOT folded into odFetch's generic
+ * policy, and a PERSISTENT 401/403 still throws once attempts are exhausted.
+ * @param {() => Promise<Response>} doFetch re-invocable fetch thunk
+ * @param {string} label log label
+ */
+async function odFetchAuthRetry(doFetch, label) {
+  let r = await doFetch();
+  for (let extra = 1; (r.status === 401 || r.status === 403) && extra <= 2; extra++) {
+    console.error(`[od-retry] ${label} transient HTTP ${r.status} (attempt ${extra}/3) — retrying in ${600 * extra}ms`);
+    await new Promise((res) => setTimeout(res, 600 * extra));
+    r = await doFetch();
+  }
+  return r;
+}
+
+/**
  * Parse a failed OnDemand response per the documented error envelope — both the 4XX
  * ClientErrorResponse and 5XX ServerErrorResponse are shaped {errorCode, message}.
  * Falls back to a raw text slice (300 chars) if the body isn't valid JSON.
@@ -118,8 +139,8 @@ export async function createOdSession(externalUserId, pluginIds = []) {
     err.errorCode = `UPSTREAM_HTTP_${r.status}`;
     err.upstreamErrorCode = upstreamErrorCode;
     lastErr = err;
-    if (r.status === 404 && attempt < 2) {
-      console.error(`[WARN] OnDemand session create transient HTTP 404 (attempt ${attempt + 1}/3) — retrying: ${message}`);
+    if ((r.status === 404 || r.status === 401 || r.status === 403) && attempt < 2) {
+      console.error(`[WARN] OnDemand session create transient HTTP ${r.status} (attempt ${attempt + 1}/3) — retrying: ${message} (upstreamErrorCode=${upstreamErrorCode || 'n/a'})`);
       continue;
     }
     console.error(`[FAIL] [HARD-FAIL] OnDemand session create HTTP ${r.status}: ${message}`);
@@ -155,12 +176,13 @@ export async function streamQuery({ odSessionId, query, pluginIds = [], systemPr
   };
   // odFetch retry is safe here ONLY because no bytes have been consumed yet (pre-stream).
   // Once reading begins below, the existing watchdog/error paths — not retry — handle failures.
-  const r = await odFetch(`${ONDEMAND_BASE_URL}/chat/v1/sessions/${odSessionId}/query`, {
+  // 2026-07-23: pre-stream fetches also get the bounded 401/403 auth retry.
+  const r = await odFetchAuthRetry(() => odFetch(`${ONDEMAND_BASE_URL}/chat/v1/sessions/${odSessionId}/query`, {
     method: 'POST',
     headers: { ...H, Accept: 'text/event-stream' },
     body: JSON.stringify(body),
     signal,
-  });
+  }), 'stream query');
   if (!r.ok || !r.body) {
     const { message, upstreamErrorCode } = await parseUpstreamError(r);
     console.error(`[FAIL] [HARD-FAIL] OnDemand stream HTTP ${r.status} on ${ENDPOINT_ID}+${REASONING_EFFORT}: ${message} — NO silent model fallback; surfacing to caller.`);
@@ -287,7 +309,7 @@ export async function streamQuery({ odSessionId, query, pluginIds = [], systemPr
 /** Non-streaming helper for internal calls (router classification, title generation). Same model policy. */
 export async function syncQuery({ odSessionId, query, systemPrompt, pluginIds = [], endpointId, reasoningEffort }) {
   assertApiKey('sync query');
-  const r = await odFetch(`${ONDEMAND_BASE_URL}/chat/v1/sessions/${odSessionId}/query`, {
+  const r = await odFetchAuthRetry(() => odFetch(`${ONDEMAND_BASE_URL}/chat/v1/sessions/${odSessionId}/query`, {
     method: 'POST', headers: H,
     body: JSON.stringify({
       query,
@@ -298,10 +320,10 @@ export async function syncQuery({ odSessionId, query, systemPrompt, pluginIds = 
       agentIds: toAgentIds(pluginIds),
       modelConfigs: systemPrompt ? { fulfillmentPrompt: systemPrompt, temperature: 0.2 } : { temperature: 0.2 },
     }),
-  });
+  }), 'sync query');
   if (!r.ok) {
     const { message, upstreamErrorCode } = await parseUpstreamError(r);
-    console.error(`[FAIL] [HARD-FAIL] OnDemand sync HTTP ${r.status}: ${message}`);
+    console.error(`[FAIL] [HARD-FAIL] OnDemand sync HTTP ${r.status}: ${message} (upstreamErrorCode=${upstreamErrorCode || 'n/a'})`);
     const err = new Error(`OnDemand sync query failed (HTTP ${r.status}): ${message}`);
     err.status = r.status;
     err.errorCode = `UPSTREAM_HTTP_${r.status}`;

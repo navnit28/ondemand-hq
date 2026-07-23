@@ -346,7 +346,15 @@ async function executeNode(run, node) {
     });
   } catch (streamErr) {
     console.warn(`[oda-live] streaming authoring failed (${streamErr.message}) — falling back to sync opus-4.8 call`);
-    draftText = await brainCall({ brainId: FINAL_DOC_BRAIN, sessionId, query, systemPrompt });
+    try {
+      draftText = await brainCall({ brainId: FINAL_DOC_BRAIN, sessionId, query, systemPrompt });
+    } catch (authErr) {
+      // 2026-07-23: one extra spaced retry — the transport layer already
+      // retries 401/403/5xx/network, so this only fires on longer blips.
+      console.warn(`[oda-live] sync authoring failed too (${authErr.message}) — one spaced retry in 5s`);
+      await new Promise((res) => setTimeout(res, 5000));
+      draftText = await brainCall({ brainId: FINAL_DOC_BRAIN, sessionId, query, systemPrompt });
+    }
   }
 
   const artifact = addArtifact(run, {
@@ -399,14 +407,46 @@ async function verifyNodeArtifact(run, node, artifact, definitionOfDone, manifes
     transition(run, 'verifying');
     setArtifactStatus(run, artifact.artifactId, 'verifying'); // emits verification.started
 
-    const findings = await verifyArtifact({
-      artifact,
-      definitionOfDone,
-      checks: manifest.verificationPolicy.checks,
-      sharedRules: 'Bundle hard rules apply: no-invent; fact/assumption/web tagging; WAM/u.ae entity verification; ODA voice; entity-name hyperlink sourcing; uppercase k/M/B/T units.',
-      workerCall: (args) => workerCall({ ...args, sessionId }),
-      independent: manifest.verificationPolicy.independentVerifier,
-    });
+    // 2026-07-23 (incident 2bc9fe01): the verifier INFRASTRUCTURE call is
+    // guarded — a thrown 401/403/timeout/network error must NEVER hard-kill
+    // the run. The artifact ships as verified/'passed_unverified' with an
+    // honest decision + non-blocking notice, and the pipeline continues
+    // (never-park rule). A verifier that RAN and returned findings keeps the
+    // existing pass/revise/ship machinery below.
+    let findings;
+    try {
+      findings = await verifyArtifact({
+        artifact,
+        definitionOfDone,
+        checks: manifest.verificationPolicy.checks,
+        sharedRules: 'Bundle hard rules apply: no-invent; fact/assumption/web tagging; WAM/u.ae entity verification; ODA voice; entity-name hyperlink sourcing; uppercase k/M/B/T units.',
+        workerCall: (args) => workerCall({ ...args, sessionId }),
+        independent: manifest.verificationPolicy.independentVerifier,
+      });
+    } catch (verifierErr) {
+      const msg = verifierErr?.message || String(verifierErr);
+      console.warn(`[oda-verify] verifier infrastructure error for ${artifact.artifactId}: ${msg} — shipping unverified (never fatal)`);
+      addDecision(run, { summary: `Verifier unavailable for ${artifact.artifactId} (${msg}) — shipped unverified; runs never fail on verifier infrastructure errors`, decidedBy: 'system' });
+      emitRunEvent(run, 'skill.progress', {
+        nodeId: node.nodeId,
+        note: `notice: verifier unavailable (${msg}) — shipping with unverified-findings note`,
+        notice: 'verifier_unavailable',
+        artifactId: artifact.artifactId,
+        errorCode: verifierErr?.errorCode || null,
+      });
+      setArtifactStatus(run, artifact.artifactId, 'verified', {
+        status: 'passed_unverified', artifactId: artifact.artifactId, nodeId: node.nodeId,
+        verifiedAt: new Date().toISOString(), findings: [], infraError: msg,
+        errorCode: verifierErr?.errorCode || verifierErr?.code || null,
+      });
+      liveOf(run).onVerificationPassed(artifact.artifactId);
+      ns.status = 'completed';
+      ns.completedAt = new Date().toISOString();
+      emitRunEvent(run, 'skill.completed', { nodeId: node.nodeId, skill: node.skill, artifactId: artifact.artifactId });
+      if (run.status === 'verifying') transition(run, 'executing');
+      _flushSync(run);
+      return;
+    }
     findings.nodeId = node.nodeId;
     run.verification.push(findings);
 
@@ -450,10 +490,14 @@ async function verifyNodeArtifact(run, node, artifact, definitionOfDone, manifes
     }
 
     // REVISE loop: each defect group goes to its owning skill's surface.
+    // 2026-07-23: the revision authoring calls are guarded — an infrastructure
+    // throw ships the CURRENT draft with its open findings instead of killing
+    // the run (never-park, never-fatal).
     ns.status = 'revising';
     transition(run, 'revising');
     const groups = planRevision(findings, { producedBy: node.skill });
     let revisedText = artifact.content;
+    try {
     for (const group of groups) {
       const owningSurface = SKILL_SURFACE[group.owningSkill] || SKILL_SURFACE[node.skill];
       emitRunEvent(run, 'skill.progress', { nodeId: node.nodeId, note: `revision by ${group.owningSkill}`, defects: group.findings.length });
@@ -474,6 +518,25 @@ async function verifyNodeArtifact(run, node, artifact, definitionOfDone, manifes
     });
     emitRunEvent(run, 'artifact.preview.updated', { artifactId: artifact.artifactId, preview: artifact.preview, revision: true });
     transition(run, 'executing'); // loop continues → verifying again
+    } catch (revErr) {
+      const msg = revErr?.message || String(revErr);
+      console.warn(`[oda-revise] revision authoring unavailable for ${artifact.artifactId}: ${msg} — shipping current draft (never fatal)`);
+      addDecision(run, { summary: `Revision authoring unavailable for ${artifact.artifactId} (${msg}) — shipped current draft with its open findings`, decidedBy: 'system' });
+      emitRunEvent(run, 'skill.progress', {
+        nodeId: node.nodeId,
+        note: `notice: revision unavailable (${msg}) — shipping current draft with open findings`,
+        notice: 'revision_unavailable',
+        artifactId: artifact.artifactId,
+      });
+      setArtifactStatus(run, artifact.artifactId, 'verified', { ...findings, status: 'passed_with_findings', infraError: msg });
+      liveOf(run).onVerificationPassed(artifact.artifactId);
+      ns.status = 'completed';
+      ns.completedAt = new Date().toISOString();
+      emitRunEvent(run, 'skill.completed', { nodeId: node.nodeId, skill: node.skill, artifactId: artifact.artifactId });
+      if (run.status === 'revising' || run.status === 'verifying') transition(run, 'executing');
+      _flushSync(run);
+      return;
+    }
   }
 }
 

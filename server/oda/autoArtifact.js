@@ -35,7 +35,7 @@ const FORMAT_BY_TYPE = Object.freeze({
  * @param {{format?: string|null}} [opts]
  * @returns {Promise<{downloadUrl: string|null, artifactId?: string, format?: string, bytes?: number, qa?: object, reason?: string}>}
  */
-export async function packageRunArtifact(run, { format = null } = {}) {
+export async function packageRunArtifact(run, { format = null, preferredFormat = 'docx' } = {}) {
   try {
     const verified = (run.artifacts || []).filter((a) => a.status === 'verified');
     if (!verified.length) return { downloadUrl: null, reason: 'no verified artifact' };
@@ -43,7 +43,14 @@ export async function packageRunArtifact(run, { format = null } = {}) {
     const primary = [...verified].reverse().find((a) => a.logicalId !== 'run-synthesis')
       || verified[verified.length - 1];
 
-    const outputFormat = format || FORMAT_BY_TYPE[primary.type] || 'md';
+    // 2026-07-23: the final packaged deliverable is ALWAYS a .docx (product
+    // contract — the final document is a Word deliverable, authored on
+    // opus-4.8). Native format survives only for spreadsheet artifacts (a
+    // model/data workbook cannot be a docx) or as an honest fallback when
+    // the docx builder itself throws.
+    const nativeFormat = FORMAT_BY_TYPE[primary.type] || 'md';
+    const XLSX_NATIVE = new Set(['xlsx-model', 'xlsx-data']);
+    let outputFormat = format || (XLSX_NATIVE.has(primary.type) ? nativeFormat : (preferredFormat || nativeFormat));
     const { parseContentSpec, buildArtifact } = await import('./builders/index.js');
     const spec = parseContentSpec(primary.content || primary.preview || '');
     if (!spec.title) spec.title = primary.title;
@@ -51,9 +58,18 @@ export async function packageRunArtifact(run, { format = null } = {}) {
     const dir = path.join(path.dirname(fileURLToPath(import.meta.url)), 'data', 'files');
     fs.mkdirSync(dir, { recursive: true });
     const base = `${run.runId.slice(0, 8)}-final-${primary.logicalId}`.replace(/[^a-zA-Z0-9_-]/g, '');
-    const outPath = path.join(dir, `${base}.${outputFormat}`);
+    let outPath = path.join(dir, `${base}.${outputFormat}`);
 
-    const result = await buildArtifact({ format: outputFormat, spec, outPath });
+    let result;
+    try {
+      result = await buildArtifact({ format: outputFormat, spec, outPath });
+    } catch (fmtErr) {
+      if (outputFormat === nativeFormat) throw fmtErr;
+      console.warn(`[oda-artifact] ${outputFormat} build failed (${fmtErr.message}) — falling back to native ${nativeFormat}`);
+      outputFormat = nativeFormat;
+      outPath = path.join(dir, `${base}.${outputFormat}`);
+      result = await buildArtifact({ format: outputFormat, spec, outPath });
+    }
 
     const downloadUrl = `/api/oda/files/${path.basename(outPath)}`;
     primary.url = downloadUrl;
