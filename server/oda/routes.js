@@ -274,8 +274,11 @@ router.get('/runs/:id/download', asyncH(async (req, res) => {
 
   let rec = run.finalArtifact || null;
   let file = rec ? path.join(dir, path.basename(rec.downloadUrl)) : null;
-  if (!rec || !fs.existsSync(file)) {
-    // Materialised file missing (ephemeral pod) — regenerate from durable run state.
+  // 2026-07-23: re-package when the file is missing (ephemeral pod) OR the
+  // recorded format predates the always-docx contract (md/html records from
+  // older runs upgrade to a real .docx on their next download).
+  const stale = rec && ['md', 'html'].includes(rec.format);
+  if (!rec || stale || !fs.existsSync(file)) {
     const { packageRunArtifact } = await import('./autoArtifact.js');
     const pkg = await packageRunArtifact(run);
     if (!pkg.downloadUrl) return res.status(409).json({ error: `no downloadable document: ${pkg.reason || 'no verified artifact'}` });
