@@ -37,9 +37,14 @@ export default function StageGallery({ run }) {
 
   return (
     <div>
-      <div style={{ display: 'flex', alignItems: 'baseline', gap: 10, marginBottom: 14 }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 14, flexWrap: 'wrap' }}>
         <h2 className="oda-h" style={{ fontSize: 18, margin: 0 }}>{latest.length} verified deliverable{latest.length > 1 ? 's' : ''}</h2>
         {secs != null && <span className="oda-muted" style={{ fontSize: 12.5 }}>run completed in {secs >= 60 ? `${Math.floor(secs / 60)}m ${secs % 60}s` : `${secs}s`}</span>}
+        {run.downloadUrl && (
+          <a className="oda-btn" href={run.downloadUrl} target="_blank" rel="noopener noreferrer" style={{ textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: 7, marginLeft: 'auto' }}>
+            <Download size={13} aria-hidden /> Download final document
+          </a>
+        )}
       </div>
       <div className="oda-gallery oda-cardgrid">
         {latest.map((a) => {
