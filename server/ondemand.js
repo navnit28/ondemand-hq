@@ -333,3 +333,88 @@ export async function syncQuery({ odSessionId, query, systemPrompt, pluginIds = 
   const j = await r.json();
   return j?.data?.answer || '';
 }
+
+/** Start OAuth for a connector (POST /plugin/v1/oauth/init). */
+export async function initPluginOAuth({ pluginId, metadata = {} } = {}) {
+  assertApiKey('oauth init');
+  const r = await odFetchAuthRetry(() => odFetch(`${ONDEMAND_BASE_URL}/plugin/v1/oauth/init`, {
+    method: 'POST',
+    headers: H,
+    body: JSON.stringify({ pluginId, metadata }),
+  }), 'oauth init');
+  if (!r.ok) {
+    const { message, upstreamErrorCode } = await parseUpstreamError(r);
+    console.error(`[FAIL] OnDemand oauth init HTTP ${r.status}: ${message}`);
+    const err = new Error(`OnDemand oauth init failed (HTTP ${r.status}): ${message}`);
+    err.status = r.status;
+    err.errorCode = `UPSTREAM_HTTP_${r.status}`;
+    err.upstreamErrorCode = upstreamErrorCode;
+    throw err;
+  }
+  return r.json();
+}
+
+/** Unsubscribe / disconnect a connector (DELETE /plugin/v1/plugin_configuration/:id). */
+export async function unsubscribePluginConfiguration(id) {
+  assertApiKey('plugin unsubscribe');
+  const r = await odFetchAuthRetry(() => odFetch(`${ONDEMAND_BASE_URL}/plugin/v1/plugin_configuration/${id}`, {
+    method: 'DELETE',
+    headers: H,
+  }), 'plugin unsubscribe');
+  if (!r.ok) {
+    const { message, upstreamErrorCode } = await parseUpstreamError(r);
+    console.error(`[FAIL] OnDemand plugin unsubscribe HTTP ${r.status}: ${message}`);
+    const err = new Error(`OnDemand plugin unsubscribe failed (HTTP ${r.status}): ${message}`);
+    err.status = r.status;
+    err.errorCode = `UPSTREAM_HTTP_${r.status}`;
+    err.upstreamErrorCode = upstreamErrorCode;
+    throw err;
+  }
+  return r.json().catch(() => ({}));
+}
+
+/** Complete OAuth after provider redirect (POST /plugin/v1/plugin_configuration/oauth/complete). */
+export async function completePluginOAuth({ state, code } = {}) {
+  assertApiKey('oauth complete');
+  const r = await odFetchAuthRetry(() => odFetch(`${ONDEMAND_BASE_URL}/plugin/v1/plugin_configuration/oauth/complete`, {
+    method: 'POST',
+    headers: H,
+    body: JSON.stringify({ state, code }),
+  }), 'oauth complete');
+  if (!r.ok) {
+    const { message, upstreamErrorCode } = await parseUpstreamError(r);
+    console.error(`[FAIL] OnDemand oauth complete HTTP ${r.status}: ${message}`);
+    const err = new Error(`OnDemand oauth complete failed (HTTP ${r.status}): ${message}`);
+    err.status = r.status;
+    err.errorCode = `UPSTREAM_HTTP_${r.status}`;
+    err.upstreamErrorCode = upstreamErrorCode;
+    throw err;
+  }
+  return r.json();
+}
+
+/** List OAuth connectors (GET /plugin/v1/list — apikey only). */
+export async function listClientPlugins({ v2 = 1, limit = 50, page = 1, scope = '', authType = 'OAUTH' } = {}) {
+  assertApiKey('plugin list');
+  const qs = new URLSearchParams({
+    v2: String(v2),
+    limit: String(limit),
+    page: String(page),
+    scope,
+    authType,
+  });
+  const r = await odFetchAuthRetry(() => odFetch(`${ONDEMAND_BASE_URL}/plugin/v1/list?${qs}`, {
+    method: 'GET',
+    headers: { apikey: ONDEMAND_API_KEY },
+  }), 'plugin list');
+  if (!r.ok) {
+    const { message, upstreamErrorCode } = await parseUpstreamError(r);
+    console.error(`[FAIL] OnDemand plugin list HTTP ${r.status}: ${message}`);
+    const err = new Error(`OnDemand plugin list failed (HTTP ${r.status}): ${message}`);
+    err.status = r.status;
+    err.errorCode = `UPSTREAM_HTTP_${r.status}`;
+    err.upstreamErrorCode = upstreamErrorCode;
+    throw err;
+  }
+  return r.json();
+}

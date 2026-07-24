@@ -32,6 +32,72 @@ export async function jpost(url, body) {
   if (!r.ok) throw new Error((await r.json().catch(() => ({}))).error || `HTTP ${r.status}`);
   return r.json();
 }
+export async function jdelete(url) {
+  const r = await fetch(url, { method: 'DELETE' });
+  if (!r.ok) throw new Error((await r.json().catch(() => ({}))).error || `HTTP ${r.status}`);
+  return r.json().catch(() => ({}));
+}
+
+/** Fetch OAuth connectors from the OnDemand plugin list (proxied via /api/connectors). */
+export async function fetchConnectors(params = {}) {
+  const qs = new URLSearchParams({
+    v2: String(params.v2 ?? 1),
+    limit: String(params.limit ?? 50),
+    page: String(params.page ?? 1),
+    scope: params.scope ?? '',
+    authType: params.authType ?? 'OAUTH',
+  });
+  return jget(`/api/connectors?${qs}`);
+}
+
+/** Start OAuth for a connector — returns { data: { authUrl } }. */
+export async function initConnectorOAuth(pluginId) {
+  return jpost('/api/connectors/oauth/init', {
+    pluginId,
+    metadata: { pluginId },
+  });
+}
+
+/** Unsubscribe / disconnect a connector (id = plugin.id from list response). */
+export async function unsubscribeConnector(pluginRecordId) {
+  return jdelete(`/api/connectors/${encodeURIComponent(pluginRecordId)}/unsubscribe`);
+}
+
+/** Complete OAuth after provider redirect — returns { data: { connected, metadata } }. */
+export async function completeConnectorOAuth(state, code) {
+  return jpost('/api/connectors/oauth/complete', { state, code });
+}
+
+/** sessionStorage key used to auto-select a connector after OAuth callback. */
+export const PENDING_CONNECTOR_KEY = 'oda-pending-connector';
+const CONNECTOR_SEL_PREFIX = 'oda-connector-sel-';
+
+/** Load selected connector pluginIds for a conversation (session-scoped). */
+export function loadConversationConnectors(convId) {
+  if (!convId) return [];
+  try {
+    const raw = sessionStorage.getItem(`${CONNECTOR_SEL_PREFIX}${convId}`);
+    const parsed = raw ? JSON.parse(raw) : [];
+    return Array.isArray(parsed) ? parsed.filter((id) => typeof id === 'string' && id) : [];
+  } catch {
+    return [];
+  }
+}
+
+/** Persist selected connector pluginIds for a conversation. */
+export function saveConversationConnectors(convId, ids) {
+  if (!convId) return;
+  try {
+    const key = `${CONNECTOR_SEL_PREFIX}${convId}`;
+    if (!Array.isArray(ids) || !ids.length) sessionStorage.removeItem(key);
+    else sessionStorage.setItem(key, JSON.stringify(ids));
+  } catch { /* private mode / quota */ }
+}
+
+export function normalizePluginIds(ids) {
+  if (!Array.isArray(ids)) return [];
+  return ids.filter((id) => typeof id === 'string' && id.startsWith('plugin-'));
+}
 
 export async function uploadFile(file) {
   const fd = new FormData();

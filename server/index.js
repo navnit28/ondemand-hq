@@ -12,7 +12,10 @@ import * as store from './store.js';
 import { classify } from './router.js';
 import { buildSystemPrompt, WIZARD_STEPS } from './prompts.js';
 import { pluginIdsFor, pluginLabelsFor, FEATURE_PLUGINS, ADOPTED } from './plugins.js';
-import { createOdSession, streamQuery, syncQuery } from './ondemand.js';
+import {
+  createOdSession, streamQuery, syncQuery, listClientPlugins,
+  initPluginOAuth, unsubscribePluginConfiguration, completePluginOAuth,
+} from './ondemand.js';
 import { fetchCountryPack, renderDataBlock, resolveCountry } from './countryData.js';
 import { buildExport } from './exports.js';
 import { extractText } from './extract.js';
@@ -91,6 +94,66 @@ app.post('/api/upload', upload.single('file'), async (req, res) => {
   }
 });
 
+// ---------- connectors (OnDemand plugin list proxy) ----------
+// GET /api/connectors?v2=1&limit=50&page=1&scope=&authType=OAUTH
+app.get('/api/connectors', async (req, res) => {
+  try {
+    const { v2, limit, page, scope, authType } = req.query;
+    const data = await listClientPlugins({
+      v2: v2 != null ? Number(v2) : 1,
+      limit: limit != null ? Number(limit) : 50,
+      page: page != null ? Number(page) : 1,
+      scope: scope != null ? String(scope) : '',
+      authType: authType != null ? String(authType) : 'OAUTH',
+    });
+    res.json(data);
+  } catch (e) {
+    console.error('[FAIL] [connectors] list failed:', e.message);
+    res.status(e.status || 500).json({ error: e.message, errorCode: e.errorCode });
+  }
+});
+
+// POST /api/connectors/oauth/init  { pluginId, metadata? }
+app.post('/api/connectors/oauth/init', async (req, res) => {
+  try {
+    const { pluginId, metadata } = req.body || {};
+    if (!pluginId || typeof pluginId !== 'string') {
+      return res.status(400).json({ error: 'pluginId is required' });
+    }
+    const data = await initPluginOAuth({ pluginId, metadata: metadata || {} });
+    res.json(data);
+  } catch (e) {
+    console.error('[FAIL] [connectors] oauth init failed:', e.message);
+    res.status(e.status || 500).json({ error: e.message, errorCode: e.errorCode });
+  }
+});
+
+// DELETE /api/connectors/:id/unsubscribe  (id = plugin.id from list response)
+app.delete('/api/connectors/:id/unsubscribe', async (req, res) => {
+  try {
+    const { id } = req.params;
+    if (!id) return res.status(400).json({ error: 'Plugin id is required' });
+    const data = await unsubscribePluginConfiguration(id);
+    res.json(data);
+  } catch (e) {
+    console.error('[FAIL] [connectors] unsubscribe failed:', e.message);
+    res.status(e.status || 500).json({ error: e.message, errorCode: e.errorCode });
+  }
+});
+
+// POST /api/connectors/oauth/complete  { state, code }
+app.post('/api/connectors/oauth/complete', async (req, res) => {
+  try {
+    const { state, code } = req.body || {};
+    if (!state || !code) return res.status(400).json({ error: 'state and code are required' });
+    const data = await completePluginOAuth({ state, code });
+    res.json(data);
+  } catch (e) {
+    console.error('[FAIL] [connectors] oauth complete failed:', e.message);
+    res.status(e.status || 500).json({ error: e.message, errorCode: e.errorCode });
+  }
+});
+
 // ---------- country-data direct probe (used by UI suggestions) ----------
 app.get('/api/country-data/:query', async (req, res) => {
   try {
@@ -100,10 +163,10 @@ app.get('/api/country-data/:query', async (req, res) => {
 });
 
 // ---------- the main chat SSE endpoint ----------
-// POST /api/chat  {conversationId, text, feature?, fileId?, wizard?:{active,step}, editTarget?}
+// POST /api/chat  {conversationId, text, feature?, fileId?, pluginIds?, wizard?:{active,step}, editTarget?}
 // Streams SSE frames: routing, plugin_status, thinking, answer, artifact_hint, error, done
 app.post('/api/chat', async (req, res) => {
-  const { conversationId, text = '', feature: forcedFeature, fileId, wizard, editTarget, msmVideoId } = req.body || {};
+  const { conversationId, text = '', feature: forcedFeature, fileId, wizard, editTarget, msmVideoId, pluginIds: clientPluginIds } = req.body || {};
   const conv = store.getConversation(conversationId);
   if (!conv) return res.status(404).json({ error: 'Conversation not found' });
   if (!text.trim() && !fileId) return res.status(400).json({ error: 'Empty message' });
@@ -161,7 +224,13 @@ app.post('/api/chat', async (req, res) => {
     let { feature, mode } = route;
     if (wizard?.active) mode = 'FULL'; // guided document creation is a FULL-mode flow
 
-    const pluginIds = pluginIdsFor(feature);
+    const defaultPluginIds = pluginIdsFor(feature);
+    const extraPluginIds = Array.isArray(clientPluginIds)
+      ? clientPluginIds.filter((id) => typeof id === 'string' && id.startsWith('plugin-'))
+      : [];
+    const pluginIds = extraPluginIds.length
+      ? [...new Set([...defaultPluginIds, ...extraPluginIds])]
+      : defaultPluginIds;
     const pluginLabels = pluginLabelsFor(feature);
     send('routing', {
       feature, mode, reason: route.reason, source: route.source,
