@@ -11,7 +11,7 @@ import OdaSidebar from './OdaSidebar.jsx';
 import ArtifactRail from './ArtifactRail.jsx';
 import Canvas from './Canvas.jsx';
 import WidgetCard from './WidgetCard.jsx';
-import { installDownloadDelegationListener } from './downloadFinalDoc.js';
+import { installDownloadDelegationListener, downloadFile } from './downloadFinalDoc.js';
 import './oda.css';
 
 export default function OdaWorkspace({ onExit }) {
@@ -65,7 +65,9 @@ export default function OdaWorkspace({ onExit }) {
   }, [lifecycle]);
 
   const onDownload = useCallback((a) => {
-    if (a.url) window.open(a.url, '_blank', 'noopener');
+    // 2026-07-24: webview-safe — window.open is popup-blocked in the embedded
+    // canvas; downloadFile probes then navigates same-frame to the attachment.
+    if (a.url) downloadFile(a.url, { fallbackName: `${a.logicalId || 'artifact'}-v${a.version || 1}` });
   }, []);
 
   return (

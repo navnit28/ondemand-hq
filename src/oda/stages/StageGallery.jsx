@@ -3,6 +3,7 @@
 // pill, verification badge, preview snippet, download when materialised, and
 // a collapsed version history. Duration comes from REAL event timestamps.
 import { DownloadButton } from './StageLiveDeck.jsx';
+import { downloadFile } from '../downloadFinalDoc.js';
 import React from 'react';
 import {
   Presentation, FileText, Table2, Languages, LayoutDashboard, Download, CheckCircle2,
@@ -63,9 +64,11 @@ export default function StageGallery({ run }) {
               {a.preview && <p className="oda-muted" style={{ fontSize: 12, lineHeight: 1.5, margin: '0 0 8px' }}>{String(a.preview).slice(0, 140)}…</p>}
               <div style={{ display: 'flex', gap: 8 }}>
                 {a.url && (
-                  <a className="oda-btn" href={a.url} target="_blank" rel="noopener noreferrer" style={{ textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: 6 }}>
+                  <button type="button" className="oda-btn" data-testid={`download-card-${a.logicalId}`}
+                    onClick={() => downloadFile(a.url, { fallbackName: `${a.logicalId}-v${a.version}` })}
+                    style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
                     <Download size={13} aria-hidden /> Download
-                  </a>
+                  </button>
                 )}
               </div>
               {hist.length > 0 && (

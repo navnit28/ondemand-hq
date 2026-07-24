@@ -311,7 +311,12 @@ router.get('/files/:name', asyncH(async (req, res) => {
   const ext = name.split('.').pop().toLowerCase();
   res.setHeader('Content-Type', FORMAT_MIME[ext] || 'application/octet-stream');
   res.setHeader('Content-Disposition', `attachment; filename="${name}"`);
-  fs.createReadStream(file).pipe(res);
+  res.setHeader('Content-Length', fs.statSync(file).size);
+  res.setHeader('Accept-Ranges', 'none');
+  if (req.method === 'HEAD') return res.end();
+  const stream = fs.createReadStream(file);
+  stream.on('error', () => { if (!res.headersSent) res.status(500).json({ error: 'file read failed' }); else res.destroy(); });
+  stream.pipe(res);
 }));
 
 /** GET /brains — the selectable final-document brains (live-render upgrade). */
