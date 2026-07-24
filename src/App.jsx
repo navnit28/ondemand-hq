@@ -4,9 +4,11 @@ import LightboxHost from './components/Lightbox.jsx';
 import Composer from './components/Composer.jsx';
 import PreviewPane from './components/PreviewPane.jsx';
 import { AssistantMessage, UserMessage } from './components/Messages.jsx';
-import { jget, jpost, streamChat } from './api.js';
+import { jget, jpost, loadConversationConnectors, normalizePluginIds, saveConversationConnectors, streamChat, PENDING_CONNECTOR_KEY, fetchConnectors } from './api.js';
+import { parseConnectorsResponse } from './components/ConnectorsMenu.jsx';
 import DebugDrawer from './components/DebugDrawer.jsx';
 import BilingualLoader from './components/BilingualLoader.jsx';
+import ConnectorAuthCallback from './components/ConnectorAuthCallback.jsx';
 import IntelDashboard from './intel/IntelDashboard.jsx';
 import MsmDashboard from './msm/MsmDashboard.jsx';
 // ODA Workspace (Phase 3) — lazy-loaded so the suite home bundle stays lean.
@@ -45,6 +47,7 @@ export default function App() {
     try { return window.location.pathname.replace(/\/+$/, '') === '/correlation-engine'; } catch { return false; }
   }); // ODA Intelligence module view
   const [composePrefill, setComposePrefill] = useState(null); // 'oda:compose' handoff (Correlation Engine 'Send to chat' / Quick Query 'Continue in chat')
+  const [selectedPluginIds, setSelectedPluginIds] = useState([]);
   // MSM Analysis module view — /msm-analysis route (deep-linkable + history-integrated)
   const [msmOpen, setMsmOpen] = useState(() => {
     try { return window.location.pathname.replace(/\/+$/, '') === '/msm-analysis'; } catch { return false; }
@@ -56,14 +59,19 @@ export default function App() {
   const [odaOpen, setOdaOpen] = useState(() => {
     try { return /^\/oda(\/live)?$/.test(window.location.pathname.replace(/\/+$/, '')); } catch { return false; }
   });
+  const [connectorCallback, setConnectorCallback] = useState(() => {
+    try { return window.location.pathname.replace(/\/+$/, '') === '/connector/auth/callback'; } catch { return false; }
+  });
   useEffect(() => {
+    if (connectorCallback) return;
     const want = odaOpen ? '/oda' : (msmOpen ? '/msm-analysis' : '/');
     try { if (window.location.pathname !== want) window.history.pushState({}, '', want); } catch { /* noop */ }
-  }, [msmOpen, odaOpen]);
+  }, [msmOpen, odaOpen, connectorCallback]);
   useEffect(() => {
     const onPop = () => {
       try {
         const p = window.location.pathname.replace(/\/+$/, '');
+        setConnectorCallback(p === '/connector/auth/callback');
         setMsmOpen(p === '/msm-analysis');
         setOdaOpen(/^\/oda(\/live)?$/.test(p));
       } catch { /* noop */ }
@@ -98,12 +106,92 @@ export default function App() {
   const composerFocus = () => { try { document.querySelector('.composer textarea')?.focus(); } catch { /* noop */ } };
   const userStoppedRef = useRef(false); // distinguishes user Stop (clean end) from stall-abort (retryable)
   const stopGeneration = () => { userStoppedRef.current = true; try { abortRef.current?.abort(); } catch { /* done */ } };
+  const selectedPluginIdsRef = useRef([]);
+  const lastLoadedConvRef = useRef(null);
+  const [connectors, setConnectors] = useState([]);
+  const [loadingConnectors, setLoadingConnectors] = useState(false);
+  const connectorsFetchRef = useRef(null);
 
   /* ---------- data loading ---------- */
   const refreshConvs = useCallback(async () => {
     try { setConvs((await jget('/api/conversations')).conversations); } catch { /* non-fatal */ }
   }, []);
   useEffect(() => { refreshConvs(); }, [refreshConvs]);
+
+  // OAuth callback lands on a full page load with activeId usually still null.
+  // Consume the pending plugin pick here (not inside the activeId effect).
+  const oauthCarryRef = useRef(false);
+  useEffect(() => {
+    try {
+      const pending = sessionStorage.getItem(PENDING_CONNECTOR_KEY);
+      if (!pending) return;
+      sessionStorage.removeItem(PENDING_CONNECTOR_KEY);
+      const pluginId = normalizePluginIds([pending])[0];
+      if (!pluginId) return;
+
+      oauthCarryRef.current = true;
+      setSelectedPluginIds((prev) => {
+        const ids = prev.includes(pluginId) ? prev : [...prev, pluginId];
+        selectedPluginIdsRef.current = ids;
+        return ids;
+      });
+    } catch { /* private mode */ }
+  }, []);
+
+  // Restore connector picks when switching conversations.
+  useEffect(() => {
+    if (!activeId) return;
+    if (lastLoadedConvRef.current === activeId) return;
+    lastLoadedConvRef.current = activeId;
+
+    let ids = loadConversationConnectors(activeId);
+
+    // First activeId attach after OAuth — merge the pick we applied on mount.
+    if (oauthCarryRef.current) {
+      ids = [...new Set([...ids, ...normalizePluginIds(selectedPluginIdsRef.current)])];
+      saveConversationConnectors(activeId, ids);
+      oauthCarryRef.current = false;
+    }
+
+    selectedPluginIdsRef.current = ids;
+    setSelectedPluginIds(ids);
+  }, [activeId]);
+
+  const updateSelectedPluginIds = useCallback((next) => {
+    setSelectedPluginIds((prev) => {
+      const resolved = typeof next === 'function' ? next(prev) : next;
+      const ids = normalizePluginIds(resolved);
+      selectedPluginIdsRef.current = ids;
+      saveConversationConnectors(activeId, ids);
+      return ids;
+    });
+  }, [activeId]);
+
+  const ensureConnectors = useCallback(async (force = false) => {
+    if (!force && connectors.length) return connectors;
+    if (connectorsFetchRef.current) return connectorsFetchRef.current;
+    setLoadingConnectors(true);
+    connectorsFetchRef.current = (async () => {
+      try {
+        const data = await fetchConnectors();
+        const items = parseConnectorsResponse(data);
+        setConnectors(items);
+        return items;
+      } catch {
+        return [];
+      } finally {
+        setLoadingConnectors(false);
+        connectorsFetchRef.current = null;
+      }
+    })();
+    return connectorsFetchRef.current;
+  }, [connectors]);
+
+  useEffect(() => {
+    if (selectedPluginIds.length && !connectors.length && !loadingConnectors) {
+      ensureConnectors();
+    }
+  }, [selectedPluginIds, connectors.length, loadingConnectors, ensureConnectors]);
 
   useEffect(() => {
     const on = () => setOffline(false), off = () => setOffline(true);
@@ -114,6 +202,7 @@ export default function App() {
   const loadConversation = async (id) => {
     try {
       const { conversation } = await jget(`/api/conversations/${id}`);
+      lastLoadedConvRef.current = null;
       setActiveId(id);
       setMessages(conversation.messages.map(m => ({ ...m, live: false })));
       setWizard({ active: false, step: 0 });
@@ -123,6 +212,7 @@ export default function App() {
   const newChat = async (feature = 'chat', opts = {}) => {
     try {
       const { conversation } = await jpost('/api/conversations', { feature });
+      lastLoadedConvRef.current = null;
       setActiveId(conversation.id);
       setMessages([]);
       setArtifacts({});
@@ -147,6 +237,16 @@ export default function App() {
     let convId = activeId;
     if (!convId) convId = await newChat(pendingTool || 'chat');
     if (!convId) return;
+
+    // Re-affirm connector selection for this conversation after convId is known.
+    // This beats a race where the activeId effect loads [] from storage before the
+    // first save, and keeps picks visible after the empty-state composer remounts.
+    const sentPluginIds = normalizePluginIds(extra.pluginIds);
+    const ids = sentPluginIds.length ? sentPluginIds : selectedPluginIdsRef.current;
+    selectedPluginIdsRef.current = ids;
+    setSelectedPluginIds(ids);
+    saveConversationConnectors(convId, ids);
+    if (lastLoadedConvRef.current !== convId) lastLoadedConvRef.current = convId;
 
     draftRef.current = { text, fileId, fileName, extra };
     const userMsg = { id: `u-${Date.now()}`, role: 'user', text, fileName };
@@ -181,7 +281,8 @@ export default function App() {
       mode: extra.mode || undefined, // explicit FAST/FULL override (e.g. MSM 'Analyse deeper' → one-shot FAST)
       wizard: wizard.active ? { active: true, step: wizard.step } : undefined,
       editTarget: extra.editTarget || undefined,
-      msmVideoId: extra.msmVideoId || undefined, // MSM 'Analyse deeper': server injects the stored transcript as context
+      msmVideoId: extra.msmVideoId || undefined,
+      pluginIds: ids.length ? ids : undefined,
     };
     // 2026-07-17 passthrough refactor: raw upstream eventTypes arrive directly.
     //  planning_thinking / step_thinking → live Thinking… accordion (thinking.delta)
@@ -396,7 +497,9 @@ export default function App() {
         onMsm={() => { setIntelOpen(false); setOdaOpen(false); setMsmOpen(true); }} msmActive={msmOpen}
         onOda={() => { setIntelOpen(false); setMsmOpen(false); setOdaOpen(true); }} odaActive={odaOpen}
         open={sidebarOpen} />
-      {odaOpen ? (
+      {connectorCallback ? (
+        <ConnectorAuthCallback />
+      ) : odaOpen ? (
         <React.Suspense fallback={<div className="main main--intel" style={{ display: 'grid', placeItems: 'center', color: '#9ca3af', fontSize: 13 }}>Opening the ODA workspace…</div>}>
           <OdaWorkspace onExit={() => setOdaOpen(false)} />
         </React.Suspense>
@@ -419,7 +522,9 @@ export default function App() {
                 <h1>What are we producing today?</h1>
                 <div style={{ width: 'min(720px, 92%)' }}>
                   {busy && !messages.some(m => m.live && (m.answerStarted || m.thinking)) && <div className="composer-wait"><BilingualLoader size="sm" label="Working…" /></div>}
-                  <ComposerInline onSend={send} busy={busy} onError={(m) => setToast({ message: m })} activeFeature={activeFeature} prefill={composePrefill} />
+                  <ComposerInline onSend={send} busy={busy} onError={(m) => setToast({ message: m })} activeFeature={activeFeature} prefill={composePrefill}
+                    selectedPluginIds={selectedPluginIds} onSelectedPluginIdsChange={updateSelectedPluginIds}
+                    connectors={connectors} loadingConnectors={loadingConnectors} onEnsureConnectors={ensureConnectors} />
                 </div>
                 <div className="chips">
                   {CHIPS.map(c => (
@@ -447,7 +552,9 @@ export default function App() {
                 <div className="composer-wrap">
                   {busy && !messages.some(m => m.live && (m.answerStarted || m.thinking)) && <div className="composer-wait"><BilingualLoader size="sm" label="Working…" /></div>}
                   <Composer onSend={send} busy={busy} onError={(m) => setToast({ message: m })} prefill={composePrefill}
-                    placeholder={activeFeature ? placeholderFor(activeFeature) : 'Message the ODA suite…'} />
+                    placeholder={activeFeature ? placeholderFor(activeFeature) : 'Message the ODA suite…'}
+                    selectedPluginIds={selectedPluginIds} onSelectedPluginIdsChange={updateSelectedPluginIds}
+                    connectors={connectors} loadingConnectors={loadingConnectors} onEnsureConnectors={ensureConnectors} />
                   {busy && (
                     <button type="button" className="stopgen" onClick={stopGeneration} aria-label="Stop generating" title="Stop generating">
                       <span className="stopgen__sq" aria-hidden /> Stop generating
@@ -494,11 +601,13 @@ function placeholderFor(f) {
 }
 
 /* Slim composer reused inside the empty state (no border box duplication) */
-function ComposerInline({ onSend, busy, onError, activeFeature, prefill }) {
+function ComposerInline({ onSend, busy, onError, activeFeature, prefill, selectedPluginIds, onSelectedPluginIdsChange, connectors, loadingConnectors, onEnsureConnectors }) {
   // Reuse the standard Composer but style-flattened: simplest is to render it directly.
   return (
     <div style={{ width: '100%' }}>
       <Composer onSend={onSend} busy={busy} onError={onError} prefill={prefill}
+        selectedPluginIds={selectedPluginIds} onSelectedPluginIdsChange={onSelectedPluginIdsChange}
+        connectors={connectors} loadingConnectors={loadingConnectors} onEnsureConnectors={onEnsureConnectors}
         placeholder={activeFeature ? placeholderFor(activeFeature) : 'Describe the deliverable — a deck, a one-pager, a benchmark, a translation…'} />
     </div>
   );
