@@ -2631,7 +2631,7 @@ a.xpost:focus-visible { outline: 2px solid #1d9bf0; outline-offset: -2px; border
 .pglog2__chev.open { transform: rotate(180deg); }
 
 /* step-query line + accordion detail */
-.pglog2__stepq { padding-inline-start: 19px; font-size: 13px; line-height: 1.6; color: var(--pg-fg-muted); word-break: break-word; }
+.pglog2__stepq { font-size: 13px; line-height: 1.6; color: var(--pg-fg-muted); word-break: break-word; }
 .pglog2__stepq--flush { margin-top: 2px; }
 .pglog2__detail { padding-inline-start: 19px; border-inline-start: 1px solid var(--pg-border); margin-inline-start: 4px; display: flex; flex-direction: column; gap: 8px; padding-top: 6px; }
 .pglog2__section { font-size: 13px; color: var(--pg-fg-strong); }
@@ -2715,6 +2715,7 @@ a.xpost:focus-visible { outline: 2px solid #1d9bf0; outline-offset: -2px; border
 .odaparse__key { color: var(--pg-fg); text-transform: capitalize; }
 .odaparse__val { color: var(--pg-fg-strong); }
 .odaparse__nested { margin-top: 2px; display: flex; flex-direction: column; gap: 2px; }
+.odaagent__skills { display: flex; flex-direction: column; gap: 4px; }
 .odaparse__skills { margin-top: 2px; display: flex; flex-wrap: wrap; gap: 4px 8px; }
 .odaparse__skill {
   font-size: 12px; color: var(--pg-fg-strong); background: var(--pg-head);

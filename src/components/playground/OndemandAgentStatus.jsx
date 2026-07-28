@@ -2,7 +2,7 @@
 // Renders the goose/agent execution stream: a header (last event + elapsed + tokens), the
 // latest agent data, an optional streamed code block, terminal logs, and the sub-agent list.
 // Driven entirely by the live message's agent channels (see App.jsx onStreamEvent).
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { Code, ExternalLink } from 'lucide-react';
 import { ShortLogoIcon } from './loaders.jsx';
 import TerminalLogs from './TerminalLogs.jsx';
@@ -10,6 +10,36 @@ import SubAgents from './SubAgents.jsx';
 import OndemandAgentDataParser from './OndemandAgentDataParser.jsx';
 
 const TERMINAL_EVENTS = new Set(['ondemand_agent.completed', 'ondemand_agent.error']);
+
+/** A single skill's stable label, whether it arrives as a string or an object. */
+const getSkillLabel = (skill) => {
+  if (typeof skill === 'string') return skill.trim();
+  if (skill && typeof skill === 'object') {
+    return String(skill.name || skill.skill || skill.id || skill.title || '').trim();
+  }
+  return '';
+};
+
+/**
+ * Every skill seen across ALL agent frames, in first-seen order and de-duplicated.
+ * Only the LAST frame is rendered by OndemandAgentDataParser, so skills reported in earlier
+ * frames used to vanish — this accumulates them (2 in one frame + 3 in the next = 5).
+ */
+const collectSkills = (agentData) => {
+  const seen = new Set();
+  const skills = [];
+  for (const frame of agentData || []) {
+    const raw = frame?.data?.skills ?? (frame?.eventType === 'ondemand_agent.skills_used' ? frame?.data : null);
+    if (!Array.isArray(raw)) continue;
+    for (const skill of raw) {
+      const label = getSkillLabel(skill);
+      if (!label || seen.has(label)) continue;
+      seen.add(label);
+      skills.push(label);
+    }
+  }
+  return skills;
+};
 
 /** "ondemand_agent.tool_call" -> "Tool call". */
 function formatAgentEventName(eventType = '') {
@@ -61,6 +91,15 @@ export default function OndemandAgentStatus({ message, isLoading, onMoveToBackgr
     lastAgentData?.eventType === 'ondemand_agent.awaiting_input' ||
     lastAgentData?.eventType === 'ondemand_agent.awaiting_browser_action';
 
+  // Skills are accumulated across every frame and rendered once below, so drop the inline
+  // `skills` key from the single frame the parser shows (avoids a duplicated, partial list).
+  const skills = useMemo(() => collectSkills(agentData), [agentData]);
+  const parsedFrame = useMemo(() => {
+    if (!lastAgentData?.data || !('skills' in lastAgentData.data)) return lastAgentData;
+    const { skills: _omitSkills, ...rest } = lastAgentData.data;
+    return { ...lastAgentData, data: rest };
+  }, [lastAgentData]);
+
   return (
     <div className="odaagent">
       <span className={`odaagent__loader${isLoading && !isCompleted ? ' spin' : ''}`} aria-hidden>
@@ -96,7 +135,19 @@ export default function OndemandAgentStatus({ message, isLoading, onMoveToBackgr
 
         {/* Latest agent data */}
         {!isUserActionEvent && lastAgentData && (
-          <OndemandAgentDataParser agentData={lastAgentData} className="odaagent__parse" />
+          <OndemandAgentDataParser agentData={parsedFrame} className="odaagent__parse" />
+        )}
+
+        {/* Skills used — accumulated across every frame, shown below the latest agent data. */}
+        {skills.length > 0 && (
+          <div className="odaagent__skills">
+            <span className="odaparse__key">Skills ({skills.length}):</span>
+            <div className="odaparse__skills">
+              {skills.map((skill) => (
+                <span key={skill} className="odaparse__skill">{skill}</span>
+              ))}
+            </div>
+          </div>
         )}
 
         {isError && lastAgentData?.data?.message && (

@@ -50,6 +50,24 @@ export function parseQueryPlan(planningAnswer) {
   };
 }
 
+/** Normalise one raw plugin entry to the card shape, or null when it's a dup/invalid. */
+function normalizePluginCall(p, seen) {
+  if (!p || typeof p !== 'object') return null;
+  const params = p.api_request_parameters || p.parameters || {};
+  const key = `${p.pluginId || ''}|${JSON.stringify(params)}`;
+  if (seen.has(key)) return null;
+  seen.add(key);
+  return {
+    id: key,
+    pluginId: p.pluginId || '',
+    name: p.name || p.identifier || p.pluginId || 'plugin',
+    description: typeof p.description === 'string' ? p.description : '',
+    params,
+    identifier: p.identifier || '',
+    hydrated: p.all_parameters_hydrated !== false,
+  };
+}
+
 /**
  * The plugin calls from `pluginAnswer`, normalised to the shape the plugin cards render.
  * Accumulates across blocks (each step emits its own) and de-duplicates on
@@ -62,23 +80,34 @@ export function parsePluginCalls(pluginAnswer) {
   for (const block of jsonBlocks(pluginAnswer)) {
     if (!block || !Array.isArray(block.plugins)) continue;
     for (const p of block.plugins) {
-      if (!p || typeof p !== 'object') continue;
-      const params = p.api_request_parameters || p.parameters || {};
-      const key = `${p.pluginId || ''}|${JSON.stringify(params)}`;
-      if (seen.has(key)) continue;
-      seen.add(key);
-      calls.push({
-        id: key,
-        pluginId: p.pluginId || '',
-        name: p.name || p.identifier || p.pluginId || 'plugin',
-        description: typeof p.description === 'string' ? p.description : '',
-        params,
-        identifier: p.identifier || '',
-        hydrated: p.all_parameters_hydrated !== false,
-      });
+      const call = normalizePluginCall(p, seen);
+      if (call) calls.push(call);
     }
   }
   return calls;
+}
+
+/**
+ * The plugin calls from `pluginAnswer`, grouped per execution step. Each `step_output`
+ * block corresponds to one plan step, so we keep the blocks separate (instead of flattening
+ * as parsePluginCalls does) — that lets the status timeline render one
+ * retrieved → executing → analyzing cycle per step, stacked in the order they arrived.
+ * De-duplication is per block only: the same plugin used in two steps is two legitimate rows.
+ * @returns {Array<Array<{id,pluginId,name,description,params,identifier,hydrated}>>}
+ */
+export function parsePluginCallsByStep(pluginAnswer) {
+  const groups = [];
+  for (const block of jsonBlocks(pluginAnswer)) {
+    if (!block || !Array.isArray(block.plugins)) continue;
+    const seen = new Set();
+    const calls = [];
+    for (const p of block.plugins) {
+      const call = normalizePluginCall(p, seen);
+      if (call) calls.push(call);
+    }
+    if (calls.length) groups.push(calls);
+  }
+  return groups;
 }
 
 /** The single most representative argument of a call, for the one-line card summary. */
@@ -101,63 +130,142 @@ export function summariseParams(params) {
 // Tones map to the playground's status icons: green (done), yellow (in-progress/executing),
 // gray (retrieved), red (failed).
 
-/** Exact playground status labels, keyed by synthetic statusType. */
+/** Exact playground status labels, keyed by statusType. */
 export const STATUS_LABEL = {
   initializing: 'Initializing the process...',
   analyzing: 'Analyzing the prompt...',
+  reanalyzing: 'Re-analyzing the prompt...',
   plan_created: 'Execution plan created',
   agents_retrieved: 'Retrieved the agents',
   executing: 'Executing the agents...',
   execution_completed: 'Agents execution completed',
+  execution_failed: 'Agents execution failed',
   execution_log_created: 'Execution log created',
   fulfilling: 'Fulfilling the prompt...',
   fulfillment_completed: 'Fulfillment completed',
 };
 
 const TONE = {
-  initializing: 'green', analyzing: 'green', plan_created: 'green',
+  initializing: 'green', analyzing: 'green', reanalyzing: 'green', plan_created: 'green',
   agents_retrieved: 'gray', executing: 'yellow', execution_completed: 'green',
-  execution_log_created: 'green', fulfilling: 'green', fulfillment_completed: 'green',
+  execution_failed: 'red', execution_log_created: 'green', fulfilling: 'green',
+  fulfillment_completed: 'green',
 };
 
+// statusTypes the PUBLIC api emits on its own; their mere presence does NOT mean we're
+// receiving the rich client-style frame stream (which also carries analyzing/agents_retrieved/
+// executing/… with retrievedAgents & executedAgents arrays).
+const PUBLIC_ONLY_TYPES = new Set(['fulfilling', 'fulfillment_completed']);
+
+/** "agents_retrieved" -> "Agents retrieved" — label fallback for unknown statusTypes. */
+function prettifyStatusType(type = '') {
+  const words = String(type).replace(/[._]/g, ' ').trim();
+  if (!words) return '';
+  return words.charAt(0).toUpperCase() + words.slice(1);
+}
+
 /**
- * Build the ordered status-row timeline shown in StatusLogBlock, mirroring the playground.
- * Rows appear as their backing data arrives, so it animates in during streaming and lands
- * on the full sequence when done.
- *
- * @param {object} m live/persisted bot message (thinking, planningAnswer, pluginAnswer,
- *                   statusLogs, answerStarted, text, live)
- * @returns {Array<{key,type,tone,label,stepQuery?,plugins?,section?}>}
+ * Map the wire agent objects (retrievedAgents / executedAgents:
+ * { agentId, name, identifier, url, method, bodyParams, statusCode? }) to the shape the
+ * plugin avatars + accordion render. resolvePluginLogoUrl already normalises agentId →
+ * pluginId, so Perplexity's `agent-1722260873` resolves to its logo.
  */
-export function buildStatusTimeline(m = {}) {
+function mapWireAgents(list) {
+  if (!Array.isArray(list)) return [];
+  return list.map((a, i) => ({
+    id: a.agentId || a.identifier || a.name || `agent-${i}`,
+    agentId: a.agentId || '',
+    pluginId: a.pluginId || '',
+    identifier: a.identifier || '',
+    name: a.name || a.agentId || 'agent',
+    statusCode: a.statusCode,
+    failed: typeof a.statusCode === 'number' && a.statusCode >= 400,
+  }));
+}
+
+/**
+ * Build the timeline from the REAL client statusLog frames — one row per frame, in the
+ * exact order they arrived (append, never replace). Frames that carry agents
+ * (agents_retrieved / executing / execution_completed) become expandable rows showing the
+ * agent logos + stepQuery below the status message, matching the playground.
+ */
+function buildRealTimeline(statusLogs) {
   const rows = [];
-  const push = (type, extra = {}) => rows.push({ key: type, type, tone: TONE[type], label: STATUS_LABEL[type], ...extra });
+  statusLogs.forEach((sl, i) => {
+    const type = sl?.statusType;
+    if (!type) return;
+    const isCompleted = type === 'execution_completed' || type === 'execution_failed';
+    const wire = isCompleted
+      ? (sl.executedAgents?.length ? sl.executedAgents : sl.retrievedAgents)
+      : (sl.retrievedAgents?.length ? sl.retrievedAgents : sl.executedAgents);
+    const plugins = mapWireAgents(wire);
+    const tone = type === 'execution_completed' && plugins.some(p => p.failed) ? 'red' : (TONE[type] || 'green');
+    rows.push({
+      key: `${type}-${i}`,
+      type,
+      tone,
+      label: STATUS_LABEL[type] || sl.statusMessage || prettifyStatusType(type),
+      stepQuery: sl.stepQuery || '',
+      plugins: plugins.length ? plugins : undefined,
+      section: isCompleted ? (type === 'execution_failed' ? 'Execution failed' : 'Successfully Executed') : null,
+    });
+  });
+  return rows;
+}
+
+export function buildStatusTimeline(m = {}) {
+  // Prefer the real client statusLog stream whenever it carries rich frames (anything beyond
+  // the public api's fulfilling/fulfillment_completed) — that's the source of truth for
+  // ordering AND for the retrieved/executed agents. Otherwise synthesise from plan + plugins.
+  const statusLogs = Array.isArray(m.statusLogs) ? m.statusLogs : [];
+  const hasRichFrames = statusLogs.some(s => s?.statusType && !PUBLIC_ONLY_TYPES.has(s.statusType));
+  if (hasRichFrames) return buildRealTimeline(statusLogs);
+
+  const rows = [];
+  const push = (type, extra = {}) =>
+    rows.push({ key: extra.key || type, type, tone: TONE[type], label: STATUS_LABEL[type], ...extra });
 
   const hasThinking = Boolean((m.thinking || '').trim());
   const plan = parseQueryPlan(m.planningAnswer);
-  const plugins = parsePluginCalls(m.pluginAnswer);
+  const stepGroups = parsePluginCallsByStep(m.pluginAnswer);
+  const anyPlugins = stepGroups.some(g => g.length > 0);
   const answerVisible = Boolean((m.text || '').trim());
   const realTypes = new Set((m.statusLogs || []).map(s => s.statusType));
-  // The step-query line the playground prints under the analyzing/agent rows is the plan
-  // objective (falling back to the first step's query).
-  const stepQuery = plan?.objective || plan?.steps?.[0]?.user_query || plan?.steps?.[0]?.query || '';
   const done = !m.live;
 
-  if (hasThinking || plan || plugins.length || answerVisible || realTypes.size) push('initializing');
+  const steps = Array.isArray(plan?.steps) ? plan.steps : [];
+  const objective = plan?.objective || '';
+
+  if (hasThinking || plan || anyPlugins || answerVisible || realTypes.size) push('initializing');
   if (hasThinking || plan) push('analyzing');
-  if (plan) {
-    push('plan_created');
-    push('analyzing', { key: 'analyzing-2', stepQuery });
-  }
-  if (plugins.length) {
-    push('agents_retrieved', { plugins, stepQuery, section: null });
-    // "Executing" is in-progress until the answer starts; then it settles into "completed".
-    if (answerVisible || done || realTypes.has('fulfillment_completed')) {
-      push('execution_completed', { plugins, stepQuery, section: 'Successfully Executed' });
+  if (plan) push('plan_created');
+
+  // Per-step execution cycle. Each plan step (or step_output block) gets its OWN
+  // "Retrieved the agents" → "Executing…/completed" → "Analyzing" rows, appended in the
+  // order they arrived. Keys are suffixed with the step index so every cycle is a distinct
+  // row — a later step never replaces an earlier one (that in-place replace was the bug).
+  const stepCount = Math.max(steps.length, stepGroups.length);
+  for (let i = 0; i < stepCount; i += 1) {
+    const stepPlugins = stepGroups[i] || [];
+    const step = steps[i] || {};
+    const stepQuery = step.user_query || step.query || (i === 0 ? objective : '') || '';
+    // Nothing to show for this step yet (plan named it but its plugins haven't streamed).
+    if (!stepPlugins.length && !step.user_query && !step.query) continue;
+
+    push('agents_retrieved', { key: `agents_retrieved-${i}`, plugins: stepPlugins, stepQuery, section: null });
+
+    // The final step is "in progress" until the answer starts; earlier steps are complete
+    // the moment the next step's data appears.
+    const isLastStep = i === stepCount - 1;
+    const stepDone = !isLastStep || answerVisible || done || realTypes.has('fulfillment_completed');
+    if (stepDone) {
+      push('execution_completed', { key: `execution_completed-${i}`, plugins: stepPlugins, stepQuery, section: 'Successfully Executed' });
     } else {
-      push('executing', { plugins, stepQuery });
+      push('executing', { key: `executing-${i}`, plugins: stepPlugins, stepQuery });
     }
+    push('analyzing', { key: `analyzing-step-${i}`, stepQuery });
   }
+
   if (plan && (answerVisible || done || realTypes.size)) push('execution_log_created');
 
   // Real frames from the public API — always trust these when present.

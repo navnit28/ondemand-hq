@@ -111,7 +111,7 @@ export default function StatusLogBlock({ message, isStreaming }) {
       {rows.map((row, i) => (
         <StatusRow key={row.key} row={row}
           blink={isStreaming && i === rows.length - 1}
-          defaultOpen={row.type === 'agents_retrieved' || row.type === 'executing'} />
+          defaultOpen={row.type === 'agents_retrieved' || row.type === 'executing' || row.type === 'execution_completed'} />
       ))}
       {!answerVisible && isStreaming && (
         <PluginThinking text={message.pluginThinking} />

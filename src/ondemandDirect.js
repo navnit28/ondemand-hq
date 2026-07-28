@@ -185,6 +185,7 @@ export async function streamChatDirect(
     reasoningEffort: reasoningEffort || REASONING_EFFORT,
     responseMode: "stream",
     chatMode: "standard",
+    debugMode: "on",
     agentIds,
     ...(Array.isArray(skillIds) && skillIds.length
       ? { skillIds: skillIds.filter((id) => typeof id === "string" && id) }
@@ -206,6 +207,9 @@ export async function streamChatDirect(
   let lastEventIndex = -1;
 
   const handleFrame = (raw) => {
+    // Log EVERY raw SSE message to the browser console (parity with the reference
+    // handleMessages "[SSE Event]" logging), timestamped so ordering is verifiable.
+    console.log(`[SSE Event] Received: ${new Date().toISOString()} ${raw}`);
     if (raw === "[DONE]") {
       debugBus?.emit({ kind: "frame", type: "[DONE]", chars: 0 });
       onEvent("stream_end", {});
@@ -219,8 +223,11 @@ export async function streamChatDirect(
     try {
       evt = JSON.parse(raw);
     } catch {
+      console.log("[SSE Event] Unparseable frame:", raw);
       return;
     }
+    // Structured, expandable view of the parsed event object.
+    console.log(`[SSE Event] Parsed (${evt.eventType || "no-type"}):`, evt);
     // Track the resume cursor from any frame that carries it.
     if (evt.messageId) messageId = evt.messageId;
     if (typeof evt.eventIndex === "number" && evt.eventIndex > lastEventIndex) {
