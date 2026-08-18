@@ -94,6 +94,18 @@ export const SEED = {
     { videoId: 'cBWOtw-ofbw', outlet: 'fox' },
     { videoId: '2gUKBwDTxzA', outlet: 'fox' },
   ],
+  // resolved 2026-08-18 from official channel searches for coverage dated ~2026-08-17
+  // (Strait of Hormuz / Iran, Israel-Lebanon, and market/geopolitics segments).
+  '2026-08-17': [
+    { videoId: 'Z9-QcrZKyGc', outlet: 'bbc' },
+    { videoId: 'bQNLeBfsX84', outlet: 'bbc' },
+    { videoId: 'xAia9w_LHfA', outlet: 'bbc' },
+    { videoId: 'aM9JKRot6SA', outlet: 'reuters' },
+    { videoId: 'EA80nMtuPCk', outlet: 'bloomberg' },
+    { videoId: 'T9t9BN2nID0', outlet: 'bloomberg' },
+    { videoId: '8JiBcDpSN4s', outlet: 'bloomberg' },
+    { videoId: 'ySpUV2M2lGo', outlet: 'bloomberg' },
+  ],
 };
 
 export const SCHEDULE = {
